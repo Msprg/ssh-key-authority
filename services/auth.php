@@ -28,6 +28,16 @@ class AuthService {
         
         // Start session if not already started
         if (session_status() === PHP_SESSION_NONE) {
+            // Configure secure session settings
+            ini_set('session.cookie_httponly', 1);
+            ini_set('session.use_strict_mode', 1);
+            ini_set('session.cookie_samesite', 'Strict');
+            
+            // Set secure cookie if using HTTPS
+            if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+                ini_set('session.cookie_secure', 1);
+            }
+            
             session_start();
         }
     }
@@ -60,11 +70,11 @@ class AuthService {
         $original_dn = $this->config['ldap']['user_id'] . '=' . LDAP::escape($username) . ',' . $dn_user;
         $auth_methods[] = ['method' => 'CONFIG', 'bind_dn' => $original_dn];
         
-        error_log("Attempting authentication for user: $username");
+        error_log("Authentication attempt for user: " . substr($username, 0, 3) . "***");
         
         foreach ($auth_methods as $method) {
             try {
-                error_log("Trying {$method['method']} format: {$method['bind_dn']}");
+                error_log("Trying {$method['method']} format for user: " . substr($username, 0, 3) . "***");
                 
                 // Create a temporary LDAP connection for user authentication
                 $temp_ldap = new LDAP(
@@ -77,17 +87,17 @@ class AuthService {
                 
                 // Try to connect and bind - this will fail if credentials are wrong
                 $temp_ldap->connect();
-                error_log("LDAP bind successful for user $username using {$method['method']} format");
+                error_log("LDAP bind successful for user: " . substr($username, 0, 3) . "*** using {$method['method']} format");
                 
                 // If we get here, authentication was successful
                 // Now get the user from our database
                 try {
                     $user = $this->user_dir->get_user_by_uid($username);
-                    error_log("User found in database: " . $user->uid);
+                    error_log("User found in database: " . substr($user->uid, 0, 3) . "***");
                     
                     // Check if user is active
                     if (!$user->active) {
-                        error_log("User $username is inactive in database");
+                        error_log("User " . substr($username, 0, 3) . "*** is inactive in database");
                         return false;
                     }
                     
@@ -95,31 +105,34 @@ class AuthService {
                     $user->get_details_from_ldap();
                     $user->update();
                     
+                    // Regenerate session ID to prevent session fixation
+                    session_regenerate_id(true);
+                    
                     // Set session data
                     $_SESSION['user_id'] = $user->id;
                     $_SESSION['username'] = $user->uid;
                     $_SESSION['authenticated'] = true;
                     $_SESSION['last_activity'] = time();
                     
-                    error_log("Authentication successful for user: $username");
+                    error_log("Authentication successful for user: " . substr($username, 0, 3) . "***");
                     return $user;
                     
                 } catch (Exception $e) {
                     // User not found in database, but LDAP auth succeeded
                     // This could happen if the user exists in LDAP but not in our system yet
-                    error_log("User $username authenticated in LDAP but not found in database: " . $e->getMessage());
+                    error_log("User " . substr($username, 0, 3) . "*** authenticated in LDAP but not found in database: " . $e->getMessage());
                     return false;
                 }
                 
             } catch (Exception $e) {
                 // This authentication method failed, try the next one
-                error_log("Authentication failed for user '$username' using {$method['method']} format: " . $e->getMessage());
+                error_log("Authentication failed for user " . substr($username, 0, 3) . "*** using {$method['method']} format: " . $e->getMessage());
                 continue;
             }
         }
         
         // All authentication methods failed
-        error_log("All authentication methods failed for user: $username");
+        error_log("All authentication methods failed for user: " . substr($username, 0, 3) . "***");
         return false;
     }
     

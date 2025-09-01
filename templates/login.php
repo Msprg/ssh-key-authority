@@ -116,6 +116,7 @@
     <?php } ?>
 
     <form method="POST" action="">
+        <input type="hidden" name="csrf_token" value="<?php out($this->get('csrf_token')) ?>">
         <div class="form-group">
             <label for="username" class="form-label">Username</label>
             <input type="text" class="form-control" id="username" name="username" 
