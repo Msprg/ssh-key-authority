@@ -377,9 +377,11 @@ class User extends Entity {
 			if ($should_be_member && !$this->member_of($sys_group)) {
 				// Use the keys-sync user as actor, because this is an automatic process
 				$sys_group->add_member($this, User::get_keys_sync_user());
+				echo "  User added to group: " . $sys_group->name . "\n";
 			}
 			if (!$should_be_member && $this->member_of($sys_group)) {
 				$sys_group->delete_member($this);
+				echo "  User removed from group: " . $sys_group->name . "\n";
 			}
 		}
 	}
@@ -484,7 +486,7 @@ class User extends Entity {
 			}
 		}
 
-		// Filter out inactive accounts
+		// Filter out disabled accounts
 		$target_accounts = array_filter($target_accounts, function($account) {
 			return $account->server->key_management != 'decommissioned';
 		});
