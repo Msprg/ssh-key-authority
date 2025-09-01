@@ -20,6 +20,21 @@ require('core.php');
 ob_start();
 set_exception_handler('exception_handler');
 
+// Helper function to check if a route is public
+function isPublicRoute($request_path) {
+    global $public_routes;
+    foreach ($public_routes as $route => $is_public) {
+        if ($is_public) {
+            // Convert route pattern to regex for matching
+            $pattern = preg_replace('/\{[^}]+\}/', '[^/]+', $route);
+            if (preg_match('|^' . $pattern . '$|', $request_path)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 // Work out where we are on the server
 $base_url = dirname($_SERVER['SCRIPT_NAME']);
 $request_url = $_SERVER['REQUEST_URI'];
@@ -33,9 +48,22 @@ $auth_service = new AuthService($ldap, $user_dir, $config);
 $active_user = $auth_service->getCurrentUser();
 
 // If no active user and not on a public route, redirect to login
-if (!$active_user && !in_array($relative_request_url, ['/login', '/logout'])) {
+if (!$active_user && !isPublicRoute($relative_request_url)) {
     // Store the current URL to redirect back after login
     $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+    redirect('/login');
+}
+
+// Prevent authenticated users from accessing login page (they're already logged in)
+if ($active_user && $relative_request_url === '/login') {
+    $redirect_url = $_SESSION['redirect_after_login'] ?? '/';
+    unset($_SESSION['redirect_after_login']);
+    redirect($redirect_url);
+}
+
+// Prevent logged out users from accessing logout page (they're already logged out)
+if (!$active_user && $relative_request_url === '/logout') {
+    // They're already logged out, just redirect to login
     redirect('/login');
 }
 
