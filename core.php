@@ -35,6 +35,7 @@ require('router.php');
 require('routes.php');
 require('ldap.php');
 require('email.php');
+require('services/auth.php');
 
 $ldap_options = array();
 $ldap_options[LDAP_OPT_PROTOCOL_VERSION] = 3;

@@ -45,7 +45,25 @@ class LDAP {
 		$this->options = $options;
 	}
 
-	private function connect() {
+	private function _connect() {
+		$this->conn = ldap_connect($this->host);
+		if($this->conn === false) throw new LDAPConnectionFailureException('Invalid LDAP connection settings');
+		if($this->starttls) {
+			if(!ldap_start_tls($this->conn)) throw new LDAPConnectionFailureException('Could not initiate TLS connection to LDAP server');
+		}
+		foreach($this->options as $option => $value) {
+			ldap_set_option($this->conn, $option, $value);
+		}
+		if(!empty($this->bind_dn)) {
+			if(!ldap_bind($this->conn, $this->bind_dn, $this->bind_password)) throw new LDAPConnectionFailureException('Could not bind to LDAP server');
+		}
+	}
+
+	/**
+	 * Public method to connect and bind for authentication purposes
+	 * @throws LDAPConnectionFailureException
+	 */
+	public function connect() {
 		$this->conn = ldap_connect($this->host);
 		if($this->conn === false) throw new LDAPConnectionFailureException('Invalid LDAP connection settings');
 		if($this->starttls) {
@@ -101,7 +119,7 @@ class LDAP {
 	public function search($basedn, $filter, $fields = array(), $sort = array(), $onelevel = false) {
 		global $config;
 
-		if(is_null($this->conn)) $this->connect();
+		if(is_null($this->conn)) $this->_connect();
 		if(empty($fields)) {
 			$fields = ["*"];
 		}

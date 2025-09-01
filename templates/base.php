@@ -52,6 +52,18 @@ $footer=str_replace("%v", "1.2.2", $web_config['footer']);
 				<li<?php if($url == $this->get('relative_request_url')) out(' class="active"', ESC_NONE); ?>><a href="<?php outurl($url)?>"><?php out($name)?></a></li>
 				<?php } ?>
 			</ul>
+			<?php if($this->get('active_user')) { ?>
+			<ul class="nav navbar-nav navbar-right">
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+						<?php out($this->get('active_user')->name)?> <span class="caret"></span>
+					</a>
+					<ul class="dropdown-menu">
+						<li><a href="<?php outurl('/logout')?>">Logout</a></li>
+					</ul>
+				</li>
+			</ul>
+			<?php } ?>
 		</div>
 	</div>
 </div>

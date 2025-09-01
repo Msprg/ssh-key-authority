@@ -18,6 +18,8 @@
 
 $routes = array(
 	'/' => 'home',
+	'/login' => 'login',
+	'/logout' => 'logout',
 	'/activity' => 'activity',
 	'/bulk_mail' => 'bulk_mail',
 	'/bulk_mail/{recipients}' => 'bulk_mail',
@@ -51,6 +53,8 @@ $routes = array(
 );
 
 $public_routes = array(
+	'/login' => true,
+	'/logout' => true,
 	'/groups/{group}/members.{format}' => true,
 	'/pubkeys.{format}' => true,
 	'/pubkeys/{key}.{format}' => true,

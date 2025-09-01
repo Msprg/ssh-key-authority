@@ -20,28 +20,35 @@ require('core.php');
 ob_start();
 set_exception_handler('exception_handler');
 
-if(isset($_SERVER['AUTHENTICATE_SAMACCOUNTNAME'])) {
-	$active_user = $user_dir->get_user_by_uid($_SERVER['AUTHENTICATE_SAMACCOUNTNAME']);
-} else {
-	throw new Exception("Not logged in.");
-}
-
 // Work out where we are on the server
 $base_url = dirname($_SERVER['SCRIPT_NAME']);
 $request_url = $_SERVER['REQUEST_URI'];
 $relative_request_url = preg_replace('/^'.preg_quote($base_url, '/').'/', '/', $request_url);
 $absolute_request_url = 'http'.(isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['HTTP_HOST'].$request_url;
 
+// Initialize authentication service
+$auth_service = new AuthService($ldap, $user_dir, $config);
+
+// Check if user is authenticated
+$active_user = $auth_service->getCurrentUser();
+
+// If no active user and not on a public route, redirect to login
+if (!$active_user && !in_array($relative_request_url, ['/login', '/logout'])) {
+    // Store the current URL to redirect back after login
+    $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+    redirect('/login');
+}
+
 if(empty($config['web']['enabled'])) {
 	require('views/error503.php');
 	die;
 }
 
-if(!$active_user->active) {
+if($active_user && !$active_user->active) {
 	require('views/error403.php');
 }
 
-if(!empty($_POST)) {
+if(!empty($_POST) && $active_user) {
 	// Check CSRF token
 	if(isset($_SERVER['HTTP_X_BYPASS_CSRF_PROTECTION']) && $_SERVER['HTTP_X_BYPASS_CSRF_PROTECTION'] == 1) {
 		// This is being called from script, not a web browser
@@ -61,7 +68,7 @@ $router->handle_request($relative_request_url);
 if(isset($router->view)) {
 	$view = path_join($base_path, 'views', $router->view.'.php');
 	if(file_exists($view)) {
-		if($active_user->auth_realm == 'LDAP' || $router->public) {
+		if($router->public || ($active_user && $active_user->auth_realm == 'LDAP')) {
 			require($view);
 		} else {
 			require('views/error403.php');
