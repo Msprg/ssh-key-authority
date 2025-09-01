@@ -186,6 +186,13 @@ span.date {
 		transform: rotate(360deg);
 	}
 }
+@media (min-width: 1200px) {
+	.container {
+	  width: auto;
+	  padding-left: clamp(0rem, 5vw, 3rem);
+	  padding-right: clamp(0rem, 5vw, 3rem);
+	}
+}
 .monospace {
 	font-family: monospace;
 }
