@@ -427,6 +427,7 @@ $(function() {
 
 // ldap tree view
 function requestOU(guid, callback) {
+	// fetch('/groups?' + new URLSearchParams({ //absolute vs relative path. change to absolute if ever needed.
 	fetch('groups?' + new URLSearchParams({
 		get_ldap_groups: "",
 		guid,
