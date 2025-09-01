@@ -218,7 +218,7 @@ function sync_server($id, $only_username = null, $preview = false) {
 								$keyfile .= $prefix.$key->export_userkey_with_fixed_comment($user, $comment)."\n";
 							}
 						} elseif ($comment == 1) {
-							$keyfile .= "# Inactive account\n";
+							$keyfile .= "# Account disabled\n";
 						}
 						$keyfiles[$username] = array('keyfile' => $keyfile, 'check' => ($server->authorization == 'manual LDAP'));
 					}
@@ -384,7 +384,7 @@ function get_keys($access_rules, $account_name, $hostname, $comment) {
 					$keyfile .= $prefix.$key->export_userkey_with_fixed_comment($entity, $comment)."\n";
 				}
 			} elseif ($comment == 1) {
-				$keyfile .= "# Inactive account\n";
+				$keyfile .= "# Account disabled\n";
 			}
 			break;
 		case 'ServerAccount':
@@ -442,7 +442,7 @@ function get_group_keys($entities, $account_name, $hostname, $prefix, &$seen, $c
 					$keyfile .= $prefix.$key->export_userkey_with_fixed_comment($entity, $comment)."\n";
 				}
 			} elseif ($comment == 1) {
-				$keyfile .= "# Inactive account\n";
+				$keyfile .= "# Account disabled\n";
 			}
 			break;
 		case 'ServerAccount':
