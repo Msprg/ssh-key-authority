@@ -40,7 +40,8 @@ class Server extends Record {
 
 		$text = "KeysScope=\"server:{$this->hostname}\" KeysRequester=\"{$this->active_user->uid}\"";
 		foreach($details as $key => $value) {
-			$text .= ' Keys'.ucfirst($key).'="'.str_replace('"', '', $value).'"';
+			$safe_value = ($value === null) ? '' : (is_bool($value) ? ($value ? 'true' : 'false') : (string)$value);
+			$text .= ' Keys'.ucfirst($key).'="'.str_replace('"', '', $safe_value).'"';
 		}
 		openlog('keys', LOG_ODELAY, LOG_AUTH);
 		syslog($level, $text);
