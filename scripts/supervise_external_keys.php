@@ -36,7 +36,8 @@ foreach ($servers as $server) {
 	$error_string = "";
 	$start_time = date('c');
 	try {
-		echo date('c')." Reading external ssh keys from {$server->hostname}\n";
+		echo "===========================================\n";
+		echo "Reading external ssh keys from {$server->hostname}\n";
 
 		$ssh = $server->connect_ssh();
 		$keys[$server->id] = read_server_keys($server, $error_string, $ssh, $keys_in_db_assoc);
@@ -185,15 +186,68 @@ function read_server_keys(Server $server, string &$error_string, SSH $connection
  * Check if external keys (~/.ssh/authorized_keys) are activated in the sshd-config
  * of a target server.
  *
+ * This function checks both /etc/ssh/sshd_config and any files in /etc/ssh/sshd_config.d/
+ * for AuthorizedKeysFile directives. If any such directive disables .ssh/authorized_keys,
+ * returns false.
+ *
  * @param SSH $connection SSH connection instance to the server
  * @return bool true if they are active (users can login using keys in authorized_keys), false if they are ignored
  */
 function external_keys_active($connection) {
-	$config_lines = $connection->file_get_lines("/etc/ssh/sshd_config");
-	foreach ($config_lines as $line) {
-		if (strpos(strtolower($line), "authorizedkeysfile") === 0) {
-			return strpos($line, ".ssh/authorized_keys") !== false;
+	$authorized_keys_active = null;
+
+	// Helper to process config lines and update $authorized_keys_active
+	$process_lines = function($lines) use (&$authorized_keys_active) {
+		foreach ($lines as $line) {
+			$trimmed = trim($line);
+			// Ignore comments and empty lines
+			if ($trimmed === '' || $trimmed[0] === '#') continue;
+			if (stripos($trimmed, "AuthorizedKeysFile") === 0) {
+				// Split on whitespace, remove the directive itself
+				$parts = preg_split('/\s+/', $trimmed, 2);
+				$value = isset($parts[1]) ? $parts[1] : '';
+				// If any of the values contains .ssh/authorized_keys, we consider it active
+				if (strpos($value, ".ssh/authorized_keys") !== false) {
+					$authorized_keys_active = true;
+				} else {
+					$authorized_keys_active = false;
+				}
+				// Per sshd_config, last match wins, so keep processing
+			}
 		}
+	};
+
+	// 1. Process main config file
+	$config_lines = $connection->file_get_lines("/etc/ssh/sshd_config");
+	$process_lines($config_lines);
+
+	// 2. Process all files in /etc/ssh/sshd_config.d/
+	try {
+		$dir_listing = $connection->exec("ls -1 /etc/ssh/sshd_config.d/ 2>/dev/null");
+		if ($dir_listing !== false && trim($dir_listing) !== '') {
+			$files = array_filter(explode("\n", $dir_listing), function($f) { return trim($f) !== ''; });
+			// Sort files lexicographically, as sshd does
+			sort($files, SORT_STRING);
+			foreach ($files as $file) {
+				$path = "/etc/ssh/sshd_config.d/" . $file;
+				echo "Reading config file $path\n";
+				try {
+					$lines = $connection->file_get_lines($path);
+					$process_lines($lines);
+				} catch (SSHException $e) {
+					echo "Error reading config file $path: {$e->getMessage()}\n";
+					throw $e;
+				}
+			}
+		}
+	} catch (Exception $e) {
+		echo "Error reading config directory: {$e->getMessage()}\n";
+		throw $e;
+	}
+
+	// If we found any AuthorizedKeysFile directive, return its effect
+	if ($authorized_keys_active !== null) {
+		return $authorized_keys_active;
 	}
 	// configuration not found, by default external keys are activated
 	return true;
