@@ -99,28 +99,44 @@ class GroupDirectory extends DBDirectory {
 	* @return array of Group objects
 	*/
 	public function list_groups($include = array(), $filter = array()) {
-		// WARNING: The search query is not parameterized - be sure to properly escape all input
 		$fields = array("`group`.*");
 		$joins = array();
 		$where = array();
+		$params = array();
+		$types = '';
+		
 		foreach($filter as $field => $value) {
 			if($value) {
 				switch($field) {
 				case 'name':
-					$where[] = "`group`.name REGEXP '".$this->database->escape_string($value)."'";
+					$where[] = "`group`.name REGEXP ?";
+					$params[] = $value;
+					$types .= 's';
 					break;
 				case 'active':
-					$where[] = "`group`.active IN (".implode(", ", array_map('intval', $value)).")";
+					// For IN clauses with arrays, we need to build placeholders dynamically
+					$placeholders = str_repeat('?,', count($value) - 1) . '?';
+					$where[] = "`group`.active IN ($placeholders)";
+					foreach($value as $v) {
+						$params[] = intval($v);
+						$types .= 'i';
+					}
 					break;
 				case 'system':
-					$where[] = "`group`.system = ".intval($value);
+					$where[] = "`group`.system = ?";
+					$params[] = intval($value);
+					$types .= 'i';
 					break;
 				case 'admin':
-					$where[] = "admin_filter.admin = ".intval($value);
+					$where[] = "admin_filter.admin = ?";
+					$params[] = intval($value);
+					$types .= 'i';
 					$joins['adminfilter'] = "INNER JOIN entity_admin admin_filter ON admin_filter.entity_id = `group`.entity_id";
 					break;
 				case 'member':
-					$where[] = "member_filter.entity_id = ".intval($value);
+					$where[] = "member_filter.entity_id = ?";
+					$params[] = intval($value);
+					$types .= 'i';
 					$joins['memberfilter'] = "INNER JOIN group_member member_filter ON member_filter.group = `group`.entity_id";
 					break;
 				}
@@ -147,6 +163,11 @@ class GroupDirectory extends DBDirectory {
 				GROUP BY group.entity_id
 				ORDER BY `group`.name
 			");
+			
+			// Bind parameters if we have any
+			if (!empty($params)) {
+				$stmt->bind_param($types, ...$params);
+			}
 		} catch(mysqli_sql_exception $e) {
 			if($e->getCode() == 1139) {
 				throw new GroupSearchInvalidRegexpException;

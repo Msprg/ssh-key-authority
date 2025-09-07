@@ -120,31 +120,46 @@ class ServerDirectory extends DBDirectory {
 	* @return array of Server objects
 	*/
 	public function list_servers($include = array(), $filter = array()) {
-		// WARNING: The search query is not parameterized - be sure to properly escape all input
 		$fields = array("server.*");
 		$joins = array();
 		$where = array('!server.deleted');
+		$params = array();
+		$types = '';
+		
 		foreach($filter as $field => $value) {
 			if ($value !== null) {
 				switch($field) {
 				case 'hostname':
-					$where[] = "hostname REGEXP '".$this->database->escape_string($value)."'";
+					$where[] = "hostname REGEXP ?";
+					$params[] = $value;
+					$types .= 's';
 					break;
 				case 'ip_address':
 				case 'host_key':
 				case 'jumphosts':
 				case 'port':
-					$where[] = "server.$field = '".$this->database->escape_string($value)."'";
+					$where[] = "server.$field = ?";
+					$params[] = $value;
+					$types .= 's';
 					break;
 				case 'admin':
-					$where[] = "admin_search.entity_id = ".intval($value)." OR admin_search_members.entity_id = ".intval($value);
+					$where[] = "admin_search.entity_id = ? OR admin_search_members.entity_id = ?";
+					$params[] = intval($value);
+					$params[] = intval($value);
+					$types .= 'ii';
 					$joins['adminsearch'] = "LEFT JOIN server_admin AS admin_search ON admin_search.server_id = server.id";
 					$joins['adminsearchmembers'] = "LEFT JOIN group_member AS admin_search_members ON admin_search_members.group = admin_search.entity_id";
 					break;
 				case 'authorization':
 				case 'key_management':
 				case 'sync_status':
-					$where[] = "server.$field IN ('".implode("', '", array_map(array($this->database, 'escape_string'), $value))."')";
+					// For IN clauses with arrays, we need to build placeholders dynamically
+					$placeholders = str_repeat('?,', count($value) - 1) . '?';
+					$where[] = "server.$field IN ($placeholders)";
+					foreach($value as $v) {
+						$params[] = $v;
+						$types .= 's';
+					}
 					break;
 				case 'key_supervision_error':
 					if ($value == "not-null") {
@@ -177,6 +192,11 @@ class ServerDirectory extends DBDirectory {
 				GROUP BY server.id
 				ORDER BY server.hostname
 			");
+			
+			// Bind parameters if we have any
+			if (!empty($params)) {
+				$stmt->bind_param($types, ...$params);
+			}
 		} catch(mysqli_sql_exception $e) {
 			if($e->getCode() == 1139) {
 				throw new ServerSearchInvalidRegexpException;

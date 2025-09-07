@@ -112,18 +112,24 @@ class UserDirectory extends DBDirectory {
 	* @return array of User objects
 	*/
 	public function list_users($include = array(), $filter = array()) {
-		// WARNING: The search query is not parameterized - be sure to properly escape all input
 		$fields = array("user.*");
 		$joins = array();
 		$where = array();
+		$params = array();
+		$types = '';
+		
 		foreach($filter as $field => $value) {
 			if($value) {
 				switch($field) {
 				case 'uid':
-					$where[] = "uid = '".$this->database->escape_string($value)."'";
+					$where[] = "uid = ?";
+					$params[] = $value;
+					$types .= 's';
 					break;
 				case 'name':
-					$where[] = "name = '".$this->database->escape_string($value)."'";
+					$where[] = "name = ?";
+					$params[] = $value;
+					$types .= 's';
 					break;
 				case 'admins_servers':
 					$joins[] = "INNER JOIN server_admin ON server_admin.entity_id = user.entity_id";
@@ -139,6 +145,12 @@ class UserDirectory extends DBDirectory {
 			GROUP BY user.entity_id
 			ORDER BY user.uid
 		");
+		
+		// Bind parameters if we have any
+		if (!empty($params)) {
+			$stmt->bind_param($types, ...$params);
+		}
+		
 		$stmt->execute();
 		$result = $stmt->get_result();
 		$users = array();
