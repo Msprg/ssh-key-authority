@@ -130,8 +130,10 @@
 						<?php } ?>
 						<td>
 							<a href="<?php outurl('/servers/'.urlencode($server->hostname)) ?>" class="server"><?php out($server->hostname) ?></a>
-							<?php if($server->pending_requests > 0 && $this->get('admin')) { ?>
+							<?php if($this->get('admin') && $server->pending_requests > 0) { ?>
 							<a href="<?php outurl('/servers/'.urlencode($server->hostname)) ?>"><span class="badge" title="Pending requests"><?php out(number_format($server->pending_requests)) ?></span></a>
+							<?php } elseif(!$this->get('admin') && $this->get('active_user')->has_pending_requests_for_server($server)) { ?>
+							<a href="<?php outurl('/servers/'.urlencode($server->hostname)) ?>"><span class="badge" title="Request for access pending">Request for access pending</span></a>
 							<?php } ?>
 						</td>
 						<td class="nowrap">

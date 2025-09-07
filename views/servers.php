@@ -268,6 +268,7 @@ if(isset($_POST['add_server'])) {
 		$content->set('servers', $servers);
 		$content->set('all_users', $user_dir->list_users());
 		$content->set('all_groups', $group_dir->list_groups());
+		$content->set('active_user', $active_user);
 		if(file_exists('config/keys-sync.pub')) {
 			$content->set('keys-sync-pubkey', file_get_contents('config/keys-sync.pub'));
 		} else {

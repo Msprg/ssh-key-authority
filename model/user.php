@@ -493,4 +493,28 @@ class User extends Entity {
 
 		return $target_accounts;
 	}
+
+	/**
+	 * Check if this user has pending access requests for a specific server.
+	 *
+	 * @param Server $server The server to check for pending requests
+	 * @return bool true if user has pending requests for this server
+	 */
+	public function has_pending_requests_for_server(Server $server): bool {
+		if(is_null($this->entity_id)) throw new BadMethodCallException('User must be in directory before pending requests can be checked');
+		
+		$stmt = $this->database->prepare("
+			SELECT COUNT(*) as count
+			FROM access_request ar
+			INNER JOIN server_account sa ON sa.entity_id = ar.dest_entity_id
+			WHERE ar.source_entity_id = ? AND sa.server_id = ?
+		");
+		$stmt->bind_param('dd', $this->entity_id, $server->id);
+		$stmt->execute();
+		$result = $stmt->get_result();
+		$row = $result->fetch_assoc();
+		$stmt->close();
+		
+		return $row['count'] > 0;
+	}
 }
