@@ -145,8 +145,14 @@ class AuthService {
             return false;
         }
         
-        // Check session timeout (8 hours)
-        if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > 28800) {
+        // Get session timeout from config (default: 8 hours = 28800 seconds)
+        $session_timeout = isset($this->config['security']['session_timeout']) 
+            ? (int)$this->config['security']['session_timeout'] 
+            : 28800;
+        
+        // Check session timeout (0 means no timeout)
+        if ($session_timeout > 0 && isset($_SESSION['last_activity']) && 
+            (time() - $_SESSION['last_activity']) > $session_timeout) {
             $this->logout();
             return false;
         }
