@@ -99,7 +99,7 @@
 
 <div class="login-container">
     <div class="login-header">
-        <h1>Leitwerk Key Authority</h1>
+        <h1>SSH Key Authority</h1>
         <p class="text-muted">Please sign in to continue</p>
     </div>
 

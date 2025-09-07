@@ -96,7 +96,7 @@ $login_content->set('csrf_token', $_SESSION['csrf_token']);
 
 // Create the main page
 $page = new PageSection('base');
-$page->set('title', 'Login - Leitwerk Key Authority');
+$page->set('title', 'Login - SSH Key Authority');
 $page->set('content', $login_content);
 $page->set('alerts', array());
 $page->set('active_user', null); // No active user on login page

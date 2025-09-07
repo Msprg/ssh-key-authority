@@ -54,7 +54,7 @@
 								<h4>Key management</h4>
 								<?php
 								$options = array();
-								$options['keys'] = 'Managed by Leitwerk Key Authority';
+								$options['keys'] = 'Managed by SSH Key Authority';
 								$options['other'] = 'Managed by another system';
 								$options['none'] = 'Unmanaged';
 								$options['decommissioned'] = 'Decommissioned';

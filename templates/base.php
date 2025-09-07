@@ -42,7 +42,7 @@ $footer=str_replace("%v", "1.3.0", $web_config['footer']);
 			<?php if(!empty($web_config['logo'])) { ?>
 			<a class="navbar-brand" href="/">
 				<img src="<?php out($web_config['logo'])?>">
-				Leitwerk Key Authority
+				SSH Key Authority
 			</a>
 			<?php } ?>
 		</div>

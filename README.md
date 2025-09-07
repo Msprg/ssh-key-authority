@@ -1,4 +1,4 @@
-LKA - Leitwerk Key Authority
+SKA - SSH Key Authority
 =======================
 
 *Please see the [Security Advisories](#security-advisories) section below for a recently addressed security issue*
@@ -44,15 +44,15 @@ Installation
 
 3.  Add the following directives to your Apache configuration (eg. virtual host config):
 
-        DocumentRoot /path/to/lka/public_html
+        DocumentRoot /path/to/ska/public_html
         DirectoryIndex init.php
         FallbackResource /init.php
 
 4.  Create a MySQL user and database (run in MySQL shell):
 
-        CREATE USER 'lka-user'@'localhost' IDENTIFIED BY 'password';
-        CREATE DATABASE `lka-db` DEFAULT CHARACTER SET utf8mb4;
-        GRANT ALL ON `lka-db`.* to 'lka-user'@'localhost';
+        CREATE USER 'ska-user'@'localhost' IDENTIFIED BY 'password';
+        CREATE DATABASE `ska-db` DEFAULT CHARACTER SET utf8mb4;
+        GRANT ALL ON `ska-db`.* to 'ska-user'@'localhost';
 
 5.  Copy the file `config/config-sample.ini` to `config/config.ini` and edit the settings as required.
 
@@ -61,14 +61,14 @@ Installation
 
 7.  Set `scripts/ldap_update.php` and `scripts/supervise_external_keys.php` to run on a regular cron job.
 
-8.  Generate an SSH key pair to synchronize with. Leitwerk Key Authority will expect to find the files as `config/keys-sync` and `config/keys-sync.pub` for the private and public keys respectively. Be careful to use PEM format.
+8.  Generate an SSH key pair to synchronize with. SSH Key Authority will expect to find the files as `config/keys-sync` and `config/keys-sync.pub` for the private and public keys respectively. Be careful to use PEM format.
 
     ssh-keygen -b 4096 -m pem -f config/keys-sync
 
 9.  Install the SSH key synchronization daemon. For systemd:
 
     1.  Copy `services/systemd/keys-sync.service` to `/etc/systemd/system/`
-    2.  Modify `ExecStart` path and `User` as necessary. If Leitwerk Key Authority is installed under `/home`, disable `ProtectHome`.
+    2.  Modify `ExecStart` path and `User` as necessary. If SSH Key Authority is installed under `/home`, disable `ProtectHome`.
     3.  `systemctl daemon-reload`
     4.  `systemctl enable keys-sync.service`
 
@@ -86,7 +86,7 @@ Anyone in the LDAP group defined under `admin_group_cn` in `config/config.ini` w
 Key distribution
 ----------------
 
-Leitwerk Key Authority distributes authorized keys to your servers via SSH. It does this by:
+SSH Key Authority distributes authorized keys to your servers via SSH. It does this by:
 
 1.  Connecting to the server with SSH, authorizing as the `keys-sync` user.
 2.  Writing the appropriate authorized keys to named user files in `/var/local/keys-sync/` (eg. all authorized keys for the root user will be written to `/var/local/keys-sync/root`).

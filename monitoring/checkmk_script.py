@@ -45,7 +45,7 @@ def collect_errors(status_info):
             message = ""
         else:
             message = ": " + oneline(status_info["sync_status_message"])
-        errors += [(WARN, "The keys-sync status is '" + oneline(status_info["sync_status"]) + "'" + message + " - Please check the machine's error in the LKA web ui")]
+        errors += [(WARN, "The keys-sync status is '" + oneline(status_info["sync_status"]) + "'" + message + " - Please check the machine's error in the SKA web ui")]
 
     if status_info["key_supervision_error"] is not None:
         errors += [(WARN, "Error supervising keys: " + oneline(status_info["key_supervision_error"]))]
@@ -54,11 +54,11 @@ def collect_errors(status_info):
     expired = calendar.timegm(exp_tup[0:6]) - exp_tup[9]
     curtime = time.time()
     if expired <= curtime:
-        errors += [(WARN, "The keys-sync status has expired (Got no update from ssh-key-authority before the expire-time was reached) - Please check the machine's error in the LKA web ui")]
+        errors += [(WARN, "The keys-sync status has expired (Got no update from ssh-key-authority before the expire-time was reached) - Please check the machine's error in the SKA web ui")]
 
     if len(status_info["accounts_with_unnoticed_keys"]) > 0:
         account_list = "(" + ", ".join(status_info["accounts_with_unnoticed_keys"]) + ")"
-        errors += [(WARN, "There have been new external keys for at least 96 hours on following accounts: " + account_list + " - Please allow or deny them in the LKA web ui.")]
+        errors += [(WARN, "There have been new external keys for at least 96 hours on following accounts: " + account_list + " - Please allow or deny them in the SKA web ui.")]
 
     if len(errors) == 0:
         errors = [(OK, "The keys-sync status is OK and up-to-date")]

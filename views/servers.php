@@ -198,7 +198,7 @@ if(isset($_POST['add_server'])) {
 				$active_user->add_alert($alert);
 			} catch(ServerAlreadyExistsException $e) {
 				$alert = new UserAlert;
-				$alert->content = 'Server \'<a href="'.rrurl('/servers/'.urlencode($hostname)).'" class="alert-link">'.hesc($hostname).'</a>\' is already known by Leitwerk Key Authority.';
+				$alert->content = 'Server \'<a href="'.rrurl('/servers/'.urlencode($hostname)).'" class="alert-link">'.hesc($hostname).'</a>\' is already known by SSH Key Authority.';
 				$alert->escaping = ESC_NONE;
 				$alert->class = 'danger';
 				$active_user->add_alert($alert);
@@ -225,9 +225,9 @@ if(isset($_POST['add_server'])) {
 		}
 		if ($result['existed'] > 0) {
 			if ($result['existed'] == 1) {
-				$msg .= ", 1 server is already known by Leitwerk Key Authority";
+				$msg .= ", 1 server is already known by SSH Key Authority";
 			} else {
-				$msg .= ", {$result['existed']} servers are already known by Leitwerk Key Authority";
+				$msg .= ", {$result['existed']} servers are already known by SSH Key Authority";
 			}
 		}
 		$alert->content = $msg;
