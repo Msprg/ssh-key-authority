@@ -26,7 +26,15 @@ try {
 		} catch(ServerAccountNotFoundException $e) {
 		}
 		if(!$account_admin) {
-			require('views/error403.php');
+			$content = new PageSection('access_denied_server_leader');
+			$content->set('server_hostname', $server->hostname);
+			$content->set('server_url', '/servers/'.urlencode($server->hostname));
+			$content->set('home_url', '/');
+			$page = new PageSection('base');
+			$page->set('title', 'Access Denied');
+			$page->set('content', $content);
+			$page->set('alerts', $active_user->pop_alerts());
+			echo $page->generate();
 			die;
 		}
 	} else {
