@@ -53,13 +53,5 @@ $routes = array(
 );
 
 $public_routes = array(
-	'/login' => true,
-	'/logout' => true,
-	'/groups/{group}/members.{format}' => true,
-	'/pubkeys.{format}' => true,
-	'/pubkeys/{key}.{format}' => true,
-	'/servers/{hostname}/accounts/{account}/pubkeys.{format}' => true,
-	'/users/{username}' => true,
-	'/users/{username}/pubkeys.{format}' => true,
-	'/users/{username}/pubkeys/{key}.{format}' => true,
+    '/login' => true,
 );

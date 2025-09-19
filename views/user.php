@@ -28,7 +28,7 @@ $admined_groups = $user->list_admined_groups(array('members', 'admins'));
 $groups = $user->list_group_memberships(array('members', 'admins'));
 usort($admined_servers, function($a, $b) {return strnatcasecmp($a->hostname, $b->hostname);});
 
-if(isset($_POST['reassign_servers']) && is_array($_POST['servers']) && $active_user->admin) {
+if(isset($_POST['reassign_servers']) && is_array($_POST['servers']) && $active_user && $active_user->admin) {
 	try {
 		$new_admin = $user_dir->get_user_by_uid($_POST['reassign_to']);
 	} catch(UserNotFoundException $e) {
@@ -47,7 +47,7 @@ if(isset($_POST['reassign_servers']) && is_array($_POST['servers']) && $active_u
 		}
 		redirect('#details');
 	}
-} elseif(isset($_POST['edit_user']) && $active_user->admin) {
+} elseif(isset($_POST['edit_user']) && $active_user && $active_user->admin) {
 	$user->force_disable = $_POST['force_disable'];
 	$user->get_details_from_ldap();
 	$user->update();
@@ -60,7 +60,7 @@ if(isset($_POST['reassign_servers']) && is_array($_POST['servers']) && $active_u
 	$content->set('user_admined_groups', $admined_groups);
 	$content->set('user_groups', $groups);
 	$content->set('active_user_keys', $user->list_public_keys(null, null, false));
-	$content->set('admin', $active_user->admin);
+    $content->set('admin', ($active_user && $active_user->admin));
 }
 
 $page = new PageSection('base');
