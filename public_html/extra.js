@@ -26,40 +26,25 @@ $(function() {
 	});
 });
 
-// Remember the last-selected tab in a tab group
+// Tab behavior: default to first tab; honor URL hash if present; do not persist selection
 $(function() {
-	if(sessionStorage) {
-		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-			//save the latest tab
-			sessionStorage.setItem('lastTab' + location.pathname, $(e.target).attr('href'));
-		});
-
-		//go to the latest tab, if it exists:
-		var lastTab = sessionStorage.getItem('lastTab' + location.pathname);
-
-		if (lastTab) {
-			$('a[href="' + lastTab + '"]').tab('show');
-		} else {
-			$('a[data-toggle="tab"]:first').tab('show');
+	function show_initial_tab() {
+		var fragment = window.location.hash.substring(1);
+		if (fragment) {
+			var $tab = $('.nav-tabs a[href="#' + fragment + '"]');
+			if ($tab.length) {
+				$tab.tab('show');
+				return;
+			}
 		}
+		$('a[data-toggle="tab"]:first').tab('show');
 	}
+	show_initial_tab();
 
-	get_tab_from_location();
-	window.onpopstate = function(event) {
-		get_tab_from_location();
-	}
-	function get_tab_from_location() {
-		// Javascript to enable link to tab
-		var url = document.location.toString();
-		if(url.match('#')) {
-			$('.nav-tabs a[href="#'+url.split('#')[1]+'"]').tab('show');
-		}
-	}
-
-	// Do the location modifying code after all other setup, since we don't want the initial loading to trigger this
+	// Update URL hash when switching tabs so refresh keeps the selected tab
 	$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-		if(history) {
-			history.replaceState(null, null, e.target.href);
+		if (window.history && history.replaceState) {
+			history.replaceState(null, null, e.target.hash);
 		} else {
 			window.location.hash = e.target.hash;
 		}
