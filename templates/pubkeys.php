@@ -138,7 +138,21 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 					<td><?php out($pubkey->format_creation_date()) ?></td>
 					<td><?php out($pubkey->format_deletion_date()) ?></td>
 					<td class="nowrap"><?php out($pubkey->type)?></td>
-					<td<?php if($pubkey->keysize < 4095) out(' class="danger"', ESC_NONE)?>><?php out($pubkey->keysize)?></td>
+<?php
+	// Highlight insufficient key sizes based on algorithm type
+	// Use configured minimums if provided via security_config
+	$security_config = $this->get('security_config');
+	$min_rsa = isset($security_config['min_rsa_bits']) && intval($security_config['min_rsa_bits']) >= 2048 ? intval($security_config['min_rsa_bits']) : 4096;
+	$min_ecdsa = isset($security_config['min_ecdsa_bits']) && intval($security_config['min_ecdsa_bits']) >= 256 ? intval($security_config['min_ecdsa_bits']) : 384;
+	$min_ed25519 = isset($security_config['min_ed25519_bits']) && intval($security_config['min_ed25519_bits']) >= 256 ? intval($security_config['min_ed25519_bits']) : 256;
+	$min_bits = $min_rsa; // default for ssh-rsa and other ssh-*
+	if(strpos($pubkey->type, 'ecdsa-sha2-') === 0) {
+		$min_bits = $min_ecdsa;
+	} elseif($pubkey->type === 'ssh-ed25519') {
+		$min_bits = $min_ed25519;
+	}
+?>
+<td<?php if($pubkey->keysize < $min_bits) out(' class="danger"', ESC_NONE)?>><?php out($pubkey->keysize)?></td>
 					<td><?php out($pubkey->comment)?></td>
 					<td>
 						<?php

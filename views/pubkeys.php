@@ -71,6 +71,8 @@ if(isset($router->vars['format']) && $router->vars['format'] == 'json') {
 	$content->set('filter', $filter);
 	$content->set('pubkeys', $pubkeys);
 	$content->set('admin', $active_user->admin);
+	// Pass security config so templates can respect configured minimum key sizes
+	$content->set('security_config', isset($config['security']) ? $config['security'] : array());
 	$external_keys = ExternalKey::list_external_keys(true);
 	$new_keys = array_filter($external_keys, function($key) { return $key->status == 'new'; });
 	$allowed_keys = array_filter($external_keys, function($key) { return $key->status == 'allowed'; });
