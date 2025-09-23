@@ -100,88 +100,90 @@
 		<?php } else { ?>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<table class="table table-bordered">
-				<thead>
-					<tr>
-						<th>Account</th>
-						<?php if($this->get('server')->key_management == 'keys') { ?>
-						<th>Sync status</th>
-						<?php } ?>
-						<th>Account actions</th>
-						<th colspan="2">Access granted for</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach($this->get('server_accounts') as $account) { ?>
-					<?php
-					$access_list = $account->list_access();
-					switch($account->sync_status) {
-					case 'proposed': $sync_class = 'info'; $sync_message = 'Requested'; break;
-					case 'sync success': $sync_class = 'success'; $sync_message = 'Synced'; break;
-					case 'sync failure': $sync_class = 'danger'; $sync_message = 'Failed'; break;
-					case 'sync warning':
-					default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
-					}
-					?>
-					<tr>
-						<th rowspan="<?php out(max(1, count($access_list)))?>">
-							<a href="<?php outurl($this->data->relative_request_url.'/accounts/'.urlencode($account->name))?>" class="serveraccount"><?php out($account->name) ?></a>
-							<?php if($account->pending_requests > 0) { ?>
-							<a href="<?php outurl($this->data->relative_request_url.'/accounts/'.urlencode($account->name))?>"><span class="badge" title="Pending requests"><?php out(number_format($account->pending_requests))?></span></a>
+			<div class="ska-scroll-container">
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>Account</th>
+							<?php if($this->get('server')->key_management == 'keys') { ?>
+							<th>Sync status</th>
 							<?php } ?>
-						</th>
-						<?php if($this->get('server')->key_management == 'keys') { ?>
-						<td rowspan="<?php out(max(1, count($access_list)))?>">
-							<span id="server_account_sync_status_<?php out($account->name)?>" class="server_account_sync_status"
-							<?php if(!$account->sync_is_pending()) { ?>
-							data-class="<?php out($sync_class)?>" data-message="<?php out($sync_message)?>"
-							<?php } ?>
-							></span>
-						</td>
-						<?php } ?>
-						<td rowspan="<?php out(max(1, count($access_list)))?>">
-							<a href="<?php outurl($this->data->relative_request_url.'/accounts/'.urlencode($account->name))?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-cog"></span> Manage account</a>
-							<?php if(!array_key_exists($account->name, $this->get('default_accounts'))) { ?>
-							<button type="submit" name="delete_account" value="<?php out($account->id) ?>" class="btn btn-default btn-xs" data-confirm="Are you sure you want to delete this account?"><span class="glyphicon glyphicon-trash"></span> Delete account</button>
-							<?php } ?>
-							<!--<button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span> Grant user access</button>-->
-						</td>
-						<?php if(empty($access_list)) { ?>
-						<td colspan="3"><em>No-one</em></td>
-						<?php } else { ?>
+							<th>Account actions</th>
+							<th colspan="2">Access granted for</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach($this->get('server_accounts') as $account) { ?>
 						<?php
-						$count = 0;
-						foreach($access_list as $access) {
-							$entity = $access->source_entity;
-							$count++;
-							if($count > 1) out('</tr><tr>', ESC_NONE);
-							switch(get_class($entity)) {
-							case 'User':
-						?>
-						<td><a href="<?php outurl('/users/'.urlencode($entity->uid))?>" class="user"><?php out($entity->uid) ?></a></td>
-						<td><?php out($entity->name); if(!$entity->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE)?></td>
-						<?php
-								break;
-							case 'ServerAccount':
-						?>
-						<td><a href="<?php outurl('/servers/'.urlencode($entity->server->hostname).'/accounts/'.urlencode($entity->name))?>" class="serveraccount"><?php out($entity->name.'@'.$entity->server->hostname) ?></a></td>
-						<td><em>Server-to-server access</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
-						<?php
-								break;
-							case 'Group':
-						?>
-						<td><a href="<?php outurl('/groups/'.urlencode($entity->name))?>" class="group"><?php out($entity->name) ?></a></td>
-						<td><em>Group access</em><?php if(!$entity->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE)?></td>
-						<?php
-								break;
-							}
+						$access_list = $account->list_access();
+						switch($account->sync_status) {
+						case 'proposed': $sync_class = 'info'; $sync_message = 'Requested'; break;
+						case 'sync success': $sync_class = 'success'; $sync_message = 'Synced'; break;
+						case 'sync failure': $sync_class = 'danger'; $sync_message = 'Failed'; break;
+						case 'sync warning':
+						default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 						}
 						?>
+						<tr>
+							<th rowspan="<?php out(max(1, count($access_list)))?>">
+								<a href="<?php outurl($this->data->relative_request_url.'/accounts/'.urlencode($account->name))?>" class="serveraccount"><?php out($account->name) ?></a>
+								<?php if($account->pending_requests > 0) { ?>
+								<a href="<?php outurl($this->data->relative_request_url.'/accounts/'.urlencode($account->name))?>"><span class="badge" title="Pending requests"><?php out(number_format($account->pending_requests))?></span></a>
+								<?php } ?>
+							</th>
+							<?php if($this->get('server')->key_management == 'keys') { ?>
+							<td rowspan="<?php out(max(1, count($access_list)))?>">
+								<span id="server_account_sync_status_<?php out($account->name)?>" class="server_account_sync_status"
+								<?php if(!$account->sync_is_pending()) { ?>
+								data-class="<?php out($sync_class)?>" data-message="<?php out($sync_message)?>"
+								<?php } ?>
+								></span>
+							</td>
+							<?php } ?>
+							<td rowspan="<?php out(max(1, count($access_list)))?>">
+								<a href="<?php outurl($this->data->relative_request_url.'/accounts/'.urlencode($account->name))?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-cog"></span> Manage account</a>
+								<?php if(!array_key_exists($account->name, $this->get('default_accounts'))) { ?>
+								<button type="submit" name="delete_account" value="<?php out($account->id) ?>" class="btn btn-default btn-xs" data-confirm="Are you sure you want to delete this account?"><span class="glyphicon glyphicon-trash"></span> Delete account</button>
+								<?php } ?>
+								<!--<button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span> Grant user access</button>-->
+							</td>
+							<?php if(empty($access_list)) { ?>
+							<td colspan="3"><em>No-one</em></td>
+							<?php } else { ?>
+							<?php
+							$count = 0;
+							foreach($access_list as $access) {
+								$entity = $access->source_entity;
+								$count++;
+								if($count > 1) out('</tr><tr>', ESC_NONE);
+								switch(get_class($entity)) {
+								case 'User':
+							?>
+							<td><a href="<?php outurl('/users/'.urlencode($entity->uid))?>" class="user"><?php out($entity->uid) ?></a></td>
+							<td><?php out($entity->name); if(!$entity->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE)?></td>
+							<?php
+									break;
+								case 'ServerAccount':
+							?>
+							<td><a href="<?php outurl('/servers/'.urlencode($entity->server->hostname).'/accounts/'.urlencode($entity->name))?>" class="serveraccount"><?php out($entity->name.'@'.$entity->server->hostname) ?></a></td>
+							<td><em>Server-to-server access</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
+							<?php
+									break;
+								case 'Group':
+							?>
+							<td><a href="<?php outurl('/groups/'.urlencode($entity->name))?>" class="group"><?php out($entity->name) ?></a></td>
+							<td><em>Group access</em><?php if(!$entity->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE)?></td>
+							<?php
+									break;
+								}
+							}
+							?>
+							<?php } ?>
+						</tr>
 						<?php } ?>
-					</tr>
-					<?php } ?>
-				</tbody>
-			</table>
+					</tbody>
+				</table>
+			</div>
 		</form>
 		<?php } ?>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="form-inline">
@@ -201,41 +203,43 @@
 		<?php } else { ?>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<table class="table table-bordered table-striped">
-				<thead>
-					<tr>
-						<th>Entity</th>
-						<th>Name</th>
-						<?php if($this->get('admin')) { ?>
-						<th>Actions</th>
-						<?php } ?>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach($this->get('server_admins') as $admin) { ?>
-						<?php if(strtolower(get_class($admin)) == "user"){?>
-							<tr>
-								<td><a href="<?php outurl('/users/'.urlencode($admin->uid))?>" class="user"><?php out($admin->uid) ?></a></td>
-								<td><?php out($admin->name); if(!$admin->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
-								<?php if($this->get('admin')) {?>
-								<td>
-									<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Remove leader</button>
-								</td>
-								<?php } ?>
-							</tr>
-						<?php } elseif(strtolower(get_class($admin)) == "group"){ ?>
-							<tr>
-								<td><a href="<?php outurl('/groups/'.urlencode($admin->name))?>" class="group"><?php out($admin->name) ?></a></td>
-								<td><?php out($admin->name); if(!$admin->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
-								<?php if($this->get('admin')) { ?>
-								<td>
-									<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Remove leader</button>
-								</td>
-								<?php } ?>
-							</tr>
-						<?php }} ?>
-				</tbody>
-			</table>
+			<div class="ska-scroll-container">
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Entity</th>
+							<th>Name</th>
+							<?php if($this->get('admin')) { ?>
+							<th>Actions</th>
+							<?php } ?>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach($this->get('server_admins') as $admin) { ?>
+							<?php if(strtolower(get_class($admin)) == "user"){?>
+								<tr>
+									<td><a href="<?php outurl('/users/'.urlencode($admin->uid))?>" class="user"><?php out($admin->uid) ?></a></td>
+									<td><?php out($admin->name); if(!$admin->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
+									<?php if($this->get('admin')) {?>
+									<td>
+										<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Remove leader</button>
+									</td>
+									<?php } ?>
+								</tr>
+							<?php } elseif(strtolower(get_class($admin)) == "group"){ ?>
+								<tr>
+									<td><a href="<?php outurl('/groups/'.urlencode($admin->name))?>" class="group"><?php out($admin->name) ?></a></td>
+									<td><?php out($admin->name); if(!$admin->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
+									<?php if($this->get('admin')) { ?>
+									<td>
+										<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Remove leader</button>
+									</td>
+									<?php } ?>
+								</tr>
+							<?php }} ?>
+					</tbody>
+				</table>
+			</div>
 		</form>
 		<?php } ?>
 		<?php if($this->get('admin')) { ?>
@@ -460,27 +464,29 @@
 	</div>
 	<div class="tab-pane fade" id="log">
 		<h2 class="sr-only">Log</h2>
-		<table class="table">
-			<col></col>
-			<col></col>
-			<col></col>
-			<col class="date"></col>
-			<thead>
-				<tr>
-					<th>Entity</th>
-					<th>User</th>
-					<th>Activity</th>
-					<th>Date (<abbr title="Coordinated Universal Time">UTC</abbr>)</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php
-				foreach($this->get('server_log') as $event) {
-					show_event($event);
-				}
-				?>
-			</tbody>
-		</table>
+		<div class="ska-scroll-container">
+			<table class="table">
+				<col></col>
+				<col></col>
+				<col></col>
+				<col class="date"></col>
+				<thead>
+					<tr>
+						<th>Entity</th>
+						<th>User</th>
+						<th>Activity</th>
+						<th>Date (<abbr title="Coordinated Universal Time">UTC</abbr>)</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php
+					foreach($this->get('server_log') as $event) {
+						show_event($event);
+					}
+					?>
+				</tbody>
+			</table>
+		</div>
 	</div>
 	<?php if($this->get('admin')) { ?>
 	<div class="tab-pane fade" id="notes">
@@ -672,76 +678,78 @@
 <?php if(count($this->get('admined_accounts')) > 0) { ?>
 <h2>Managed accounts</h2>
 <p>You are a leader for the following accounts on this server:</p>
-<table class="table table-bordered table-striped">
-	<thead>
-		<tr>
-			<th>Account</th>
-			<th>Sync status</th>
-			<th>Account actions</th>
-			<th colspan="2">Access granted for</th>
-		</tr>
-	</thead>
-	<tbody>
-		<?php foreach($this->get('admined_accounts') as $account) { ?>
-		<?php
-		$access_list = $account->list_access();
-		?>
-		<tr>
-			<th rowspan="<?php out(max(1, count($access_list)))?>">
-				<a href="<?php outurl($this->data->relative_request_url.'/'.urlencode($account->name))?>" class="serveraccount"><?php out($account->name) ?></a>
-				<?php if($account->pending_requests > 0) { ?>
-				<a href="<?php outurl($this->data->relative_request_url.'/'.urlencode($account->name))?>"><span class="badge" title="Pending requests"><?php out(number_format($account->pending_requests))?></span></a>
-				<?php } ?>
-			</th>
-			<td rowspan="<?php out(max(1, count($access_list)))?>">
-				<?php if($account->sync_is_pending()) { ?>
-				<span class="text-warning">Pending</span>
-				<?php } elseif($this->get('server')->sync_status == 'sync success' || ($account->name == 'root' && $this->get('server')->sync_status == 'sync warning')) { ?>
-				<span class="text-success">Synced</span>
-				<?php } elseif($this->get('server')->sync_status == 'sync warning') { ?>
-				<span class="text-warning">Not synced</span>
-				<?php } elseif($this->get('server')->sync_status == 'sync failure') { ?>
-				<span class="text-danger">Failed</span>
-				<?php } ?>
-			</td>
-			<td rowspan="<?php out(max(1, count($access_list)))?>">
-				<a href="<?php outurl($this->data->relative_request_url.'/accounts/'.urlencode($account->name))?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-cog"></span> Manage account</a>
-			</td>
-			<?php if(empty($access_list)) { ?>
-			<td colspan="3"><em>No-one</em></td>
-			<?php } else { ?>
+<div class="ska-scroll-container">
+	<table class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<th>Account</th>
+				<th>Sync status</th>
+				<th>Account actions</th>
+				<th colspan="2">Access granted for</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach($this->get('admined_accounts') as $account) { ?>
 			<?php
-			$count = 0;
-			foreach($access_list as $access) {
-				$entity = $access->source_entity;
-				$count++;
-				if($count > 1) out('</tr><tr>', ESC_NONE);
-				switch(get_class($entity)) {
-				case 'User':
+			$access_list = $account->list_access();
 			?>
-			<td><a href="<?php outurl('/users/'.urlencode($entity->uid))?>" class="user"><?php out($entity->uid) ?></a></td>
-			<td><?php out($entity->name); if(!$entity->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE)?></td>
-			<?php
-					break;
-				case 'ServerAccount':
-			?>
-			<td><a href="<?php outurl('/servers/'.urlencode($entity->server->hostname).'/accounts/'.urlencode($entity->name))?>" class="serveraccount"><?php out($entity->name.'@'.$entity->server->hostname) ?></a></td>
-			<td><em>Server-to-server access</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
-			<?php
-					break;
-				case 'Group':
-			?>
-			<td><a href="<?php outurl('/groups/'.urlencode($entity->name))?>" class="group"><?php out($entity->name) ?></a></td>
-			<td><em>Group access</em></td>
-			<?php
-					break;
+			<tr>
+				<th rowspan="<?php out(max(1, count($access_list)))?>">
+					<a href="<?php outurl($this->data->relative_request_url.'/'.urlencode($account->name))?>" class="serveraccount"><?php out($account->name) ?></a>
+					<?php if($account->pending_requests > 0) { ?>
+					<a href="<?php outurl($this->data->relative_request_url.'/'.urlencode($account->name))?>"><span class="badge" title="Pending requests"><?php out(number_format($account->pending_requests))?></span></a>
+					<?php } ?>
+				</th>
+				<td rowspan="<?php out(max(1, count($access_list)))?>">
+					<?php if($account->sync_is_pending()) { ?>
+					<span class="text-warning">Pending</span>
+					<?php } elseif($this->get('server')->sync_status == 'sync success' || ($account->name == 'root' && $this->get('server')->sync_status == 'sync warning')) { ?>
+					<span class="text-success">Synced</span>
+					<?php } elseif($this->get('server')->sync_status == 'sync warning') { ?>
+					<span class="text-warning">Not synced</span>
+					<?php } elseif($this->get('server')->sync_status == 'sync failure') { ?>
+					<span class="text-danger">Failed</span>
+					<?php } ?>
+				</td>
+				<td rowspan="<?php out(max(1, count($access_list)))?>">
+					<a href="<?php outurl($this->data->relative_request_url.'/accounts/'.urlencode($account->name))?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-cog"></span> Manage account</a>
+				</td>
+				<?php if(empty($access_list)) { ?>
+				<td colspan="3"><em>No-one</em></td>
+				<?php } else { ?>
+				<?php
+				$count = 0;
+				foreach($access_list as $access) {
+					$entity = $access->source_entity;
+					$count++;
+					if($count > 1) out('</tr><tr>', ESC_NONE);
+					switch(get_class($entity)) {
+					case 'User':
+				?>
+				<td><a href="<?php outurl('/users/'.urlencode($entity->uid))?>" class="user"><?php out($entity->uid) ?></a></td>
+				<td><?php out($entity->name); if(!$entity->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE)?></td>
+				<?php
+						break;
+					case 'ServerAccount':
+				?>
+				<td><a href="<?php outurl('/servers/'.urlencode($entity->server->hostname).'/accounts/'.urlencode($entity->name))?>" class="serveraccount"><?php out($entity->name.'@'.$entity->server->hostname) ?></a></td>
+				<td><em>Server-to-server access</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
+				<?php
+						break;
+					case 'Group':
+				?>
+				<td><a href="<?php outurl('/groups/'.urlencode($entity->name))?>" class="group"><?php out($entity->name) ?></a></td>
+				<td><em>Group access</em></td>
+				<?php
+						break;
+					}
 				}
-			}
-			?>
+				?>
+				<?php } ?>
+			</tr>
 			<?php } ?>
-		</tr>
-		<?php } ?>
-	</tbody>
-</table>
+		</tbody>
+	</table>
+</div>
 <?php } ?>
 <?php } ?>

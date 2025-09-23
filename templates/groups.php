@@ -67,32 +67,34 @@
 		<?php } else { ?>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="form-inline">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<table class="table table-striped">
-				<thead>
-					<tr>
-						<th>Group</th>
-						<th>Members</th>
-						<th>Admins</th>
-						<?php if($this->get('admin')) { ?>
-						<th>Actions</th>
+			<div class="ska-scroll-container">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>Group</th>
+							<th>Members</th>
+							<th>Admins</th>
+							<?php if($this->get('admin')) { ?>
+							<th>Actions</th>
+							<?php } ?>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach($this->get('groups') as $group) { ?>
+						<tr<?php if(!$group->active) out(' class="text-muted"', ESC_NONE) ?>>
+							<td><a href="<?php outurl('/groups/'.urlencode($group->name)) ?>" class="group<?php if(!$group->active) out(' text-muted') ?>"><?php out($group->name) ?></a></td>
+							<td><?php out(number_format($group->member_count))?></td>
+							<td><?php out($group->admins)?></td>
+							<?php if($this->get('admin')) { ?>
+							<td>
+								<a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-cog"></span> Manage group</a>
+							</td>
+							<?php } ?>
+						</tr>
 						<?php } ?>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach($this->get('groups') as $group) { ?>
-					<tr<?php if(!$group->active) out(' class="text-muted"', ESC_NONE) ?>>
-						<td><a href="<?php outurl('/groups/'.urlencode($group->name)) ?>" class="group<?php if(!$group->active) out(' text-muted') ?>"><?php out($group->name) ?></a></td>
-						<td><?php out(number_format($group->member_count))?></td>
-						<td><?php out($group->admins)?></td>
-						<?php if($this->get('admin')) { ?>
-						<td>
-							<a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-cog"></span> Manage group</a>
-						</td>
-						<?php } ?>
-					</tr>
-					<?php } ?>
-				</tbody>
-			</table>
+					</tbody>
+				</table>
+			</div>
 		</form>
 		<?php } ?>
 	</div>

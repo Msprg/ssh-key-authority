@@ -34,49 +34,51 @@
 <h2>Your public keys</h2>
 <form method="post" action="<?php out($this->data->relative_request_url)?>">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-	<table class="table">
-		<thead>
-			<tr>
-				<th>Type</th>
-				<th class="fingerprint">Fingerprint</th>
-				<th></th>
-				<th>Creation Date</th>
-				<th>Deletion Date</th>
-				<th>Size</th>
-				<th>Comment</th>
-				<th>Actions</th>
-			</tr>
-		</thead>
-		<tbody>
-			<?php foreach($this->get('user_keys') as $key) { ?>
-			<tr<?php if ($key->deletion_date !== null) { out(' class="deleted"', ESC_NONE); } ?>>
-				<td><?php out($key->type) ?></td>
-				<td>
-					<a href="<?php outurl('/users/'.urlencode($this->get('uid')).'/pubkeys/'.urlencode($key->id).'#info')?>">
-						<span class="fingerprint_md5"><?php out($key->fingerprint_md5) ?></span>
-						<span class="fingerprint_sha256"><?php out($key->fingerprint_sha256) ?></span>
-					</a>
-				</td>
-				<td>
-					<?php if(count($key->list_signatures()) > 0) { ?><a href="<?php outurl('/users/'.urlencode($this->get('uid')).'/pubkeys/'.urlencode($key->id).'#sig')?>"><span class="glyphicon glyphicon-pencil" title="Signed key"></span></a><?php } ?>
-					<?php if(count($key->list_destination_rules()) > 0) { ?><a href="<?php outurl('/users/'.urlencode($this->get('uid')).'/pubkeys/'.urlencode($key->id).'#dest')?>"><span class="glyphicon glyphicon-pushpin" title="Destination-restricted"></span></a><?php } ?>
-				</td>
-				<td><?php out($key->format_creation_date()) ?></td>
-				<td><?php out($key->format_deletion_date()) ?></td>
-				<td><?php out($key->keysize) ?></td>
-				<td><?php out($key->comment) ?></td>
-				<td>
-					<?php if ($key->deletion_date !== null) { ?>
-						<i class="glyphicon glyphicon-remove"></i> Deleted
-					<?php } else { ?>
-						<a href="<?php outurl('/users/'.urlencode($this->get('uid')).'/pubkeys/'.urlencode($key->id))?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-cog"></span> Manage public key</a>
-						<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Delete public key</button>
-					<?php } ?>
-				</td>
-			</tr>
-			<?php } ?>
-		</tbody>
-	</table>
+	<div class="ska-scroll-container">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Type</th>
+					<th class="fingerprint">Fingerprint</th>
+					<th></th>
+					<th>Creation Date</th>
+					<th>Deletion Date</th>
+					<th>Size</th>
+					<th>Comment</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach($this->get('user_keys') as $key) { ?>
+				<tr<?php if ($key->deletion_date !== null) { out(' class="deleted"', ESC_NONE); } ?>>
+					<td><?php out($key->type) ?></td>
+					<td>
+						<a href="<?php outurl('/users/'.urlencode($this->get('uid')).'/pubkeys/'.urlencode($key->id).'#info')?>">
+							<span class="fingerprint_md5"><?php out($key->fingerprint_md5) ?></span>
+							<span class="fingerprint_sha256"><?php out($key->fingerprint_sha256) ?></span>
+						</a>
+					</td>
+					<td>
+						<?php if(count($key->list_signatures()) > 0) { ?><a href="<?php outurl('/users/'.urlencode($this->get('uid')).'/pubkeys/'.urlencode($key->id).'#sig')?>"><span class="glyphicon glyphicon-pencil" title="Signed key"></span></a><?php } ?>
+						<?php if(count($key->list_destination_rules()) > 0) { ?><a href="<?php outurl('/users/'.urlencode($this->get('uid')).'/pubkeys/'.urlencode($key->id).'#dest')?>"><span class="glyphicon glyphicon-pushpin" title="Destination-restricted"></span></a><?php } ?>
+					</td>
+					<td><?php out($key->format_creation_date()) ?></td>
+					<td><?php out($key->format_deletion_date()) ?></td>
+					<td><?php out($key->keysize) ?></td>
+					<td><?php out($key->comment) ?></td>
+					<td>
+						<?php if ($key->deletion_date !== null) { ?>
+							<i class="glyphicon glyphicon-remove"></i> Deleted
+						<?php } else { ?>
+							<a href="<?php outurl('/users/'.urlencode($this->get('uid')).'/pubkeys/'.urlencode($key->id))?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-cog"></span> Manage public key</a>
+							<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Delete public key</button>
+						<?php } ?>
+					</td>
+				</tr>
+				<?php } ?>
+			</tbody>
+		</table>
+	</div>
 </form>
 <p><button id="add_key_button" class="btn btn-default">Add another public key</button></p>
 <form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="hidden" id="add_key_form">
@@ -103,116 +105,120 @@
 <?php if(count($this->get('admined_servers')) > 0) { ?>
 <h2>Your servers</h2>
 <p>You are listed as a leader for the following servers:</p>
-<table class="table">
-	<thead>
-		<tr>
-			<th>Hostname</th>
-			<th>Config</th>
-			<th>Leaders</th>
-			<th>Status</th>
-		</tr>
-	</thead>
-	<tbody>
-		<?php
-		foreach($this->get('admined_servers') as $server) {
-			if($server->key_management != 'keys') {
-				$class = '';
-			} else {
-				switch($server->sync_status) {
-				case 'not synced yet': $class = 'warning'; break;
-				case 'sync failure':   $class = 'danger';  break;
-				case 'sync success':   $class = 'success'; break;
-				case 'sync warning':   $class = 'warning'; break;
-				}
-			}
-			if($last_sync = $server->get_last_sync_event()) {
-				$sync_details = json_decode($last_sync->details)->value;
-			} else {
-				$sync_details = ucfirst($server->sync_status);
-			}
-		?>
-		<tr>
-			<td rowspan="2">
-				<a href="<?php outurl('/servers/'.urlencode($server->hostname)) ?>" class="server"><?php out($server->hostname) ?></a>
-				<?php if($server->pending_requests > 0) { ?>
-				<a href="<?php outurl('/servers/'.urlencode($server->hostname).'#requests') ?>"><span class="badge" title="Pending requests"><?php out(number_format($server->pending_requests)) ?></span></a>
-				<?php } ?>
-			</td>
-			<td>
-				<?php
-				switch($server->key_management) {
-				case 'keys':
-					switch($server->authorization) {
-					case 'manual': out('Manual account management'); break;
-					case 'automatic LDAP': out('LDAP accounts - automatic'); break;
-					case 'manual LDAP': out('LDAP accounts - manual'); break;
+<div class="ska-scroll-container">
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Hostname</th>
+				<th>Config</th>
+				<th>Leaders</th>
+				<th>Status</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php
+			foreach($this->get('admined_servers') as $server) {
+				if($server->key_management != 'keys') {
+					$class = '';
+				} else {
+					switch($server->sync_status) {
+					case 'not synced yet': $class = 'warning'; break;
+					case 'sync failure':   $class = 'danger';  break;
+					case 'sync success':   $class = 'success'; break;
+					case 'sync warning':   $class = 'warning'; break;
 					}
-					break;
-				case 'other': out('Managed by another system'); break;
-				case 'none': out('Unmanaged'); break;
-				case 'decommissioned': out('Decommissioned'); break;
 				}
-				?>
-			</td>
-			<td>
-				<?php
-				$admins = explode(',', $server->admins);
-				$admin_list = '';
-				foreach($admins as $admin) {
-					$type = substr($admin, 0, 1);
-					$name = substr($admin, 2);
-					if($type == 'G') {
-						$admin_list .= '<span class="glyphicon glyphicon-list-alt"></span> ';
-					}
-					$admin_list .= hesc($name).', ';
+				if($last_sync = $server->get_last_sync_event()) {
+					$sync_details = json_decode($last_sync->details)->value;
+				} else {
+					$sync_details = ucfirst($server->sync_status);
 				}
-				$admin_list = substr($admin_list, 0, -2);
-				out($admin_list, ESC_NONE);
-				?>
-			</td>
-			<td rowspan="2" class="<?php out($class)?>"><?php out($sync_details) ?></td>
-		</tr>
-		<tr>
-			<td colspan="2" class="indented">
-				<dl class="oneline">
-					<?php foreach($server->list_accounts() as $server_account) { ?>
-					<dt><a href="<?php outurl('/servers/'.urlencode($server->hostname).'/accounts/'.urlencode($server_account->name))?>" class="serveraccount"><?php out($server_account->name) ?></a>:</dt>
+			?>
+			<tr>
+				<td rowspan="2">
+					<a href="<?php outurl('/servers/'.urlencode($server->hostname)) ?>" class="server"><?php out($server->hostname) ?></a>
+					<?php if($server->pending_requests > 0) { ?>
+					<a href="<?php outurl('/servers/'.urlencode($server->hostname).'#requests') ?>"><span class="badge" title="Pending requests"><?php out(number_format($server->pending_requests)) ?></span></a>
+					<?php } ?>
+				</td>
+				<td>
 					<?php
-					$list = array();
-					foreach($server_account->list_access() as $access) {
-						$entity = $access->source_entity;
-						switch(get_class($entity)) {
-						case 'User':
-							$list[] = hesc($entity->uid);
-							break;
-						case 'ServerAccount':
-							$list[] = hesc($entity->name.'@'.$entity->server->hostname);
-							break;
-						case 'Group':
-							$list[] = '<span class="glyphicon glyphicon-list-alt"></span> '.hesc($entity->name);
-							break;
+					switch($server->key_management) {
+					case 'keys':
+						switch($server->authorization) {
+						case 'manual': out('Manual account management'); break;
+						case 'automatic LDAP': out('LDAP accounts - automatic'); break;
+						case 'manual LDAP': out('LDAP accounts - manual'); break;
 						}
+						break;
+					case 'other': out('Managed by another system'); break;
+					case 'none': out('Unmanaged'); break;
+					case 'decommissioned': out('Decommissioned'); break;
 					}
 					?>
-					<dd><?php out(implode(', ', $list), ESC_NONE)?></dd>
-					<?php } ?>
-				</dl>
-			</td>
-		</tr>
-		<?php } ?>
-	</tbody>
-</table>
+				</td>
+				<td>
+					<?php
+					$admins = explode(',', $server->admins);
+					$admin_list = '';
+					foreach($admins as $admin) {
+						$type = substr($admin, 0, 1);
+						$name = substr($admin, 2);
+						if($type == 'G') {
+							$admin_list .= '<span class="glyphicon glyphicon-list-alt"></span> ';
+						}
+						$admin_list .= hesc($name).', ';
+					}
+					$admin_list = substr($admin_list, 0, -2);
+					out($admin_list, ESC_NONE);
+					?>
+				</td>
+				<td rowspan="2" class="<?php out($class)?>"><?php out($sync_details) ?></td>
+			</tr>
+			<tr>
+				<td colspan="2" class="indented">
+					<dl class="oneline">
+						<?php foreach($server->list_accounts() as $server_account) { ?>
+						<dt><a href="<?php outurl('/servers/'.urlencode($server->hostname).'/accounts/'.urlencode($server_account->name))?>" class="serveraccount"><?php out($server_account->name) ?></a>:</dt>
+						<?php
+						$list = array();
+						foreach($server_account->list_access() as $access) {
+							$entity = $access->source_entity;
+							switch(get_class($entity)) {
+							case 'User':
+								$list[] = hesc($entity->uid);
+								break;
+							case 'ServerAccount':
+								$list[] = hesc($entity->name.'@'.$entity->server->hostname);
+								break;
+							case 'Group':
+								$list[] = '<span class="glyphicon glyphicon-list-alt"></span> '.hesc($entity->name);
+								break;
+							}
+						}
+						?>
+						<dd><?php out(implode(', ', $list), ESC_NONE)?></dd>
+						<?php } ?>
+					</dl>
+				</td>
+			</tr>
+			<?php } ?>
+		</tbody>
+	</table>
+</div>
 <?php } ?>
 <h2>Your allowed access</h2>
 <?php if (count($this->get('allowed_access')) > 0) { ?>
 <p>You are allowed (possibly via some groups) to access the following accounts:</p>
-<table class="table table-bordered">
-	<?php foreach ($this->get('allowed_access') as $account) { ?>
-	<tr>
-		<td><?php out(Format::server_account_link($account), ESC_NONE) ?></td>
-	</tr>
-	<?php } ?>
-</table>
+<div class="ska-scroll-container">
+	<table class="table table-bordered">
+		<?php foreach ($this->get('allowed_access') as $account) { ?>
+		<tr>
+			<td><?php out(Format::server_account_link($account), ESC_NONE) ?></td>
+		</tr>
+		<?php } ?>
+	</table>
+</div>
 <?php } else { ?>
 <p><em>You are currently not allowed to access any accounts.</em></p>
 <?php } ?>

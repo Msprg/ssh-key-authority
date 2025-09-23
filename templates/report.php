@@ -48,39 +48,41 @@ function server_list(array $servers, array $suffix = ["", ""]): string {
 <div class="panel panel-default">
 	<div class="panel-body">
 		<p><?php out(server_list($group[1], [" has", " have"]), ESC_NONE) ?> the following leaders:</p>
-		<table class="table table-bordered">
-			<tr>
-				<th colspan="2">Server leaders</th>
-			</tr>
-			<tr>
-				<td colspan="2">
-				<?php
-					$server_leaders = $group[0]->server_leaders;
-					$html_list = array_map("Format::user_link", $server_leaders);
-					echo implode(", ", $html_list);
-				?>
-				<?php if (empty($group[0]->server_leaders)) { ?>
-				<em>There are currently no leaders assigned.</em>
+		<div class="ska-scroll-container">
+			<table class="table table-bordered">
+				<tr>
+					<th colspan="2">Server leaders</th>
+				</tr>
+				<tr>
+					<td colspan="2">
+					<?php
+						$server_leaders = $group[0]->server_leaders;
+						$html_list = array_map("Format::user_link", $server_leaders);
+						echo implode(", ", $html_list);
+					?>
+					<?php if (empty($group[0]->server_leaders)) { ?>
+					<em>There are currently no leaders assigned.</em>
+					<?php } ?>
+					</td>
+				</tr>
+				<?php if (!empty($group[0]->account_leaders)) { ?>
+				<tr>
+					<th colspan="2">Account leaders</th>
+				</tr>
+				<?php foreach ($group[0]->account_leaders as $account_name => $account_leaders) { ?>
+				<tr>
+					<th><?php out($account_name) ?></th>
+					<td>
+					<?php
+						$html_list = array_map("Format::user_link", $account_leaders);
+						echo implode(", ", $html_list);
+					?>
+					</td>
+				</tr>
 				<?php } ?>
-				</td>
-			</tr>
-			<?php if (!empty($group[0]->account_leaders)) { ?>
-			<tr>
-				<th colspan="2">Account leaders</th>
-			</tr>
-			<?php foreach ($group[0]->account_leaders as $account_name => $account_leaders) { ?>
-			<tr>
-				<th><?php out($account_name) ?></th>
-				<td>
-				<?php
-					$html_list = array_map("Format::user_link", $account_leaders);
-					echo implode(", ", $html_list);
-				?>
-				</td>
-			</tr>
-			<?php } ?>
-			<?php } ?>
-		</table>
+				<?php } ?>
+			</table>
+		</div>
 	</div>
 </div>
 <?php } ?>
@@ -91,19 +93,21 @@ function server_list(array $servers, array $suffix = ["", ""]): string {
 	<div class="panel-body">
 		<p><?php out(server_list($access[1], [" has", " have"]), ESC_NONE) ?> the following access rules:</p>
 		<?php if (!empty($access[0]->access_rights)) { ?>
-		<table class="table table-bordered">
-			<?php foreach ($access[0]->access_rights as $account_name => $accessors) { ?>
-			<tr>
-				<th><?php out($account_name) ?></th>
-				<td>
-				<?php
-					$html_list = array_map("Format::user_link", $accessors);
-					echo implode(", ", $html_list);
-				?>
-				</td>
-			</tr>
-			<?php } ?>
-		</table>
+		<div class="ska-scroll-container">
+			<table class="table table-bordered">
+				<?php foreach ($access[0]->access_rights as $account_name => $accessors) { ?>
+				<tr>
+					<th><?php out($account_name) ?></th>
+					<td>
+					<?php
+						$html_list = array_map("Format::user_link", $accessors);
+						echo implode(", ", $html_list);
+					?>
+					</td>
+				</tr>
+				<?php } ?>
+			</table>
+		</div>
 		<?php } else { ?>
 		<em>Nobody is allowed to access</em>
 		<?php } ?>
@@ -117,19 +121,21 @@ function server_list(array $servers, array $suffix = ["", ""]): string {
 	<div class="panel-body">
 		<p><?php out(server_list($access[1]), ESC_NONE) ?> can be accessed by the following other server accounts:</p>
 		<?php if (!empty($access[0]->access_rights)) { ?>
-		<table class="table table-bordered">
-			<?php foreach ($access[0]->access_rights as $account_name => $accessors) { ?>
-			<tr>
-				<th><?php out($account_name) ?></th>
-				<td>
-				<?php
-					$html_list = array_map("Format::server_account_link", $accessors);
-					echo implode(", ", $html_list);
-				?>
-				</td>
-			</tr>
-			<?php } ?>
-		</table>
+		<div class="ska-scroll-container">
+			<table class="table table-bordered">
+				<?php foreach ($access[0]->access_rights as $account_name => $accessors) { ?>
+				<tr>
+					<th><?php out($account_name) ?></th>
+					<td>
+					<?php
+						$html_list = array_map("Format::server_account_link", $accessors);
+						echo implode(", ", $html_list);
+					?>
+					</td>
+				</tr>
+				<?php } ?>
+			</table>
+		</div>
 		<?php } else { ?>
 		<em>No other server accounts are allowed to access</em>
 		<?php } ?>

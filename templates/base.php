@@ -32,37 +32,43 @@ $footer=str_replace("%v", "1.3.0", $web_config['footer']);
 <div id="wrap">
 <a href="#content" class="sr-only">Skip to main content</a>
 <div class="navbar navbar-fixed-top">
-	<div class="container">
-		<div class="navbar-header">
-			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-			</button>
+	<div class="container h-50px">
+		<div class="ska-navbar">
 			<?php if(!empty($web_config['logo'])) { ?>
-			<a class="navbar-brand" href="/">
-				<img src="<?php out($web_config['logo'])?>">
+			<a href="/" class="ska-logo">
+				<img src="<?php out($web_config['logo'])?>" width="40px" height="40px" alt="logo">
 				SSH Key Authority
 			</a>
 			<?php } ?>
-		</div>
-		<div class="navbar-collapse collapse">
-			<ul class="nav navbar-nav">
-				<?php foreach($this->get('menu_items') as $url => $name) { ?>
-				<li<?php if($url == $this->get('relative_request_url')) out(' class="active"', ESC_NONE); ?>><a href="<?php outurl($url)?>"><?php out($name)?></a></li>
-				<?php } ?>
-			</ul>
 			<?php if($this->get('active_user')) { ?>
-			<ul class="nav navbar-nav navbar-right">
-				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-						<?php out($this->get('active_user')->name)?> <span class="caret"></span>
-					</a>
-					<ul class="dropdown-menu">
-						<li><a href="<?php outurl('/logout')?>">Logout</a></li>
-					</ul>
-				</li>
-			</ul>
+			<div class="ska-navbar-items">
+				<ul class="nav navbar-nav">
+					<?php foreach($this->get('menu_items') as $url => $name) { ?>
+					<li<?php if($url == $this->get('relative_request_url')) out(' class="active"', ESC_NONE); ?>><a href="<?php outurl($url)?>"><?php out($name)?></a></li>
+					<?php } ?>
+				</ul>
+			</div>
+			<div class="ska-navbar-side">
+				<button class="ska-side-button dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<svg class="ska-dropdown-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5h16M4 12h16M4 19h16"/></svg>
+					<span class="ska-dropdown-name">
+						<?php out($this->get('active_user')->name)?> 
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M18.53 9.53a.75.75 0 0 0 0-1.06H5.47a.75.75 0 0 0 0 1.06l6 6a.75.75 0 0 0 1.06 0z"/></svg>
+					</span>
+				</button>
+				<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+						<div class="ska-dropdown"><span class="ska-dropdown-name-dp hidden-xl">
+							<?php out($this->get('active_user')->name)?> 
+						</span>
+						<div class="ska-divider hidden-xl"></div>
+						<?php foreach($this->get('menu_items') as $url => $name) { ?>
+						<a <?php if($url == $this->get('relative_request_url')) out(' class="dropdown-item ska-dp-item hidden-xl active"', ESC_NONE); else out(' class="dropdown-item ska-dp-item hidden-xl"', ESC_NONE) ?> href="<?php outurl($url)?>"><?php out($name)?></a></li>
+						<?php } ?>
+						<div class="ska-divider hidden-xl"></div>
+						<a class="dropdown-item ska-dp-item" href="<?php outurl('/logout')?>">Logout</a>
+					</div>
+				</div>
+			</div>
 			<?php } ?>
 		</div>
 	</div>

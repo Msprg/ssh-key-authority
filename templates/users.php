@@ -16,21 +16,23 @@
 ##
 ?>
 <h1>Users</h1>
-<table class="table">
-	<thead>
-		<tr>
-			<th>Username</th>
-			<th>Full name</th>
-			<th>Public keys</th>
-		</tr>
-	</thead>
-	<tbody>
-		<?php foreach($this->get('users') as $user) { ?>
-		<tr<?php if(!$user->active) out(' class="text-muted"', ESC_NONE) ?>>
-			<td><a href="<?php outurl('/users/'.urlencode($user->uid))?>" class="user<?php if(!$user->active) out(' text-muted') ?>"><?php out($user->uid)?></a></td>
-			<td><?php out($user->name)?></td>
-			<td><?php out(number_format(count($user->list_public_keys(null, null, false))))?></td>
-		</tr>
-		<?php } ?>
-	</tbody>
-</table>
+<div class="ska-scroll-container">
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Username</th>
+				<th>Full name</th>
+				<th>Public keys</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach($this->get('users') as $user) { ?>
+			<tr<?php if(!$user->active) out(' class="text-muted"', ESC_NONE) ?>>
+				<td><a href="<?php outurl('/users/'.urlencode($user->uid))?>" class="user<?php if(!$user->active) out(' text-muted') ?>"><?php out($user->uid)?></a></td>
+				<td><?php out($user->name)?></td>
+				<td><?php out(number_format(count($user->list_public_keys(null, null, false))))?></td>
+			</tr>
+			<?php } ?>
+		</tbody>
+	</table>
+</div>

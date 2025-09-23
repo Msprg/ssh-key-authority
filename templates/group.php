@@ -51,51 +51,53 @@ foreach($this->get('group_members') as $member) {
 				This is a system group. Its membership list cannot be edited.
 			</div>
 			<?php } ?>
-			<table class="table table-bordered table-striped">
-				<thead>
-					<tr>
-						<th colspan="2">Member</th>
-						<th>Status</th>
-						<?php if(!$this->get('group')->system) { ?>
-						<th>Actions</th>
-						<?php } ?>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach($this->get('group_members') as $member) { ?>
-					<tr>
-						<?php
-						switch(get_class($member)) {
-						case 'User':
-						?>
-						<td><a href="<?php outurl('/users/'.urlencode($member->uid))?>" class="user"><?php out($member->uid)?></a></td>
-						<td><?php out($member->name); if(!$member->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE)?></td>
-						<?php
-							break;
-						case 'ServerAccount':
-						?>
-						<td><a href="<?php outurl('/servers/'.urlencode($member->server->hostname).'/accounts/'.urlencode($member->name))?>" class="serveraccount"><?php out($member->name.'@'.$member->server->hostname)?></a></td>
-						<td><em>Server account</em><?php if($member->server->key_management == 'decommissioned') out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
-						<?php
-							break;
-						case 'Group':
-						?>
-						<td><a href="<?php outurl('/groups/'.urlencode($member->name))?>" class="group"><?php out($member->name)?></a></td>
-						<td><em>Group</em></td>
-						<?php
-							break;
-						}
-						?>
-						<td>Added on <?php out($member->add_date) ?> by <a href="<?php outurl('/users/'.urlencode($member->added_by->uid))?>" class="user"><?php out($member->added_by->uid) ?></a></td>
-						<?php if(!$this->get('group')->system) { ?>
-						<td>
-							<button type="submit" name="delete_member" value="<?php out($member->entity_id)?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-ban-circle"></span> Remove from group</button>
-						</td>
-						<?php } ?>
-						<?php } ?>
-					</tr>
-				</tbody>
-			</table>
+			<div class="ska-scroll-container">
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th colspan="2">Member</th>
+							<th>Status</th>
+							<?php if(!$this->get('group')->system) { ?>
+							<th>Actions</th>
+							<?php } ?>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach($this->get('group_members') as $member) { ?>
+						<tr>
+							<?php
+							switch(get_class($member)) {
+							case 'User':
+							?>
+							<td><a href="<?php outurl('/users/'.urlencode($member->uid))?>" class="user"><?php out($member->uid)?></a></td>
+							<td><?php out($member->name); if(!$member->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE)?></td>
+							<?php
+								break;
+							case 'ServerAccount':
+							?>
+							<td><a href="<?php outurl('/servers/'.urlencode($member->server->hostname).'/accounts/'.urlencode($member->name))?>" class="serveraccount"><?php out($member->name.'@'.$member->server->hostname)?></a></td>
+							<td><em>Server account</em><?php if($member->server->key_management == 'decommissioned') out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
+							<?php
+								break;
+							case 'Group':
+							?>
+							<td><a href="<?php outurl('/groups/'.urlencode($member->name))?>" class="group"><?php out($member->name)?></a></td>
+							<td><em>Group</em></td>
+							<?php
+								break;
+							}
+							?>
+							<td>Added on <?php out($member->add_date) ?> by <a href="<?php outurl('/users/'.urlencode($member->added_by->uid))?>" class="user"><?php out($member->added_by->uid) ?></a></td>
+							<?php if(!$this->get('group')->system) { ?>
+							<td>
+								<button type="submit" name="delete_member" value="<?php out($member->entity_id)?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-ban-circle"></span> Remove from group</button>
+							</td>
+							<?php } ?>
+							<?php } ?>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</form>
 		<?php } ?>
 		<?php if(!$this->get('group')->system) { ?>
@@ -161,69 +163,71 @@ foreach($this->get('group_members') as $member) {
 		<?php } else { ?>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<table class="table table-bordered table-striped">
-				<thead>
-					<tr>
-						<th colspan="2">Access for</th>
-						<th>Status</th>
-						<th>Options</th>
-						<th>Actions</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach($this->get('group_access') as $access) { ?>
-					<?php $entity = $access->source_entity; ?>
-					<tr>
-						<?php
-						$options = $access->list_options();
-						switch(get_class($entity)) {
-						case 'User':
-						?>
-						<td><a href="<?php outurl('/users/'.urlencode($entity->uid))?>" class="user"><?php out($entity->uid)?></a></td>
-						<td><?php out($entity->name); if(!$entity->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE)?></td>
-						<?php
-							break;
-						case 'ServerAccount':
-						?>
-						<td><a href="<?php outurl('/servers/'.urlencode($entity->server->hostname).'/accounts/'.urlencode($entity->name))?>" class="serveraccount"><?php out($entity->name.'@'.$entity->server->hostname)?></a></td>
-						<td><em>Server account</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
-						<?php
-							break;
-						case 'Group':
-						?>
-						<td><a href="<?php outurl('/groups/'.urlencode($entity->name))?>" class="group"><?php out($entity->name)?></a></td>
-						<td><em>Group</em></td>
-						<?php
-							break;
-						}
-						?>
-						<td>Added on <?php out($access->grant_date) ?> by <a href="<?php outurl('/users/'.urlencode($access->granted_by->uid))?>" class="user"><?php out($access->granted_by->uid) ?></a></td>
-						<td>
-							<?php if(count($options) > 0) { ?>
-							<ul class="compact">
-								<?php foreach($options as $option) { ?>
-								<li>
-									<code>
-										<?php
-										out($option->option);
-										if(!is_null($option->value)) {
-											?>=&quot;<abbr title="<?php out($option->value)?>">…</abbr>&quot;<?php
-										}
-										?>
-									</code>
-								</li>
+			<div class="ska-scroll-container">
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th colspan="2">Access for</th>
+							<th>Status</th>
+							<th>Options</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach($this->get('group_access') as $access) { ?>
+						<?php $entity = $access->source_entity; ?>
+						<tr>
+							<?php
+							$options = $access->list_options();
+							switch(get_class($entity)) {
+							case 'User':
+							?>
+							<td><a href="<?php outurl('/users/'.urlencode($entity->uid))?>" class="user"><?php out($entity->uid)?></a></td>
+							<td><?php out($entity->name); if(!$entity->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE)?></td>
+							<?php
+								break;
+							case 'ServerAccount':
+							?>
+							<td><a href="<?php outurl('/servers/'.urlencode($entity->server->hostname).'/accounts/'.urlencode($entity->name))?>" class="serveraccount"><?php out($entity->name.'@'.$entity->server->hostname)?></a></td>
+							<td><em>Server account</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
+							<?php
+								break;
+							case 'Group':
+							?>
+							<td><a href="<?php outurl('/groups/'.urlencode($entity->name))?>" class="group"><?php out($entity->name)?></a></td>
+							<td><em>Group</em></td>
+							<?php
+								break;
+							}
+							?>
+							<td>Added on <?php out($access->grant_date) ?> by <a href="<?php outurl('/users/'.urlencode($access->granted_by->uid))?>" class="user"><?php out($access->granted_by->uid) ?></a></td>
+							<td>
+								<?php if(count($options) > 0) { ?>
+								<ul class="compact">
+									<?php foreach($options as $option) { ?>
+									<li>
+										<code>
+											<?php
+											out($option->option);
+											if(!is_null($option->value)) {
+												?>=&quot;<abbr title="<?php out($option->value)?>">…</abbr>&quot;<?php
+											}
+											?>
+										</code>
+									</li>
+									<?php } ?>
+								</ul>
 								<?php } ?>
-							</ul>
+							</td>
+							<td>
+								<a href="<?php outurl('/groups/'.urlencode($this->get('group')->name).'/access_rules/'.urlencode($access->id))?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-cog"></span> Configure access</a>
+								<button type="submit" name="delete_access" value="<?php out($access->id)?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-ban-circle"></span> Remove access</button>
+							</td>
 							<?php } ?>
-						</td>
-						<td>
-							<a href="<?php outurl('/groups/'.urlencode($this->get('group')->name).'/access_rules/'.urlencode($access->id))?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-cog"></span> Configure access</a>
-							<button type="submit" name="delete_access" value="<?php out($access->id)?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-ban-circle"></span> Remove access</button>
-						</td>
-						<?php } ?>
-					</tr>
-				</tbody>
-			</table>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</form>
 		<?php } ?>
 		<?php if($membercounts['ServerAccount'] == 0 && $membercounts['Group'] == 0) { ?>
@@ -288,44 +292,46 @@ foreach($this->get('group_members') as $member) {
 		<p>This group has not been granted access to other resources.</p>
 		<?php } else { ?>
 		<p>This group has access to the following resources:</p>
-		<table class="table table-bordered table-striped">
-			<thead>
-				<tr>
-					<th colspan="2">Access to</th>
-					<th>Status</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php foreach($this->get('group_remote_access') as $access) { ?>
-				<?php $entity = $access->dest_entity; ?>
-				<tr>
-					<?php
-					switch(get_class($entity)) {
-					case 'User':
-					?>
-					<td><a href="<?php outurl('/users/'.urlencode($entity->uid))?>" class="user"><?php out($entity->uid)?></a></td>
-					<td><?php out($entity->name); if(!$entity->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE)?></td>
-					<?php
-						break;
-					case 'ServerAccount':
-					?>
-					<td><a href="<?php outurl('/servers/'.urlencode($entity->server->hostname).'/accounts/'.urlencode($entity->name))?>" class="serveraccount"><?php out($entity->name.'@'.$entity->server->hostname)?></a></td>
-					<td><em>Server account</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
-					<?php
-						break;
-					case 'Group':
-					?>
-					<td><a href="<?php outurl('/groups/'.urlencode($entity->name))?>" class="group"><?php out($entity->name)?></a></td>
-					<td><em>Group</em></td>
-					<?php
-						break;
-					}
-					?>
-					<td>Added on <?php out($access->grant_date) ?> by <a href="<?php outurl('/users/'.urlencode($access->granted_by->uid))?>" class="user"><?php out($access->granted_by->uid) ?></a></td>
-					<?php } ?>
-				</tr>
-			</tbody>
-		</table>
+		<div class="ska-scroll-container">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th colspan="2">Access to</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach($this->get('group_remote_access') as $access) { ?>
+					<?php $entity = $access->dest_entity; ?>
+					<tr>
+						<?php
+						switch(get_class($entity)) {
+						case 'User':
+						?>
+						<td><a href="<?php outurl('/users/'.urlencode($entity->uid))?>" class="user"><?php out($entity->uid)?></a></td>
+						<td><?php out($entity->name); if(!$entity->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE)?></td>
+						<?php
+							break;
+						case 'ServerAccount':
+						?>
+						<td><a href="<?php outurl('/servers/'.urlencode($entity->server->hostname).'/accounts/'.urlencode($entity->name))?>" class="serveraccount"><?php out($entity->name.'@'.$entity->server->hostname)?></a></td>
+						<td><em>Server account</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
+						<?php
+							break;
+						case 'Group':
+						?>
+						<td><a href="<?php outurl('/groups/'.urlencode($entity->name))?>" class="group"><?php out($entity->name)?></a></td>
+						<td><em>Group</em></td>
+						<?php
+							break;
+						}
+						?>
+						<td>Added on <?php out($access->grant_date) ?> by <a href="<?php outurl('/users/'.urlencode($access->granted_by->uid))?>" class="user"><?php out($access->granted_by->uid) ?></a></td>
+						<?php } ?>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 		<?php } ?>
 	</div>
 	<div class="tab-pane fade" id="admins">
@@ -335,30 +341,32 @@ foreach($this->get('group_members') as $member) {
 		<?php } else { ?>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<table class="table table-bordered table-striped">
-				<thead>
-					<tr>
-						<th>User ID</th>
-						<th>Name</th>
-						<?php if($this->get('admin')) { ?>
-						<th>Actions</th>
+			<div class="ska-scroll-container">
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>User ID</th>
+							<th>Name</th>
+							<?php if($this->get('admin')) { ?>
+							<th>Actions</th>
+							<?php } ?>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach($this->get('group_admins') as $admin) { ?>
+						<tr>
+							<td><a href="<?php outurl('/users/'.urlencode($admin->uid))?>" class="user"><?php out($admin->uid) ?></a></td>
+							<td><?php out($admin->name); if(!$admin->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
+							<?php if($this->get('admin')) { ?>
+							<td>
+								<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Remove admin</button>
+							</td>
+							<?php } ?>
+						</tr>
 						<?php } ?>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach($this->get('group_admins') as $admin) { ?>
-					<tr>
-						<td><a href="<?php outurl('/users/'.urlencode($admin->uid))?>" class="user"><?php out($admin->uid) ?></a></td>
-						<td><?php out($admin->name); if(!$admin->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
-						<?php if($this->get('admin')) { ?>
-						<td>
-							<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Remove admin</button>
-						</td>
-						<?php } ?>
-					</tr>
-					<?php } ?>
-				</tbody>
-			</table>
+					</tbody>
+				</table>
+			</div>
 		</form>
 		<?php } ?>
 		<?php if($this->get('admin')) { ?>
@@ -411,23 +419,25 @@ foreach($this->get('group_members') as $member) {
 	<?php } ?>
 	<div class="tab-pane fade" id="log">
 		<h2 class="sr-only">Log</h2>
-		<table class="table">
-			<thead>
-				<tr>
-					<th>Entity</th>
-					<th>User</th>
-					<th>Activity</th>
-					<th>Date (<abbr title="Coordinated Universal Time">UTC</abbr>)</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php
-				foreach($this->get('group_log') as $event) {
-					show_event($event);
-				}
-				?>
-			</tbody>
-		</table>
+		<div class="ska-scroll-container">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Entity</th>
+						<th>User</th>
+						<th>Activity</th>
+						<th>Date (<abbr title="Coordinated Universal Time">UTC</abbr>)</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php
+					foreach($this->get('group_log') as $event) {
+						show_event($event);
+					}
+					?>
+				</tbody>
+			</table>
+		</div>
 	</div>
 </div>
 <datalist id="userlist">

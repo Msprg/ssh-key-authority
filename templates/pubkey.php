@@ -80,26 +80,28 @@ $owner = $this->get('pubkey')->owner;
 			<?php if(count($this->get('signatures')) == 0) { ?>
 			<p>No signatures have been uploaded for this key yet.</p>
 			<?php } else { ?>
-			<table class="table table-bordered table-striped">
-				<thead>
-					<tr>
-						<th>Signing key</th>
-						<th>Signed on</th>
-						<th>Uploaded on</th>
-						<th>Actions</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach($this->get('signatures') as $sig) { ?>
-					<tr>
-						<td><?php out($sig->fingerprint)?></td>
-						<td><?php out($sig->sign_date)?></td>
-						<td><?php out($sig->upload_date)?></td>
-						<td><button type="submit" name="delete_signature" value="<?php out($sig->id)?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Delete signature</button></td>
-					</tr>
-					<?php } ?>
-				</tbody>
-			</table>
+			<div class="ska-scroll-container">
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Signing key</th>
+							<th>Signed on</th>
+							<th>Uploaded on</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach($this->get('signatures') as $sig) { ?>
+						<tr>
+							<td><?php out($sig->fingerprint)?></td>
+							<td><?php out($sig->sign_date)?></td>
+							<td><?php out($sig->upload_date)?></td>
+							<td><button type="submit" name="delete_signature" value="<?php out($sig->id)?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Delete signature</button></td>
+						</tr>
+						<?php } ?>
+					</tbody>
+				</table>
+			</div>
 			<?php } ?>
 			<h3>Add signature</h3>
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
@@ -122,24 +124,26 @@ $owner = $this->get('pubkey')->owner;
 		<p>This key will only be synced to accounts and servers that <?php out($name)?> is granted access to that also match the following rules:</p>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<table class="table table-bordered table-striped">
-				<thead>
-					<tr>
-						<th>Account name</th>
-						<th>Hostname</th>
-						<th>Actions</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach($this->get('dest_rules') as $rule) { ?>
-					<tr>
-						<td><?php out($rule->account_name_filter)?></td>
-						<td><?php out($rule->hostname_filter)?></td>
-						<td><button type="submit" name="delete_dest_rule" value="<?php out($rule->id)?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Delete rule</button></td>
-					</tr>
-					<?php } ?>
-				</tbody>
-			</table>
+			<div class="ska-scroll-container">
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Account name</th>
+							<th>Hostname</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach($this->get('dest_rules') as $rule) { ?>
+						<tr>
+							<td><?php out($rule->account_name_filter)?></td>
+							<td><?php out($rule->hostname_filter)?></td>
+							<td><button type="submit" name="delete_dest_rule" value="<?php out($rule->id)?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Delete rule</button></td>
+						</tr>
+						<?php } ?>
+					</tbody>
+				</table>
+			</div>
 		</form>
 		<?php } ?>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">

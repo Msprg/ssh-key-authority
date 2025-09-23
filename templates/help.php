@@ -24,8 +24,8 @@ $security_config = $this->get('security_config');
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h2 class="panel-title">
-				<a data-toggle="collapse" data-parent="#help" href="#getting_started">
-					Getting started
+				<a class="w-full" data-toggle="collapse" data-parent="#help" href="#getting_started">
+					Getting started (Generating an SSH keypair)
 				</a>
 			</h2>
 		</div>
@@ -41,7 +41,7 @@ $security_config = $this->get('security_config');
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h2 class="panel-title">
-				<a data-toggle="collapse" data-parent="#help" href="#concepts">
+				<a class="w-full" data-toggle="collapse" data-parent="#help" href="#concepts">
 					Concepts
 				</a>
 			</h2>
@@ -64,7 +64,7 @@ $security_config = $this->get('security_config');
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h2 class="panel-title">
-				<a data-toggle="collapse" data-parent="#help" href="#getting_access">
+				<a class="w-full" data-toggle="collapse" data-parent="#help" href="#getting_access">
 					Getting access to a server
 				</a>
 			</h2>
@@ -81,7 +81,7 @@ $security_config = $this->get('security_config');
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h2 class="panel-title">
-				<a data-toggle="collapse" data-parent="#help" href="#add_server">
+				<a class="w-full" data-toggle="collapse" data-parent="#help" href="#add_server">
 					Adding a server to SSH Key Authority
 				</a>
 			</h2>
@@ -95,7 +95,7 @@ $security_config = $this->get('security_config');
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h2 class="panel-title">
-				<a data-toggle="collapse" data-parent="#help" href="#jumphost_format">
+				<a class="w-full" data-toggle="collapse" data-parent="#help" href="#jumphost_format">
 					Jumphost list format
 				</a>
 			</h2>
@@ -127,7 +127,7 @@ $security_config = $this->get('security_config');
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h3 class="panel-title">
-				<a data-toggle="collapse" data-parent="#help" href="#sync_error">
+				<a class="w-full" data-toggle="collapse" data-parent="#help" href="#sync_error">
 					What does this sync error for my server mean?
 				</a>
 			</h3>
@@ -176,7 +176,7 @@ $security_config = $this->get('security_config');
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h3 class="panel-title">
-				<a data-toggle="collapse" data-parent="#help" href="#sync_warning">
+				<a class="w-full" data-toggle="collapse" data-parent="#help" href="#sync_warning">
 					What does this sync warning for my server mean?
 				</a>
 			</h3>
@@ -195,7 +195,7 @@ $security_config = $this->get('security_config');
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h3 class="panel-title">
-				<a data-toggle="collapse" data-parent="#help" href="#sync_setup">
+				<a class="w-full" data-toggle="collapse" data-parent="#help" href="#sync_setup">
 					How do I set up my server to sync access for all accounts?
 				</a>
 			</h3>
@@ -230,7 +230,7 @@ $security_config = $this->get('security_config');
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h3 class="panel-title">
-				<a data-toggle="collapse" data-parent="#help" href="#grant_access">
+				<a class="w-full" data-toggle="collapse" data-parent="#help" href="#grant_access">
 					How do I grant access to an account on my server?
 				</a>
 			</h3>
