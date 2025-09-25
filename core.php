@@ -31,6 +31,20 @@ if(file_exists($config_file)) {
 	throw new Exception("Config file $config_file does not exist.");
 }
 
+// Session optimizations
+ini_set('session.cookie_httponly', 1);
+ini_set('session.use_strict_mode', 1);
+// Pull session lifetime from config if available, else fallback to 28800
+if (isset($config['session']['timeout']) && is_numeric($config['session']['timeout'])) {
+	$timeout = (int)$config['session']['timeout'];
+	if ($timeout > 0) {
+		ini_set('session.gc_maxlifetime', $timeout);
+	} else {
+		ini_set('session.gc_maxlifetime', 28800);
+	}
+}
+ini_set('session.gc_probability', 1);
+ini_set('session.gc_divisor', 1000);
 require('router.php');
 require('routes.php');
 require('ldap.php');
@@ -65,7 +79,7 @@ function autoload_model($classname) {
 // Autoload composer libraries
 require __DIR__ . '/vendor/autoload.php';
 
-// Setup database connection and models
+// Setup database connection and models with optimizations
 function setup_database() {
 	global $config, $database, $driver, $pubkey_dir, $user_dir, $group_dir, $server_dir, $server_account_dir, $event_dir, $sync_request_dir;
 	try {
@@ -73,7 +87,13 @@ function setup_database() {
 	} catch(ErrorException $e) {
 		throw new DBConnectionFailedException($e->getMessage());
 	}
+	
+	// Database optimizations
 	$database->set_charset('utf8mb4');
+	$database->options(MYSQLI_OPT_CONNECT_TIMEOUT, 5);
+	$database->options(MYSQLI_OPT_READ_TIMEOUT, 30);
+	$database->options(MYSQLI_INIT_COMMAND, "SET SESSION sql_mode='STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO'");
+	
 	$driver = new mysqli_driver();
 	$driver->report_mode = MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT;
 	$migration_dir = new MigrationDirectory;
