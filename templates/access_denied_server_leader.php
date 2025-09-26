@@ -21,6 +21,6 @@
 	To request access for a specific user account on the server, please visit the <a href="<?php outurl($this->get('server_url'))?>" class="alert-link">server page for <?php out($this->get('server_hostname'))?></a>.</p>
 </div>
 <div class="alert alert-info">
-    <p>You might already have access to this server. You can find list of servers and accounts you have access to on <a href="<?php outurl($this->get('home_url'))?>" class="alert-link">your home page</a>.<br />
+    <p>You might already have <b>SSH</b> access to this server. You can find list of servers and accounts you have access to on <a href="<?php outurl($this->get('home_url'))?>" class="alert-link">your home page</a>.<br />
     If you believe you should be a leader for this server, or for a particular account on the server, please contact your system administrator.</p>
 </div>
