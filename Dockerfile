@@ -7,7 +7,12 @@ ENV APP_DIR=/srv/keys     COMPOSER_ALLOW_SUPERUSER=1
 
 RUN apt-get update && apt-get install -y --no-install-recommends     nginx     php-fpm     php-cli     php-mysql     php-ldap     php-mbstring     php-gmp     php-xml     php-zip     php-curl     php-gd     php-intl     php-bcmath     composer     cron     supervisor     tini     ca-certificates     curl     git     openssh-client     unzip     && rm -rf /var/lib/apt/lists/*
 
-RUN useradd --system --home /var/lib/keys-sync --shell /usr/sbin/nologin keys-sync &&     mkdir -p /var/lib/keys-sync /var/log/ska /var/local/keys-sync /var/log/supervisor &&     chown -R keys-sync:keys-sync /var/lib/keys-sync /var/local/keys-sync /var/log/ska
+RUN useradd --system --home /var/lib/keys-sync --shell /usr/sbin/nologin keys-sync && \
+    mkdir -p /var/lib/keys-sync /var/log/ska /var/local/keys-sync /var/log/supervisor && \
+    chown -R keys-sync:keys-sync /var/lib/keys-sync /var/local/keys-sync && \
+    chown -R www-data:www-data /var/log/ska && \
+    touch /var/log/ska/ldap_update.log /var/log/ska/supervise_external_keys.log && \
+    chown www-data:www-data /var/log/ska/ldap_update.log /var/log/ska/supervise_external_keys.log
 
 WORKDIR ${APP_DIR}
 COPY . ${APP_DIR}
@@ -74,8 +79,8 @@ RUN set -eux;     cat <<'CRON-EOF' >/etc/cron.d/ska;     printf '\n' >>/etc/cron
 SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-*/5 * * * * www-data /usr/bin/php /srv/keys/scripts/ldap_update.php >> /var/log/ska/ldap_update.log 2>&1
-*/10 * * * * www-data /usr/bin/php /srv/keys/scripts/supervise_external_keys.php >> /var/log/ska/supervise_external_keys.log 2>&1
+*/1 * * * * www-data /usr/bin/flock -n /tmp/ldap_update.lock /usr/bin/php /srv/keys/scripts/ldap_update.php >> /var/log/ska/ldap_update.log 2>&1
+*/5 * * * * www-data /usr/bin/flock -n /tmp/supervise_external_keys.lock /usr/bin/php /srv/keys/scripts/supervise_external_keys.php >> /var/log/ska/supervise_external_keys.log 2>&1
 CRON-EOF
 
 RUN set -eux;     cat <<'SUPERVISOR-EOF' >/etc/supervisor/conf.d/ska.conf
