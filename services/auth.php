@@ -95,14 +95,21 @@ class AuthService {
                     $user = $this->user_dir->get_user_by_uid($username);
                     error_log("User found in database: " . substr($user->uid, 0, 3) . "***");
                     
-                    // Check if user is active
+                    // Update user details from LDAP
+                    $user->get_details_from_ldap();
+                    
+                    // Check if user is disabled by local override (force_disable flag)
+                    if ($user->force_disable) {
+                        error_log("User " . substr($username, 0, 3) . "*** is disabled by local override (force_disable flag)");
+                        return false;
+                    }
+                    
+                    // Check if user is active (from LDAP or local setting)
                     if (!$user->active) {
                         error_log("User " . substr($username, 0, 3) . "*** is inactive in database");
                         return false;
                     }
                     
-                    // Update user details from LDAP
-                    $user->get_details_from_ldap();
                     $user->update();
                     
                     // Regenerate session ID to prevent session fixation
@@ -173,7 +180,23 @@ class AuthService {
         }
         
         try {
-            return $this->user_dir->get_user_by_id($_SESSION['user_id']);
+            $user = $this->user_dir->get_user_by_id($_SESSION['user_id']);
+            
+            // Check if user is disabled by local override (force_disable flag)
+            if ($user->force_disable) {
+                error_log("User " . substr($user->uid, 0, 3) . "*** is disabled by local override (force_disable flag) - logging out");
+                $this->logout();
+                return null;
+            }
+            
+            // Check if user is active
+            if (!$user->active) {
+                error_log("User " . substr($user->uid, 0, 3) . "*** is inactive - logging out");
+                $this->logout();
+                return null;
+            }
+            
+            return $user;
         } catch (Exception $e) {
             $this->logout();
             return null;

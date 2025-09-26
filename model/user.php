@@ -313,6 +313,9 @@ class User extends Entity {
 		}
 		$ldapusers = $this->ldap->search($config['ldap']['dn_user'], LDAP::escape($config['ldap']['user_id']).'='.LDAP::escape($this->uid), array_keys(array_flip($attributes)));
 		if($ldapuser = reset($ldapusers)) {
+			// Preserve the force_disable flag before updating from LDAP
+			$force_disable = $this->force_disable;
+			
 			$this->auth_realm = 'LDAP';
 			$this->uid = $ldapuser[strtolower($config['ldap']['user_id'])];
 			$this->name = $ldapuser[strtolower($config['ldap']['user_name'])];
@@ -349,6 +352,9 @@ class User extends Entity {
 				if($ldapgroup['cn'] == $config['ldap']['admin_group_cn']) $this->admin = 1;
 			}
 			$this->ldap_group_guids = $ldap_group_guids;
+			
+			// Restore the force_disable flag after updating from LDAP
+			$this->force_disable = $force_disable;
 		} else {
 			throw new UserNotFoundException('User does not exist.');
 		}

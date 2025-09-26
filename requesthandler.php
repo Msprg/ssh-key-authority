@@ -72,7 +72,7 @@ if(empty($config['web']['enabled'])) {
 	die;
 }
 
-if($active_user && !$active_user->active) {
+if($active_user && (!$active_user->active || $active_user->force_disable)) {
 	require('views/error403.php');
 }
 
