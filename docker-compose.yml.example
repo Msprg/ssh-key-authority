@@ -1,0 +1,40 @@
+services:
+  ska-app:
+    build: .
+    image: ska-app:dev
+    container_name: ska-app
+    restart: unless-stopped
+    depends_on:
+      ska-db:
+        condition: service_healthy
+    ports:
+      - "80:8080"
+    volumes:
+      - ./data/ska/config/:/srv/keys/config/:ro
+      - ./data/ska/logs:/var/log/ska
+      - ./data/ska/var/local/sync:/var/local/keys-sync
+    environment:
+      TZ: UTC
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+  ska-db:
+    image: mariadb:lts
+    container_name: ska-db
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: #replace me with strong password
+      MARIADB_DATABASE: ska-db
+      MARIADB_USER: ska-user
+      MARIADB_PASSWORD: #replace me with strong password
+    volumes:
+      - ./data/ska/db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -h localhost -u$$MARIADB_USER -p$$MARIADB_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
