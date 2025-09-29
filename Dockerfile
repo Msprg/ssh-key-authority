@@ -19,7 +19,7 @@ COPY . ${APP_DIR}
 
 RUN composer install --no-dev --prefer-dist --optimize-autoloader
 
-RUN set -eux;     PHP_VERSION="$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;')";     FPM_DIR="/etc/php/${PHP_VERSION}/fpm";     sed -ri 's|^listen = .+|listen = 9000|' "${FPM_DIR}/pool.d/www.conf";     sed -ri 's|^;*daemonize = yes|daemonize = no|' "${FPM_DIR}/php-fpm.conf";     sed -ri 's|^;*clear_env = .+|clear_env = no|' "${FPM_DIR}/pool.d/www.conf";     sed -ri 's|^;*catch_workers_output = .*|catch_workers_output = yes|' "${FPM_DIR}/pool.d/www.conf";     mkdir -p /run/php;     ln -sf "/usr/sbin/php-fpm${PHP_VERSION}" /usr/sbin/php-fpm;     chown www-data:www-data /run/php
+RUN set -eux;     PHP_VERSION="$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;')";     FPM_DIR="/etc/php/${PHP_VERSION}/fpm";     sed -ri 's|^listen = .+|listen = 9000|' "${FPM_DIR}/pool.d/www.conf";     sed -ri 's|^;*daemonize = yes|daemonize = no|' "${FPM_DIR}/php-fpm.conf";     sed -ri 's|^;*clear_env = .+|clear_env = no|' "${FPM_DIR}/pool.d/www.conf";     sed -ri 's|^;*catch_workers_output = .*|catch_workers_output = yes|' "${FPM_DIR}/pool.d/www.conf";     mkdir -p /run/php /var/lib/php/sessions;     ln -sf "/usr/sbin/php-fpm${PHP_VERSION}" /usr/sbin/php-fpm;     chown www-data:www-data /run/php /var/lib/php/sessions;     chmod 1733 /var/lib/php/sessions
 
 RUN set -eux;     cat <<'NGINX-EOF' >/etc/nginx/nginx.conf;     printf '\n' >>/etc/nginx/nginx.conf
 worker_processes auto;
