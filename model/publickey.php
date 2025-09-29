@@ -34,16 +34,18 @@ class PublicKey extends Record {
 	* @throws InvalidArgumentException if the public key cannot be parsed or is not sufficiently secure
 	*/
 	public function import($key, $uid = null, $force = false) {
+		global $config;
+		
 		// Remove newlines (often included by accident) and trim
 		$key = str_replace(array("\r", "\n"), array(), trim($key));
 
 		// Initial sanity check and determine minimum length for algorithm
 		if(preg_match('|^(ssh-[a-z]{3}) ([A-Za-z0-9+/]+={0,2})(?: (.*))?$|', $key, $matches)) {
-			$minbits = 4096;
+			$minbits = isset($config['security']['min_rsa_bits']) ? intval($config['security']['min_rsa_bits']) : 4096;
 		} elseif(preg_match('|^(ecdsa-sha2-nistp[0-9]+) ([A-Za-z0-9+/]+={0,2})(?: (.*))?$|', $key, $matches)) {
-			$minbits = 384;
+			$minbits = isset($config['security']['min_ecdsa_bits']) ? intval($config['security']['min_ecdsa_bits']) : 384;
 		} elseif(preg_match('|^(ssh-ed25519) ([A-Za-z0-9+/]+={0,2})(?: (.*))?$|', $key, $matches)) {
-			$minbits = 256;
+			$minbits = isset($config['security']['min_ed25519_bits']) ? intval($config['security']['min_ed25519_bits']) : 256;
 		} else {
 			throw new InvalidArgumentException("Public key doesn't look valid");
 		}
@@ -66,7 +68,7 @@ class PublicKey extends Record {
 		$this->randomart_sha256 = $this->generate_randomart(bin2hex($hash_sha256), "{$algorithm} {$this->keysize}", 'SHA256');
 
 		if($this->keysize < $minbits && !$force) {
-			throw new InvalidArgumentException("Insufficient bits in public key");
+			throw new InvalidArgumentException("Insufficient bits in public key: {$this->keysize} < {$minbits}");
 		}
 	}
 

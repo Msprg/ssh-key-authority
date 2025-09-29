@@ -138,12 +138,14 @@ if(isset($_POST['add_access']) && ($server_admin || $account_admin || $active_us
 		$account->add_public_key($public_key);
 		redirect('#pubkeys');
 	} catch(InvalidArgumentException $e) {
+		global $config;
 		$content = new PageSection('key_upload_fail');
-		switch($e->getMessage()) {
-		case 'Insufficient bits in public key':
-			$content->set('message', "The public key you submitted is of insufficient strength; it must be at least 4096 bits.");
-			break;
-		default:
+		$error_message = $e->getMessage();
+		if(preg_match('/^Insufficient bits in public key: (\d+) < (\d+)$/', $error_message, $matches)) {
+			$actual_bits = $matches[1];
+			$required_bits = $matches[2];
+			$content->set('message', "The public key you submitted is of insufficient strength; it has {$actual_bits} bits but must be at least {$required_bits} bits.");
+		} else {
 			$content->set('message', "The public key you submitted doesn't look valid.");
 		}
 	}
