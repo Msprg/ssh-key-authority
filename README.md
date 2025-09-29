@@ -22,6 +22,11 @@ Features
 Requirements
 ------------
 
+* Docker engine
+
+<details>
+<summary>Baremeteal requirements (old, deprecated, use docker if possible)</summary>
+
 * An LDAP directory service
 * Apache 2.2 or higher
 * PHP 5.6 or higher
@@ -33,8 +38,25 @@ Requirements
 * PHP GMP extension (not strictly needed, but a big performance improvement)
 * MySQL (5.5+), Percona Server (5.5+) or MariaDB database
 
+</details>
+
 Installation
 ------------
+0. Install the Docker Engine (if not installed already)
+
+1. Clone the repo.
+
+2. Copy `docker-compose.yml.example` to `docker-compose.yml` and configure it.
+
+3. Write initial configuration file according to `config/config.ini.example`
+
+4.  Generate an SSH key pair to synchronize with. SSH Key Authority will expect to find the files next to the config.ini file as `config/keys-sync` and `config/keys-sync.pub` for the private and public keys respectively. Be careful to use PEM format.
+
+    ssh-keygen -b 4096 -m pem -f config/keys-sync
+
+
+<details>
+<summary>Baremeteal install (old, deprecated, use docker if possible)</summary>
 
 1.  Clone the repo somewhere outside of your default Apache document root.
 
@@ -78,6 +100,8 @@ Installation
     2.  Modify `SCRIPT` path and `USER` as necessary.
     3.  `update-rc.d keys-sync defaults`
 
+</details>
+
 Usage
 -----
 
@@ -104,8 +128,15 @@ StrictModes must be disabled because the files will all be owned by the keys-syn
 
 The file `/var/local/keys-sync/keys-sync` must exist, with the same contents as the `config/keys-sync.pub` file in order for the synchronization daemon to authenticate.
 
+
+You can also use `Install SKA management.sh` convenience script that is part of this repo, but it isn't foolproof and it could lock you out so you're using it purely on your own risk.
+
+
 Screenshots
 -----------
+
+### Login page overview
+![Login page](public_html/login-page.png)
 
 ### Homepage overview
 ![Homepage overview](public_html/screenshot-home.png)
@@ -131,6 +162,7 @@ License
 
 Copyright 2013-2017 Opera Software
 Modifications Copyright 2021 Leitwerk AG
+Maintanence, Modifications and Improvements by Msprg
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
