@@ -1,0 +1,5 @@
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+*/1 * * * * www-data /usr/bin/flock -n /tmp/ldap_update.lock /usr/bin/php /srv/keys/scripts/ldap_update.php >> /var/log/ska/ldap_update.log 2>&1
+*/5 * * * * www-data /usr/bin/flock -n /tmp/supervise_external_keys.lock /usr/bin/php /srv/keys/scripts/supervise_external_keys.php >> /var/log/ska/supervise_external_keys.log 2>&1
