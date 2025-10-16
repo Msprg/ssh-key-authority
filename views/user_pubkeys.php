@@ -21,6 +21,35 @@ try {
 	require('views/error404.php');
 	die;
 }
+
+$is_target_active_user = $active_user && $active_user->entity_id == $user->entity_id;
+$can_admin_add_for_user = $active_user && $active_user->admin && !$is_target_active_user;
+$can_submit_key = $is_target_active_user || $can_admin_add_for_user;
+
+if(isset($_POST['add_public_key'])) {
+	if(!$can_submit_key) {
+		require('views/error403.php');
+		die;
+	}
+	try {
+		$public_key = new PublicKey;
+		$public_key->import($_POST['add_public_key'], $user->uid);
+		$user->add_public_key($public_key);
+		redirect();
+	} catch(InvalidArgumentException $e) {
+		global $config;
+		$content = new PageSection('key_upload_fail');
+		$error_message = $e->getMessage();
+		if(preg_match('/^Insufficient bits in public key: (\d+) < (\d+)$/', $error_message, $matches)) {
+			$actual_bits = $matches[1];
+			$required_bits = $matches[2];
+			$content->set('message', "The public key you submitted is of insufficient strength; it has {$actual_bits} bits but must be at least {$required_bits} bits.");
+		} else {
+			$content->set('message', "The public key you submitted doesn't look valid.");
+		}
+	}
+}
+
 $pubkeys = $user->list_public_keys();
 if(isset($router->vars['format']) && $router->vars['format'] == 'txt') {
 	$page = new PageSection('entity_pubkeys_txt');
@@ -33,16 +62,19 @@ if(isset($router->vars['format']) && $router->vars['format'] == 'txt') {
 	header('Content-type: application/json; charset=utf-8');
 	echo $page->generate();
 } else {
-	$content = new PageSection('user_pubkeys');
-	$content->set('user', $user);
-	$content->set('pubkeys', $pubkeys);
-	$content->set('admin', $active_user->admin);
+	$head = '<link rel="alternate" type="application/json" href="pubkeys.json" title="JSON for this page">' . "\n";
+	$head .= '<link rel="alternate" type="text/plain" href="pubkeys.txt" title="TXT format for this page">' . "\n";
 
-	$head = '<link rel="alternate" type="application/json" href="pubkeys.json" title="JSON for this page">'."\n";
-	$head .= '<link rel="alternate" type="text/plain" href="pubkeys.txt" title="TXT format for this page">'."\n";
+	if(!isset($content)) {
+		$content = new PageSection('user_pubkeys');
+		$content->set('user', $user);
+		$content->set('pubkeys', $pubkeys);
+		$content->set('admin', $active_user ? $active_user->admin : false);
+		$content->set('allow_admin_add', $can_admin_add_for_user);
+	}
 
 	$page = new PageSection('base');
-	$page->set('title', 'Public keys for '.$user->name);
+	$page->set('title', 'Public keys for ' . $user->name);
 	$page->set('head', $head);
 	$page->set('content', $content);
 	$page->set('alerts', $active_user->pop_alerts());

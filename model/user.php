@@ -200,8 +200,13 @@ class User extends Entity {
 		$email->add_reply_to($config['email']['admin_address'], $config['email']['admin_name']);
 		$email->add_recipient($this->email, $this->name);
 		$email->add_cc($config['email']['report_address'], $config['email']['report_name']);
-		$email->subject = "A new SSH public key has been added to your account ({$this->uid})";
-		$email->body = "A new SSH public key has been added to your account on SSH Key Authority.\n\nIf you added this key then all is well. If you do not recall adding this key, please contact {$config['email']['admin_address']} immediately.\n\n".$key->summarize_key_information();
+		if($active_user && $active_user->entity_id != $this->entity_id) {
+			$email->subject = "A new SSH public key has been added to your account ({$this->uid}) by {$active_user->uid}";
+			$email->body = "{$active_user->name} ({$active_user->uid}) has added a new SSH public key to your account on SSH Key Authority.\n\nIf you did not request this change, please contact {$config['email']['admin_address']} immediately.\n\n".$key->summarize_key_information();
+		} else {
+			$email->subject = "A new SSH public key has been added to your account ({$this->uid})";
+			$email->body = "A new SSH public key has been added to your account on SSH Key Authority.\n\nIf you added this key then all is well. If you do not recall adding this key, please contact {$config['email']['admin_address']} immediately.\n\n".$key->summarize_key_information();
+		}
 		$email->send();
 		$this->log(array('action' => 'Pubkey add', 'value' => $key->fingerprint_md5), LOG_WARNING);
 	}

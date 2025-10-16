@@ -25,6 +25,24 @@
 		<span class="glyphicon glyphicon-console"></span> JSON
 	</a>
 </p>
+<?php if($this->get('allow_admin_add')) { ?>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h2 class="panel-title">Add public key for <?php out($this->get('user')->name)?></h2>
+	</div>
+	<div class="panel-body">
+		<form method="post" action="<?php outurl($this->data->relative_request_url) ?>">
+			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
+			<div class="form-group">
+				<label for="add_public_key">Public key</label>
+				<textarea class="form-control" rows="4" id="add_public_key" name="add_public_key" required></textarea>
+			</div>
+			<p class="help-block">The key will be added to <?php out($this->get('user')->uid)?>.</p>
+			<button type="submit" class="btn btn-primary">Add public key</button>
+		</form>
+	</div>
+</div>
+<?php } ?>
 <?php foreach($this->get('pubkeys') as $pubkey) { ?>
 <div class="panel panel-default">
 	<dl class="panel-body">
