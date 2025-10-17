@@ -26,6 +26,7 @@ $access = $user->list_remote_access();
 $admined_servers = $user->list_admined_servers(array('pending_requests'));
 $admined_groups = $user->list_admined_groups(array('members', 'admins'));
 $groups = $user->list_group_memberships(array('members', 'admins'));
+$active_user_keys = $user->list_public_keys(null, null, false);
 usort($admined_servers, function($a, $b) {return strnatcasecmp($a->hostname, $b->hostname);});
 
 if(isset($_POST['reassign_servers']) && is_array($_POST['servers']) && $active_user && $active_user->admin) {
@@ -47,6 +48,21 @@ if(isset($_POST['reassign_servers']) && is_array($_POST['servers']) && $active_u
 		}
 		redirect('#details');
 	}
+} elseif(isset($_POST['delete_public_key']) && $active_user && $active_user->admin) {
+	$delete_key_raw = trim($_POST['delete_public_key']);
+	$delete_key_id = filter_var($delete_key_raw, FILTER_VALIDATE_INT);
+	
+	if($delete_key_id !== false) {
+		$delete_key_id = (int)$delete_key_id;
+		foreach($active_user_keys as $public_key) {
+			if((int)$public_key->id === $delete_key_id) {
+				$user->delete_public_key($public_key);
+				break;
+			}
+		}
+	}
+
+	redirect('#details');
 } elseif(isset($_POST['edit_user']) && $active_user && $active_user->admin) {
 	$user->force_disable = $_POST['force_disable'];
 	$user->get_details_from_ldap();
@@ -59,8 +75,8 @@ if(isset($_POST['reassign_servers']) && is_array($_POST['servers']) && $active_u
 	$content->set('user_admined_servers', $admined_servers);
 	$content->set('user_admined_groups', $admined_groups);
 	$content->set('user_groups', $groups);
-	$content->set('active_user_keys', $user->list_public_keys(null, null, false));
-    $content->set('admin', ($active_user && $active_user->admin));
+	$content->set('active_user_keys', $active_user_keys);
+	$content->set('admin', ($active_user && $active_user->admin));
 }
 
 $page = new PageSection('base');

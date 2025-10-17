@@ -47,6 +47,10 @@ if(isset($_POST['add_public_key'])) {
 		} else {
 			$content->set('message', "The public key you submitted doesn't look valid.");
 		}
+	} catch(BadMethodCallException $e) {
+		global $config;
+		$content = new PageSection('key_upload_fail');
+		$content->set('message', "Unable to add public key: " . $e->getMessage());
 	}
 }
 

@@ -43,6 +43,10 @@
 		<?php if(count($this->get('active_user_keys')) == 0) { ?>
 		<p><?php out($this->get('user')->name)?> has no active public keys.</p>
 		<?php } else { ?>
+		<?php if($this->get('admin')) { ?>
+		<form method="post" action="<?php outurl($this->data->relative_request_url) ?>">
+			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
+		<?php } ?>
 		<div class="ska-scroll-container">
 			<table class="table">
 				<thead>
@@ -53,6 +57,9 @@
 						<th>Creation Date</th>
 						<th>Size</th>
 						<th>Comment</th>
+						<?php if($this->get('admin')) { ?>
+							<th>Actions</th>
+						<?php } ?>
 					</tr>
 				</thead>
 				<tbody>
@@ -72,12 +79,20 @@
 						<td><?php out($key->format_creation_date()) ?></td>
 						<td><?php out($key->keysize) ?></td>
 						<td><?php out($key->comment) ?></td>
+						<?php if($this->get('admin')) { ?>
+						<td>
+							<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Delete public key</button>
+						</td>
+						<?php } ?>
 					</tr>
 					<?php } ?>
 				</tbody>
 			</table>
 		</div>
+		<?php if($this->get('admin')) { ?>
+			</form>
 		<?php } ?>
+	<?php } ?>
 		<?php
 			$num_deleted = $this->get('user')->count_deleted_public_keys();
 			if ($num_deleted > 0) {
