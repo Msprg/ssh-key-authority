@@ -161,7 +161,7 @@ class SSH {
 		try {
 			return $this->connection->exec($command);
 		} catch (ErrorException $e) {
-			throw new SSHException("Failed to execute the command: $command", null, $e);
+			throw new SSHException("Failed to execute the command: $command", 0, $e);
 		}
 	}
 
