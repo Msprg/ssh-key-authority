@@ -316,9 +316,9 @@
 						</label>
 					</div>
 					<div class="radio">
-						<label>
+						<label class="text-warning">
 							<input type="radio" name="key_management" value="decommissioned"<?php if($this->get('server')->key_management == 'decommissioned') out(' checked') ?>>
-							Disabled - server has been decommissioned
+							Disabled - server has been decommissioned (remove all user access keys)
 						</label>
 					</div>
 				</div>
@@ -410,7 +410,7 @@
 					case 'keys': out('SSH keys managed and synced by SSH Key Authority'); break;
 					case 'none': out('Disabled - server has no key management'); break;
 					case 'other': out('Disabled - SSH keys managed by another system'); break;
-					case 'decommissioned': out('Disabled - server has been decommissioned'); break;
+					case 'decommissioned': out('Disabled - server has been decommissioned (remove all user access keys)'); break;
 					}
 					?>
 				</dd>
