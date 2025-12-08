@@ -100,7 +100,7 @@ if(isset($options['all'])) {
 
 $pending_syncs = array();
 foreach($servers as $server) {
-	if($server->key_management != 'keys') {
+	if($server->key_management != 'keys' && $server->key_management != 'decommissioned') {
 		continue;
 	}
 	$pending_syncs[$server->hostname] = $server;
@@ -153,6 +153,146 @@ Mandatory arguments to long options are mandatory for short options too.
 <?php
 }
 
+/**
+ * Establish an SSH connection while handling hanging connection attempts uniformly.
+ */
+function connect_ssh_with_timeout_handling($server, $hostname, callable $on_timeout, callable $on_connect_failure) {
+	// ssh2 sometimes hangs on connect; use SIGTERM from wrapper timeout to bail out cleanly
+	declare(ticks = 1);
+	pcntl_signal(SIGTERM, function($signal) use($server, $hostname, $on_timeout) {
+		echo date('c')." {$hostname}: SSH connection timed out.\n";
+		$on_timeout();
+		exit(0);
+	});
+
+	echo date('c')." {$hostname}: Attempting to connect.\n";
+	try {
+		$connection = $server->connect_ssh();
+	} catch (SSHException $e) {
+		$reason = describe_oneline($e);
+		echo date('c')." {$hostname}: $reason\n";
+		$on_connect_failure($reason);
+		return null;
+	}
+
+	// From this point on, catch SIGTERM and ignore. SIGINT or SIGKILL is required to stop, so timeout wrapper won't
+	// cause a partial sync/decommission
+	pcntl_signal(SIGTERM, SIG_IGN);
+
+	return $connection;
+}
+
+function decommission_server($id, $preview = false) {
+	global $server_dir;
+
+	$keydir = '/var/local/keys-sync';
+	$server = $server_dir->get_server_by_id($id);
+	$hostname = $server->hostname;
+	echo date('c')." {$hostname}: Server is decommissioned, removing all keys (preserving keys-sync access).\n";
+	
+	if($preview) {
+		echo date('c')." {$hostname}: [PREVIEW] Would remove all key files from {$keydir}/ except 'keys-sync' and '.hostnames'\n";
+		return;
+	}
+
+	$connection = connect_ssh_with_timeout_handling(
+		$server,
+		$hostname,
+		function() use ($server) {
+			$server->sync_report('sync failure', 'SSH connection timed out during decommission');
+			$server->reschedule_sync_request();
+		},
+		function($reason) use ($server) {
+			$server->sync_report('sync failure', 'Failed to connect during decommission: '.$reason);
+			$server->reschedule_sync_request();
+		}
+	);
+	if (is_null($connection)) {
+		return;
+	}
+
+	$cleanup_errors = 0;
+	$removed_count = 0;
+
+	// First verify the directory exists and is accessible (don't suppress errors)
+	try {
+		$connection->exec('test -d '.escapeshellarg($keydir).' && test -r '.escapeshellarg($keydir));
+	} catch (SSHException $e) {
+		$cleanup_errors++;
+		echo date('c')." {$hostname}: Cannot access key directory: ".describe_oneline($e)."\n";
+		$server->sync_report('sync failure', 'Cannot access key directory during decommission: '.describe_oneline($e));
+		$server->reschedule_sync_request();
+		return;
+	}
+
+	// Get list of all files in the key directory (don't suppress errors)
+	try {
+		// Try sha1sum first without suppressing stderr
+		$output = $connection->exec('/usr/bin/sha1sum '.escapeshellarg($keydir).'/* 2>&1');
+		$entries = explode("\n", $output);
+		$files_to_check = array();
+		foreach($entries as $entry) {
+			// Check for error messages
+			if(strpos($entry, 'No such file') !== false || strpos($entry, 'Permission denied') !== false) {
+				// sha1sum failed due to access issues, try ls instead
+				break;
+			}
+			if(preg_match('|^([0-9a-f]{40})  '.preg_quote($keydir, '|').'/(.*)$|', $entry, $matches)) {
+				$files_to_check[] = $matches[2];
+			}
+		}
+		
+		// If sha1sum didn't work or found no files, try ls directly (don't suppress errors)
+		if(empty($files_to_check)) {
+			$output = $connection->exec('ls -1 '.escapeshellarg($keydir).' 2>&1');
+			// Check if ls output contains error messages
+			if(strpos($output, 'No such file') !== false || strpos($output, 'Permission denied') !== false) {
+				throw new SSHException("Failed to list files in key directory: {$output}");
+			}
+			$files_to_check = array_filter(explode("\n", trim($output)), function($f) { return trim($f) !== ''; });
+		}
+		
+		// Remove all files except keys-sync and .hostnames
+		foreach($files_to_check as $file) {
+			$file = trim($file);
+			if($file == '' || $file == 'keys-sync' || $file == '.hostnames') {
+				continue;
+			}
+			try {
+				$connection->unlink("$keydir/$file");
+				echo date('c')." {$hostname}: Removed key file: {$file}\n";
+				$removed_count++;
+			} catch (SSHException $e) {
+				$cleanup_errors++;
+				echo date('c')." {$hostname}: Couldn't remove key file {$file}: ".describe_oneline($e)."\n";
+			}
+		}
+		
+		if($removed_count == 0) {
+			echo date('c')." {$hostname}: No key files found to remove (directory is empty or contains only protected files)\n";
+		}
+	} catch (SSHException $e) {
+		$cleanup_errors++;
+		echo date('c')." {$hostname}: Error listing key files: ".describe_oneline($e)."\n";
+	}
+
+	// Update status
+	if($cleanup_errors > 0) {
+		$server->sync_report('sync failure', 'Failed to remove '.$cleanup_errors.' key file'.($cleanup_errors == 1 ? '' : 's').' during decommission');
+		$server->reschedule_sync_request();
+	} else {
+		$server->sync_report('sync success', 'Decommissioned: removed '.$removed_count.' key file'.($removed_count == 1 ? '' : 's').' (keys-sync access preserved)');
+	}
+	
+	try {
+		$server->update_status_file($connection);
+	} catch (SSHException $e) {
+		// Ignore status file update errors during decommission
+	}
+	
+	echo date('c')." {$hostname}: Decommission completed\n";
+}
+
 function sync_server($id, $only_username = null, $preview = false) {
 	global $config;
 	global $server_dir;
@@ -170,6 +310,13 @@ function sync_server($id, $only_username = null, $preview = false) {
 	$server = $server_dir->get_server_by_id($id);
 	$hostname = $server->hostname;
 	echo date('c')." {$hostname}: Preparing sync.\n";
+	
+	// Handle decommissioned servers: remove all keys except keys-sync
+	if($server->key_management == 'decommissioned') {
+		decommission_server($id, $preview);
+		return;
+	}
+	
 	if($server->key_management != 'keys') return;
 	$accounts = $server->list_accounts();
 	$keyfiles = array();
@@ -237,35 +384,23 @@ function sync_server($id, $only_username = null, $preview = false) {
 		return;
 	}
 
-	// This is working around deficiencies in the ssh2 library. In some cases, ssh connection attempts will fail, and
-	// the socket timeout of 60 seconds is somehow not triggered. Script execution timeout is also not triggered.
-	// Reproducing this problem is not easy - dropping packets to port 22 is not sufficient (it will timeout correctly).
-	// To workaround, we wrap calls to this script with 'timeout' shell command, and from this point on until we have
-	// established a connection, catch SIGTERM and report server sync failure if received
-	declare(ticks = 1);
-	pcntl_signal(SIGTERM, function($signal) use($server, $hostname, $keyfiles) {
-		echo date('c')." {$hostname}: SSH connection timed out.\n";
-		$server->sync_report('sync failure', 'SSH connection timed out');
-		$server->reschedule_sync_request();
-		report_all_accounts_failed($keyfiles);
-		exit(0);
-	});
-
-	echo date('c')." {$hostname}: Attempting to connect.\n";
-	try {
-		$connection = $server->connect_ssh();
-	} catch (SSHException $e) {
-		$reason = describe_oneline($e);
-		echo date('c')." {$hostname}: $reason\n";
-		$server->sync_report('sync failure', $reason);
-		$server->reschedule_sync_request();
-		report_all_accounts_failed($keyfiles);
+	$connection = connect_ssh_with_timeout_handling(
+		$server,
+		$hostname,
+		function() use ($server, $keyfiles) {
+			$server->sync_report('sync failure', 'SSH connection timed out');
+			$server->reschedule_sync_request();
+			report_all_accounts_failed($keyfiles);
+		},
+		function($reason) use ($server, $keyfiles) {
+			$server->sync_report('sync failure', $reason);
+			$server->reschedule_sync_request();
+			report_all_accounts_failed($keyfiles);
+		}
+	);
+	if (is_null($connection)) {
 		return;
 	}
-
-	// From this point on, catch SIGTERM and ignore. SIGINT or SIGKILL is required to stop, so timeout wrapper won't
-	// cause a partial sync
-	pcntl_signal(SIGTERM, SIG_IGN);
 
 	$account_errors = 0;
 	$cleanup_errors = 0;
@@ -359,6 +494,44 @@ function sync_server($id, $only_username = null, $preview = false) {
 	echo date('c')." {$hostname}: Sync finished\n";
 }
 
+function append_user_keys($keyfile, $entity, $prefix, $account_name, $hostname, $comment, $grant_details = null) {
+	if ($comment == 1) {
+		$keyfile .= "# {$entity->uid}";
+		if (!is_null($grant_details)) {
+			$keyfile .= " {$grant_details}";
+		}
+		$keyfile .= "\n";
+	}
+	if($entity->active) {
+		$keys = $entity->list_public_keys($account_name, $hostname, false);
+		foreach($keys as $key) {
+			$keyfile .= $prefix.$key->export_userkey_with_fixed_comment($entity, $comment)."\n";
+		}
+	} elseif ($comment == 1) {
+		$keyfile .= "# Account disabled\n";
+	}
+	return $keyfile;
+}
+
+function append_serveraccount_keys($keyfile, $entity, $prefix, $account_name, $hostname, $comment, $grant_details = null) {
+	if ($comment == 1) {
+		$keyfile .= "# {$entity->name}@{$entity->server->hostname}";
+		if (!is_null($grant_details)) {
+			$keyfile .= " {$grant_details}";
+		}
+		$keyfile .= "\n";
+	}
+	if($entity->server->key_management != 'decommissioned') {
+		$keys = $entity->list_public_keys($account_name, $hostname, false);
+		foreach($keys as $key) {
+			$keyfile .= $prefix.$key->export_serverkey_with_fixed_comment($entity, $comment)."\n";
+		}
+	} elseif ($comment == 1) {
+		$keyfile .= "# Decommissioned server\n";
+	}
+	return $keyfile;
+}
+
 function get_keys($access_rules, $account_name, $hostname, $comment) {
 	$keyfile = '';
 	foreach($access_rules as $access) {
@@ -373,34 +546,26 @@ function get_keys($access_rules, $account_name, $hostname, $comment) {
 		if($prefix !== '') $prefix .= ' ';
 		switch(get_class($entity)) {
 		case 'User':
-			if ($comment == 1) {
-				$keyfile .= "# {$entity->uid}";
-				$keyfile .= " granted access by {$access->granted_by->uid} on {$grant_date_full}";
-				$keyfile .= "\n";
-			}
-			if($entity->active) {
-				$keys = $entity->list_public_keys($account_name, $hostname, false);
-				foreach($keys as $key) {
-					$keyfile .= $prefix.$key->export_userkey_with_fixed_comment($entity, $comment)."\n";
-				}
-			} elseif ($comment == 1) {
-				$keyfile .= "# Account disabled\n";
-			}
+			$keyfile = append_user_keys(
+				$keyfile,
+				$entity,
+				$prefix,
+				$account_name,
+				$hostname,
+				$comment,
+				"granted access by {$access->granted_by->uid} on {$grant_date_full}"
+			);
 			break;
 		case 'ServerAccount':
-			if ($comment == 1) {
-				$keyfile .= "# {$entity->name}@{$entity->server->hostname}";
-				$keyfile .= " granted access by {$access->granted_by->uid} on {$grant_date_full}";
-				$keyfile .= "\n";
-			}
-			if($entity->server->key_management != 'decommissioned') {
-				$keys = $entity->list_public_keys($account_name, $hostname, false);
-				foreach($keys as $key) {
-					$keyfile .= $prefix.$key->export_serverkey_with_fixed_comment($entity, $comment)."\n";
-				}
-			} elseif ($comment == 1) {
-				$keyfile .= "# Decommissioned server\n";
-			}
+			$keyfile = append_serveraccount_keys(
+				$keyfile,
+				$entity,
+				$prefix,
+				$account_name,
+				$hostname,
+				$comment,
+				"granted access by {$access->granted_by->uid} on {$grant_date_full}"
+			);
 			break;
 		case 'Group':
 			// Recurse!
@@ -432,32 +597,24 @@ function get_group_keys($entities, $account_name, $hostname, $prefix, &$seen, $c
 	foreach($entities as $entity) {
 		switch(get_class($entity)) {
 		case 'User':
-			if ($comment == 1) {
-				$keyfile .= "# {$entity->uid}";
-				$keyfile .= "\n";
-			}
-			if($entity->active) {
-				$keys = $entity->list_public_keys($account_name, $hostname, false);
-				foreach($keys as $key) {
-					$keyfile .= $prefix.$key->export_userkey_with_fixed_comment($entity, $comment)."\n";
-				}
-			} elseif ($comment == 1) {
-				$keyfile .= "# Account disabled\n";
-			}
+			$keyfile = append_user_keys(
+				$keyfile,
+				$entity,
+				$prefix,
+				$account_name,
+				$hostname,
+				$comment
+			);
 			break;
 		case 'ServerAccount':
-			if ($comment == 1) {
-				$keyfile .= "# {$entity->name}@{$entity->server->hostname}";
-				$keyfile .= "\n";
-			}
-			if($entity->server->key_management != 'decommissioned') {
-				$keys = $entity->list_public_keys($account_name, $hostname, false);
-				foreach($keys as $key) {
-					$keyfile .= $prefix.$key->export_serverkey_with_fixed_comment($entity, $comment)."\n";
-				}
-			} elseif ($comment == 1) {
-				$keyfile .= "# Decommissioned server\n";
-			}
+			$keyfile = append_serveraccount_keys(
+				$keyfile,
+				$entity,
+				$prefix,
+				$account_name,
+				$hostname,
+				$comment
+			);
 			break;
 		case 'Group':
 			// Recurse!
