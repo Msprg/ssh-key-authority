@@ -304,7 +304,7 @@
 						</label>
 					</div>
 					<div class="radio">
-						<label class="text-danger">
+						<label class="text-warning">
 							<input type="radio" name="key_management" value="none"<?php if($this->get('server')->key_management == 'none') out(' checked') ?>>
 							Disabled - server has no key management
 						</label>
@@ -316,7 +316,7 @@
 						</label>
 					</div>
 					<div class="radio">
-						<label class="text-warning">
+						<label class="text-danger">
 							<input type="radio" name="key_management" value="decommissioned"<?php if($this->get('server')->key_management == 'decommissioned') out(' checked') ?>>
 							Disabled - server has been decommissioned (remove all user access keys)
 						</label>
