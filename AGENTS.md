@@ -47,7 +47,7 @@ See `migrations/00x.php` for schema.
 - Sync: `sync_request`, `external_key`
 
 ## Development and runtime notes
-- PHP 5.6+ (legacy), MySQL/MariaDB, LDAP.
+- PHP 8.2+, MySQL/MariaDB, LDAP.
 - Docker is the preferred deployment method (`Dockerfile`, `docker-compose.yml`).
 - Cron and supervisor configs live under `etc/`.
 - Web assets in `public_html/` (Bootstrap + jQuery).

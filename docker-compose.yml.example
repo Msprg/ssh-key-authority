@@ -22,7 +22,7 @@ services:
       retries: 3
       start_period: 30s
   ska-db:
-    image: mariadb:lts
+    image: mariadb:11.8.5
     container_name: ska-db
     restart: unless-stopped
     environment:

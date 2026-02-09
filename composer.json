@@ -3,6 +3,12 @@
     "description": "A tool for managing user and server SSH access to any number of servers.",
     "type": "project",
     "require": {
+        "php": "^8.2",
+        "ext-ldap": "*",
+        "ext-mbstring": "*",
+        "ext-mysqli": "*",
+        "ext-pcntl": "*",
+        "ext-ssh2": "*",
         "phpseclib/phpseclib": "^3.0"
     },
     "license": "Apache-2.0"
