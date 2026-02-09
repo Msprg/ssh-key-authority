@@ -422,7 +422,7 @@
 						</div>
 						<label for="history_username_env_format" class="control-label">Format override (optional)</label>
 						<input type="text" id="history_username_env_format" name="history_username_env_format" value="<?php out($history_username_env_format); ?>" class="form-control">
-						<p class="help-block">Supported placeholder: <code>{uid}</code>. If missing, sync falls back to <code>BASH_HISTORY_USERNAME={uid}</code>.</p>
+						<p class="help-block">Supported placeholder: <code>{uid}</code>. Format must include both <code>=</code> and <code>{uid}</code>; invalid values fall back to <code>BASH_HISTORY_USERNAME={uid}</code>.</p>
 					</div>
 				</div>
 				<div class="form-group">
