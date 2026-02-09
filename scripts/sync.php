@@ -503,13 +503,13 @@ function history_username_env_format_is_valid($format) {
 	if($format === '') {
 		return false;
 	}
-	if(preg_match('/[\r\n,=\'"\\\\]/', $format)) {
+	if(preg_match('/[\r\n,\'"\\\\]/', $format)) {
 		return false;
 	}
 	if(strpos($format, '{uid}') === false) {
 		return false;
 	}
-	if(!preg_match('/^[A-Za-z0-9 ._@:+{}-]+$/', $format)) {
+	if(!preg_match('/^[A-Za-z0-9 ._@:+={}-]+$/', $format)) {
 		return false;
 	}
 	$without_uid = str_replace('{uid}', '', $format);
@@ -520,10 +520,10 @@ function history_username_env_value_is_valid($value) {
 	if($value === '') {
 		return false;
 	}
-	if(preg_match('/[\r\n,=\'"\\\\{}]/', $value)) {
+	if(preg_match('/[\r\n,\'"\\\\{}]/', $value)) {
 		return false;
 	}
-	return preg_match('/^[A-Za-z0-9 ._@:+-]+$/', $value) === 1;
+	return preg_match('/^[A-Za-z0-9 ._@:+=-]+$/', $value) === 1;
 }
 
 function normalize_history_username_env_format($format) {
