@@ -499,9 +499,36 @@ function get_default_history_username_env_format() {
 	return 'BASH_HISTORY_USERNAME={uid}';
 }
 
+function history_username_env_format_is_valid($format) {
+	if($format === '') {
+		return false;
+	}
+	if(preg_match('/[\r\n,=\'"\\\\]/', $format)) {
+		return false;
+	}
+	if(strpos($format, '{uid}') === false) {
+		return false;
+	}
+	if(!preg_match('/^[A-Za-z0-9 ._@:+{}-]+$/', $format)) {
+		return false;
+	}
+	$without_uid = str_replace('{uid}', '', $format);
+	return strpos($without_uid, '{') === false && strpos($without_uid, '}') === false;
+}
+
+function history_username_env_value_is_valid($value) {
+	if($value === '') {
+		return false;
+	}
+	if(preg_match('/[\r\n,=\'"\\\\{}]/', $value)) {
+		return false;
+	}
+	return preg_match('/^[A-Za-z0-9 ._@:+-]+$/', $value) === 1;
+}
+
 function normalize_history_username_env_format($format) {
 	$format = trim((string)$format);
-	if($format === '' || strpos($format, '{uid}') === false) {
+	if(!history_username_env_format_is_valid($format)) {
 		return get_default_history_username_env_format();
 	}
 	return $format;
@@ -560,6 +587,9 @@ function get_server_history_username_env_format($server) {
 }
 
 function escape_authorized_keys_option_value($value) {
+	if(!history_username_env_value_is_valid($value)) {
+		throw new InvalidArgumentException('Invalid history username environment value');
+	}
 	return str_replace(array('\\', '"'), array('\\\\', '\\"'), $value);
 }
 
@@ -576,7 +606,14 @@ function get_user_history_username_env_option($user, $server) {
 		return null;
 	}
 	$value = str_replace('{uid}', $user->uid, get_server_history_username_env_format($server));
-	return 'environment="'.escape_authorized_keys_option_value($value).'"';
+	if(!history_username_env_value_is_valid($value)) {
+		return null;
+	}
+	try {
+		return 'environment="'.escape_authorized_keys_option_value($value).'"';
+	} catch(InvalidArgumentException $e) {
+		return null;
+	}
 }
 
 function add_user_history_username_env_option($prefix, $user, $server) {
