@@ -587,6 +587,10 @@ function get_server_history_username_env_format($server) {
 }
 
 function escape_authorized_keys_option_value($value) {
+	$value = preg_replace('/[[:cntrl:]]+/', '', (string)$value);
+	if($value === null) {
+		$value = '';
+	}
 	if(!history_username_env_value_is_valid($value)) {
 		throw new InvalidArgumentException('Invalid history username environment value');
 	}
