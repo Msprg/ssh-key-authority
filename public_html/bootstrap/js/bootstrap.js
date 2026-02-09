@@ -213,12 +213,7 @@ if (typeof jQuery === 'undefined') {
     setTimeout($.proxy(function () {
       var stateVal = data[state] == null ? this.options[state] : data[state]
       if (val === 'html') {
-        if (this.options && typeof sanitizeHtml === 'function' && typeof DefaultWhitelist !== 'undefined') {
-          stateVal = sanitizeHtml(stateVal, DefaultWhitelist, null)
-        } else {
-          // Fallback hotfix: escape HTML when sanitizer is not in scope.
-          stateVal = $('<div/>').text(stateVal == null ? '' : String(stateVal)).html()
-        }
+        stateVal = $('<div/>').text(stateVal == null ? '' : String(stateVal)).html()
       }
       $el[val](stateVal)
 
