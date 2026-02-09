@@ -151,12 +151,14 @@ $(function() {
 	form.each(function() {
 		$('#authorization.hide').hide().removeClass('hide');
 		$('#ldap_access_options.hide').hide().removeClass('hide');
+		$('#history_username_env.hide').hide().removeClass('hide');
 		$("input[name='key_management']", form).on('click', function() {display_relevant_options()});
 		$("input[name='authorization']", form).on('click', function() {display_relevant_options()});
 		function display_relevant_options() {
 			if($("input[name='key_management']:checked").val() == 'keys') {
 				$('#authorization').show('fast');
 				$('#supervision').show('fast');
+				$('#history_username_env').show('fast');
 				if($("input[name='authorization']:checked").val() == 'manual') {
 					$('#ldap_access_options').hide('fast');
 				} else {
@@ -166,6 +168,7 @@ $(function() {
 				$('#authorization').hide('fast');
 				$('#ldap_access_options').hide('fast');
 				$('#supervision').hide('fast');
+				$('#history_username_env').hide('fast');
 			}
 		}
 

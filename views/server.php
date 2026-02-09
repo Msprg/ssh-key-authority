@@ -37,6 +37,7 @@ $all_servers = $active_user->list_admined_servers();
 $all_accounts = $server->list_accounts();
 $ldap_access_options = $server->list_ldap_access_options();
 $server_admin_can_reset_host_key = (isset($config['security']) && isset($config['security']['host_key_reset_restriction']) && $config['security']['host_key_reset_restriction'] == 0);
+require_once('history_username_env_common.php');
 
 if(isset($_POST['sync'])) {
 	$server->sync_access();
@@ -121,6 +122,25 @@ if(isset($_POST['sync'])) {
 		$server->key_management = $_POST['key_management'];
 		$server->authorization = $_POST['authorization'];
 		$server->key_scan = $_POST['key_scan'];
+		$history_username_env_mode = isset($_POST['history_username_env_mode']) ? $_POST['history_username_env_mode'] : 'inherit';
+		if($history_username_env_mode !== 'inherit' && $history_username_env_mode !== 'enabled' && $history_username_env_mode !== 'disabled') {
+			$history_username_env_mode = 'inherit';
+		}
+		$history_username_env_format = null;
+		if(isset($_POST['history_username_env_format'])) {
+			$history_username_env_format = trim($_POST['history_username_env_format']);
+			if($history_username_env_format === '') {
+				$history_username_env_format = null;
+			} elseif(!history_username_env_format_is_valid($history_username_env_format)) {
+				$alert = new UserAlert;
+				$alert->content = "Invalid history username env format. Allowed characters: letters, digits, spaces, dot (.), underscore (_), hyphen (-), at sign (@), colon (:), plus (+), equals (=), and braces for {uid}. The format must include both '=' and {uid}.";
+				$alert->class = 'danger';
+				$active_user->add_alert($alert);
+				$history_username_env_format = null;
+			}
+		}
+		$server->history_username_env_mode = $history_username_env_mode;
+		$server->history_username_env_format = $history_username_env_format;
 		try {
 			$server->update();
 			$alert = new UserAlert;

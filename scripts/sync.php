@@ -19,6 +19,7 @@
 
 chdir(__DIR__);
 require('../core.php');
+require_once(__DIR__.'/../history_username_env_common.php');
 require('sync-common.php');
 require('ssh.php');
 $required_files = array('config/keys-sync', 'config/keys-sync.pub');
@@ -325,25 +326,25 @@ function sync_server($id, $only_username = null, $preview = false) {
 	foreach($accounts as $account) {
 		if($account->active == 0 || $account->sync_status == 'proposed') continue;
 		$username = str_replace('/', '', $account->name);
-		$keyfile = sprintf($header, "account '{$account->name}'", $config['web']['baseurl']."/servers/".urlencode($hostname)."/accounts/".urlencode($account->name));
-		// Collect a set of all groups that the account is a member of (directly or indirectly) and the account itself
-		$sets = $account->list_group_membership();
-		$sets[] = $account;
-		foreach($sets as $set) {
-			if(get_class($set) == 'Group') {
-				if($set->active == 0) continue; // Rules for inactive groups should be ignored
-				if ($comment == 1) {
-					$keyfile .= "# === Start of rules applied due to membership in {$set->name} group ===\n";
+			$keyfile = sprintf($header, "account '{$account->name}'", $config['web']['baseurl']."/servers/".urlencode($hostname)."/accounts/".urlencode($account->name));
+			// Collect a set of all groups that the account is a member of (directly or indirectly) and the account itself
+			$sets = $account->list_group_membership();
+			$sets[] = $account;
+			foreach($sets as $set) {
+				if(get_class($set) == 'Group') {
+					if($set->active == 0) continue; // Rules for inactive groups should be ignored
+					if ($comment == 1) {
+						$keyfile .= "# === Start of rules applied due to membership in {$set->name} group ===\n";
+					}
+				}
+				$access_rules = $set->list_access();
+				$keyfile .= get_keys($access_rules, $account->name, $hostname, $comment, $server);
+				if(get_class($set) == 'Group' && $comment == 1) {
+					$keyfile .= "# === End of rules applied due to membership in {$set->name} group ===\n\n";
 				}
 			}
-			$access_rules = $set->list_access();
-			$keyfile .= get_keys($access_rules, $account->name, $hostname, $comment);
-			if(get_class($set) == 'Group' && $comment == 1) {
-				$keyfile .= "# === End of rules applied due to membership in {$set->name} group ===\n\n";
-			}
+			$keyfiles[$username] = array('keyfile' => $keyfile, 'check' => false, 'account' => $account);
 		}
-		$keyfiles[$username] = array('keyfile' => $keyfile, 'check' => false, 'account' => $account);
-	}
 	if($server->authorization == 'automatic LDAP' || $server->authorization == 'manual LDAP') {
 		// Generate keyfiles for LDAP users
 		$optiontext = array();
@@ -361,8 +362,9 @@ function sync_server($id, $only_username = null, $preview = false) {
 					$keys = $user->list_public_keys($username, $hostname, false);
 					if(count($keys) > 0) {
 						if($user->active) {
+							$user_prefix = add_user_history_username_env_option($prefix, $user, $server);
 							foreach($keys as $key) {
-								$keyfile .= $prefix.$key->export_userkey_with_fixed_comment($user, $comment)."\n";
+								$keyfile .= $user_prefix.$key->export_userkey_with_fixed_comment($user, $comment)."\n";
 							}
 						} elseif ($comment == 1) {
 							$keyfile .= "# Account disabled\n";
@@ -494,7 +496,123 @@ function sync_server($id, $only_username = null, $preview = false) {
 	echo date('c')." {$hostname}: Sync finished\n";
 }
 
-function append_user_keys($keyfile, $entity, $prefix, $account_name, $hostname, $comment, $grant_details = null) {
+function get_default_history_username_env_format() {
+	return 'BASH_HISTORY_USERNAME={uid}';
+}
+
+function history_username_env_value_is_valid($value) {
+	if($value === '') {
+		return false;
+	}
+	if(preg_match('/[\r\n,\'"\\\\{}]/', $value)) {
+		return false;
+	}
+	return preg_match('/^[A-Za-z0-9 ._@:+=-]+$/', $value) === 1;
+}
+
+function normalize_history_username_env_format($format) {
+	$format = trim((string)$format);
+	if(!history_username_env_format_is_valid($format)) {
+		return get_default_history_username_env_format();
+	}
+	return $format;
+}
+
+function get_global_history_username_env_enabled() {
+	global $config;
+	if(!isset($config['privacy']) || !isset($config['privacy']['history_username_env_default'])) {
+		return false;
+	}
+	return intval($config['privacy']['history_username_env_default']) === 1;
+}
+
+function get_global_history_username_env_format() {
+	global $config;
+	if(isset($config['privacy']) && isset($config['privacy']['history_username_env_format'])) {
+		return normalize_history_username_env_format($config['privacy']['history_username_env_format']);
+	}
+	return get_default_history_username_env_format();
+}
+
+function get_server_history_username_env_mode($server) {
+	try {
+		$mode = $server->history_username_env_mode;
+	} catch(Exception $e) {
+		return 'inherit';
+	}
+	if($mode !== 'enabled' && $mode !== 'disabled') {
+		return 'inherit';
+	}
+	return $mode;
+}
+
+function get_server_history_username_env_enabled($server) {
+	$mode = get_server_history_username_env_mode($server);
+	switch($mode) {
+	case 'enabled':
+		return true;
+	case 'disabled':
+		return false;
+	default:
+		return get_global_history_username_env_enabled();
+	}
+}
+
+function get_server_history_username_env_format($server) {
+	try {
+		$format = trim((string)$server->history_username_env_format);
+	} catch(Exception $e) {
+		$format = '';
+	}
+	if($format !== '') {
+		return normalize_history_username_env_format($format);
+	}
+	return get_global_history_username_env_format();
+}
+
+function escape_authorized_keys_option_value($value) {
+	$value = preg_replace('/[[:cntrl:]]+/', '', (string)$value);
+	if($value === null) {
+		$value = '';
+	}
+	if(!history_username_env_value_is_valid($value)) {
+		throw new InvalidArgumentException('Invalid history username environment value');
+	}
+	return str_replace(array('\\', '"'), array('\\\\', '\\"'), $value);
+}
+
+function append_authorized_keys_option($prefix, $option) {
+	$prefix = trim((string)$prefix);
+	if($prefix === '') {
+		return $option.' ';
+	}
+	return rtrim($prefix, ',').','.$option.' ';
+}
+
+function get_user_history_username_env_option($user, $server) {
+	if(!get_server_history_username_env_enabled($server)) {
+		return null;
+	}
+	$value = str_replace('{uid}', $user->uid, get_server_history_username_env_format($server));
+	if(!history_username_env_value_is_valid($value)) {
+		return null;
+	}
+	try {
+		return 'environment="'.escape_authorized_keys_option_value($value).'"';
+	} catch(InvalidArgumentException $e) {
+		return null;
+	}
+}
+
+function add_user_history_username_env_option($prefix, $user, $server) {
+	$option = get_user_history_username_env_option($user, $server);
+	if(is_null($option)) {
+		return $prefix;
+	}
+	return append_authorized_keys_option($prefix, $option);
+}
+
+function append_user_keys($keyfile, $entity, $prefix, $account_name, $hostname, $comment, $server, $grant_details = null) {
 	if ($comment == 1) {
 		$keyfile .= "# {$entity->uid}";
 		if (!is_null($grant_details)) {
@@ -503,6 +621,7 @@ function append_user_keys($keyfile, $entity, $prefix, $account_name, $hostname, 
 		$keyfile .= "\n";
 	}
 	if($entity->active) {
+		$prefix = add_user_history_username_env_option($prefix, $entity, $server);
 		$keys = $entity->list_public_keys($account_name, $hostname, false);
 		foreach($keys as $key) {
 			$keyfile .= $prefix.$key->export_userkey_with_fixed_comment($entity, $comment)."\n";
@@ -532,7 +651,7 @@ function append_serveraccount_keys($keyfile, $entity, $prefix, $account_name, $h
 	return $keyfile;
 }
 
-function get_keys($access_rules, $account_name, $hostname, $comment) {
+function get_keys($access_rules, $account_name, $hostname, $comment, $server) {
 	$keyfile = '';
 	foreach($access_rules as $access) {
 		$grant_date = new DateTime($access->grant_date);
@@ -553,6 +672,7 @@ function get_keys($access_rules, $account_name, $hostname, $comment) {
 				$account_name,
 				$hostname,
 				$comment,
+				$server,
 				"granted access by {$access->granted_by->uid} on {$grant_date_full}"
 			);
 			break;
@@ -579,7 +699,7 @@ function get_keys($access_rules, $account_name, $hostname, $comment) {
 				if ($comment == 1) {
 					$keyfile .= "# == Start of {$entity->name} group members ==\n";
 				}
-				$keyfile .= get_group_keys($entity->list_members(), $account_name, $hostname, $prefix, $seen, $comment);
+				$keyfile .= get_group_keys($entity->list_members(), $account_name, $hostname, $prefix, $seen, $comment, $server);
 				if ($comment == 1) {
 					$keyfile .= "# == End of {$entity->name} group members ==\n";
 				}
@@ -592,7 +712,7 @@ function get_keys($access_rules, $account_name, $hostname, $comment) {
 	return $keyfile;
 }
 
-function get_group_keys($entities, $account_name, $hostname, $prefix, &$seen, $comment) {
+function get_group_keys($entities, $account_name, $hostname, $prefix, &$seen, $comment, $server) {
 	$keyfile = '';
 	foreach($entities as $entity) {
 		switch(get_class($entity)) {
@@ -603,7 +723,8 @@ function get_group_keys($entities, $account_name, $hostname, $prefix, &$seen, $c
 				$prefix,
 				$account_name,
 				$hostname,
-				$comment
+				$comment,
+				$server
 			);
 			break;
 		case 'ServerAccount':
@@ -625,7 +746,7 @@ function get_group_keys($entities, $account_name, $hostname, $prefix, &$seen, $c
 					$keyfile .= "\n";
 					$keyfile .= "# == Start of {$entity->name} group members ==\n";
 				}
-				$keyfile .= get_group_keys($entity->list_members(), $account_name, $hostname, $prefix, $seen, $comment);
+				$keyfile .= get_group_keys($entity->list_members(), $account_name, $hostname, $prefix, $seen, $comment, $server);
 				if ($comment == 1) {
 					$keyfile .= "# == End of {$entity->name} group members ==\n";
 				}

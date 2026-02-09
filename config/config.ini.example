@@ -79,6 +79,15 @@ hostname_verification = 0
 ;  2: Only a link to the public key web page will be added to each key
 comment_key_files = 1
 
+; Add environment="<value>" to synced user key lines.
+;  1: enabled by default (can be overridden per server)
+;  0: disabled by default (can be overridden per server)
+history_username_env_default = 1
+
+; Format for the environment value.
+; Supported placeholder: {uid} (required, otherwise a safe default is used)
+history_username_env_format = BASH_HISTORY_USERNAME={uid}
+
 [monitoring]
 ; Status information is stored in the following file on target machines:
 status_file_path = "/var/local/keys-sync.status"

@@ -369,8 +369,8 @@
 					</div>
 				</div>
 			</div>
-			<?php $options = $this->get('ldap_access_options'); ?>
-			<div class="form-group<?php if($this->get('server')->key_management != 'keys' || $this->get('server')->authorization == 'manual') out(' hide') ?>" id="ldap_access_options">
+				<?php $options = $this->get('ldap_access_options'); ?>
+				<div class="form-group<?php if($this->get('server')->key_management != 'keys' || $this->get('server')->authorization == 'manual') out(' hide') ?>" id="ldap_access_options">
 				<label class="col-sm-2 control-label">LDAP access options</label>
 				<div class="col-sm-10">
 					<div class="checkbox">
@@ -387,16 +387,49 @@
 					<div class="checkbox">
 						<label><input type="checkbox" name="access_option[no-X11-forwarding][enabled]"<?php if(isset($options['no-X11-forwarding'])) out(' checked'); ?>> Disallow X11 forwarding (<code>no-X11-forwarding</code>)</label>
 					</div>
-					<div class="checkbox">
-						<label><input type="checkbox" name="access_option[no-pty][enabled]"<?php if(isset($options['no-pty'])) out(' checked'); ?>> Disable terminal (<code>no-pty</code>)</label>
+						<div class="checkbox">
+							<label><input type="checkbox" name="access_option[no-pty][enabled]"<?php if(isset($options['no-pty'])) out(' checked'); ?>> Disable terminal (<code>no-pty</code>)</label>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="form-group">
-				<div class="col-sm-offset-2 col-sm-10">
-					<button type="submit" name="edit_server" value="1" class="btn btn-primary">Change settings</button>
+				<?php
+				$history_username_env_mode = $this->get('server')->history_username_env_mode;
+				if($history_username_env_mode != 'enabled' && $history_username_env_mode != 'disabled') {
+					$history_username_env_mode = 'inherit';
+				}
+				$history_username_env_format = trim((string)$this->get('server')->history_username_env_format);
+				?>
+				<div class="form-group<?php if($this->get('server')->key_management != 'keys') out(' hide') ?>" id="history_username_env">
+					<label class="col-sm-2 control-label">History username env</label>
+					<div class="col-sm-10">
+						<div class="radio">
+							<label>
+								<input type="radio" name="history_username_env_mode" value="inherit"<?php if($history_username_env_mode == 'inherit') out(' checked') ?>>
+								Inherit global default
+							</label>
+						</div>
+						<div class="radio">
+							<label>
+								<input type="radio" name="history_username_env_mode" value="enabled"<?php if($history_username_env_mode == 'enabled') out(' checked') ?>>
+								Force enabled
+							</label>
+						</div>
+						<div class="radio">
+							<label>
+								<input type="radio" name="history_username_env_mode" value="disabled"<?php if($history_username_env_mode == 'disabled') out(' checked') ?>>
+								Force disabled
+							</label>
+						</div>
+						<label for="history_username_env_format" class="control-label">Format override (optional)</label>
+						<input type="text" id="history_username_env_format" name="history_username_env_format" value="<?php out($history_username_env_format); ?>" class="form-control">
+						<p class="help-block">Supported placeholder: <code>{uid}</code>. If missing, sync falls back to <code>BASH_HISTORY_USERNAME={uid}</code>.</p>
+					</div>
 				</div>
-			</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="submit" name="edit_server" value="1" class="btn btn-primary">Change settings</button>
+					</div>
+				</div>
 			<?php } else { ?>
 			<dl>
 				<dt>SSH port number</dt>
@@ -424,8 +457,8 @@
 					}
 					?>
 				</dd>
-				<?php if($this->get('server')->key_management == 'keys' && $this->get('server')->authorization != 'manual') { ?>
-				<dt>LDAP access options</dt>
+					<?php if($this->get('server')->key_management == 'keys' && $this->get('server')->authorization != 'manual') { ?>
+					<dt>LDAP access options</dt>
 				<dd>
 					<?php
 					$optiontext = array();
@@ -440,9 +473,34 @@
 						<?php
 					}
 					?>
-				</dd>
-				<?php } ?>
-			</dl>
+					</dd>
+					<?php } ?>
+					<?php if($this->get('server')->key_management == 'keys') { ?>
+					<dt>History username env</dt>
+					<dd>
+						<?php
+						$history_username_env_mode = $this->get('server')->history_username_env_mode;
+						$history_username_env_format = trim((string)$this->get('server')->history_username_env_format);
+						switch($history_username_env_mode) {
+						case 'enabled':
+							out('Force enabled');
+							break;
+						case 'disabled':
+							out('Force disabled');
+							break;
+						default:
+							out('Inherit global default');
+						}
+						out(' | Format: ');
+						if($history_username_env_format === '') {
+							out('Inherit global format');
+						} else {
+							out($history_username_env_format);
+						}
+						?>
+					</dd>
+					<?php } ?>
+				</dl>
 			<?php if($this->get('server_admin_can_reset_host_key')) { ?>
 			<div class="form-group">
 				<label for="host_key" class="col-sm-2 control-label">Host key</label>
