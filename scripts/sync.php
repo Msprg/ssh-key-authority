@@ -510,7 +510,7 @@ function normalize_history_username_env_format($format) {
 function get_global_history_username_env_enabled() {
 	global $config;
 	if(!isset($config['privacy']) || !isset($config['privacy']['history_username_env_default'])) {
-		return true;
+		return false;
 	}
 	return intval($config['privacy']['history_username_env_default']) === 1;
 }
