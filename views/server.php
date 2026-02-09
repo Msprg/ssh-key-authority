@@ -121,14 +121,16 @@ if(isset($_POST['sync'])) {
 		$server->key_management = $_POST['key_management'];
 		$server->authorization = $_POST['authorization'];
 		$server->key_scan = $_POST['key_scan'];
-		$history_username_env_mode = isset($_POST['history_username_env_mode']) ? $_POST['history_username_env_mode'] : 'inherit';
-		if($history_username_env_mode !== 'inherit' && $history_username_env_mode !== 'enabled' && $history_username_env_mode !== 'disabled') {
-			$history_username_env_mode = 'inherit';
-		}
 		$history_username_env_format = null;
 		if(isset($_POST['history_username_env_format'])) {
 			$history_username_env_format = trim($_POST['history_username_env_format']);
 			if($history_username_env_format === '') {
+				$history_username_env_format = null;
+			} else if(!preg_match('/^[a-zA-Z0-9_\-={}]+$/', $history_username_env_format)) {
+				$alert = new UserAlert;
+				$alert->content = "Invalid history username env format. Only alphanumeric characters, underscores, hyphens, equals signs, and curly braces are allowed.";
+				$alert->class = 'danger';
+				$active_user->add_alert($alert);
 				$history_username_env_format = null;
 			}
 		}
