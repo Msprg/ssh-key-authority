@@ -62,6 +62,8 @@ class Server extends Record {
 			case 'key_management':
 			case 'authorization':
 			case 'custom_keys':
+			case 'history_username_env_mode':
+			case 'history_username_env_format':
 				$resync = true;
 				break;
 			case 'host_key':

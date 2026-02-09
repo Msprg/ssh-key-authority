@@ -121,6 +121,19 @@ if(isset($_POST['sync'])) {
 		$server->key_management = $_POST['key_management'];
 		$server->authorization = $_POST['authorization'];
 		$server->key_scan = $_POST['key_scan'];
+		$history_username_env_mode = isset($_POST['history_username_env_mode']) ? $_POST['history_username_env_mode'] : 'inherit';
+		if($history_username_env_mode !== 'inherit' && $history_username_env_mode !== 'enabled' && $history_username_env_mode !== 'disabled') {
+			$history_username_env_mode = 'inherit';
+		}
+		$history_username_env_format = null;
+		if(isset($_POST['history_username_env_format'])) {
+			$history_username_env_format = trim($_POST['history_username_env_format']);
+			if($history_username_env_format === '') {
+				$history_username_env_format = null;
+			}
+		}
+		$server->history_username_env_mode = $history_username_env_mode;
+		$server->history_username_env_format = $history_username_env_format;
 		try {
 			$server->update();
 			$alert = new UserAlert;
