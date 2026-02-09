@@ -10,6 +10,9 @@ function history_username_env_format_is_valid($format) {
 	if(!preg_match('/^[A-Za-z0-9 ._@:+={}-]+$/', $format)) {
 		return false;
 	}
+	if(strpos($format, '=') === false) {
+		return false;
+	}
 	if(strpos($format, '{uid}') === false) {
 		return false;
 	}

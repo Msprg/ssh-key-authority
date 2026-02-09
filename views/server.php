@@ -133,7 +133,7 @@ if(isset($_POST['sync'])) {
 				$history_username_env_format = null;
 			} elseif(!history_username_env_format_is_valid($history_username_env_format)) {
 				$alert = new UserAlert;
-				$alert->content = "Invalid history username env format. Allowed characters: letters, digits, spaces, dot (.), underscore (_), hyphen (-), at sign (@), colon (:), plus (+), equals (=), and braces for {uid}. The format must include {uid}.";
+				$alert->content = "Invalid history username env format. Allowed characters: letters, digits, spaces, dot (.), underscore (_), hyphen (-), at sign (@), colon (:), plus (+), equals (=), and braces for {uid}. The format must include both '=' and {uid}.";
 				$alert->class = 'danger';
 				$active_user->add_alert($alert);
 				$history_username_env_format = null;
