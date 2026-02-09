@@ -57,7 +57,7 @@ Installation
 
 
 <details>
-<summary>Baremeteal install (old, deprecated, use docker if possible)</summary>
+<summary>Baremetal install (old, deprecated, use docker if possible)</summary>
 
 1.  Clone the repo somewhere outside of your default Apache document root.
 
