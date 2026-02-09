@@ -37,23 +37,7 @@ $all_servers = $active_user->list_admined_servers();
 $all_accounts = $server->list_accounts();
 $ldap_access_options = $server->list_ldap_access_options();
 $server_admin_can_reset_host_key = (isset($config['security']) && isset($config['security']['host_key_reset_restriction']) && $config['security']['host_key_reset_restriction'] == 0);
-
-function history_username_env_format_is_valid($format): bool {
-	if($format === '') {
-		return false;
-	}
-	if(preg_match('/[\r\n,=\'"\\\\]/', $format)) {
-		return false;
-	}
-	if(strpos($format, '{uid}') === false) {
-		return false;
-	}
-	if(!preg_match('/^[A-Za-z0-9 ._@:+{}-]+$/', $format)) {
-		return false;
-	}
-	$without_uid = str_replace('{uid}', '', $format);
-	return strpos($without_uid, '{') === false && strpos($without_uid, '}') === false;
-}
+require_once('history_username_env_common.php');
 
 if(isset($_POST['sync'])) {
 	$server->sync_access();

@@ -19,6 +19,7 @@
 
 chdir(__DIR__);
 require('../core.php');
+require_once(__DIR__.'/../history_username_env_common.php');
 require('sync-common.php');
 require('ssh.php');
 $required_files = array('config/keys-sync', 'config/keys-sync.pub');
@@ -497,23 +498,6 @@ function sync_server($id, $only_username = null, $preview = false) {
 
 function get_default_history_username_env_format() {
 	return 'BASH_HISTORY_USERNAME={uid}';
-}
-
-function history_username_env_format_is_valid($format) {
-	if($format === '') {
-		return false;
-	}
-	if(preg_match('/[\r\n,\'"\\\\]/', $format)) {
-		return false;
-	}
-	if(strpos($format, '{uid}') === false) {
-		return false;
-	}
-	if(!preg_match('/^[A-Za-z0-9 ._@:+={}-]+$/', $format)) {
-		return false;
-	}
-	$without_uid = str_replace('{uid}', '', $format);
-	return strpos($without_uid, '{') === false && strpos($without_uid, '}') === false;
 }
 
 function history_username_env_value_is_valid($value) {
