@@ -25,18 +25,19 @@ Requirements
 * Docker engine
 
 <details>
-<summary>Baremeteal requirements (old, deprecated, use docker if possible)</summary>
+<summary>Baremetal requirements (old, deprecated, use docker if possible)</summary>
 
 * An LDAP directory service
-* Apache 2.2 or higher
-* PHP 5.6 or higher
+* Apache 2.4 or higher
+* PHP 8.2 or higher
 * Composer
 * PHP JSON extension
 * PHP LDAP extension
 * PHP mbstring (Multibyte String) extension
 * PHP MySQL extension
-* PHP GMP extension (not strictly needed, but a big performance improvement)
-* MySQL (5.5+), Percona Server (5.5+) or MariaDB database
+* PHP SSH2 extension
+* PHP GMP extension (recommended for better crypto performance)
+* MySQL (8.0+), Percona Server (8.0+) or MariaDB database (10.11+)
 
 </details>
 
