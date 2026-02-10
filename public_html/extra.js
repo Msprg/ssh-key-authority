@@ -21,8 +21,9 @@
 // Handle 'navigate-back' links
 $(function() {
 	$('a.navigate-back').on('click', function(e) {
+		e.preventDefault();
 		window.history.back();
-		event.stopPropagation();
+		e.stopPropagation();
 	});
 });
 
@@ -130,16 +131,16 @@ $(function() {
 // Home page dynamic add pubkey form
 $(function() {
 	$('#add_key_button').on('click', function() {
-		$('#help').hide().removeClass('hidden');
-		$('#add_key_form').hide().removeClass('hidden');
+		$('#help').hide().removeClass('hidden d-none');
+		$('#add_key_form').hide().removeClass('hidden d-none');
 		$('#add_key_form').show('fast');
 		$('#add_key_button').hide();
 		$('#add_public_key').focus();
 	});
-	$('#add_key_form button[type=button].btn-info').on('click', function() {
+	$('#add_key_form [data-action="toggle-help"], #add_key_form button[type=button].btn-info').on('click', function() {
 		$('#help').toggle('fast');
 	});
-	$('#add_key_form button[type=button].btn-default').on('click', function() {
+	$('#add_key_form [data-action="cancel-add-key"], #add_key_form button[type=button].btn-default').on('click', function() {
 		$('#add_key_form').hide('fast');
 		$('#add_key_button').show();
 	});

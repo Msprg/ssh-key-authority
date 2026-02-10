@@ -53,6 +53,9 @@ $account_remote_access = $account->list_remote_access();
 $account_groups = $account->list_group_membership();
 $account_admins = $account->list_admins();
 $pubkeys = $account->list_public_keys();
+$key_lifecycle_service = new KeyLifecycleService();
+$access_rule_service = new AccessRuleService();
+$relation_lifecycle_service = new RelationLifecycleService();
 if(isset($_POST['add_access']) && ($server_admin || $account_admin || $active_user->admin)) {
 	if(isset($_POST['username'])) {
 		try {
@@ -78,22 +81,9 @@ if(isset($_POST['add_access']) && ($server_admin || $account_admin || $active_us
 	}
 	if(isset($entity)) {
 		if($_POST['add_access'] == '2') {
-			$options = array();
-			if(isset($_POST['access_option'])) {
-				foreach($_POST['access_option'] as $k => $v) {
-					if(isset($v['enabled'])) {
-						$option = new AccessOption();
-						$option->option = $k;
-						if(isset($v['value'])) {
-							$option->value = $v['value'];
-						} else {
-							$option->value = null;
-						}
-						$options[] = $option;
-					}
-				}
-			}
-			$account->add_access($entity, $options);
+			$options_payload = isset($_POST['access_option']) && is_array($_POST['access_option']) ? $_POST['access_option'] : array();
+			$options = $access_rule_service->build_access_options_from_payload($options_payload);
+			$access_rule_service->add_access($account, $entity, $options);
 			redirect('#access');
 		} else {
 			$content = new PageSection('access_options');
@@ -103,31 +93,16 @@ if(isset($_POST['add_access']) && ($server_admin || $account_admin || $active_us
 		}
 	}
 } elseif(isset($_POST['delete_access']) && ($server_admin || $account_admin || $active_user->admin)) {
-	foreach($account_access as $access) {
-		if($access->id == $_POST['delete_access']) {
-			$access_to_delete = $access;
-		}
-	}
-	if(isset($access_to_delete)) {
-		$account->delete_access($access_to_delete);
-	}
+	$access_rule_service->delete_access_by_id($account, $account_access, $_POST['delete_access']);
 	redirect('#access');
 } elseif(isset($_POST['approve_access']) && ($server_admin || $account_admin || $active_user->admin)) {
-	foreach($account_access_requests as $request) {
-		if($request->id == $_POST['approve_access']) {
-			$request_to_approve = $request;
-		}
-	}
+	$request_to_approve = $access_rule_service->find_access_request_by_id($account_access_requests, $_POST['approve_access']);
 	if(isset($request_to_approve)) {
 		$account->approve_access_request($request_to_approve);
 		redirect('#access');
 	}
 } elseif(isset($_POST['reject_access']) && ($server_admin || $account_admin || $active_user->admin)) {
-	foreach($account_access_requests as $request) {
-		if($request->id == $_POST['reject_access']) {
-			$request_to_reject = $request;
-		}
-	}
+	$request_to_reject = $access_rule_service->find_access_request_by_id($account_access_requests, $_POST['reject_access']);
 	if(isset($request_to_reject)) {
 		$sync_status = $account->sync_status;
 		$account->reject_access_request($request_to_reject);
@@ -141,12 +116,9 @@ if(isset($_POST['add_access']) && ($server_admin || $account_admin || $active_us
 	}
 } elseif(isset($_POST['add_public_key']) && ($server_admin || $account_admin || $active_user->admin)) {
 	try {
-		$public_key = new PublicKey;
-		$public_key->import($_POST['add_public_key'], null, isset($_POST['force']) && $active_user->admin);
-		$account->add_public_key($public_key);
+		$key_lifecycle_service->add_server_account_public_key($account, $_POST['add_public_key'], isset($_POST['force']) && $active_user->admin);
 		redirect('#pubkeys');
 	} catch(InvalidArgumentException $e) {
-		global $config;
 		$content = new PageSection('key_upload_fail');
 		$error_message = $e->getMessage();
 		if(preg_match('/^Insufficient bits in public key: (\d+) < (\d+)$/', $error_message, $matches)) {
@@ -158,14 +130,7 @@ if(isset($_POST['add_access']) && ($server_admin || $account_admin || $active_us
 		}
 	}
 } elseif(isset($_POST['delete_public_key']) && ($server_admin || $account_admin || $active_user->admin)) {
-	foreach($pubkeys as $pubkey) {
-		if($pubkey->id == $_POST['delete_public_key']) {
-			$key_to_delete = $pubkey;
-		}
-	}
-	if(isset($key_to_delete)) {
-		$account->delete_public_key($key_to_delete);
-	}
+	$key_lifecycle_service->delete_entity_public_key($account, $pubkeys, $_POST['delete_public_key']);
 	redirect('#pubkeys');
 } elseif(isset($_POST['add_admin']) && ($server_admin || $active_user->admin)) {
 	try {
@@ -178,14 +143,7 @@ if(isset($_POST['add_access']) && ($server_admin || $account_admin || $active_us
 		redirect('#admins');
 	}
 } elseif(isset($_POST['delete_admin']) && ($server_admin || $active_user->admin)) {
-	foreach($account_admins as $admin) {
-		if($admin->id == $_POST['delete_admin']) {
-			$admin_to_delete = $admin;
-		}
-	}
-	if(isset($admin_to_delete)) {
-		$account->delete_admin($admin_to_delete);
-	}
+	$relation_lifecycle_service->delete_server_account_admin_by_id($account, $account_admins, $_POST['delete_admin']);
 	redirect('#admins');
 } else {
 	$content = new PageSection('serveraccount');

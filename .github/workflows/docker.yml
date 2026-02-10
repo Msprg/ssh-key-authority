@@ -25,7 +25,45 @@ on:
     types: [ published ]
 
 jobs:
+  quality-gates:
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v6
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: ldap, mbstring, mysqli, pcntl, ssh2
+        coverage: none
+
+    - name: Install dependencies
+      run: composer install --no-interaction --prefer-dist
+
+    - name: Composer validate
+      run: composer validate --strict
+
+    - name: Composer audit
+      run: composer audit
+
+    - name: Composer platform requirements
+      run: composer check-platform-reqs
+
+    - name: Docker compose config validation
+      run: docker compose config -q
+
+    - name: PHP lint
+      run: composer run lint
+
+    - name: PHP static analysis
+      run: composer run stan
+
+    - name: Smoke harness dry-run
+      run: composer run smoke:dry-run
+
   build-matrix:
+    needs: quality-gates
     if: github.event_name != 'pull_request'
     outputs:
       safe_ref: ${{ steps.ref.outputs.safe_ref }}

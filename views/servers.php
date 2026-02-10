@@ -26,7 +26,13 @@
  * @param string $error_ref Reference to a variable where error messages are stored
  * @return array|NULL Prepared information about the hosts, needed for the bulk import or null in case of an error
  */
-function prepare_import(string $csv_document, &$error_ref): ?array {
+function prepare_import(
+	string $csv_document,
+	&$error_ref,
+	RelationLifecycleService $relation_lifecycle_service,
+	UserDirectory $user_dir,
+	GroupDirectory $group_dir
+): ?array {
 	$errors = "";
 	$lines = explode("\n", $csv_document);
 	$line_num = 0;
@@ -73,7 +79,7 @@ function prepare_import(string $csv_document, &$error_ref): ?array {
 		$admin_names = explode(";", $cells[3]);
 		$admins = [];
 		foreach ($admin_names as $name) {
-			$entity = user_or_group_by_name($name);
+			$entity = $relation_lifecycle_service->resolve_user_or_group_by_name($user_dir, $group_dir, $name);
 			if ($entity !== null) {
 				$admins[] = $entity;
 			} else {
@@ -92,36 +98,17 @@ function prepare_import(string $csv_document, &$error_ref): ?array {
 }
 
 /**
- * Search for a user with the given login name. If no such user exists, search for
- * a group with the given name. If also no matching group exists, null is returned.
- *
- * @param string $name The name of the user/group
- * @return Entity|NULL The user or group, or null if nothing was found
- */
-function user_or_group_by_name(string $name): ?Entity {
-	global $user_dir, $group_dir;
-
-	try {
-		return $user_dir->get_user_by_uid($name);
-	} catch(UserNotFoundException $e) {
-		try {
-			return $group_dir->get_group_by_name($name);
-		} catch(GroupNotFoundException $e) {
-			return null;
-		}
-	}
-}
-
-/**
  * Read the setting default_key_supervision from the config, but map invalid
  * values to the default value "full".
  *
  * @return string "full", "rootonly" or "off"
  */
 function default_key_scan_setting(): string {
-	global $config;
-
-	$setting = $config["general"]["default_key_supervision"];
+	$config = RuntimeState::get('config', array());
+	$setting = '';
+	if(is_array($config) && isset($config['general']) && is_array($config['general'])) {
+		$setting = (string)($config['general']['default_key_supervision'] ?? '');
+	}
 	if ($setting == "") {
 		// "off" is mapped to an empty string by the ini parser
 		return "off";
@@ -139,7 +126,7 @@ function default_key_scan_setting(): string {
  * @return array Statistics array about the number of added servers and number of already existing servers
  */
 function run_import(array $entries): array {
-	global $server_dir;
+	$server_dir = RuntimeState::get('server_dir');
 
 	$imported = 0;
 	$existed = 0;
@@ -165,6 +152,8 @@ function run_import(array $entries): array {
 	];
 }
 
+$relation_lifecycle_service = new RelationLifecycleService();
+
 if(isset($_POST['add_server'])) {
 	$hostname = trim($_POST['hostname']);
 	if(!Server::hostname_valid($hostname)) {
@@ -174,7 +163,7 @@ if(isset($_POST['add_server'])) {
 		$admin_names = preg_split('/[\s,]+/', $_POST['admins'], -1, PREG_SPLIT_NO_EMPTY);
 		$admins = array();
 		foreach($admin_names as $admin_name) {
-			$new_admin = user_or_group_by_name($admin_name);
+			$new_admin = $relation_lifecycle_service->resolve_user_or_group_by_name($user_dir, $group_dir, $admin_name);
 			if ($new_admin !== null) {
 				$admins[] = $new_admin;
 			} else {
@@ -214,7 +203,7 @@ if(isset($_POST['add_server'])) {
 	}
 } else if (isset($_POST['add_bulk'])) {
 	$csv_document = $_POST['import'];
-	$entries = prepare_import($csv_document, $errors);
+	$entries = prepare_import($csv_document, $errors, $relation_lifecycle_service, $user_dir, $group_dir);
 	$alert = new UserAlert;
 	if ($entries !== null) {
 		$result = run_import($entries);

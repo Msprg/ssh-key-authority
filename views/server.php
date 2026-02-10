@@ -37,34 +37,23 @@ $all_servers = $active_user->list_admined_servers();
 $all_accounts = $server->list_accounts();
 $ldap_access_options = $server->list_ldap_access_options();
 $server_admin_can_reset_host_key = (isset($config['security']) && isset($config['security']['host_key_reset_restriction']) && $config['security']['host_key_reset_restriction'] == 0);
+$relation_lifecycle_service = new RelationLifecycleService();
 require_once('history_username_env_common.php');
 
 if(isset($_POST['sync'])) {
 	$server->sync_access();
 	redirect();
 } elseif(isset($_POST['add_admin']) && ($active_user->admin)) {
-	try {
-		$entity = $user_dir->get_user_by_uid($_POST['user_name']);
-	} catch(UserNotFoundException $e) {
-		try {
-			$entity = $group_dir->get_group_by_name($_POST['user_name']);
-		} catch(GroupNotFoundException $e) {
-			$content = new PageSection('user_not_found');
-		}
+	$entity = $relation_lifecycle_service->resolve_user_or_group_by_name($user_dir, $group_dir, $_POST['user_name']);
+	if($entity === null) {
+		$content = new PageSection('user_not_found');
 	}
 	if(isset($entity)) {
-		$server->add_admin($entity);
+		$relation_lifecycle_service->add_server_admin($server, $entity);
 		redirect('#admins');
 	}
 } elseif(isset($_POST['delete_admin']) && ($active_user->admin)) {
-	foreach($server_admins as $admin) {
-		if($admin->id == $_POST['delete_admin']) {
-			$admin_to_delete = $admin;
-		}
-	}
-	if(isset($admin_to_delete)) {
-		$server->delete_admin($admin_to_delete);
-	}
+	$relation_lifecycle_service->delete_server_admin_by_id($server, $server_admins, $_POST['delete_admin']);
 	redirect('#admins');
 } elseif(isset($_POST['add_account']) && ($server_admin || $active_user->admin)) {
 	$account = new ServerAccount();

@@ -31,7 +31,6 @@ abstract class EntityEvent extends Record {
 	* @return mixed data stored in field
 	*/
 	public function &__get($field) {
-		global $user_dir;
 		switch($field) {
 		case 'actor':
 			$actor = new User($this->data['actor_id']);

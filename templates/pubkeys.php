@@ -63,10 +63,10 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 ?>
 <h1>Public keys</h1>
 <ul class="nav nav-tabs">
-	<li><a href="#managed" data-toggle="tab">Managed keys</a></li>
-	<li><a href="#new" data-toggle="tab">New keys</a></li>
-	<li><a href="#allowed" data-toggle="tab">Allowed keys</a></li>
-	<li><a href="#denied" data-toggle="tab">Denied keys</a></li>
+	<li><a href="#managed" data-toggle="tab" data-bs-toggle="tab">Managed keys</a></li>
+	<li><a href="#new" data-toggle="tab" data-bs-toggle="tab">New keys</a></li>
+	<li><a href="#allowed" data-toggle="tab" data-bs-toggle="tab">Allowed keys</a></li>
+	<li><a href="#denied" data-toggle="tab" data-bs-toggle="tab">Denied keys</a></li>
 </ul>
 <div class="tab-content">
 	<div class="tab-pane fade in active" id="managed">
@@ -83,22 +83,22 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 					<div class="panel-body">
 						<form>
 							<div class="row">
-								<div class="col-md-6 form-group">
+								<div class="col-md-6 mb-3">
 									<label for="fingerprint-search">Fingerprint</label>
 									<input type="text" id="fingerprint-search" name="fingerprint" class="form-control" value="<?php out($this->get('filter')['fingerprint'])?>">
 								</div>
-								<div class="col-md-2 form-group">
+								<div class="col-md-2 mb-3">
 									<label for="type-search">Key type</label>
 									<input type="text" id="type-search" name="type" class="form-control" value="<?php out($this->get('filter')['type'])?>">
 								</div>
-								<div class="col-md-2 form-group">
+								<div class="col-md-2 mb-3">
 									<label for="keysize-min">Min key size</label>
 									<div class="input-group">
 										<span class="input-group-addon">≥</span>
 										<input type="text" id="keysize-min" name="keysize-min" class="form-control" value="<?php out($this->get('filter')['keysize-min'])?>">
 									</div>
 								</div>
-								<div class="col-md-2 form-group">
+								<div class="col-md-2 mb-3">
 									<label for="keysize-max">Max key size</label>
 									<div class="input-group">
 										<span class="input-group-addon">≤</span>

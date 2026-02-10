@@ -24,11 +24,11 @@
 <?php keygen_help('below') ?>
 <form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-	<div class="form-group">
+	<div class="mb-3">
 		<label for="public_key">Public key</label>
 		<textarea class="form-control" rows="4" id="add_public_key" name="add_public_key" required></textarea>
 	</div>
-	<div class="form-group"><button class="btn btn-primary btn-lg btn-block">Add public key</button></div>
+	<div class="mb-3"><button class="btn btn-primary btn-lg w-100">Add public key</button></div>
 </form>
 <?php } else { ?>
 <h2>Your public keys</h2>
@@ -81,24 +81,24 @@
 	</div>
 </form>
 <p><button id="add_key_button" class="btn btn-default">Add another public key</button></p>
-<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="hidden" id="add_key_form">
+<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="hidden d-none" id="add_key_form">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-	<div class="form-group">
+	<div class="mb-3">
 		<label for="add_public_key">Public key</label>
 		<textarea class="form-control" rows="4" id="add_public_key" name="add_public_key" required></textarea>
 	</div>
-	<div class="form-group row">
+	<div class="row">
 		<div class="col-md-8">
-			<button type="submit" class="btn btn-primary btn-lg btn-block">Add public key</button>
+			<button type="submit" class="btn btn-primary btn-lg w-100">Add public key</button>
 		</div>
 		<div class="col-md-2">
-			<button type="button" class="btn btn-info btn-lg btn-block">Help</button>
+			<button type="button" class="btn btn-info btn-lg w-100" data-action="toggle-help">Help</button>
 		</div>
 		<div class="col-md-2">
-			<button type="button" class="btn btn-default btn-lg btn-block">Cancel</button>
+			<button type="button" class="btn btn-default btn-lg w-100" data-action="cancel-add-key">Cancel</button>
 		</div>
 	</div>
-	<div id="help" class="hidden">
+	<div id="help" class="hidden d-none">
 		<?php keygen_help('above') ?>
 	</div>
 </form>

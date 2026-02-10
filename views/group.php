@@ -24,7 +24,7 @@
  * @return array Database entities of the server accounts
  */
 function find_server_accounts(string $text, array &$errors): array {
-	global $server_dir;
+	$server_dir = RuntimeState::get('server_dir');
 
 	$lines = explode("\n", $text);
 	$accounts = [];
@@ -66,6 +66,8 @@ $group_access = $group->list_access();
 $group_remote_access = $group->list_remote_access();
 $group_admins = $group->list_admins();
 $group_admin = $active_user->admin_of($group);
+$access_rule_service = new AccessRuleService();
+$relation_lifecycle_service = new RelationLifecycleService();
 
 if(isset($_POST['add_admin']) && ($active_user->admin)) {
 	try {
@@ -78,14 +80,7 @@ if(isset($_POST['add_admin']) && ($active_user->admin)) {
 		redirect('#admins');
 	}
 } elseif(isset($_POST['delete_admin']) && ($active_user->admin)) {
-	foreach($group_admins as $admin) {
-		if($admin->id == $_POST['delete_admin']) {
-			$admin_to_delete = $admin;
-		}
-	}
-	if(isset($admin_to_delete)) {
-		$group->delete_admin($admin_to_delete);
-	}
+	$relation_lifecycle_service->delete_group_admin_by_id($group, $group_admins, $_POST['delete_admin']);
 	redirect('#admins');
 } elseif(isset($_POST['add_member']) && ($group_admin || $active_user->admin)) {
 	if(isset($_POST['username'])) {
@@ -152,14 +147,7 @@ if(isset($_POST['add_admin']) && ($active_user->admin)) {
 	}
 	redirect('#members');
 } elseif(isset($_POST['delete_member']) && ($group_admin || $active_user->admin)) {
-	foreach($group_members as $member) {
-		if($member->entity_id == $_POST['delete_member']) {
-			$member_to_delete = $member;
-		}
-	}
-	if(isset($member_to_delete) && !$group->system) {
-		$group->delete_member($member_to_delete);
-	}
+	$relation_lifecycle_service->delete_group_member_by_entity_id($group, $group_members, $_POST['delete_member']);
 	redirect('#members');
 } elseif(isset($_POST['add_access']) && ($group_admin || $active_user->admin)) {
 	if(isset($_POST['username'])) {
@@ -186,22 +174,9 @@ if(isset($_POST['add_admin']) && ($active_user->admin)) {
 	}
 	if(isset($entity)) {
 		if($_POST['add_access'] == '2') {
-			$options = array();
-			if(isset($_POST['access_option'])) {
-				foreach($_POST['access_option'] as $k => $v) {
-					if(isset($v['enabled'])) {
-						$option = new AccessOption();
-						$option->option = $k;
-						if(isset($v['value'])) {
-							$option->value = $v['value'];
-						} else {
-							$option->value = null;
-						}
-						$options[] = $option;
-					}
-				}
-			}
-			$group->add_access($entity, $options);
+			$options_payload = isset($_POST['access_option']) && is_array($_POST['access_option']) ? $_POST['access_option'] : array();
+			$options = $access_rule_service->build_access_options_from_payload($options_payload);
+			$access_rule_service->add_group_access($group, $entity, $options);
 			redirect('#access');
 		} else {
 			$content = new PageSection('access_options');
@@ -211,14 +186,7 @@ if(isset($_POST['add_admin']) && ($active_user->admin)) {
 		}
 	}
 } elseif(isset($_POST['delete_access']) && ($group_admin || $active_user->admin)) {
-	foreach($group_access as $access) {
-		if($access->id == $_POST['delete_access']) {
-			$access_to_delete = $access;
-		}
-	}
-	if(isset($access_to_delete)) {
-		$group->delete_access($access_to_delete);
-	}
+	$access_rule_service->delete_group_access_by_id($group, $group_access, $_POST['delete_access']);
 	redirect('#access');
 } elseif(isset($_POST['edit_group']) && ($active_user->admin)) {
 	$name = trim($_POST['name']);

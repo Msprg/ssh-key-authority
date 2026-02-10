@@ -22,7 +22,7 @@
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h3 class="panel-title">
-			<a data-toggle="collapse" href="#server_list">
+			<a data-toggle="collapse" data-bs-toggle="collapse" href="#server_list">
 				Server list
 			</a>
 		</h3>
@@ -45,7 +45,7 @@
 	<?php } ?>
 
 	<h3>Add a new leader to all selected servers</h3>
-	<div class="form-group">
+	<div class="form-group mb-3">
 		<label for="user_name" class="sr-only">User or group name</label>
 		<input type="text" id="user_name" name="user_name" class="form-control" placeholder="User or group name" required list="userlist">
 		<datalist id="userlist">

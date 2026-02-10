@@ -24,14 +24,14 @@ foreach($this->get('group_members') as $member) {
 <h1><span class="glyphicon glyphicon-list-alt" title="Group"></span> <?php out($this->get('group')->name)?><?php if($this->get('group')->active == 0) out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></h1>
 <?php if($this->get('admin') || $this->get('group_admin')) { ?>
 <ul class="nav nav-tabs">
-	<li><a href="#members" data-toggle="tab">Members</a></li>
-	<li><a href="#access" data-toggle="tab">Access</a></li>
-	<li><a href="#outbound" data-toggle="tab">Outbound access</a></li>
-	<li><a href="#admins" data-toggle="tab">Administrators</a></li>
+	<li><a href="#members" data-toggle="tab" data-bs-toggle="tab">Members</a></li>
+	<li><a href="#access" data-toggle="tab" data-bs-toggle="tab">Access</a></li>
+	<li><a href="#outbound" data-toggle="tab" data-bs-toggle="tab">Outbound access</a></li>
+	<li><a href="#admins" data-toggle="tab" data-bs-toggle="tab">Administrators</a></li>
 	<?php if($this->get('admin')) { ?>
-	<li><a href="#settings" data-toggle="tab">Settings</a></li>
+	<li><a href="#settings" data-toggle="tab" data-bs-toggle="tab">Settings</a></li>
 	<?php } ?>
-	<li><a href="#log" data-toggle="tab">Log</a></li>
+	<li><a href="#log" data-toggle="tab" data-bs-toggle="tab">Log</a></li>
 </ul>
 
 <!-- Tab panes -->
@@ -105,14 +105,14 @@ foreach($this->get('group_members') as $member) {
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Add user</h3>
 			<div class="row">
-				<div class="form-group col-md-9">
+				<div class="col-md-9 mb-3">
 					<div class="input-group">
 						<span class="input-group-addon"><label for="username"><span class="glyphicon glyphicon-user" title="User"></span><span class="sr-only">User name</span></label></span>
 						<input type="text" id="username" name="username" class="form-control" placeholder="User name" required list="userlist">
 					</div>
 				</div>
-				<div class="form-group col-md-3">
-					<button type="submit" name="add_member" value="1" class="btn btn-primary btn-block">Add user to group</button>
+				<div class="col-md-3 mb-3">
+					<button type="submit" name="add_member" value="1" class="btn btn-primary w-100">Add user to group</button>
 				</div>
 			</div>
 		</form>
@@ -120,20 +120,20 @@ foreach($this->get('group_members') as $member) {
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Add server account</h3>
 			<div class="row">
-				<div class="form-group col-md-2">
+				<div class="col-md-2 mb-3">
 					<div class="input-group">
 						<span class="input-group-addon"><label for="account"><span class="glyphicon glyphicon-log-in" title="Server account"></span><span class="sr-only">Account</span></label></span>
 						<input type="text" id="account" name="account" class="form-control" placeholder="Account name" required>
 					</div>
 				</div>
-				<div class="form-group col-md-7">
+				<div class="col-md-7 mb-3">
 					<div class="input-group">
 						<span class="input-group-addon"><label for="hostname">@</label></span>
 						<input type="text" id="hostname" name="hostname" class="form-control" placeholder="Hostname" required list="<?php out($this->get('admin') ? 'serverlist' : 'adminedserverlist')?>">
 					</div>
 				</div>
-				<div class="form-group col-md-3">
-					<button type="submit" name="add_member" value="1" class="btn btn-primary btn-block">Add server account to group</button>
+				<div class="col-md-3 mb-3">
+					<button type="submit" name="add_member" value="1" class="btn btn-primary w-100">Add server account to group</button>
 				</div>
 			</div>
 		</form>
@@ -142,13 +142,13 @@ foreach($this->get('group_members') as $member) {
 			<h3>Add multiple server accounts</h3>
 			<p>Enter a list of accounts, one per line, in the form accountname@hostname</p>
 			<div class="row">
-				<div class="form-group col-md-12">
+				<div class="col-md-12 mb-3">
 					<textarea name="accounts" class="form-control"></textarea>
 				</div>
 			</div>
 			<div class="row">
-				<div class="form-group col-md-3">
-					<button type="submit" name="add_members" value="1" class="btn btn-primary btn-block">Add server accounts to group</button>
+				<div class="col-md-3 mb-3">
+					<button type="submit" name="add_members" value="1" class="btn btn-primary w-100">Add server accounts to group</button>
 				</div>
 			</div>
 		</form>
@@ -237,14 +237,14 @@ foreach($this->get('group_members') as $member) {
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Grant user access</h3>
 			<div class="row">
-				<div class="form-group col-md-8">
+				<div class="col-md-8 mb-3">
 					<div class="input-group">
 						<span class="input-group-addon"><label for="access-username"><span class="glyphicon glyphicon-user" title="User"></span><span class="sr-only">User name</span></label></span>
 						<input type="text" id="access-username" name="username" class="form-control" placeholder="User name" required list="userlist">
 					</div>
 				</div>
-				<div class="form-group col-md-4">
-					<button type="submit" name="add_access" value="1" class="btn btn-primary btn-block">Grant user access to group resources</button>
+				<div class="col-md-4 mb-3">
+					<button type="submit" name="add_access" value="1" class="btn btn-primary w-100">Grant user access to group resources</button>
 				</div>
 			</div>
 		</form>
@@ -252,20 +252,20 @@ foreach($this->get('group_members') as $member) {
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Grant server account access</h3>
 			<div class="row">
-				<div class="form-group col-md-2">
+				<div class="col-md-2 mb-3">
 					<div class="input-group">
 						<span class="input-group-addon"><label for="access-account"><span class="glyphicon glyphicon-log-in" title="Server account"></span><span class="sr-only">Account</span></label></span>
 						<input type="text" id="access-account" name="account" class="form-control" placeholder="Account name" required>
 					</div>
 				</div>
-				<div class="form-group col-md-6">
+				<div class="col-md-6 mb-3">
 					<div class="input-group">
 						<span class="input-group-addon"><label for="access-hostname">@</label></span>
 						<input type="text" id="access-hostname" name="hostname" class="form-control" placeholder="Hostname" required list="serverlist">
 					</div>
 				</div>
-				<div class="form-group col-md-4">
-					<button type="submit" name="add_access" value="1" class="btn btn-primary btn-block">Grant server account access to group resources</button>
+				<div class="col-md-4 mb-3">
+					<button type="submit" name="add_access" value="1" class="btn btn-primary w-100">Grant server account access to group resources</button>
 				</div>
 			</div>
 		</form>
@@ -273,14 +273,14 @@ foreach($this->get('group_members') as $member) {
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Grant group access</h3>
 			<div class="row">
-				<div class="form-group col-md-8">
+				<div class="col-md-8 mb-3">
 					<div class="input-group">
 						<span class="input-group-addon"><label for="access-group"><span class="glyphicon glyphicon-list-alt" title="Group"></span><span class="sr-only">Group name</span></label></span>
 						<input type="text" id="access-group" name="group" class="form-control" placeholder="Group name" required list="grouplist">
 					</div>
 				</div>
-				<div class="form-group col-md-4">
-					<button type="submit" name="add_access" value="1" class="btn btn-primary btn-block">Grant a group access to this group's resources</button>
+				<div class="col-md-4 mb-3">
+					<button type="submit" name="add_access" value="1" class="btn btn-primary w-100">Grant a group access to this group's resources</button>
 				</div>
 			</div>
 		</form>

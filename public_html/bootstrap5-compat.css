@@ -1,0 +1,187 @@
+/*
+## Bootstrap 5 compatibility layer for Bootstrap 3 runtime.
+## Keeps existing SKA behavior while allowing gradual mixed-markup migration.
+*/
+
+/* Spacing aliases (Bootstrap 5 ms/me utilities) */
+.ms-0 { margin-left: 0 !important; }
+.ms-1 { margin-left: .25rem !important; }
+.ms-2 { margin-left: .5rem !important; }
+.ms-3 { margin-left: 1rem !important; }
+.ms-4 { margin-left: 1.5rem !important; }
+.ms-5 { margin-left: 3rem !important; }
+
+.me-0 { margin-right: 0 !important; }
+.me-1 { margin-right: .25rem !important; }
+.me-2 { margin-right: .5rem !important; }
+.me-3 { margin-right: 1rem !important; }
+.me-4 { margin-right: 1.5rem !important; }
+.me-5 { margin-right: 3rem !important; }
+
+.ps-0 { padding-left: 0 !important; }
+.ps-1 { padding-left: .25rem !important; }
+.ps-2 { padding-left: .5rem !important; }
+.ps-3 { padding-left: 1rem !important; }
+.ps-4 { padding-left: 1.5rem !important; }
+.ps-5 { padding-left: 3rem !important; }
+
+.pe-0 { padding-right: 0 !important; }
+.pe-1 { padding-right: .25rem !important; }
+.pe-2 { padding-right: .5rem !important; }
+.pe-3 { padding-right: 1rem !important; }
+.pe-4 { padding-right: 1.5rem !important; }
+.pe-5 { padding-right: 3rem !important; }
+
+.mt-0 { margin-top: 0 !important; }
+.mt-1 { margin-top: .25rem !important; }
+.mt-2 { margin-top: .5rem !important; }
+.mt-3 { margin-top: 1rem !important; }
+.mt-4 { margin-top: 1.5rem !important; }
+.mt-5 { margin-top: 3rem !important; }
+
+.mb-0 { margin-bottom: 0 !important; }
+.mb-1 { margin-bottom: .25rem !important; }
+.mb-2 { margin-bottom: .5rem !important; }
+.mb-3 { margin-bottom: 1rem !important; }
+.mb-4 { margin-bottom: 1.5rem !important; }
+.mb-5 { margin-bottom: 3rem !important; }
+
+/* Text / float aliases */
+.text-start { text-align: left !important; }
+.text-end { text-align: right !important; }
+.float-start { float: left !important; }
+.float-end { float: right !important; }
+.fw-bold { font-weight: 700 !important; }
+.fw-semibold { font-weight: 600 !important; }
+.fw-normal { font-weight: 400 !important; }
+
+/* Visibility helpers */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.visually-hidden-focusable {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.visually-hidden-focusable:active,
+.visually-hidden-focusable:focus {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  clip: auto !important;
+  white-space: normal !important;
+}
+
+/* Dropdown and dismissible alias support */
+.dropdown-menu-end {
+  right: 0;
+  left: auto;
+}
+
+.alert-dismissible,
+.alert-dismissable {
+  padding-right: 35px;
+}
+
+/* Bootstrap 5 style close button on Bootstrap 3 */
+.btn-close {
+  float: right;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1;
+  color: #000;
+  text-shadow: 0 1px 0 #fff;
+  background: transparent;
+  border: 0;
+  opacity: .2;
+}
+
+.btn-close:focus,
+.btn-close:hover {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+  opacity: .5;
+}
+
+/* Form and utility primitives used by Bootstrap 5 markup */
+.form-select {
+  display: block;
+  width: 100%;
+  height: 34px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-select:focus {
+  border-color: #66afe9;
+  outline: 0;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+}
+
+.form-check {
+  position: relative;
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.form-check-input {
+  margin-right: 6px;
+}
+
+.form-check-label {
+  font-weight: 400;
+}
+
+.d-grid {
+  display: grid !important;
+}
+
+.d-none {
+  display: none !important;
+}
+
+.d-block {
+  display: block !important;
+}
+
+.w-100 {
+  width: 100% !important;
+}
+
+.gap-1 { gap: .25rem !important; }
+.gap-2 { gap: .5rem !important; }
+.gap-3 { gap: 1rem !important; }
+.gap-4 { gap: 1.5rem !important; }
+.gap-5 { gap: 3rem !important; }
+
+.text-bg-success { color: #fff !important; background-color: #5cb85c !important; }
+.text-bg-danger { color: #fff !important; background-color: #d9534f !important; }
+.text-bg-warning { color: #000 !important; background-color: #f0ad4e !important; }
+.text-bg-info { color: #fff !important; background-color: #5bc0de !important; }

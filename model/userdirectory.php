@@ -31,8 +31,11 @@ class UserDirectory extends DBDirectory {
 
 	public function __construct() {
 		parent::__construct();
-		global $ldap;
-		$this->ldap = $ldap;
+		if(class_exists('RuntimeState', false)) {
+			$this->ldap = RuntimeState::get('ldap', array_key_exists('ldap', $GLOBALS) ? $GLOBALS['ldap'] : null);
+		} else {
+			$this->ldap = array_key_exists('ldap', $GLOBALS) ? $GLOBALS['ldap'] : null;
+		}
 		$this->cache_uid = array();
 	}
 

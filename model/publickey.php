@@ -25,6 +25,13 @@ class PublicKey extends Record {
 	*/
 	protected $table = 'public_key';
 
+	private static function get_runtime_config() {
+		if(class_exists('RuntimeState', false)) {
+			return RuntimeState::get('config', array_key_exists('config', $GLOBALS) ? $GLOBALS['config'] : array());
+		}
+		return array_key_exists('config', $GLOBALS) ? $GLOBALS['config'] : array();
+	}
+
 	/**
 	* Import all key data from a provided OpenSSH-text-format public key.
 	* Cope with some possible correctable whitespace data issues.
@@ -34,7 +41,7 @@ class PublicKey extends Record {
 	* @throws InvalidArgumentException if the public key cannot be parsed or is not sufficiently secure
 	*/
 	public function import($key, $uid = null, $force = false) {
-		global $config;
+		$config = self::get_runtime_config();
 		
 		// Remove newlines (often included by accident) and trim
 		$key = str_replace(array("\r", "\n"), array(), trim($key));
@@ -185,7 +192,7 @@ class PublicKey extends Record {
 	 * @return string key in OpenSSH-text-format
 	 */
 	public function export_userkey_with_fixed_comment(User $owner, int $comment) {
-		global $config;
+		$config = self::get_runtime_config();
 		if ($comment == 1) {
 			if ($this->creation_date === null) {
 				$date = '';
@@ -209,7 +216,7 @@ class PublicKey extends Record {
 	 * @return string key in OpenSSH-text-format
 	 */
 	public function export_serverkey_with_fixed_comment(ServerAccount $owner, int $comment) {
-		global $config;
+		$config = self::get_runtime_config();
 		if ($comment == 1) {
 			if ($this->creation_date === null) {
 				$date = '';
@@ -230,7 +237,7 @@ class PublicKey extends Record {
 	* @return string text summary
 	*/
 	public function summarize_key_information() {
-		global $config;
+		$config = self::get_runtime_config();
 		$url = $config['web']['baseurl'].'/pubkeys/'.urlencode($this->id);
 		$output = "The key fingerprint is:\n";
 		$output .= " MD5:{$this->fingerprint_md5}\n";

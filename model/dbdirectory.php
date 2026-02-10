@@ -25,8 +25,13 @@ abstract class DBDirectory {
 	* Sets up the local $database object for use by the inheriting classes.
 	*/
 	public function __construct() {
-		global $database;
-		$this->database = $database;
+		if(array_key_exists('database', $GLOBALS)) {
+			$this->database = $GLOBALS['database'];
+		} elseif(class_exists('RuntimeState', false)) {
+			$this->database = RuntimeState::get('database');
+		} else {
+			$this->database = null;
+		}
 	}
 
 }

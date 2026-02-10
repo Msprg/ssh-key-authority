@@ -27,25 +27,23 @@ $admined_servers = $user->list_admined_servers(array('pending_requests'));
 $admined_groups = $user->list_admined_groups(array('members', 'admins'));
 $groups = $user->list_group_memberships(array('members', 'admins'));
 $active_user_keys = $user->list_public_keys(null, null, false);
+$key_lifecycle_service = new KeyLifecycleService();
+$relation_lifecycle_service = new RelationLifecycleService();
 usort($admined_servers, function($a, $b) {return strnatcasecmp($a->hostname, $b->hostname);});
 
 if(isset($_POST['reassign_servers']) && is_array($_POST['servers']) && $active_user && $active_user->admin) {
-	try {
-		$new_admin = $user_dir->get_user_by_uid($_POST['reassign_to']);
-	} catch(UserNotFoundException $e) {
-		try {
-			$new_admin = $group_dir->get_group_by_name($_POST['reassign_to']);
-		} catch(GroupNotFoundException $e) {
+	$reassign_to = isset($_POST['reassign_to']) ? trim((string)$_POST['reassign_to']) : '';
+	if($reassign_to === '') {
+		$content = new PageSection('user_not_found');
+	}
+	if(!isset($content)) {
+		$new_admin = $relation_lifecycle_service->resolve_user_or_group_by_name($user_dir, $group_dir, $reassign_to);
+		if($new_admin === null) {
 			$content = new PageSection('user_not_found');
 		}
 	}
 	if(isset($new_admin)) {
-		foreach($admined_servers as $server) {
-			if(in_array($server->hostname, $_POST['servers'])) {
-				$server->add_admin($new_admin);
-				$server->delete_admin($user);
-			}
-		}
+		$relation_lifecycle_service->reassign_server_admins_by_hostname($admined_servers, $_POST['servers'], $user, $new_admin);
 		redirect('#details');
 	}
 } elseif(isset($_POST['delete_public_key']) && $active_user && $active_user->admin) {
@@ -53,13 +51,7 @@ if(isset($_POST['reassign_servers']) && is_array($_POST['servers']) && $active_u
 	$delete_key_id = filter_var($delete_key_raw, FILTER_VALIDATE_INT);
 	
 	if($delete_key_id !== false) {
-		$delete_key_id = (int)$delete_key_id;
-		foreach($active_user_keys as $public_key) {
-			if((int)$public_key->id === $delete_key_id) {
-				$user->delete_public_key($public_key);
-				break;
-			}
-		}
+		$key_lifecycle_service->delete_entity_public_key($user, $active_user_keys, (int)$delete_key_id);
 	}
 
 	redirect('#details');

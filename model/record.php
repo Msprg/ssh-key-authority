@@ -50,10 +50,23 @@ abstract class Record {
 	public $id;
 
 	public function __construct($id = null, $preload_data = array()) {
-		global $database;
-		global $active_user;
-		$this->database = &$database;
-		$this->active_user = &$active_user;
+		if(array_key_exists('database', $GLOBALS)) {
+			$this->database = $GLOBALS['database'];
+		} elseif(class_exists('RuntimeState', false)) {
+			$this->database = RuntimeState::get('database');
+		} else {
+			$this->database = null;
+		}
+		if($this->database === null) {
+			throw new RuntimeException('Database service is unavailable for Record initialization.');
+		}
+		if(array_key_exists('active_user', $GLOBALS)) {
+			$this->active_user = $GLOBALS['active_user'];
+		} elseif(class_exists('RuntimeState', false)) {
+			$this->active_user = RuntimeState::get('active_user');
+		} else {
+			$this->active_user = null;
+		}
 		$this->id = $id;
 		$this->data = array();
 		foreach($preload_data as $field => $value) {

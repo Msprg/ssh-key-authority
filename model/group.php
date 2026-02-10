@@ -20,6 +20,17 @@
 * Class that represents a grouping of users or server accounts
 */
 class Group extends Entity {
+	private static function runtime_value($key, $default = null) {
+		if(class_exists('RuntimeState', false)) {
+			return RuntimeState::get($key, $default);
+		}
+		return $default;
+	}
+
+	private static function runtime_config() {
+		return self::runtime_value('config', array_key_exists('config', $GLOBALS) ? $GLOBALS['config'] : array());
+	}
+
 	/**
 	* Defines the database table that this object is stored in
 	*/
@@ -82,7 +93,7 @@ class Group extends Entity {
 	* @param User $user to add as administrator
 	*/
 	public function add_admin(User $user) {
-		global $config;
+		$config = self::runtime_config();
 		parent::add_admin($user);
 		$url = $config['web']['baseurl'].'/groups/'.urlencode($this->name);
 		$email = new Email;
@@ -217,7 +228,7 @@ class Group extends Entity {
 	 * @param User $actor The user who performs this action.
 	 */
 	private function send_mail_addmember(Entity $entity, User $actor) {
-		global $config;
+		$config = self::runtime_config();
 		switch (get_class($entity)) {
 			case 'User':
 				$mailsubject = "{$entity->uid} added to {$this->name} group by {$actor->uid}";
@@ -248,7 +259,7 @@ class Group extends Entity {
 	 * @param array $success_list Array of strings, describing all accounts that have been added successfully
 	 */
 	private function send_bulkmail_addaccounts(array $success_list) {
-		global $config;
+		$config = self::runtime_config();
 		$actor = $this->active_user;
 		$count = count($success_list);
 		if ($count == 1) {
@@ -341,7 +352,7 @@ class Group extends Entity {
 	* @param array $access_options array of AccessOption rules to apply to the granted access
 	*/
 	public function add_access(Entity $entity, array $access_options) {
-		global $config;
+		$config = self::runtime_config();
 		if(is_null($this->entity_id)) throw new BadMethodCallException('Group must be in directory before access can be added');
 		if(is_null($entity->entity_id)) throw new InvalidArgumentException('Entity must be in directory before it can be granted access to a group');
 		$access = new Access;
@@ -424,7 +435,10 @@ class Group extends Entity {
 	* @return array of Group objects
 	*/
 	public function list_group_membership() {
-		global $group_dir;
+		$group_dir = self::runtime_value('group_dir', array_key_exists('group_dir', $GLOBALS) ? $GLOBALS['group_dir'] : null);
+		if($group_dir === null) {
+			throw new DomainException('Group directory service is unavailable; cannot list group membership.');
+		}
 		return $group_dir->list_group_membership($this);
 	}
 

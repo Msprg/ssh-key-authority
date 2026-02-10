@@ -223,8 +223,25 @@ class AuthService {
     public function requireAuth() {
         if (!$this->isAuthenticated()) {
             // Store the current URL to redirect back after login
-            $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+            $_SESSION['redirect_after_login'] = $this->sanitize_redirect_path($_SERVER['REQUEST_URI'] ?? '/');
             redirect('/login');
         }
+    }
+
+    private function sanitize_redirect_path($candidate) {
+        if(!is_string($candidate) || $candidate === '') {
+            return '/';
+        }
+        $parts = parse_url($candidate);
+        if($parts === false || isset($parts['scheme']) || isset($parts['host'])) {
+            return '/';
+        }
+        $path = $parts['path'] ?? '/';
+        if($path === '' || substr($path, 0, 1) !== '/' || substr($path, 0, 2) === '//') {
+            return '/';
+        }
+        $query = isset($parts['query']) ? '?'.$parts['query'] : '';
+        $fragment = isset($parts['fragment']) ? '#'.$parts['fragment'] : '';
+        return $path.$query.$fragment;
     }
 }
