@@ -49,6 +49,21 @@ abstract class Record {
 	*/
 	public $id;
 
+	/**
+	 * Resolve a runtime dependency from RuntimeState with $GLOBALS fallback.
+	 * Keeps legacy behavior while centralizing resolution logic.
+	 *
+	 * @param string $key
+	 * @param mixed $default
+	 * @return mixed
+	 */
+	protected static function resolve_runtime($key, $default = null) {
+		if(class_exists('RuntimeState', false)) {
+			return RuntimeState::get($key, array_key_exists($key, $GLOBALS) ? $GLOBALS[$key] : $default);
+		}
+		return array_key_exists($key, $GLOBALS) ? $GLOBALS[$key] : $default;
+	}
+
 	public function __construct($id = null, $preload_data = array()) {
 		if(array_key_exists('database', $GLOBALS)) {
 			$this->database = $GLOBALS['database'];
