@@ -105,8 +105,10 @@ function prepare_import(
  */
 function default_key_scan_setting(): string {
 	$config = RuntimeState::get('config', array());
-
-	$setting = $config["general"]["default_key_supervision"];
+	$setting = '';
+	if(is_array($config) && isset($config['general']) && is_array($config['general'])) {
+		$setting = (string)($config['general']['default_key_supervision'] ?? '');
+	}
 	if ($setting == "") {
 		// "off" is mapped to an empty string by the ini parser
 		return "off";

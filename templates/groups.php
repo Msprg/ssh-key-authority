@@ -19,14 +19,14 @@
 <h1>Groups</h1>
 <?php if($this->get('admin')) { ?>
 <ul class="nav nav-tabs">
-	<li><a href="#list" data-toggle="tab" data-bs-toggle="tab">Group list</a></li>
-	<li><a href="#add" data-toggle="tab" data-bs-toggle="tab">Add group</a></li>
+	<li class="nav-item"><a href="#list" class="nav-link active" data-toggle="tab" data-bs-toggle="tab">Group list</a></li>
+	<li class="nav-item"><a href="#add" class="nav-link" data-toggle="tab" data-bs-toggle="tab">Add group</a></li>
 </ul>
 <?php } ?>
 
 <!-- Tab panes -->
 <div class="tab-content">
-	<div class="tab-pane fade<?php if(!$this->get('admin')) out(' in active') ?>" id="list">
+	<div class="tab-pane fade show active" id="list">
 		<h2 class="sr-only">Group list</h2>
 		<div class="panel-group">
 			<div class="panel panel-default">
@@ -99,7 +99,7 @@
 		<?php } ?>
 	</div>
 	<?php if($this->get('admin')) { ?>
-	<div class="tab-pane fade" id="add">
+		<div class="tab-pane fade" id="add">
 		<h2 class="sr-only">Add group</h2>
 		<h3>Create local group</h3>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="form-inline">

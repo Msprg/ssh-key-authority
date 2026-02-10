@@ -22,12 +22,13 @@ class RelationLifecycleService {
 
 	/**
 	 * @param array $entities
-	 * @param mixed $entity_id
+	 * @param int|string $entity_id
 	 * @return Entity|null
 	 */
-	public function find_entity_by_id(array $entities, $entity_id) {
+	public function find_entity_by_id(array $entities, int|string $entity_id): ?Entity {
+		$target_id = (string)$entity_id;
 		foreach($entities as $entity) {
-			if($entity instanceof Entity && $entity->id == $entity_id) {
+			if($entity instanceof Entity && (string)$entity->id === $target_id) {
 				return $entity;
 			}
 		}
@@ -37,12 +38,13 @@ class RelationLifecycleService {
 
 	/**
 	 * @param array $entities
-	 * @param mixed $entity_id
+	 * @param int|string $entity_id
 	 * @return Entity|null
 	 */
-	public function find_entity_by_entity_id(array $entities, $entity_id) {
+	public function find_entity_by_entity_id(array $entities, int|string $entity_id): ?Entity {
+		$target_id = (string)$entity_id;
 		foreach($entities as $entity) {
-			if($entity instanceof Entity && $entity->entity_id == $entity_id) {
+			if($entity instanceof Entity && (string)$entity->entity_id === $target_id) {
 				return $entity;
 			}
 		}
@@ -92,15 +94,23 @@ class RelationLifecycleService {
 	 * @param Entity $from_admin
 	 * @param Entity $to_admin
 	 */
-	public function reassign_server_admins_by_hostname(array $servers, array $selected_server_hostnames, Entity $from_admin, Entity $to_admin) {
+	public function reassign_server_admins_by_hostname(array $servers, array $selected_server_hostnames, Entity $from_admin, Entity $to_admin): void {
+		$errors = array();
 		foreach($servers as $server) {
 			if(!($server instanceof Server)) {
 				continue;
 			}
 			if(in_array($server->hostname, $selected_server_hostnames, true)) {
-				$this->add_server_admin($server, $to_admin);
-				$this->delete_server_admin($server, $from_admin);
+				try {
+					$this->add_server_admin($server, $to_admin);
+					$this->delete_server_admin($server, $from_admin);
+				} catch(Throwable $error) {
+					$errors[] = "Server {$server->hostname}: {$error->getMessage()}";
+				}
 			}
+		}
+		foreach($errors as $error) {
+			error_log('reassign_server_admins_by_hostname: '.$error);
 		}
 	}
 

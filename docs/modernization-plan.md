@@ -25,7 +25,7 @@ Scope: behavior-preserving modernization of architecture, dependencies, frontend
   - create/remove access rules
   - trigger sync and verify keyfile outputs
 
-## 2. Current-State Inventory (Phase 0 Findings)
+## 2. Current-State Inventory (Initial Assessment Findings)
 
 ### Runtime and dependencies
 - PHP baseline already at `^8.2` (`composer.json`).
@@ -57,7 +57,7 @@ Scope: behavior-preserving modernization of architecture, dependencies, frontend
 - Gaps/risks:
   - CSP currently minimal (`default-src 'self'`) and set in template layer.
   - legacy hardening header (`X-XSS-Protection`) still used.
-  - `eval()` in autoload fallback in `core.php` was identified as unnecessary risk (removed in Phase 10).
+  - `eval()` in autoload fallback in `core.php` was identified as unnecessary risk (removed during final cleanup work).
   - `scripts/ssh.php` disables strict host checking for jumphost chain command.
   - inconsistent auth/session logic split between request handler, login view, and `AuthService`.
 
@@ -126,9 +126,9 @@ Scope: behavior-preserving modernization of architecture, dependencies, frontend
 - Add deterministic local/dev compose profiles.
 - Introduce reproducible smoke/integration test harness for critical workflows.
 
-## 5. Quality Gates For Every Phase
+## 5. Quality Gates For Every Roadmap Phase
 
-A phase is complete only if all pass (or failures are explicitly documented):
+A roadmap phase is complete only if all pass (or failures are explicitly documented):
 - `composer validate --strict`
 - `composer audit`
 - `composer check-platform-reqs`

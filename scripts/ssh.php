@@ -114,8 +114,10 @@ class SSH {
 	 *  - user_known_hosts_file: absolute path or /dev/null
 	 */
 	public static function build_jumphost_security_options(array $config): array {
-		$strict_checking = isset($config['security']['jumphost_strict_host_key_checking'])
-			&& (int)$config['security']['jumphost_strict_host_key_checking'] === 1;
+		$strict_checking = true;
+		if(isset($config['security']['jumphost_strict_host_key_checking'])) {
+			$strict_checking = (int)$config['security']['jumphost_strict_host_key_checking'] === 1;
+		}
 
 		$known_hosts_file = '/dev/null';
 		if($strict_checking) {

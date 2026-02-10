@@ -55,10 +55,13 @@ $auth_service = new AuthService($ldap, $user_dir, $config);
 $auth_guard = new RequestAuthGuard($auth_service, $public_routes);
 $csrf_guard = new RequestCsrfGuard();
 $policy_guard = new RequestPolicyGuard();
-$router_dispatcher = new RequestRouterDispatcher($policy_guard);
+$router_dispatcher = new RequestRouterDispatcher();
 
 $active_user = $auth_guard->resolve_active_user($request_context);
 RuntimeState::set('active_user', $active_user);
+if($active_user instanceof User) {
+	$exception_handler->set_active_user($active_user);
+}
 
 $policy_guard->enforce_web_enabled($config);
 $policy_guard->enforce_active_user_status($active_user, $relative_request_url, $absolute_request_url);

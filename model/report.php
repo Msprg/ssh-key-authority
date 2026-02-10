@@ -39,6 +39,9 @@ class Report {
 		$server_dir = class_exists('RuntimeState', false)
 			? RuntimeState::get('server_dir', array_key_exists('server_dir', $GLOBALS) ? $GLOBALS['server_dir'] : null)
 			: (array_key_exists('server_dir', $GLOBALS) ? $GLOBALS['server_dir'] : null);
+		if($server_dir === null) {
+			throw new RuntimeException('Server directory service is unavailable; cannot build report.');
+		}
 
 		// Server leader report
 		$servers = $server_dir->list_servers([], ['key_management' => ['keys']]);

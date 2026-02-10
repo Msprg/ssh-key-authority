@@ -11,6 +11,7 @@ class RequestPolicyGuard {
 	public function enforce_active_user_status($active_user, $relative_request_url, $absolute_request_url) {
 		if($active_user && (!$active_user->active || $active_user->force_disable)) {
 			require('views/error403.php');
+			die;
 		}
 	}
 

@@ -61,12 +61,13 @@ host_key_reset_restriction = 1
 host_key_collision_protection = 1
 
 ; SSH jumphost chain trust behavior:
-;  0: Keep current compatibility mode (no host key check for jumphost chain)
-;  1: Require host key checks for each jump and target tunnel step
-jumphost_strict_host_key_checking = 0
+;  0: Compatibility mode (no host key check for jumphost chain) - temporary only,
+;     increases man-in-the-middle risk.
+;  1: Require host key checks for each jump and target tunnel step (recommended).
+jumphost_strict_host_key_checking = 1
 ; Path to known_hosts file used when opening jumphost chain SSH commands.
-; Keep /dev/null for compatibility mode above.
-jumphost_known_hosts_file = /dev/null
+; When strict checking is enabled, this should point to a managed known_hosts file.
+jumphost_known_hosts_file = /etc/ssh/ssh_known_hosts
 
 ; Minimum key strength requirements for different key types
 ; RSA keys must be at least this many bits

@@ -26,7 +26,7 @@ Principles:
   - Add make/composer scripts for lint/static-analysis/checks.
   - Extend CI with composer/platform/docker validation jobs.
 - Effort estimate: 1-2 days
-- Risk: Low
+- Risk level: Low
 - Rollback strategy:
   - Revert tooling/CI commit; runtime behavior unaffected.
 
@@ -41,7 +41,7 @@ Principles:
     - sync trigger + keyfile verification
   - Add deterministic fixture data and scriptable checks for sync output diffs.
 - Effort estimate: 2-3 days
-- Risk: Medium
+- Risk level: Medium
 - Rollback strategy:
   - Revert test harness files only; app runtime unchanged.
 
@@ -53,7 +53,7 @@ Principles:
   - Remove duplicated auth/session logic from views where possible.
   - Keep existing routes, redirects, and LDAP assumptions unchanged.
 - Effort estimate: 3-5 days
-- Risk: Medium-High
+- Risk level: Medium-High
 - Rollback strategy:
   - Keep legacy path behind adapter toggle during rollout.
   - Revert boundary shim commits and restore prior handler flow.
@@ -64,6 +64,8 @@ Principles:
 - PR scope:
   - Introduce typed service/repository wrappers for access and key lifecycle.
   - Preserve existing SQL semantics; add compatibility assertions.
+- Effort estimate: 2-4 days
+- Risk level: Medium
 - Rollback:
   - Route wrappers back to legacy model calls.
 
@@ -73,6 +75,8 @@ Principles:
 - PR scope:
   - Isolate SSH/jumphost trust model and explicit validation behavior.
   - Add dry-run and diff diagnostics as first-class outputs.
+- Effort estimate: 2-4 days
+- Risk level: High
 - Checkpoint:
   - See `docs/phase-5-checkpoint.md` for completed slices and validation evidence.
 - Rollback:
@@ -83,6 +87,8 @@ Principles:
   - Move and strengthen security headers pragmatically.
 - PR scope:
   - Central response-layer headers, CSP report-first rollout, encode/validate audit.
+- Effort estimate: 2-3 days
+- Risk level: Medium
 - Checkpoint:
   - See `docs/phase-6-checkpoint.md` for completed slices and validation evidence.
 - Rollback:
@@ -93,6 +99,8 @@ Principles:
   - Enable mixed Bootstrap 3/5 migration with minimal disruption.
 - PR scope:
   - Add compatibility CSS/utilities and migrate shared layout primitives.
+- Effort estimate: 2-3 days
+- Risk level: Medium
 - Checkpoint:
   - See `docs/phase-7-checkpoint.md` for completed slices and validation evidence.
 - Rollback:
@@ -103,6 +111,8 @@ Principles:
   - Migrate high-value pages incrementally.
 - PR scope:
   - Login, home, server/account/access/public-key pages in separate small PRs.
+- Effort estimate: 4-7 days
+- Risk level: Medium-High
 - Checkpoint:
   - See `docs/phase-8-checkpoint.md` for completed slices and validation evidence.
 - Rollback:
@@ -113,6 +123,8 @@ Principles:
   - Replace global state usage in touched areas with explicit dependencies.
 - PR scope:
   - Directory/service construction via container/factory shim.
+- Effort estimate: 3-5 days
+- Risk level: Medium-High
 - Checkpoint:
   - See `docs/phase-9-checkpoint.md` for completed slices and validation evidence.
 - Rollback:
@@ -123,6 +135,8 @@ Principles:
   - Consolidate modernization, remove deprecated paths, update runbooks.
 - PR scope:
   - Remove transitional shims, finalize docs and operations guides.
+- Effort estimate: 1-2 days
+- Risk level: Low
 - Checkpoint:
   - See `docs/phase-10-checkpoint.md` for completed slices and validation evidence.
 - Rollback:

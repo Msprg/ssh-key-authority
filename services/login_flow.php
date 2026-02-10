@@ -35,19 +35,20 @@ class LoginFlowService {
 							$user = $this->auth_service->authenticate($username, $password);
 							if($user) {
 								unset($_SESSION['login_attempts'][$username]);
-								$redirect_url = $_SESSION['redirect_after_login'] ?? '/';
+								$redirect_url = $this->sanitize_redirect_path($_SESSION['redirect_after_login'] ?? '/');
 								unset($_SESSION['redirect_after_login']);
 								redirect($redirect_url);
+							} else {
+								$this->record_failed_attempt($username, $current_time);
+								$error_message = 'Invalid username or password.';
 							}
-							$this->record_failed_attempt($username, $current_time);
-							$error_message = 'Invalid username or password.';
 						} catch(Exception $e) {
 							$error_message = 'Authentication error. Please try again.';
 						}
 					}
 				}
+				$_SESSION['csrf_token'] = $this->generate_csrf_token();
 			}
-			$_SESSION['csrf_token'] = $this->generate_csrf_token();
 		}
 
 		return array(
@@ -86,5 +87,22 @@ class LoginFlowService {
 		}
 		$_SESSION['login_attempts'][$username]['count']++;
 		$_SESSION['login_attempts'][$username]['time'] = $current_time;
+	}
+
+	private function sanitize_redirect_path($candidate) {
+		if(!is_string($candidate) || $candidate === '') {
+			return '/';
+		}
+		$parts = parse_url($candidate);
+		if($parts === false || isset($parts['scheme']) || isset($parts['host'])) {
+			return '/';
+		}
+		$path = $parts['path'] ?? '/';
+		if($path === '' || substr($path, 0, 1) !== '/' || substr($path, 0, 2) === '//') {
+			return '/';
+		}
+		$query = isset($parts['query']) ? '?'.$parts['query'] : '';
+		$fragment = isset($parts['fragment']) ? '#'.$parts['fragment'] : '';
+		return $path.$query.$fragment;
 	}
 }

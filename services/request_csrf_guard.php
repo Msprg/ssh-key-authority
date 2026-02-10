@@ -6,7 +6,7 @@ class RequestCsrfGuard {
 			if($request_context->bypass_csrf_protection) {
 				return;
 			}
-			if(!$active_user->check_csrf_token($post_data['csrf_token'])) {
+			if(!$active_user->check_csrf_token($post_data['csrf_token'] ?? '')) {
 				require('views/csrf.php');
 				die;
 			}

@@ -436,6 +436,9 @@ class Group extends Entity {
 	*/
 	public function list_group_membership() {
 		$group_dir = self::runtime_value('group_dir', array_key_exists('group_dir', $GLOBALS) ? $GLOBALS['group_dir'] : null);
+		if($group_dir === null) {
+			throw new DomainException('Group directory service is unavailable; cannot list group membership.');
+		}
 		return $group_dir->list_group_membership($this);
 	}
 

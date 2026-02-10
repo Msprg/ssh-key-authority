@@ -78,6 +78,18 @@ abstract class Entity extends Record {
 		if ($actor === null) {
 			$actor = $this->active_user;
 		}
+		if($actor === null && class_exists('RuntimeState', false)) {
+			$runtime_actor = RuntimeState::get('active_user', null);
+			if($runtime_actor instanceof User) {
+				$actor = $runtime_actor;
+			}
+		}
+		if($actor === null && array_key_exists('active_user', $GLOBALS) && $GLOBALS['active_user'] instanceof User) {
+			$actor = $GLOBALS['active_user'];
+		}
+		if(!($actor instanceof User)) {
+			throw new RuntimeException('No active user available for entity event logging.');
+		}
 		switch(get_class($this)) {
 		case 'User':
 			$scope = "user:{$this->uid}";

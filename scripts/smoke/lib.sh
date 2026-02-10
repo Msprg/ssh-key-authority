@@ -37,6 +37,31 @@ smoke_extract_csrf() {
 
 smoke_cleanup_dir() {
     local dir="$1"
+    local resolved_dir
+
+    if [ -z "$dir" ] || [ "$dir" = "." ] || [ "$dir" = "/" ] || [ "$dir" = "//" ] || [ "$dir" = "~" ]; then
+        smoke_err "Refusing to clean unsafe directory path: '$dir'"
+        return 1
+    fi
+    if [[ "$dir" == *".."* ]]; then
+        smoke_err "Refusing to clean directory containing '..': '$dir'"
+        return 1
+    fi
+
+    resolved_dir=$(readlink -f -- "$dir" 2>/dev/null || true)
+    if [ -z "$resolved_dir" ] || [ "$resolved_dir" = "/" ]; then
+        smoke_err "Refusing to clean unresolved or root directory: '$dir'"
+        return 1
+    fi
+    case "$resolved_dir" in
+        /tmp/*|/var/tmp/*|/dev/shm/*)
+            ;;
+        *)
+            smoke_err "Refusing to clean directory outside safe temp paths: '$resolved_dir'"
+            return 1
+            ;;
+    esac
+
     if [ -d "$dir" ]; then
         find "$dir" -mindepth 1 -type f -delete
         find "$dir" -mindepth 1 -type d -empty -delete

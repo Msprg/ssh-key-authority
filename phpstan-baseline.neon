@@ -6,22 +6,12 @@ parameters:
 			path: core.php
 
 		-
-			message: "#^Function ldap_sort not found\\.$#"
-			count: 1
-			path: ldap.php
-
-		-
 			message: "#^Method Group\\:\\:update\\(\\) should return array but return statement is missing\\.$#"
 			count: 1
 			path: model/group.php
 
 		-
 			message: "#^Method Server\\:\\:update\\(\\) should return array but return statement is missing\\.$#"
-			count: 1
-			path: model/server.php
-
-		-
-			message: "#^Undefined variable\\: \\$hostname$#"
 			count: 1
 			path: model/server.php
 

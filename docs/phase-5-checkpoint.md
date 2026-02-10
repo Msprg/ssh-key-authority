@@ -62,9 +62,25 @@ Strengthen sync execution safety, diagnostics, and operational clarity while pre
 
 ## Residual risks
 
-- Jumphost strict host checking is still compatibility-default (`off`) unless explicitly enabled.
 - Environment-specific SSH/jumphost behavior can still vary by host OpenSSH tooling and known-hosts state.
 - Sync status messages are now more structured; downstream parsers relying on exact legacy text should be verified.
+
+## Migration note: Jumphost strict host checking default change
+
+- Default changed:
+  - `jumphost_strict_host_key_checking` is now `on` by default (`1`) in `config/config.ini.example`.
+- Why:
+  - Disabling Jumphost strict host checking (`off`) increases man-in-the-middle risk in tunnel setup.
+- Migration steps for existing environments:
+  1. Ensure jumphost and target host keys are present in your configured known-hosts file.
+  2. Set `jumphost_known_hosts_file` to a managed file path (for example `/etc/ssh/ssh_known_hosts`).
+  3. Enable `jumphost_strict_host_key_checking = 1`.
+  4. Run `php scripts/sync.php --diagnostics` and validate expected trust settings.
+  5. Run `make smoke-sync` (or full `make smoke`) before rollout.
+- Temporary compatibility mode:
+  - You can temporarily set Jumphost strict host checking to `off` (`0`) for emergency compatibility only.
+  - Security warning: `off` should be treated as temporary because it weakens host authenticity guarantees and increases MITM exposure.
+  - Deprecation intent: plan to remove long-term reliance on `off` in a follow-up hardening cycle.
 
 ## Rollback strategy (Phase 5)
 

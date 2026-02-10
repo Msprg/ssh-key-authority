@@ -29,12 +29,15 @@ class KeyLifecycleService {
 	 * @param Entity $entity
 	 * @param array $existing_public_keys list of PublicKey objects
 	 * @param mixed $public_key_id identifier from request payload
+	 * @return bool true when key is deleted, false when not found
 	 */
-	public function delete_entity_public_key(Entity $entity, array $existing_public_keys, $public_key_id) {
+	public function delete_entity_public_key(Entity $entity, array $existing_public_keys, $public_key_id): bool {
 		$public_key = $this->find_public_key_by_id($existing_public_keys, $public_key_id);
 		if($public_key instanceof PublicKey) {
 			$entity->delete_public_key($public_key);
+			return true;
 		}
+		return false;
 	}
 
 	/**
@@ -42,9 +45,10 @@ class KeyLifecycleService {
 	 * @param mixed $public_key_id
 	 * @return PublicKey|null
 	 */
-	public function find_public_key_by_id(array $existing_public_keys, $public_key_id) {
+	public function find_public_key_by_id(array $existing_public_keys, $public_key_id): ?PublicKey {
+		$target_id = (int)$public_key_id;
 		foreach($existing_public_keys as $public_key) {
-			if($public_key instanceof PublicKey && $public_key->id == $public_key_id) {
+			if($public_key instanceof PublicKey && (int)$public_key->id === $target_id) {
 				return $public_key;
 			}
 		}

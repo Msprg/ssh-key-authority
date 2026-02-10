@@ -63,8 +63,8 @@ if (!$active_user->admin) {
 }
 
 $server_names = $_POST['selected_servers'] ?? [];
-$selected_servers = array_map(function($name) {
-	$server_dir = RuntimeState::get('server_dir');
+$server_dir = RuntimeState::get('server_dir');
+$selected_servers = array_map(function($name) use ($server_dir) {
 	return $server_dir->get_server_by_hostname($name);
 }, $server_names);
 $relation_lifecycle_service = new RelationLifecycleService();

@@ -4,9 +4,13 @@ class RequestExceptionHandler {
 	private $active_user;
 	private $config;
 
-	public function __construct(&$active_user, &$config) {
-		$this->active_user = &$active_user;
+	public function __construct($active_user, &$config) {
+		$this->active_user = $active_user;
 		$this->config = &$config;
+	}
+
+	public function set_active_user(User $active_user): void {
+		$this->active_user = $active_user;
 	}
 
 	public function handle($e) {

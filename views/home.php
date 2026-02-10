@@ -35,8 +35,17 @@ if(isset($_POST['add_public_key'])) {
 		}
 	}
 } elseif(isset($_POST['delete_public_key'])) {
-	$key_lifecycle_service->delete_entity_public_key($active_user, $public_keys, $_POST['delete_public_key']);
-	redirect();
+	try {
+		$deleted = $key_lifecycle_service->delete_entity_public_key($active_user, $public_keys, $_POST['delete_public_key']);
+		if($deleted) {
+			redirect();
+		}
+		$content = new PageSection('key_upload_fail');
+		$content->set('message', 'The selected public key could not be found.');
+	} catch(Exception $e) {
+		$content = new PageSection('key_upload_fail');
+		$content->set('message', 'Could not delete the selected public key.');
+	}
 } else {
 	$content = new PageSection('home');
 	$content->set('user_keys', $public_keys);

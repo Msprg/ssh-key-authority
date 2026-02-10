@@ -71,7 +71,7 @@ class ResponseSecurityHeaders {
 	 */
 	private function apply_hsts_if_enabled(array $config) {
 		$hsts_enabled = isset($config['security']['hsts_enabled']) && (int)$config['security']['hsts_enabled'] === 1;
-		if(!$hsts_enabled || !$this->is_https_request()) {
+		if(!$hsts_enabled || !self::is_https_request()) {
 			return;
 		}
 
@@ -97,7 +97,7 @@ class ResponseSecurityHeaders {
 	/**
 	 * @return bool
 	 */
-	private function is_https_request() {
+	public static function is_https_request() {
 		if(isset($_SERVER['HTTPS']) && strtolower((string)$_SERVER['HTTPS']) !== 'off' && $_SERVER['HTTPS'] !== '') {
 			return true;
 		}

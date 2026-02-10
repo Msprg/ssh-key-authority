@@ -78,6 +78,12 @@ That keeps fixture diffs focused on keyfile content behavior.
 
 CI runs only `composer run smoke:dry-run`, which validates harness scripts without requiring LDAP/SSH or environment-specific credentials.
 
+Makefile and Composer mapping:
+- `make smoke-dry-run` -> `bash scripts/smoke/run.sh --dry-run`
+- `composer run smoke:dry-run` -> `bash scripts/smoke/run.sh --dry-run`
+
+They are equivalent for execution behavior. In CI, we call the Composer script; locally, you can use either command.
+
 ## Sync troubleshooting
 
 If sync process spawning fails due to timeout utility differences across environments, inspect runtime detection output:

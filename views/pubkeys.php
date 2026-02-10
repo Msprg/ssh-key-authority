@@ -22,15 +22,22 @@
  * @param ExternalKey $key The key that has just been allowed
  */
 function send_mail_key_allowed(ExternalKey $key) {
-	$active_user = RuntimeState::get('active_user');
+	$active_user = RuntimeState::get('active_user', null);
 	$config = RuntimeState::get('config', array());
+	$report_address = $config['email']['report_address'] ?? '';
+	$report_name = $config['email']['report_name'] ?? 'SSH Key Authority reports';
+	$base_url = $config['web']['baseurl'] ?? '';
+	$actor_name = ($active_user !== null && isset($active_user->name)) ? $active_user->name : 'Unknown user';
+	$actor_uid = ($active_user !== null && isset($active_user->uid)) ? $active_user->uid : 'unknown';
 
 	$email = new Email();
-	$email->add_recipient($config['email']['report_address'], $config['email']['report_name']);
+	if($report_address !== '') {
+		$email->add_recipient($report_address, $report_name);
+	}
 	$email->subject = "Key has been allowed";
 
-	$allowed_keys_url = "{$config['web']['baseurl']}/pubkeys#allowed";
-	$email->body = "The following key has been allowed by {$active_user->name} ({$active_user->uid}):\n";
+	$allowed_keys_url = rtrim($base_url, '/').'/pubkeys#allowed';
+	$email->body = "The following key has been allowed by {$actor_name} ({$actor_uid}):\n";
 	$email->body .= "{$key->type} {$key->keydata}\n\n";
 	$email->body .= "This means, the key will stay untouched in ~/.ssh/authorized_keys files on target machines, if it appears.\n";
 	$email->body .= "You can see the full list of allowed keys at $allowed_keys_url";

@@ -75,8 +75,9 @@ class AccessRuleService {
 	 * @return Access|null
 	 */
 	public function find_access_by_id(array $account_access, $access_id) {
+		$target_id = (int)$access_id;
 		foreach($account_access as $access) {
-			if($access instanceof Access && $access->id == $access_id) {
+			if($access instanceof Access && (int)$access->id === $target_id) {
 				return $access;
 			}
 		}
@@ -90,8 +91,9 @@ class AccessRuleService {
 	 * @return AccessRequest|null
 	 */
 	public function find_access_request_by_id(array $access_requests, $request_id) {
+		$target_id = (int)$request_id;
 		foreach($access_requests as $request) {
-			if($request instanceof AccessRequest && $request->id == $request_id) {
+			if($request instanceof AccessRequest && (int)$request->id === $target_id) {
 				return $request;
 			}
 		}

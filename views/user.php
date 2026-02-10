@@ -32,9 +32,15 @@ $relation_lifecycle_service = new RelationLifecycleService();
 usort($admined_servers, function($a, $b) {return strnatcasecmp($a->hostname, $b->hostname);});
 
 if(isset($_POST['reassign_servers']) && is_array($_POST['servers']) && $active_user && $active_user->admin) {
-	$new_admin = $relation_lifecycle_service->resolve_user_or_group_by_name($user_dir, $group_dir, $_POST['reassign_to']);
-	if($new_admin === null) {
+	$reassign_to = isset($_POST['reassign_to']) ? trim((string)$_POST['reassign_to']) : '';
+	if($reassign_to === '') {
 		$content = new PageSection('user_not_found');
+	}
+	if(!isset($content)) {
+		$new_admin = $relation_lifecycle_service->resolve_user_or_group_by_name($user_dir, $group_dir, $reassign_to);
+		if($new_admin === null) {
+			$content = new PageSection('user_not_found');
+		}
 	}
 	if(isset($new_admin)) {
 		$relation_lifecycle_service->reassign_server_admins_by_hostname($admined_servers, $_POST['servers'], $user, $new_admin);

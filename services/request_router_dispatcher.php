@@ -1,12 +1,6 @@
 <?php
 
 class RequestRouterDispatcher {
-	private $policy_guard;
-
-	public function __construct($policy_guard) {
-		$this->policy_guard = $policy_guard;
-	}
-
 	public function build_router($routes, $public_routes) {
 		$router = new Router;
 		foreach($routes as $path => $service) {

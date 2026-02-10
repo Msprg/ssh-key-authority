@@ -17,11 +17,21 @@ This runbook defines practical day-to-day workflows for operating and validating
 
 ## 3. Local validation workflow
 
-Run all baseline quality gates:
+Run all baseline quality gates as a non-root user:
 
 ```bash
-COMPOSER_ALLOW_SUPERUSER=1 make ci-check
+make ci-check
 ```
+
+If you run checks in Docker, prefer user mapping so Composer does not run as root:
+
+```bash
+docker compose run --rm --user "$(id -u):$(id -g)" ska-app make ci-check
+```
+
+Security note:
+- Avoid `COMPOSER_ALLOW_SUPERUSER=1` for local/dev workflows.
+- If a locked-down CI runner requires root, document why and keep the CI image ephemeral, minimal, and network-restricted.
 
 Run smoke harness script validation:
 

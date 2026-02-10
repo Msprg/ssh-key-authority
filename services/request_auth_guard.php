@@ -14,12 +14,12 @@ class RequestAuthGuard {
 		$active_user = $this->auth_service->getCurrentUser();
 
 		if(!$active_user && !$this->is_public_route($request_path)) {
-			$_SESSION['redirect_after_login'] = $request_context->request_url;
+			$_SESSION['redirect_after_login'] = $this->sanitize_redirect_path($request_context->request_url);
 			redirect('/login');
 		}
 
 		if($active_user && $request_path === '/login') {
-			$redirect_url = $_SESSION['redirect_after_login'] ?? '/';
+			$redirect_url = $this->sanitize_redirect_path($_SESSION['redirect_after_login'] ?? '/');
 			unset($_SESSION['redirect_after_login']);
 			redirect($redirect_url);
 		}
@@ -41,5 +41,28 @@ class RequestAuthGuard {
 			}
 		}
 		return false;
+	}
+
+	private function sanitize_redirect_path($candidate) {
+		if(!is_string($candidate) || $candidate === '') {
+			return '/';
+		}
+		if(strpos($candidate, "\r") !== false || strpos($candidate, "\n") !== false) {
+			return '/';
+		}
+		$parts = parse_url($candidate);
+		if($parts === false) {
+			return '/';
+		}
+		if(isset($parts['scheme']) || isset($parts['host']) || isset($parts['user']) || isset($parts['pass']) || isset($parts['port'])) {
+			return '/';
+		}
+		$path = $parts['path'] ?? '/';
+		if($path === '' || substr($path, 0, 1) !== '/' || substr($path, 0, 2) === '//') {
+			return '/';
+		}
+		$query = isset($parts['query']) ? '?'.$parts['query'] : '';
+		$fragment = isset($parts['fragment']) ? '#'.$parts['fragment'] : '';
+		return $path.$query.$fragment;
 	}
 }

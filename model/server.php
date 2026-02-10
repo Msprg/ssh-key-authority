@@ -641,7 +641,7 @@ class Server extends Record {
 				$output = $connection->exec('/bin/hostname -f');
 				$allowed_hostnames = array(trim($output));
 			}
-			if(!in_array($hostname, $allowed_hostnames)) {
+			if(!in_array($this->hostname, $allowed_hostnames, true)) {
 				throw new SSHException("Hostname check failed (allowed: ".implode(", ", $allowed_hostnames).").");
 			}
 		}
