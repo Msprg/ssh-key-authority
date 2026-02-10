@@ -16,8 +16,6 @@
 ## limitations under the License.
 ##
 $web_config = $this->get('web_config');
-header('X-Frame-Options: DENY');
-header("Content-Security-Policy: default-src 'self'");
 $footer=str_replace("%v", "1.5.0", $web_config['footer']);
 ?>
 <!DOCTYPE html>
@@ -26,12 +24,14 @@ $footer=str_replace("%v", "1.5.0", $web_config['footer']);
 <title><?php out($this->get('title'))?></title>
 <link rel="stylesheet" href="<?php outurl('/bootstrap/css/bootstrap.min.css')?>">
 <link rel="stylesheet" href="<?php outurl('/style.css?'.filemtime('public_html/style.css'))?>">
+<link rel="stylesheet" href="<?php outurl('/bootstrap5-compat.css?'.filemtime('public_html/bootstrap5-compat.css'))?>">
 <link rel="icon" href="<?php outurl('/key.png')?>">
 <script src="<?php outurl('/header.js?'.filemtime('public_html/header.js'))?>"></script>
+<script src="<?php outurl('/bootstrap5-compat.js?'.filemtime('public_html/bootstrap5-compat.js'))?>"></script>
 <?php out($this->get('head'), ESC_NONE) ?>
 <div id="wrap">
-<a href="#content" class="sr-only">Skip to main content</a>
-<div class="navbar navbar-fixed-top">
+<a href="#content" class="sr-only visually-hidden visually-hidden-focusable">Skip to main content</a>
+<div class="navbar navbar-fixed-top fixed-top">
 	<div class="container h-50px">
 		<div class="ska-navbar">
 			<?php if(!empty($web_config['logo'])) { ?>
@@ -49,14 +49,14 @@ $footer=str_replace("%v", "1.5.0", $web_config['footer']);
 				</ul>
 			</div>
 			<div class="ska-navbar-side">
-				<button class="ska-side-button dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<button class="ska-side-button dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					<svg class="ska-dropdown-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5h16M4 12h16M4 19h16"/></svg>
 					<span class="ska-dropdown-name">
 						<?php out($this->get('active_user')->name)?> 
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M18.53 9.53a.75.75 0 0 0 0-1.06H5.47a.75.75 0 0 0 0 1.06l6 6a.75.75 0 0 0 1.06 0z"/></svg>
 					</span>
 				</button>
-				<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+				<div class="dropdown-menu dropdown-menu-right dropdown-menu-end" aria-labelledby="dropdownMenuButton">
 						<div class="ska-dropdown"><span class="ska-dropdown-name-dp hidden-xl">
 							<?php out($this->get('active_user')->name)?> 
 						</span>
@@ -75,8 +75,8 @@ $footer=str_replace("%v", "1.5.0", $web_config['footer']);
 </div>
 <div class="container" id="content">
 <?php foreach($this->get('alerts') as $alert) { ?>
-<div class="alert alert-<?php out($alert->class)?> alert-dismissable">
-	<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+<div class="alert alert-<?php out($alert->class)?> alert-dismissable alert-dismissible">
+	<button type="button" class="close btn-close" data-dismiss="alert" data-bs-dismiss="alert" aria-hidden="true">&times;</button>
 	<?php out($alert->content, $alert->escaping)?>
 </div>
 <?php } ?>

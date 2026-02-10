@@ -75,13 +75,13 @@
 <?php } ?>
 <?php if($this->get('admin') || $this->get('server_admin')) { ?>
 <ul class="nav nav-tabs">
-	<li><a href="#accounts" data-toggle="tab">Accounts</a></li>
-	<li><a href="#admins" data-toggle="tab">Leaders</a></li>
-	<li><a href="#settings" data-toggle="tab">Settings</a></li>
-	<li><a href="#log" data-toggle="tab">Log</a></li>
+	<li><a href="#accounts" data-toggle="tab" data-bs-toggle="tab">Accounts</a></li>
+	<li><a href="#admins" data-toggle="tab" data-bs-toggle="tab">Leaders</a></li>
+	<li><a href="#settings" data-toggle="tab" data-bs-toggle="tab">Settings</a></li>
+	<li><a href="#log" data-toggle="tab" data-bs-toggle="tab">Log</a></li>
 	<?php if($this->get('admin')) { ?>
-	<li><a href="#notes" data-toggle="tab">Notes<?php if(count($this->get('server_notes')) > 0) out(' <span class="badge">'.count($this->get('server_notes')).'</span>', ESC_NONE)?></a></li>
-	<li><a href="#contact" data-toggle="tab">Contact</a></li>
+	<li><a href="#notes" data-toggle="tab" data-bs-toggle="tab">Notes<?php if(count($this->get('server_notes')) > 0) out(' <span class="badge">'.count($this->get('server_notes')).'</span>', ESC_NONE)?></a></li>
+	<li><a href="#contact" data-toggle="tab" data-bs-toggle="tab">Contact</a></li>
 	<?php } ?>
 </ul>
 
@@ -563,12 +563,12 @@
 		</form>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<div class="form-group">
+			<div class="mb-3">
 				<label for="note">Note</label>
 				<textarea class="form-control" rows="4" id="note" name="note" required></textarea>
 			</div>
-			<div class="form-group">
-				<button type="submit" name="add_note" value="1" class="btn btn-primary btn-lg btn-block">Add note</button>
+			<div class="mb-3">
+				<button type="submit" name="add_note" value="1" class="btn btn-primary btn-lg w-100">Add note</button>
 			</div>
 		</form>
 	</div>
@@ -576,51 +576,51 @@
 		<h2 class="sr-only">Contact</h2>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<div class="form-group">
+			<div class="mb-3">
 				<label for="anonymous">From</label>
 				<select class="form-control" id="anonymous" name="anonymous">
 					<option value="0"><?php out("{$this->get('active_user')->name} <{$this->get('active_user')->email}>");?></option>
 					<option value="1"><?php out($this->get('email_config')['from_name'])?> &lt;<?php out($this->get('email_config')['from_address'])?>&gt; (Reply-to: <?php out($this->get('email_config')['admin_address']) ?>)</option>
 				</select>
 			</div>
-			<div class="form-group">
+			<div class="mb-3">
 				<label>Recipients</label>
-				<div class="radio">
+				<div class="radio form-check">
 					<label>
-						<input type="radio" name="recipients" value="admins" checked>
+						<input type="radio" class="form-check-input" name="recipients" value="admins" checked>
 						Server leaders of <?php out($this->get('server')->hostname) ?>
 					</label>
 				</div>
-				<div class="radio">
+				<div class="radio form-check">
 					<label>
-						<input type="radio" name="recipients" value="root_users">
+						<input type="radio" class="form-check-input" name="recipients" value="root_users">
 						All users with access to root@<?php out($this->get('server')->hostname) ?>
 					</label>
 				</div>
-				<div class="radio">
+				<div class="radio form-check">
 					<label>
-						<input type="radio" name="recipients" value="users">
+						<input type="radio" class="form-check-input" name="recipients" value="users">
 						All users with access to accounts on <?php out($this->get('server')->hostname) ?>
 					</label>
 				</div>
 			</div>
-			<div class="form-group">
-				<div class="checkbox">
+			<div class="mb-3">
+				<div class="checkbox form-check">
 					<label>
-						<input type="checkbox" id="hide_recipients" name="hide_recipients">
+						<input type="checkbox" class="form-check-input" id="hide_recipients" name="hide_recipients">
 						Hide recipient list
 					</label>
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="mb-3">
 				<label for="subject">Subject</label>
 				<input type="text" class="form-control" id="subject" name="subject" required value="Server <?php out('"'.$this->get('server')->hostname.'"') ?>">
 			</div>
-			<div class="form-group">
+			<div class="mb-3">
 				<label for="body">Body</label>
 				<textarea class="form-control" rows="20" id="body" name="body" required></textarea>
 			</div>
-			<div class="form-group"><button type="submit" name="send_mail" value="1" data-confirm="Send mail? Are you sure?" class="btn btn-primary btn-lg btn-block">Send mail</button></div>
+			<div class="mb-3"><button type="submit" name="send_mail" value="1" data-confirm="Send mail? Are you sure?" class="btn btn-primary btn-lg w-100">Send mail</button></div>
 		</form>
 	</div>
 	<?php } ?>
@@ -661,14 +661,14 @@
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 	<h4>Request server-to-server access</h4>
 	<div class="row">
-		<div class="form-group col-sm-3">
+		<div class="col-sm-3 mb-3">
 			<div class="input-group">
 				<span class="input-group-addon">From: </span>
 				<span class="input-group-addon"><label for="account"><span class="glyphicon glyphicon-log-in" title="Server account"></span><span class="sr-only">Account name</span></label></span>
 				<input type="text" id="account_remote" name="account_remote" class="form-control" placeholder="Account name" required pattern=".*[^\s].*">
 			</div>
 		</div>
-		<div class="form-group col-sm-3">
+		<div class="col-sm-3 mb-3">
 			<div class="input-group">
 				<span class="input-group-addon"><label for="hostname">@</label></span>
 				<input type="text" id="hostname_remote" name="hostname_remote" class="form-control" placeholder="Hostname" list="serverlist" required>
@@ -700,7 +700,7 @@
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 	<h4>Request group access</h4>
 	<div class="row">
-		<div class="form-group col-sm-5">
+		<div class="col-sm-5 mb-3">
 			 <div class="input-group">
 				<span class="input-group-addon"><label for="account"><span class="glyphicon glyphicon-list-alt" title="Group account"></span><span class="sr-only">Group name</span></label></span>
 				<input type="text" id="group_account" name="group_account" class="form-control" placeholder="Group name" list="grouplist" required>

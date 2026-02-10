@@ -20,41 +20,41 @@
 // It provides the login form content
 ?>
 <div class="login-container">
-    <div>
-        <h1>SSH Key Authority</h1>
-        <p class="text-muted">Please sign in to continue</p>
+    <div class="mb-4">
+        <h1 class="mb-1">SSH Key Authority</h1>
+        <p class="text-muted mb-0">Please sign in to continue</p>
     </div>
 
     <?php if($this->get('error_message')) { ?>
-        <div class="alert alert-danger">
+        <div class="alert alert-danger" role="alert">
             <?php out($this->get('error_message'))?>
         </div>
     <?php } ?>
 
     <?php if($this->get('success_message')) { ?>
-        <div class="alert alert-success">
+        <div class="alert alert-success" role="status" aria-live="polite">
             <?php out($this->get('success_message'))?>
         </div>
     <?php } ?>
     <form method="POST" action="">
         <input type="hidden" name="csrf_token" value="<?php out($this->get('csrf_token')) ?>">
-        <div class="form-group">
+        <div class="mb-3">
             <label for="username" class="form-label">Username</label>
             <input type="text" class="form-control" id="username" name="username" 
                    value="<?php out($_POST['username'] ?? '')?>" 
-                   placeholder="Enter your username" required autofocus>
+                   placeholder="Enter your username" autocomplete="username" required autofocus>
         </div>
         
-        <div class="form-group">
+        <div class="mb-3">
             <label for="password" class="form-label">Password</label>
             <input type="password" class="form-control" id="password" name="password" 
-                   placeholder="Enter your password" required>
+                   placeholder="Enter your password" autocomplete="current-password" required>
         </div>
         
-        <button type="submit" class="btn btn-login">Login</button>
+        <button type="submit" class="btn btn-login w-100">Login</button>
     </form>
     <div class="text-center mt-3">
-        <small class="text-muted">
+        <small id="login-help" class="text-muted">
             Authentication is handled via LDAP
         </small>
     </div>

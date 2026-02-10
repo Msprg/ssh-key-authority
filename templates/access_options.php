@@ -70,7 +70,7 @@ switch(get_class($remote_entity)) {
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title">
-						<a data-toggle="collapse" href="#advanced_options">
+						<a data-toggle="collapse" data-bs-toggle="collapse" href="#advanced_options">
 							Advanced options <span class="caret"></span>
 						</a>
 					</h3>
@@ -88,13 +88,13 @@ switch(get_class($remote_entity)) {
 						<div class="checkbox">
 							<label><input type="checkbox" name="access_option[command][enabled]"<?php if(isset($options['command'])) out(' checked'); ?>> Specify command (<code>command=&quot;command&quot;</code>)</label>
 						</div>
-						<div class="form-group">
+						<div class="mb-3">
 							<input type="text" id="command_value" name="access_option[command][value]" value="<?php if(isset($options['command'])) out($options['command']->value); ?>" class="form-control">
 						</div>
 						<div class="checkbox">
 							<label><input type="checkbox" name="access_option[from][enabled]"<?php if(isset($options['from'])) out(' checked'); ?>> Restrict source address (<code>from=&quot;<abbr title="A pattern-list is a comma-separated list of patterns.  Each pattern can be either a hostname or an IP address, with wildcards (* and ?) allowed.">pattern-list</abbr>&quot;</code>)</label>
 						</div>
-						<div class="form-group">
+						<div class="mb-3">
 							<input type="text" id="from_value" name="access_option[from][value]" value="<?php if(isset($options['from'])) out($options['from']->value); ?>" class="form-control">
 						</div>
 						<div class="checkbox">
@@ -113,15 +113,15 @@ switch(get_class($remote_entity)) {
 		</div>
 	</div>
 	<?php } ?>
-	<div class="form-group row">
+	<div class="row">
 		<div class="col-md-8">
-			<button type="submit" name="<?php if($mode == 'create') out('add_access'); else out('update_access')?>" value="2" class="btn btn-primary btn-block"><?php if($mode == 'create') out('Confirm'); else out('Modify')?> access</button>
+			<button type="submit" name="<?php if($mode == 'create') out('add_access'); else out('update_access')?>" value="2" class="btn btn-primary w-100"><?php if($mode == 'create') out('Confirm'); else out('Modify')?> access</button>
 		</div>
 		<div class="col-md-4">
 			<?php if(isset($server)) { ?>
-			<a href="<?php outurl('/servers/'.urlencode($server->hostname).'/accounts/'.urlencode($account->name))?>" class="btn btn-default btn-block">Cancel</a>
+			<a href="<?php outurl('/servers/'.urlencode($server->hostname).'/accounts/'.urlencode($account->name))?>" class="btn btn-default w-100">Cancel</a>
 			<?php } elseif(isset($group)) { ?>
-			<a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="btn btn-default btn-block">Cancel</a>
+			<a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="btn btn-default w-100">Cancel</a>
 			<?php } ?>
 		</div>
 	</div>

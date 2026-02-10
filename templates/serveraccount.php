@@ -50,12 +50,12 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 <?php } ?>
 <ul class="nav nav-tabs">
 	<?php if($this->get('server')->key_management == 'keys') { ?>
-	<li><a href="#access" data-toggle="tab">Access</a></li>
+	<li><a href="#access" data-toggle="tab" data-bs-toggle="tab">Access</a></li>
 	<?php } ?>
-	<li><a href="#pubkeys" data-toggle="tab">Public keys</a></li>
-	<li><a href="#outbound" data-toggle="tab">Outbound access</a></li>
-	<li><a href="#admins" data-toggle="tab">Leaders</a></li>
-	<li><a href="#log" data-toggle="tab">Log</a></li>
+	<li><a href="#pubkeys" data-toggle="tab" data-bs-toggle="tab">Public keys</a></li>
+	<li><a href="#outbound" data-toggle="tab" data-bs-toggle="tab">Outbound access</a></li>
+	<li><a href="#admins" data-toggle="tab" data-bs-toggle="tab">Leaders</a></li>
+	<li><a href="#log" data-toggle="tab" data-bs-toggle="tab">Log</a></li>
 </ul>
 
 <!-- Tab panes -->
@@ -186,7 +186,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h4>Add user to account</h4>
 			<div class="row">
-				<div class="form-group col-md-9">
+				<div class="col-md-9 mb-3">
 					<div class="input-group">
 						<span class="input-group-addon"><label for="username"><span class="glyphicon glyphicon-user" title="User"></span><span class="sr-only">User name</span></label></span>
 						<input type="text" id="username" name="username" class="form-control" placeholder="User name" required list="userlist">
@@ -197,8 +197,8 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 						</datalist>
 					</div>
 				</div>
-				<div class="form-group col-md-3">
-					<button type="submit" name="add_access" value="1" class="btn btn-primary btn-block">Add user to account</button>
+				<div class="col-md-3 mb-3">
+					<button type="submit" name="add_access" value="1" class="btn btn-primary w-100">Add user to account</button>
 				</div>
 			</div>
 		</form>
@@ -206,13 +206,13 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h4>Add server-to-server access to account</h4>
 			<div class="row">
-				<div class="form-group col-md-2">
+				<div class="col-md-2 mb-3">
 					<div class="input-group">
 						<span class="input-group-addon"><label for="account"><span class="glyphicon glyphicon-log-in" title="Server account"></span><span class="sr-only">Account name</span></label></span>
 						<input type="text" id="account" name="account" class="form-control" placeholder="Account name" required>
 					</div>
 				</div>
-				<div class="form-group col-md-7">
+				<div class="col-md-7 mb-3">
 					<div class="input-group">
 						<span class="input-group-addon"><label for="hostname">@</label></span>
 						<input type="text" id="hostname" name="hostname" class="form-control" placeholder="Hostname" required list="serverlist">
@@ -223,8 +223,8 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 						</datalist>
 					</div>
 				</div>
-				<div class="form-group col-md-3">
-					<button type="submit" name="add_access" value="1" class="btn btn-primary btn-block">Add remote account to this account</button>
+				<div class="col-md-3 mb-3">
+					<button type="submit" name="add_access" value="1" class="btn btn-primary w-100">Add remote account to this account</button>
 				</div>
 			</div>
 		</form>
@@ -232,7 +232,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h4>Add group access to account</h4>
 			<div class="row">
-				<div class="form-group col-md-9">
+				<div class="col-md-9 mb-3">
 					<div class="input-group">
 						<span class="input-group-addon"><label for="group"><span class="glyphicon glyphicon-list-alt" title="Group"></span><span class="sr-only">Group name</span></label></span>
 						<input type="text" id="group" name="group" class="form-control" placeholder="Group name" required list="grouplist">
@@ -243,8 +243,8 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 						</datalist>
 					</div>
 				</div>
-				<div class="form-group col-md-3">
-					<button type="submit" name="add_access" value="1" class="btn btn-primary btn-block">Add group to this account</button>
+				<div class="col-md-3 mb-3">
+					<button type="submit" name="add_access" value="1" class="btn btn-primary w-100">Add group to this account</button>
 				</div>
 			</div>
 		</form>
@@ -396,16 +396,16 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 		<?php } ?>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<div class="form-group">
+			<div class="mb-3">
 				<label for="add_public_key">Public key</label>
 				<textarea class="form-control" rows="4" id="add_public_key" name="add_public_key" required></textarea>
 			</div>
 			<?php if($this->get('active_user')->admin) { ?>
-			<div class="checkbox">
-				<label><input type="checkbox" name="force"> Allow weak (&lt; 4096 bits) key</label>
+			<div class="checkbox form-check mb-3">
+				<label class="form-check-label"><input type="checkbox" class="form-check-input" name="force"> Allow weak (&lt; 4096 bits) key</label>
 			</div>
 			<?php } ?>
-			<div class="form-group"><button class="btn btn-primary btn-lg btn-block">Add public key to account</button></div>
+			<div class="mb-3"><button class="btn btn-primary btn-lg w-100">Add public key to account</button></div>
 		</form>
 	</div>
 	<div class="tab-pane fade" id="outbound">

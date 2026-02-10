@@ -108,9 +108,9 @@ function show_event_participant($participant) {
 function keygen_help($box_position) {
 	?>
 	<ul class="nav nav-tabs">
-		<li><a href="#windows_instructions" data-toggle="tab">Windows</a></li>
-		<li><a href="#mac_instructions" data-toggle="tab">Mac</a></li>
-		<li><a href="#linux_instructions" data-toggle="tab">Linux</a></li>
+		<li><a href="#windows_instructions" data-toggle="tab" data-bs-toggle="tab">Windows</a></li>
+		<li><a href="#mac_instructions" data-toggle="tab" data-bs-toggle="tab">Mac</a></li>
+		<li><a href="#linux_instructions" data-toggle="tab" data-bs-toggle="tab">Linux</a></li>
 	</ul>
 	<div class="tab-content clearfix">
 		<div class="tab-pane fade" id="windows_instructions">

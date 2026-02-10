@@ -19,8 +19,8 @@
 <h1>Groups</h1>
 <?php if($this->get('admin')) { ?>
 <ul class="nav nav-tabs">
-	<li><a href="#list" data-toggle="tab">Group list</a></li>
-	<li><a href="#add" data-toggle="tab">Add group</a></li>
+	<li><a href="#list" data-toggle="tab" data-bs-toggle="tab">Group list</a></li>
+	<li><a href="#add" data-toggle="tab" data-bs-toggle="tab">Add group</a></li>
 </ul>
 <?php } ?>
 
@@ -39,7 +39,7 @@
 					<form>
 						<div class="row">
 							<div class="col-sm-4">
-								<div class="form-group">
+								<div class="mb-3">
 									<label for="name-search">Name (<a href="https://mariadb.com/kb/en/mariadb/regular-expressions-overview/">regexp</a>)</label>
 									<input type="text" id="name-search" name="name" class="form-control" value="<?php out($this->get('filter')['name'])?>" autofocus>
 								</div>
@@ -104,11 +104,11 @@
 		<h3>Create local group</h3>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="form-inline">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<div class="form-group">
+			<div class="form-group mb-3">
 				<label for="name" class="sr-only">Group name</label>
 				<input type="text" id="name" name="name" class="form-control" placeholder="Group name" required>
 			</div>
-			<div class="form-group">
+			<div class="form-group mb-3">
 				<label for="admin_uid" class="sr-only">Administrator</label>
 				<input type="text" size="40" id="admin_uid" name="admin_uid" class="form-control" placeholder="Administrator" required list="userlist">
 				<datalist id="userlist">
@@ -123,7 +123,7 @@
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="form-inline">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ldap-treeview">For the tree-view of ldap groups, javascript is necessary.</div>
-			<div class="form-group">
+			<div class="form-group mb-3">
 				<label for="name" class="sr-only">Group name</label>
 			</div>
 			<button type="submit" name="add_ldap_group" value="1" class="btn btn-primary">Connect selected groups</button>

@@ -22,9 +22,9 @@
 	<dd><?php out($this->get('user')->auth_realm)?></dd>
 </dl>
 <ul class="nav nav-tabs">
-	<li><a href="#details" data-toggle="tab">Details</a></li>
+	<li><a href="#details" data-toggle="tab" data-bs-toggle="tab">Details</a></li>
 	<?php if($this->get('user')->auth_realm == 'LDAP' && $this->get('admin')) { ?>
-	<li><a href="#settings" data-toggle="tab">Settings</a></li>
+	<li><a href="#settings" data-toggle="tab" data-bs-toggle="tab">Settings</a></li>
 	<?php } ?>
 </ul>
 <!-- Tab panes -->

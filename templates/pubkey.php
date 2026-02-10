@@ -38,10 +38,10 @@ $owner = $this->get('pubkey')->owner;
 </h1>
 <?php if($this->get('user_is_owner') || $this->get('admin')) { ?>
 <ul class="nav nav-tabs">
-	<li><a href="#info" data-toggle="tab">Information</a></li>
+	<li><a href="#info" data-toggle="tab" data-bs-toggle="tab">Information</a></li>
 	<?php if ($this->get('pubkey')->deletion_date === null) { ?>
-		<li><a href="#sig" data-toggle="tab">Key signing</a></li>
-		<li><a href="#dest" data-toggle="tab">Destination restrictions</a></li>
+		<li><a href="#sig" data-toggle="tab" data-bs-toggle="tab">Key signing</a></li>
+		<li><a href="#dest" data-toggle="tab" data-bs-toggle="tab">Destination restrictions</a></li>
 	<?php } ?>
 </ul>
 <?php } ?>
@@ -105,13 +105,13 @@ $owner = $this->get('pubkey')->owner;
 			<?php } ?>
 			<h3>Add signature</h3>
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<div class="form-group">
+			<div class="mb-3">
 				<label>
 					Signature file
 					<input type="file" name="signature" class="form-control">
 				</label>
 			</div>
-			<div class="form-group">
+			<div class="mb-3">
 				<button type="submit" name="add_signature" value="1" class="btn btn-primary">Upload signature</button>
 			</div>
 		</form>
@@ -150,16 +150,16 @@ $owner = $this->get('pubkey')->owner;
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Add new rule</h3>
 			<p>You can make use of wildcards (<kbd>*</kbd>) in each field below.</p>
-			<div class="form-group">
+			<div class="mb-3">
 				<label for="account_name_filter">Account name</label>
 				<input type="text" id="account_name_filter" name="account_name_filter" class="form-control" value="*" required>
 			</div>
-			<div class="form-group">
+			<div class="mb-3">
 				<label for="hostname_filter">Hostname</label>
 				<input type="text" id="hostname_filter" name="hostname_filter" class="form-control" value="*" required>
 			</div>
-			<div class="form-group">
-				<button type="submit" name="add_dest_rule" value="1" class="btn btn-primary btn-block">Add rule</button>
+			<div class="mb-3">
+				<button type="submit" name="add_dest_rule" value="1" class="btn btn-primary w-100">Add rule</button>
 			</div>
 		</form>
 	</div>
