@@ -6,7 +6,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV APP_DIR=/srv/keys     COMPOSER_ALLOW_SUPERUSER=1
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    nginx php-fpm php-cli php-mysql php-ldap php-mbstring php-gmp php-xml php-zip php-curl php-gd php-intl php-bcmath \
+    nginx php-fpm php-cli php-mysql php-ldap php-mbstring php-gmp php-xml php-zip php-curl php-gd php-intl php-bcmath php-ssh2 \
     composer cron supervisor tini ca-certificates curl openssh-client \
     && rm -rf /var/lib/apt/lists/*
 
