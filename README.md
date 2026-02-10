@@ -77,7 +77,7 @@ Installation
         CREATE DATABASE `ska-db` DEFAULT CHARACTER SET utf8mb4;
         GRANT ALL ON `ska-db`.* to 'ska-user'@'localhost';
 
-5.  Copy the file `config/config-sample.ini` to `config/config.ini` and edit the settings as required.
+5.  Copy the file `config/config.ini.example` to `config/config.ini` and edit the settings as required.
 
 6.  Set up authnz_ldap for your virtual host (or any other authentication module that will pass on an Auth-user
     variable to the application).
@@ -107,6 +107,49 @@ Usage
 -----
 
 Anyone in the LDAP group defined under `admin_group_cn` in `config/config.ini` will be able to manage accounts and servers.
+
+Development checks
+------------------
+
+Install development dependencies:
+
+    composer install
+
+Run quality checks:
+
+    make ci-check
+
+Run smoke harness dry-run:
+
+    make smoke-dry-run
+
+Run smoke workflows (requires environment variables, see docs):
+
+    make smoke
+
+Run individual checks:
+
+    make lint
+    make stan
+    make composer-validate
+    make composer-audit
+    make platform-check
+    make docker-config-check
+
+Inspect sync runtime timeout diagnostics:
+
+    php scripts/sync.php --diagnostics
+
+Smoke test documentation: `docs/smoke-tests.md`
+Operations runbook: `docs/operations-runbook.md`
+Modernization checkpoints and roadmap:
+- `docs/modernization-roadmap.md`
+- `docs/phase-5-checkpoint.md`
+- `docs/phase-6-checkpoint.md`
+- `docs/phase-7-checkpoint.md`
+- `docs/phase-8-checkpoint.md`
+- `docs/phase-9-checkpoint.md`
+- `docs/phase-10-checkpoint.md`
 
 Key distribution
 ----------------

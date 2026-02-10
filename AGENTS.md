@@ -2,6 +2,15 @@
 
 This document gives AI agents enough context to work safely in this repo.
 
+## Current status (Phase 10 complete)
+- Modernization phases 0-10 are implemented on the Bootstrap 5 modernization branch (`bootstrap5-upgrade*` lineage).
+- Runtime state container is in use (`services/runtime_state.php`) with compatibility fallback paths still present.
+- Request/auth/CSRF/security-header flow is service-based in `requesthandler.php`.
+- Bootstrap 3/5 compatibility layer is active:
+  - `public_html/bootstrap5-compat.css`
+  - `public_html/bootstrap5-compat.js`
+- Smoke harness and quality gates are available and expected in agent workflow.
+
 ## What this project is
 - SKA is a PHP web app that centralizes SSH public key management.
 - It integrates with LDAP/AD for users and groups.
@@ -15,8 +24,9 @@ This document gives AI agents enough context to work safely in this repo.
 - Views/controllers: `views/`
 - Templates: `templates/`
 - Models: `model/`
-- Services: `services/` (auth, init scripts)
+- Services: `services/`
 - CLI scripts: `scripts/` (sync + cron jobs)
+- Documentation: `docs/`
 
 ## Configuration and secrets
 - Main config template: `config/config.ini.example`
@@ -24,20 +34,32 @@ This document gives AI agents enough context to work safely in this repo.
 - Sync SSH keys expected at:
   - `config/keys-sync` (private key)
   - `config/keys-sync.pub` (public key)
-- Do not commit any real secrets or keys.
+- Never commit real secrets, keys, or production credentials.
+
+## Critical compatibility contract
+Do not break these unless explicitly approved and documented:
+- LDAP login/auth flow.
+- Public key add/remove lifecycle.
+- Access rule add/remove lifecycle.
+- Sync behavior and output compatibility.
+- Audit/event logging semantics.
+- Sync key paths:
+  - `config/keys-sync`
+  - `config/keys-sync.pub`
+
+Reference: `docs/compatibility-contract.md`
 
 ## Core workflows (high level)
-- Login: LDAP auth via `services/auth.php` and `ldap.php`, session in `requesthandler.php`.
-- Key upload: stored in `model/publickey.php` and related directories.
-- Access rules: `model/access.php` and related access option classes.
-- Key distribution: `scripts/sync.php` over SSH to write files under `/var/local/keys-sync/`.
-- Periodic tasks:
-  - `scripts/ldap_update.php` (LDAP sync)
-  - `scripts/supervise_external_keys.php` (detect external keys)
-  - `scripts/syncd.php` (daemon for key sync)
+- Login/auth: `services/auth.php`, `services/login_flow.php`, `ldap.php`
+- Request policy/auth/csrf: `services/request_policy_guard.php`, `services/request_auth_guard.php`, `services/request_csrf_guard.php`
+- Key lifecycle: `services/key_lifecycle_service.php`, `model/publickey.php`
+- Access lifecycle: `services/access_rule_service.php`, `model/access.php`, `model/accessoption.php`
+- Sync distribution: `scripts/sync.php`, `scripts/sync-common.php`, `scripts/syncd.php`
+- External key supervision: `scripts/supervise_external_keys.php`
+- LDAP sync: `scripts/ldap_update.php`
 
 ## Data model (key tables)
-See `migrations/00x.php` for schema.
+See migrations (`migrations/00x.php`) for schema details.
 - Users: `user`, `entity`
 - Groups: `group`, `group_member`
 - Servers: `server`, `server_account`
@@ -46,29 +68,50 @@ See `migrations/00x.php` for schema.
 - Events/audit: `entity_event`, `server_event`
 - Sync: `sync_request`, `external_key`
 
-## Development and runtime notes
-- PHP 8.2+, MySQL/MariaDB, LDAP.
-- Docker is the preferred deployment method (`Dockerfile`, `docker-compose.yml`).
-- Cron and supervisor configs live under `etc/`.
-- Web assets in `public_html/` (Bootstrap + jQuery).
+## Validation workflow for agents
+Run these before handoff:
+
+```bash
+source testenvs.env
+COMPOSER_ALLOW_SUPERUSER=1 make ci-check
+make smoke-dry-run
+make smoke
+```
+
+If `testenvs.env` is not present in the environment, coordinate with the user for smoke variables.
+
+## Smoke workflow expectations
+Smoke harness validates:
+- login page + LDAP auth
+- key add/remove for authenticated user
+- access rule add/remove for target account
+- sync preview output against fixture
+
+References:
+- `docs/smoke-tests.md`
+- `docs/operations-runbook.md`
 
 ## Where to look for changes
-- UI changes: `templates/` and `views/`
-- Access logic: `model/access.php` and `model/accessoption.php`
-- LDAP behavior: `ldap.php` and `services/auth.php`
-- Sync behavior: `scripts/sync.php` and `scripts/sync-common.php`
+- UI and UX: `templates/`, `views/`, compatibility assets in `public_html/`
+- Access logic: `model/access.php`, `model/accessoption.php`, `services/access_rule_service.php`
+- LDAP behavior: `ldap.php`, `services/auth.php`
+- Sync behavior: `scripts/sync.php`, `scripts/sync-common.php`, `scripts/syncd.php`
+- Request/auth/security headers: `requesthandler.php`, `services/request_*`, `services/response_security_headers.php`
 
 ## Safety checks for edits
-- Validate any change that touches SSH key generation or distribution.
-- Do not change key file paths without updating docs and server config.
-- Avoid modifying LDAP queries without checking group/user assumptions.
-- Keep audit/event logging intact when altering access flows.
+- Validate any change touching SSH sync, key generation, or host verification paths.
+- Avoid changing LDAP query behavior unless assumptions and migration notes are explicit.
+- Keep audit/event logging intact when changing key/access/admin flows.
+- Keep schema-compatible migrations unless a breaking change is explicitly approved.
 
-## Testing guidance
-- No automated tests in repo.
-- For changes, prefer targeted manual verification:
-  - Login and LDAP auth flow
-  - Add/Remove public keys
-  - Create/Remove access rules
-  - Trigger a sync (CLI) and verify output files
-
+## Modernization docs map
+- Plan: `docs/modernization-plan.md`
+- Risks: `docs/modernization-risks.md`
+- Roadmap: `docs/modernization-roadmap.md`
+- Checkpoints:
+  - `docs/phase-5-checkpoint.md`
+  - `docs/phase-6-checkpoint.md`
+  - `docs/phase-7-checkpoint.md`
+  - `docs/phase-8-checkpoint.md`
+  - `docs/phase-9-checkpoint.md`
+  - `docs/phase-10-checkpoint.md`
