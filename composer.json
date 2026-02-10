@@ -11,5 +11,21 @@
         "ext-ssh2": "*",
         "phpseclib/phpseclib": "^3.0"
     },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.90",
+        "php-parallel-lint/php-parallel-lint": "^1.4",
+        "phpstan/phpstan": "^1.12"
+    },
+    "scripts": {
+        "lint": "parallel-lint --exclude vendor --exclude .git --exclude docs .",
+        "stan": "phpstan analyse --configuration=phpstan.neon.dist --memory-limit=1G",
+        "format": "php-cs-fixer fix --config=.php-cs-fixer.dist.php",
+        "format:check": "php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff",
+        "smoke:dry-run": "bash scripts/smoke/run.sh --dry-run",
+        "qa": [
+            "@lint",
+            "@stan"
+        ]
+    },
     "license": "Apache-2.0"
 }

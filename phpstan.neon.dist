@@ -1,0 +1,23 @@
+parameters:
+  level: 0
+  paths:
+    - core.php
+    - requesthandler.php
+    - router.php
+    - routes.php
+    - ldap.php
+    - email.php
+    - model
+    - scripts
+    - services
+  excludePaths:
+    - */vendor/*
+    - */migrations/*
+    - */templates/*
+    - */views/*
+    - */public_html/bootstrap/*
+    - */public_html/jquery/*
+  tmpDir: var/phpstan
+
+includes:
+  - phpstan-baseline.neon

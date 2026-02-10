@@ -1,0 +1,46 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Function simplify_search\\(\\) should return array but return statement is missing\\.$#"
+			count: 1
+			path: core.php
+
+		-
+			message: "#^Function ldap_sort not found\\.$#"
+			count: 1
+			path: ldap.php
+
+		-
+			message: "#^Method Group\\:\\:update\\(\\) should return array but return statement is missing\\.$#"
+			count: 1
+			path: model/group.php
+
+		-
+			message: "#^Method Server\\:\\:update\\(\\) should return array but return statement is missing\\.$#"
+			count: 1
+			path: model/server.php
+
+		-
+			message: "#^Undefined variable\\: \\$hostname$#"
+			count: 1
+			path: model/server.php
+
+		-
+			message: "#^Method ServerAccount\\:\\:update\\(\\) should return array but return statement is missing\\.$#"
+			count: 1
+			path: model/serveraccount.php
+
+		-
+			message: "#^Method User\\:\\:update\\(\\) should return array but return statement is missing\\.$#"
+			count: 1
+			path: model/user.php
+
+		-
+			message: "#^Method SyncProcess\\:\\:get_data\\(\\) should return string but return statement is missing\\.$#"
+			count: 1
+			path: scripts/sync-common.php
+
+		-
+			message: "#^Function history_username_env_format_is_valid not found\\.$#"
+			count: 1
+			path: scripts/sync.php
