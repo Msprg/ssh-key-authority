@@ -22,15 +22,15 @@ require('../core.php');
 require_once(__DIR__.'/../history_username_env_common.php');
 require('sync-common.php');
 require('ssh.php');
-$required_files = array('config/keys-sync', 'config/keys-sync.pub');
-foreach($required_files as $file) {
-	if(!file_exists($file)) die("Sync cannot start - $file not found.\n");
-}
 
 // Parse the command-line arguments
-$options = getopt('h:i:au:p', array('help', 'host:', 'id:', 'all', 'user:', 'preview'));
+$options = getopt('h:i:au:p', array('help', 'host:', 'id:', 'all', 'user:', 'preview', 'diagnostics'));
 if(isset($options['help'])) {
 	show_help();
+	exit(0);
+}
+if(isset($options['diagnostics'])) {
+	show_diagnostics();
 	exit(0);
 }
 $short_to_long = array(
@@ -63,6 +63,11 @@ if(isset($options['user'])) {
 	$username = null;
 }
 $preview = isset($options['preview']);
+
+$required_files = array('config/keys-sync', 'config/keys-sync.pub');
+foreach($required_files as $file) {
+	if(!file_exists($file)) die("Sync cannot start - $file not found.\n");
+}
 
 // Use 'keys-sync' user as the active user (create if it does not yet exist)
 try {
@@ -150,8 +155,23 @@ Mandatory arguments to long options are mandatory for short options too.
   -u, --user             sync only the specified user account
   -p, --preview          perform no changes, display content of all
                          keyfiles
+      --diagnostics      display sync runtime diagnostics and exit
       --help             display this help and exit
 <?php
+}
+
+function show_diagnostics() {
+	global $config;
+
+	$diag = SyncRuntime::diagnostics($config);
+	$ssh_diag = SSH::diagnostics($config);
+	$failure_diag = SyncFailureReporter::diagnostics();
+	echo "sync_runtime.timeout_util=".$diag['timeout_util']."\n";
+	echo "sync_runtime.timeout_binary=".$diag['timeout_binary']."\n";
+	echo "sync_runtime.timeout_seconds=".$diag['timeout_seconds']."\n";
+	echo "sync_runtime.jumphost_strict_host_key_checking=".$ssh_diag['jumphost_strict_host_key_checking']."\n";
+	echo "sync_runtime.jumphost_known_hosts_file=".$ssh_diag['jumphost_known_hosts_file']."\n";
+	echo "sync_runtime.reschedule_delay_minutes=".$failure_diag['reschedule_delay_minutes']."\n";
 }
 
 /**
@@ -200,12 +220,22 @@ function decommission_server($id, $preview = false) {
 		$server,
 		$hostname,
 		function() use ($server) {
-			$server->sync_report('sync failure', 'SSH connection timed out during decommission');
-			$server->reschedule_sync_request();
+			SyncFailureReporter::report_server_failure(
+				$server,
+				'SSH connection timed out during decommission',
+				null,
+				'ssh_timeout',
+				true
+			);
 		},
 		function($reason) use ($server) {
-			$server->sync_report('sync failure', 'Failed to connect during decommission: '.$reason);
-			$server->reschedule_sync_request();
+			SyncFailureReporter::report_server_failure(
+				$server,
+				'Failed to connect during decommission',
+				$reason,
+				null,
+				true
+			);
 		}
 	);
 	if (is_null($connection)) {
@@ -221,8 +251,13 @@ function decommission_server($id, $preview = false) {
 	} catch (SSHException $e) {
 		$cleanup_errors++;
 		echo date('c')." {$hostname}: Cannot access key directory: ".describe_oneline($e)."\n";
-		$server->sync_report('sync failure', 'Cannot access key directory during decommission: '.describe_oneline($e));
-		$server->reschedule_sync_request();
+		SyncFailureReporter::report_server_failure(
+			$server,
+			'Cannot access key directory during decommission',
+			describe_oneline($e),
+			'key_directory_access_failed',
+			true
+		);
 		return;
 	}
 
@@ -279,8 +314,13 @@ function decommission_server($id, $preview = false) {
 
 	// Update status
 	if($cleanup_errors > 0) {
-		$server->sync_report('sync failure', 'Failed to remove '.$cleanup_errors.' key file'.($cleanup_errors == 1 ? '' : 's').' during decommission');
-		$server->reschedule_sync_request();
+		SyncFailureReporter::report_server_failure(
+			$server,
+			'Failed to remove '.$cleanup_errors.' key file'.($cleanup_errors == 1 ? '' : 's').' during decommission',
+			null,
+			'decommission_cleanup_failed',
+			true
+		);
 	} else {
 		$server->sync_report('sync success', 'Decommissioned: removed '.$removed_count.' key file'.($removed_count == 1 ? '' : 's').' (keys-sync access preserved)');
 	}
@@ -288,7 +328,14 @@ function decommission_server($id, $preview = false) {
 	try {
 		$server->update_status_file($connection);
 	} catch (SSHException $e) {
-		// Ignore status file update errors during decommission
+		$reason = describe_oneline($e);
+		echo date('c')." {$hostname}: Warning: monitoring status file update failed during decommission: {$reason}\n";
+		SyncFailureReporter::log_server_nonfatal_issue(
+			$server,
+			'Monitoring status file update failed during decommission',
+			$reason,
+			'monitoring_status_write_failed'
+		);
 	}
 	
 	echo date('c')." {$hostname}: Decommission completed\n";
@@ -390,13 +437,23 @@ function sync_server($id, $only_username = null, $preview = false) {
 		$server,
 		$hostname,
 		function() use ($server, $keyfiles) {
-			$server->sync_report('sync failure', 'SSH connection timed out');
-			$server->reschedule_sync_request();
+			SyncFailureReporter::report_server_failure(
+				$server,
+				'SSH connection timed out',
+				null,
+				'ssh_timeout',
+				true
+			);
 			report_all_accounts_failed($keyfiles);
 		},
 		function($reason) use ($server, $keyfiles) {
-			$server->sync_report('sync failure', $reason);
-			$server->reschedule_sync_request();
+			SyncFailureReporter::report_server_failure(
+				$server,
+				'Failed to connect',
+				$reason,
+				null,
+				true
+			);
 			report_all_accounts_failed($keyfiles);
 		}
 	);
@@ -479,10 +536,22 @@ function sync_server($id, $only_username = null, $preview = false) {
 	}
 	$failure_occurred = false;
 	if($cleanup_errors > 0) {
-		$server->sync_report('sync failure', 'Failed to clean up '.$cleanup_errors.' file'.($cleanup_errors == 1 ? '' : 's'));
+		SyncFailureReporter::report_server_failure(
+			$server,
+			'Failed to clean up '.$cleanup_errors.' file'.($cleanup_errors == 1 ? '' : 's'),
+			null,
+			'cleanup_failed',
+			false
+		);
 		$failure_occurred = true;
 	} elseif($account_errors > 0) {
-		$server->sync_report('sync failure', $account_errors.' account'.($account_errors == 1 ? '' : 's').' failed to sync');
+		SyncFailureReporter::report_server_failure(
+			$server,
+			$account_errors.' account'.($account_errors == 1 ? '' : 's').' failed to sync',
+			null,
+			'account_sync_failed',
+			false
+		);
 		$failure_occurred = true;
 	} elseif($sync_warning) {
 		$server->sync_report('sync warning', $sync_warning);
@@ -492,7 +561,33 @@ function sync_server($id, $only_username = null, $preview = false) {
 	if ($failure_occurred) {
 		$server->reschedule_sync_request();
 	}
-	$server->update_status_file($connection);
+	$status_file_update_reason = null;
+	try {
+		$server->update_status_file($connection);
+	} catch (SSHException $e) {
+		$status_file_update_reason = describe_oneline($e);
+		echo date('c')." {$hostname}: Warning: monitoring status file update failed: {$status_file_update_reason}\n";
+	}
+	if(!is_null($status_file_update_reason)) {
+		if($failure_occurred || $sync_warning) {
+			SyncFailureReporter::log_server_nonfatal_issue(
+				$server,
+				'Monitoring status file update failed',
+				$status_file_update_reason,
+				'monitoring_status_write_failed'
+			);
+		} else {
+			$server->sync_report(
+				'sync warning',
+				SyncFailureReporter::build_message(
+					'Monitoring status file update failed',
+					$status_file_update_reason,
+					'monitoring_status_write_failed',
+					false
+				)
+			);
+		}
+	}
 	echo date('c')." {$hostname}: Sync finished\n";
 }
 

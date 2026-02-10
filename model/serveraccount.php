@@ -29,13 +29,23 @@ class ServerAccount extends Entity {
 	*/
 	protected $idfield = 'entity_id';
 
+	private static function runtime_value($key, $default = null) {
+		if(class_exists('RuntimeState', false)) {
+			return RuntimeState::get($key, $default);
+		}
+		return $default;
+	}
+
+	private static function runtime_config() {
+		return self::runtime_value('config', array_key_exists('config', $GLOBALS) ? $GLOBALS['config'] : array());
+	}
+
 	/**
 	* Magic getter method - if server field requested, return Server object
 	* @param string $field to retrieve
 	* @return mixed data stored in field
 	*/
 	public function &__get($field) {
-		global $user_dir;
 		switch($field) {
 		case 'server':
 			$server = new Server($this->server_id);
@@ -50,7 +60,7 @@ class ServerAccount extends Entity {
 	* Triggers a resync of the server if account is activated/deactivated.
 	*/
 	public function update() {
-		global $config;
+		$config = self::runtime_config();
 		// Make it impossible to set default accounts to inactive
 		if(is_array($config['defaults']['account_groups'])) {
 			if(array_key_exists($this->data['name'], $config['defaults']['account_groups'])) {
@@ -106,7 +116,7 @@ class ServerAccount extends Entity {
 	* @param User $user to add as leader
 	*/
 	public function add_admin(User $user) {
-		global $config;
+		$config = self::runtime_config();
 		parent::add_admin($user);
 		$url = $config['web']['baseurl'].'/servers/'.urlencode($this->server->hostname).'/accounts/'.urlencode($this->name);
 		$email = new Email;
@@ -136,7 +146,7 @@ class ServerAccount extends Entity {
 	* @param PublicKey $key to be added
 	*/
 	public function add_public_key(PublicKey $key) {
-		global $config;
+		$config = self::runtime_config();
 		parent::add_public_key($key);
 		$url = $config['web']['baseurl'].'/pubkeys/'.urlencode($key->id);
 		$email = new Email;
@@ -166,7 +176,7 @@ class ServerAccount extends Entity {
 	* @param Entity $entity to request access for
 	*/
 	public function add_access_request(Entity $entity) {
-		global $config;
+		$config = self::runtime_config();
 		if(is_null($this->entity_id)) throw new BadMethodCallException('Server account must be added to server before access can be requested');
 		try {
 			$request = new AccessRequest;
@@ -311,7 +321,7 @@ class ServerAccount extends Entity {
 	* @param array $access_options array of AccessOption rules to apply to the granted access
 	*/
 	public function add_access(Entity $entity, array $access_options) {
-		global $config;
+		$config = self::runtime_config();
 		if(is_null($this->entity_id)) throw new BadMethodCallException('Server account must be added to server before access can be added');
 		if($this->sync_status == 'proposed') {
 			$this->sync_status = 'not synced yet';
@@ -406,7 +416,7 @@ class ServerAccount extends Entity {
 	* @return array of Group objects
 	*/
 	public function list_group_membership() {
-		global $group_dir;
+		$group_dir = self::runtime_value('group_dir', array_key_exists('group_dir', $GLOBALS) ? $GLOBALS['group_dir'] : null);
 		return $group_dir->list_group_membership($this);
 	}
 
@@ -414,7 +424,7 @@ class ServerAccount extends Entity {
 	* Trigger a sync for this account.
 	*/
 	public function sync_access() {
-		global $sync_request_dir;
+		$sync_request_dir = self::runtime_value('sync_request_dir', array_key_exists('sync_request_dir', $GLOBALS) ? $GLOBALS['sync_request_dir'] : null);
 		$sync_request = new SyncRequest;
 		$sync_request->server_id = $this->server_id;
 		$sync_request->account_name = $this->name;

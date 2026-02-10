@@ -17,103 +17,61 @@
 
 chdir(dirname(__FILE__));
 require('core.php');
+require('services/request_context.php');
+require('services/request_auth_guard.php');
+require('services/request_csrf_guard.php');
+require('services/login_flow.php');
+require('services/request_policy_guard.php');
+require('services/request_router_dispatcher.php');
+require('services/request_exception_handler.php');
+require('services/key_lifecycle_service.php');
+require('services/access_rule_service.php');
+require('services/relation_lifecycle_service.php');
+require('services/response_security_headers.php');
 ob_start();
-set_exception_handler('exception_handler');
 
-// Helper function to check if a route is public
-function isPublicRoute($request_path) {
-    global $public_routes;
-    foreach ($public_routes as $route => $is_public) {
-        if ($is_public) {
-            // Convert route pattern to regex for matching
-            $pattern = preg_replace('/\{[^}]+\}/', '[^/]+', $route);
-            if (preg_match('|^' . $pattern . '$|', $request_path)) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
+$active_user = null;
+$exception_handler = new RequestExceptionHandler($active_user, $config);
+set_exception_handler(array($exception_handler, 'handle'));
 
-// Work out where we are on the server
-$base_url = dirname($_SERVER['SCRIPT_NAME']);
-$request_url = $_SERVER['REQUEST_URI'];
-$relative_request_url = preg_replace('/^'.preg_quote($base_url, '/').'/', '/', $request_url);
-$absolute_request_url = 'http'.(isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['HTTP_HOST'].$request_url;
+$request_context = RequestContext::from_globals();
+$base_url = $request_context->base_url;
+$request_url = $request_context->request_url;
+$relative_request_url = $request_context->relative_request_url;
+$absolute_request_url = $request_context->absolute_request_url;
+RuntimeState::set_many(array(
+	'request_context' => $request_context,
+	'base_url' => $base_url,
+	'request_url' => $request_url,
+	'relative_request_url' => $relative_request_url,
+	'absolute_request_url' => $absolute_request_url,
+));
+
+$response_security_headers = new ResponseSecurityHeaders();
+$response_security_headers->apply($config);
 
 // Initialize authentication service
 $auth_service = new AuthService($ldap, $user_dir, $config);
+$auth_guard = new RequestAuthGuard($auth_service, $public_routes);
+$csrf_guard = new RequestCsrfGuard();
+$policy_guard = new RequestPolicyGuard();
+$router_dispatcher = new RequestRouterDispatcher($policy_guard);
 
-// Check if user is authenticated
-$active_user = $auth_service->getCurrentUser();
+$active_user = $auth_guard->resolve_active_user($request_context);
+RuntimeState::set('active_user', $active_user);
 
-// If no active user and not on a public route, redirect to login
-if (!$active_user && !isPublicRoute($relative_request_url)) {
-    // Store the current URL to redirect back after login
-    $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
-    redirect('/login');
-}
+$policy_guard->enforce_web_enabled($config);
+$policy_guard->enforce_active_user_status($active_user, $relative_request_url, $absolute_request_url);
 
-// Prevent authenticated users from accessing login page (they're already logged in)
-if ($active_user && $relative_request_url === '/login') {
-    $redirect_url = $_SESSION['redirect_after_login'] ?? '/';
-    unset($_SESSION['redirect_after_login']);
-    redirect($redirect_url);
-}
+$csrf_guard->validate($active_user, $request_context, $_POST);
 
-// Prevent logged out users from accessing logout page (they're already logged out)
-if (!$active_user && $relative_request_url === '/logout') {
-    // They're already logged out, just redirect to login
-    redirect('/login');
-}
-
-if(empty($config['web']['enabled'])) {
-	require('views/error503.php');
-	die;
-}
-
-if($active_user && (!$active_user->active || $active_user->force_disable)) {
-	require('views/error403.php');
-}
-
-if(!empty($_POST) && $active_user) {
-	// Check CSRF token
-	if(isset($_SERVER['HTTP_X_BYPASS_CSRF_PROTECTION']) && $_SERVER['HTTP_X_BYPASS_CSRF_PROTECTION'] == 1) {
-		// This is being called from script, not a web browser
-	} elseif(!$active_user->check_csrf_token($_POST['csrf_token'])) {
-		require('views/csrf.php');
-		die;
-	}
-}
-
-// Route request to the correct view
-$router = new Router;
-foreach($routes as $path => $service) {
-	$public = array_key_exists($path, $public_routes);
-	$router->add_route($path, $service, $public);
-}
+$router = $router_dispatcher->build_router($routes, $public_routes);
 $router->handle_request($relative_request_url);
-if(isset($router->view)) {
-	$view = path_join($base_path, 'views', $router->view.'.php');
-	if(file_exists($view)) {
-		if($router->public || ($active_user && $active_user->auth_realm == 'LDAP')) {
-			require($view);
-		} else {
-			require('views/error403.php');
-		}
+$view = $router_dispatcher->resolve_view_path($router, $base_path);
+if(!is_null($view)) {
+	if($policy_guard->can_render_view($router->public, $active_user)) {
+		require($view);
 	} else {
-		throw new Exception("View file $view missing.");
+		require('views/error403.php');
 	}
-}
-
-// Handler for uncaught exceptions
-function exception_handler($e) {
-	global $active_user, $config;
-	$error_number = time();
-	error_log("$error_number: ".str_replace("\n", "\n$error_number: ", $e));
-	while(ob_get_length()) {
-		ob_end_clean();
-	}
-	require('views/error500.php');
-	die;
 }

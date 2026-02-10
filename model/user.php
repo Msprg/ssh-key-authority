@@ -39,8 +39,11 @@ class User extends Entity {
 
 	public function __construct($id = null, $preload_data = array()) {
 		parent::__construct($id, $preload_data);
-		global $ldap;
-		$this->ldap = $ldap;
+		if(class_exists('RuntimeState', false)) {
+			$this->ldap = RuntimeState::get('ldap', array_key_exists('ldap', $GLOBALS) ? $GLOBALS['ldap'] : null);
+		} else {
+			$this->ldap = array_key_exists('ldap', $GLOBALS) ? $GLOBALS['ldap'] : null;
+		}
 	}
 
 	/**
@@ -77,7 +80,6 @@ class User extends Entity {
 	* @return mixed data stored in field
 	*/
 	public function &__get($field) {
-		global $user_dir;
 		switch($field) {
 		case 'superior':
 			if(is_null($this->superior_entity_id)) $superior = null;
@@ -94,7 +96,9 @@ class User extends Entity {
 	* @return array of *Event objects
 	*/
 	public function list_events($include = array()) {
-		global $event_dir;
+		$event_dir = class_exists('RuntimeState', false)
+			? RuntimeState::get('event_dir', array_key_exists('event_dir', $GLOBALS) ? $GLOBALS['event_dir'] : null)
+			: (array_key_exists('event_dir', $GLOBALS) ? $GLOBALS['event_dir'] : null);
 		if(is_null($this->entity_id)) throw new BadMethodCallException('User must be in directory before events can be listed');
 		return $event_dir->list_events($include, array('admin' => $this->entity_id));
 	}
@@ -105,7 +109,9 @@ class User extends Entity {
 	* @return array of Server objects
 	*/
 	public function list_admined_servers($include = array()) {
-		global $server_dir;
+		$server_dir = class_exists('RuntimeState', false)
+			? RuntimeState::get('server_dir', array_key_exists('server_dir', $GLOBALS) ? $GLOBALS['server_dir'] : null)
+			: (array_key_exists('server_dir', $GLOBALS) ? $GLOBALS['server_dir'] : null);
 		if(is_null($this->entity_id)) throw new BadMethodCallException('User must be in directory before admined servers can be listed');
 		return $server_dir->list_servers($include, array('admin' => $this->entity_id, 'key_management' => array('none', 'keys', 'other')));
 	}
@@ -116,7 +122,9 @@ class User extends Entity {
 	* @return array of Group objects
 	*/
 	public function list_admined_groups($include = array()) {
-		global $group_dir;
+		$group_dir = class_exists('RuntimeState', false)
+			? RuntimeState::get('group_dir', array_key_exists('group_dir', $GLOBALS) ? $GLOBALS['group_dir'] : null)
+			: (array_key_exists('group_dir', $GLOBALS) ? $GLOBALS['group_dir'] : null);
 		if(is_null($this->entity_id)) throw new BadMethodCallException('User must be in directory before admined group can be listed');
 		$groups = $group_dir->list_groups($include, array('admin' => $this->entity_id));
 		return $groups;
@@ -128,7 +136,9 @@ class User extends Entity {
 	* @return array of Group objects
 	*/
 	public function list_group_memberships($include = array()) {
-		global $group_dir;
+		$group_dir = class_exists('RuntimeState', false)
+			? RuntimeState::get('group_dir', array_key_exists('group_dir', $GLOBALS) ? $GLOBALS['group_dir'] : null)
+			: (array_key_exists('group_dir', $GLOBALS) ? $GLOBALS['group_dir'] : null);
 		if(is_null($this->entity_id)) throw new BadMethodCallException('User must be in directory before group memberships can be listed');
 		$groups = $group_dir->list_groups($include, array('member' => $this->entity_id));
 		return $groups;
@@ -193,7 +203,12 @@ class User extends Entity {
 	* @param PublicKey $key to be added
 	*/
 	public function add_public_key(PublicKey $key) {
-		global $active_user, $config;
+		$active_user = class_exists('RuntimeState', false)
+			? RuntimeState::get('active_user', array_key_exists('active_user', $GLOBALS) ? $GLOBALS['active_user'] : null)
+			: (array_key_exists('active_user', $GLOBALS) ? $GLOBALS['active_user'] : null);
+		$config = class_exists('RuntimeState', false)
+			? RuntimeState::get('config', array_key_exists('config', $GLOBALS) ? $GLOBALS['config'] : array())
+			: (array_key_exists('config', $GLOBALS) ? $GLOBALS['config'] : array());
 		parent::add_public_key($key);
 		$url = $config['web']['baseurl'].'/pubkeys/'.urlencode($key->id);
 		$email = new Email;
@@ -216,7 +231,6 @@ class User extends Entity {
 	* @param PublicKey $key to be removed
 	*/
 	public function delete_public_key(PublicKey $key) {
-		global $active_user;
 		parent::delete_public_key($key);
 		$this->log(array('action' => 'Pubkey remove', 'value' => $key->fingerprint_md5));
 	}
@@ -306,7 +320,9 @@ class User extends Entity {
 	* @throws UserNotFoundException if the user is not found in LDAP
 	*/
 	public function get_details_from_ldap() {
-		global $config;
+		$config = class_exists('RuntimeState', false)
+			? RuntimeState::get('config', array_key_exists('config', $GLOBALS) ? $GLOBALS['config'] : array())
+			: (array_key_exists('config', $GLOBALS) ? $GLOBALS['config'] : array());
 		$attributes = array();
 		$attributes[] = 'dn';
 		$attributes[] = $config['ldap']['user_id'];
@@ -371,7 +387,6 @@ class User extends Entity {
 	 * @return string[] guids of the groups this user is member of
 	 */
 	public function get_ldap_group_guids() {
-		global $config;
 		if ($this->ldap_group_guids === null) {
 			$this->get_details_from_ldap();
 		}
@@ -382,7 +397,9 @@ class User extends Entity {
 	 * Adds the user to ldap groups or removes him from ldap groups, based on the current status on the directory server.
 	 */
 	public function update_group_memberships() {
-		global $group_dir;
+		$group_dir = class_exists('RuntimeState', false)
+			? RuntimeState::get('group_dir', array_key_exists('group_dir', $GLOBALS) ? $GLOBALS['group_dir'] : null)
+			: (array_key_exists('group_dir', $GLOBALS) ? $GLOBALS['group_dir'] : null);
 		foreach ($group_dir->get_sys_groups() as $sys_group) {
 			$should_be_member = $this->active && in_array($sys_group->ldap_guid, $this->get_ldap_group_guids());
 			if ($should_be_member && !$this->member_of($sys_group)) {
@@ -402,7 +419,12 @@ class User extends Entity {
 	* @throws UserNotFoundException if the user is not found in LDAP
 	*/
 	public function get_superior_from_ldap() {
-		global $user_dir, $config;
+		$user_dir = class_exists('RuntimeState', false)
+			? RuntimeState::get('user_dir', array_key_exists('user_dir', $GLOBALS) ? $GLOBALS['user_dir'] : null)
+			: (array_key_exists('user_dir', $GLOBALS) ? $GLOBALS['user_dir'] : null);
+		$config = class_exists('RuntimeState', false)
+			? RuntimeState::get('config', array_key_exists('config', $GLOBALS) ? $GLOBALS['config'] : array())
+			: (array_key_exists('config', $GLOBALS) ? $GLOBALS['config'] : array());
 		if(is_null($this->entity_id)) throw new BadMethodCallException('User must be in directory before superior employee can be looked up');
 		if(!isset($config['ldap']['user_superior'])) {
 			throw new BadMethodCallException("Cannot retrieve user's superior if user_superior is not configured");
@@ -436,7 +458,9 @@ class User extends Entity {
 	 * @return User An instance of the keys-sync user
 	 */
 	public static function get_keys_sync_user() {
-		global $user_dir;
+		$user_dir = class_exists('RuntimeState', false)
+			? RuntimeState::get('user_dir', array_key_exists('user_dir', $GLOBALS) ? $GLOBALS['user_dir'] : null)
+			: (array_key_exists('user_dir', $GLOBALS) ? $GLOBALS['user_dir'] : null);
 		try {
 			$keys_sync = $user_dir->get_user_by_uid('keys-sync');
 		} catch(UserNotFoundException $e) {

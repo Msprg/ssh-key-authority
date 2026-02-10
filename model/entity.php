@@ -34,7 +34,17 @@ abstract class Entity extends Record {
 	 * @return Entity An instance of User, Group or ServerAccount, or null if no entity with this id exists
 	 */
 	public static function load(int $id): ?Entity {
-		global $database;
+		if(class_exists('RuntimeState', false)) {
+			$database = RuntimeState::get('database', null);
+		} else {
+			$database = null;
+		}
+		if(is_null($database) && array_key_exists('database', $GLOBALS)) {
+			$database = $GLOBALS['database'];
+		}
+		if(is_null($database)) {
+			throw new BadMethodCallException('Database connection is not available.');
+		}
 
 		$stmt = $database->prepare("SELECT type FROM entity WHERE id = ?");
 		$stmt->bind_param('d', $id);
@@ -459,7 +469,9 @@ abstract class Entity extends Record {
 			$access->dest_entity->sync_access();
 		}
 		// Sync whatever groups this entity is a member of
-		global $group_dir;
+		$group_dir = class_exists('RuntimeState', false)
+			? RuntimeState::get('group_dir', array_key_exists('group_dir', $GLOBALS) ? $GLOBALS['group_dir'] : null)
+			: (array_key_exists('group_dir', $GLOBALS) ? $GLOBALS['group_dir'] : null);
 		$memberships = $group_dir->list_group_membership($this);
 		foreach($memberships as $group) {
 			if(!isset($seen[$group->entity_id])) {
@@ -467,8 +479,12 @@ abstract class Entity extends Record {
 			}
 		}
 		// If this is a user, also sync across LDAP-based servers
-		global $server_dir;
-		global $sync_request_dir;
+		$server_dir = class_exists('RuntimeState', false)
+			? RuntimeState::get('server_dir', array_key_exists('server_dir', $GLOBALS) ? $GLOBALS['server_dir'] : null)
+			: (array_key_exists('server_dir', $GLOBALS) ? $GLOBALS['server_dir'] : null);
+		$sync_request_dir = class_exists('RuntimeState', false)
+			? RuntimeState::get('sync_request_dir', array_key_exists('sync_request_dir', $GLOBALS) ? $GLOBALS['sync_request_dir'] : null)
+			: (array_key_exists('sync_request_dir', $GLOBALS) ? $GLOBALS['sync_request_dir'] : null);
 		if(get_class($this) == 'User') {
 			$servers = $server_dir->list_servers(array(), array('authorization' => array('manual LDAP', 'automatic LDAP')));
 			foreach($servers as $server) {

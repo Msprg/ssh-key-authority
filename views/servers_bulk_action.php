@@ -22,7 +22,8 @@
  * @param array $affected_servers Array of servers where the given leader has been added
  */
 function send_bulk_add_mail(Entity $entity, array $affected_servers) {
-	global $active_user, $config;
+	$active_user = RuntimeState::get('active_user');
+	$config = RuntimeState::get('config', array());
 
 	$servers_desc = count($affected_servers) == 1 ? "1 server" : count($affected_servers) . " servers";
 
@@ -63,28 +64,19 @@ if (!$active_user->admin) {
 
 $server_names = $_POST['selected_servers'] ?? [];
 $selected_servers = array_map(function($name) {
-	global $server_dir;
+	$server_dir = RuntimeState::get('server_dir');
 	return $server_dir->get_server_by_hostname($name);
 }, $server_names);
+$relation_lifecycle_service = new RelationLifecycleService();
 
 $content = null;
 if (isset($_POST['add_admin'])) {
-	try {
-		$entity = $user_dir->get_user_by_uid($_POST['user_name']);
-	} catch(UserNotFoundException $e) {
-		try {
-			$entity = $group_dir->get_group_by_name($_POST['user_name']);
-		} catch(GroupNotFoundException $e) {
-			$content = new PageSection('user_not_found');
-		}
+	$entity = $relation_lifecycle_service->resolve_user_or_group_by_name($user_dir, $group_dir, $_POST['user_name']);
+	if($entity === null) {
+		$content = new PageSection('user_not_found');
 	}
 	if (isset($entity)) {
-		$affected_servers = [];
-		foreach ($selected_servers as $server) {
-			if ($server->add_admin($entity, false)) {
-				$affected_servers[] = $server;
-			}
-		}
+		$affected_servers = $relation_lifecycle_service->add_server_admin_bulk($selected_servers, $entity, false);
 		if (!empty($affected_servers)) {
 			send_bulk_add_mail($entity, $affected_servers);
 		}
@@ -104,12 +96,7 @@ if (isset($_POST['add_admin'])) {
 		$content = new PageSection('user_not_found');
 	}
 	if (isset($entity)) {
-		$affected_servers = [];
-		foreach ($selected_servers as $server) {
-			if ($server->delete_admin($entity)) {
-				$affected_servers[] = $server;
-			}
-		}
+		$affected_servers = $relation_lifecycle_service->delete_server_admin_bulk($selected_servers, $entity);
 		$num = count($affected_servers);
 		if ($entity instanceof User) {
 			$type = "User";

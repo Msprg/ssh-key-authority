@@ -22,7 +22,8 @@
  * @param ExternalKey $key The key that has just been allowed
  */
 function send_mail_key_allowed(ExternalKey $key) {
-	global $active_user, $config;
+	$active_user = RuntimeState::get('active_user');
+	$config = RuntimeState::get('config', array());
 
 	$email = new Email();
 	$email->add_recipient($config['email']['report_address'], $config['email']['report_name']);

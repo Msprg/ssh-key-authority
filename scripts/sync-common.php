@@ -16,6 +16,9 @@
 ## limitations under the License.
 ##
 
+require_once(__DIR__.'/sync-runtime.php');
+require_once(__DIR__.'/sync-failure.php');
+
 /**
  * Represent the message of an exception (that might consist of multiple, chained
  * exceptions) as one string.
@@ -69,6 +72,7 @@ class SyncProcess {
 	private $errors;
 	private $request;
 	private $exit_status;
+	private $spawn_failed = false;
 
 	/**
 	* Create a new sync process
@@ -78,7 +82,6 @@ class SyncProcess {
 	*/
 	public function __construct($command, $args, $request = null) {
 		global $config;
-		$timeout_util = $config['general']['timeout_util'];
 
 		$this->request = $request;
 		$this->output = '';
@@ -88,15 +91,17 @@ class SyncProcess {
 			2 => array("pipe", "w"),  // stderr
 			3 => array("pipe", "w")   //
 		);
-		switch ($timeout_util) {
-			case "BusyBox":
-				$commandline = '/usr/bin/timeout -t 60 '.$command.' '.implode(' ', array_map('escapeshellarg', $args));
-				break;
-			default:
-				$commandline = '/usr/bin/timeout 60s '.$command.' '.implode(' ', array_map('escapeshellarg', $args));
-		}
+		$commandline = SyncRuntime::build_timeout_wrapped_command($command, $args, $config, 60);
 
 		$this->handle = proc_open($commandline, $descriptorspec, $this->pipes);
+		if(!is_resource($this->handle)) {
+			$this->spawn_failed = true;
+			$this->finished = true;
+			$this->errors = "Failed to start sync worker process";
+			$this->exit_status = 1;
+			$this->pipes = array();
+			return;
+		}
 		stream_set_blocking($this->pipes[1], 0);
 		stream_set_blocking($this->pipes[2], 0);
 	}
@@ -106,6 +111,13 @@ class SyncProcess {
 	* @return string output from the child process
 	*/
 	public function get_data() {
+		if($this->spawn_failed) {
+			$this->spawn_failed = false;
+			if($this->errors) {
+				echo $this->errors."\n";
+			}
+			return array('done' => true, 'output' => '');
+		}
 		if(isset($this->handle) && is_resource($this->handle)) {
 			if (!$this->finished) {
 				$data = read_streams([$this->pipes[1], $this->pipes[2]]);
@@ -137,8 +149,13 @@ class SyncProcess {
 			$this->get_data();
 			if ($this->exit_status !== 0) {
 				$server = $server_dir->get_server_by_id($this->request->server_id);
-				$server->sync_report('sync failure', "Internal error during sync");
-				$server->reschedule_sync_request();
+				SyncFailureReporter::report_server_failure(
+					$server,
+					'Internal error during sync',
+					'Sync worker process exited with non-zero status',
+					'worker_process_error',
+					true
+				);
 				$server->update();
 			}
 			$sync_request_dir->delete_sync_request($this->request);

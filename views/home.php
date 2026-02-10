@@ -17,15 +17,13 @@
 
 $public_keys = $active_user->list_public_keys();
 $admined_servers = $active_user->list_admined_servers(array('pending_requests', 'admins'));
+$key_lifecycle_service = new KeyLifecycleService();
 
 if(isset($_POST['add_public_key'])) {
 	try {
-		$public_key = new PublicKey;
-		$public_key->import($_POST['add_public_key'], $active_user->uid);
-		$active_user->add_public_key($public_key);
+		$key_lifecycle_service->add_user_public_key($active_user, $_POST['add_public_key']);
 		redirect();
 	} catch(InvalidArgumentException $e) {
-		global $config;
 		$content = new PageSection('key_upload_fail');
 		$error_message = $e->getMessage();
 		if(preg_match('/^Insufficient bits in public key: (\d+) < (\d+)$/', $error_message, $matches)) {
@@ -37,14 +35,7 @@ if(isset($_POST['add_public_key'])) {
 		}
 	}
 } elseif(isset($_POST['delete_public_key'])) {
-	foreach($public_keys as $public_key) {
-		if($public_key->id == $_POST['delete_public_key']) {
-			$key_to_delete = $public_key;
-		}
-	}
-	if(isset($key_to_delete)) {
-		$active_user->delete_public_key($key_to_delete);
-	}
+	$key_lifecycle_service->delete_entity_public_key($active_user, $public_keys, $_POST['delete_public_key']);
 	redirect();
 } else {
 	$content = new PageSection('home');

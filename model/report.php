@@ -36,7 +36,9 @@ class Report {
 	 * @return Report Contains the resulting report data
 	 */
 	public static function create(): Report {
-		global $server_dir;
+		$server_dir = class_exists('RuntimeState', false)
+			? RuntimeState::get('server_dir', array_key_exists('server_dir', $GLOBALS) ? $GLOBALS['server_dir'] : null)
+			: (array_key_exists('server_dir', $GLOBALS) ? $GLOBALS['server_dir'] : null);
 
 		// Server leader report
 		$servers = $server_dir->list_servers([], ['key_management' => ['keys']]);

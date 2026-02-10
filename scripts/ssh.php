@@ -74,21 +74,22 @@ class SSH {
 		string $username,
 		string $pubkey_file_path,
 		string $privkey_file_path,
-		?string &$host_key
+		?string &$host_key,
+		array $jumphost_security_options = array()
 	): SSH {
 		try {
-			$ssh = self::build_connection($host, $port, $jumphosts);
+			$ssh = self::build_connection($host, $port, $jumphosts, $jumphost_security_options);
 			$ssh->connection->setKeepAlive(30);
 			$received_key = $ssh->connection->getServerPublicHostKey();
 		} catch(SSHException | ErrorException $e) {
-			throw new SSHException("SSH connection failed");
+			throw new SSHException("SSH connection failed", 0, $e);
 		}
 		if ($received_key === false) {
 			$err = "Could not receive host key from target server";
 			if ($ssh->jump_cmd_stderr !== null) {
-				$stderr = stream_get_contents($ssh->jump_cmd_stderr);
-				if ($stderr != "") {
-					$err = "The tunnel connection via jumphost(s) failed";
+				$stderr_summary = self::summarize_stderr(stream_get_contents($ssh->jump_cmd_stderr));
+				if ($stderr_summary !== "") {
+					$err = "The tunnel connection via jumphost(s) failed: {$stderr_summary}";
 				}
 			}
 			throw new SSHException($err);
@@ -105,18 +106,64 @@ class SSH {
 	}
 
 	/**
+	 * Build jumphost SSH command options from configuration.
+	 *
+	 * @param array $config SKA application config
+	 * @return array string options:
+	 *  - strict_host_key_checking: yes|no
+	 *  - user_known_hosts_file: absolute path or /dev/null
+	 */
+	public static function build_jumphost_security_options(array $config): array {
+		$strict_checking = isset($config['security']['jumphost_strict_host_key_checking'])
+			&& (int)$config['security']['jumphost_strict_host_key_checking'] === 1;
+
+		$known_hosts_file = '/dev/null';
+		if($strict_checking) {
+			$known_hosts_file = '/etc/ssh/ssh_known_hosts';
+		}
+
+		if(isset($config['security']['jumphost_known_hosts_file'])) {
+			$configured_file = trim((string)$config['security']['jumphost_known_hosts_file']);
+			if($configured_file !== '') {
+				$known_hosts_file = $configured_file;
+			}
+		}
+
+		return array(
+			'strict_host_key_checking' => $strict_checking ? 'yes' : 'no',
+			'user_known_hosts_file' => $known_hosts_file,
+		);
+	}
+
+	/**
+	 * @param array $config SKA application config
+	 * @return array diagnostics for sync runtime reports
+	 */
+	public static function diagnostics(array $config): array {
+		$options = self::build_jumphost_security_options($config);
+
+		return array(
+			'jumphost_strict_host_key_checking' => $options['strict_host_key_checking'],
+			'jumphost_known_hosts_file' => $options['user_known_hosts_file'],
+		);
+	}
+
+	/**
 	 * Create an SFTP instance, connected to the target server, but do not authenticate.
 	 *
 	 * @param string $host Hostname of the target server
 	 * @param int $port Port number of the target server
 	 * @param array $jumphosts An array of jumphosts where each element contains "user", "host", "port".
+	 * @param array $jumphost_security_options SSH command options for jumphost chain.
 	 * @return SFTP The connected SFTP instance
 	 */
-	private static function build_connection(string $host, int $port, array $jumphosts): SSH {
+	private static function build_connection(string $host, int $port, array $jumphosts, array $jumphost_security_options): SSH {
 		if (empty($jumphosts)) {
 			return new SSH(new SFTP($host, $port));
 		}
-		$fix_options = "-o StrictHostKeyChecking=off -o UserKnownHostsFile=/dev/null -i config/keys-sync";
+		$strict_host_key_checking = isset($jumphost_security_options['strict_host_key_checking']) ? $jumphost_security_options['strict_host_key_checking'] : 'no';
+		$user_known_hosts_file = isset($jumphost_security_options['user_known_hosts_file']) ? $jumphost_security_options['user_known_hosts_file'] : '/dev/null';
+		$fix_options = " -o BatchMode=yes -o StrictHostKeyChecking=".escapeshellarg($strict_host_key_checking)." -o UserKnownHostsFile=".escapeshellarg($user_known_hosts_file)." -i config/keys-sync";
 		$jumphosts[] = [
 			"user" => "keys-sync",
 			"host" => $host,
@@ -148,6 +195,23 @@ class SSH {
 		$ssh->jump_cmd_stderr = $pipes[2];
 		$ssh->jump_cmd_child = $child;
 		return $ssh;
+	}
+
+	/**
+	 * Keep stderr reporting useful and bounded when tunnel setup fails.
+	 *
+	 * @param string $stderr
+	 * @return string
+	 */
+	private static function summarize_stderr(string $stderr): string {
+		$single_line = trim((string)preg_replace('/\s+/', ' ', $stderr));
+		if($single_line === '') {
+			return '';
+		}
+		if(strlen($single_line) > 200) {
+			return substr($single_line, 0, 200).'...';
+		}
+		return $single_line;
 	}
 
 	/**

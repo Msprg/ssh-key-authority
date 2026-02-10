@@ -26,6 +26,21 @@ default_key_supervision = full
 ; Set to 0 to disable automatic logout
 session_timeout = 28800
 
+; Content Security Policy (CSP) for web responses.
+; Leave unset to use default: default-src 'self'
+;content_security_policy = "default-src 'self'"
+; Set to 1 to emit CSP in report-only mode while tuning policy.
+csp_report_only = 0
+; Optional report collection endpoint for CSP violations.
+;content_security_policy_report_uri = "https://ska.example.com/csp-report"
+; Enable HSTS header for HTTPS responses only.
+hsts_enabled = 0
+; HSTS max-age in seconds.
+hsts_max_age = 31536000
+; Add includeSubDomains directive.
+hsts_include_subdomains = 0
+; Add preload directive (requires includeSubDomains and long max-age).
+hsts_preload = 0
 
 ; It is important that SKA is able to verify that it has connected to the
 ; server that it expected to connect to (otherwise it could be tricked into
@@ -44,6 +59,14 @@ host_key_reset_restriction = 1
 ;  1: Abort sync of affected servers and report an error
 ; It is not recommended to leave this set to '0' indefinitely
 host_key_collision_protection = 1
+
+; SSH jumphost chain trust behavior:
+;  0: Keep current compatibility mode (no host key check for jumphost chain)
+;  1: Require host key checks for each jump and target tunnel step
+jumphost_strict_host_key_checking = 0
+; Path to known_hosts file used when opening jumphost chain SSH commands.
+; Keep /dev/null for compatibility mode above.
+jumphost_known_hosts_file = /dev/null
 
 ; Minimum key strength requirements for different key types
 ; RSA keys must be at least this many bits
