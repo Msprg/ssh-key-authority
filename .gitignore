@@ -6,3 +6,4 @@ extensions/*.php
 docker-compose*
 docker/
 /vendor/
+var/phpstan/*
