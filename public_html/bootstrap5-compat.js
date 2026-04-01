@@ -19,6 +19,9 @@
 			var dstAttr = attrMap[i][1];
 			var nodes = document.querySelectorAll('[' + srcAttr + ']');
 			for(var n = 0; n < nodes.length; n++) {
+				if(nodes[n].hasAttribute('data-ska-skip-legacy')) {
+					continue;
+				}
 				if(!nodes[n].hasAttribute(dstAttr)) {
 					nodes[n].setAttribute(dstAttr, nodes[n].getAttribute(srcAttr));
 				}

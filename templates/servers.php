@@ -17,15 +17,15 @@
 ##
 ?>
 <h1>Servers</h1>
-<ul class="nav nav-tabs">
-	<li><a href="#list" data-toggle="tab" data-bs-toggle="tab">Server list</a></li>
-	<li><a href="#add" data-toggle="tab" data-bs-toggle="tab">Add server</a></li>
-	<li><a href="#add_bulk" data-toggle="tab" data-bs-toggle="tab">Add multiple servers</a></li>
+<ul class="nav nav-tabs" role="tablist">
+	<li class="nav-item active" role="presentation"><a href="#list" id="servers_list_tab" class="nav-link active" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="list" aria-selected="true">Server list</a></li>
+	<li class="nav-item" role="presentation"><a href="#add" id="servers_add_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="add" aria-selected="false" tabindex="-1">Add server</a></li>
+	<li class="nav-item" role="presentation"><a href="#add_bulk" id="servers_add_bulk_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="add_bulk" aria-selected="false" tabindex="-1">Add multiple servers</a></li>
 </ul>
 
 <!-- Tab panes -->
 <div class="tab-content">
-	<div class="tab-pane fade" id="list">
+	<div class="tab-pane fade in active show" id="list" role="tabpanel" aria-labelledby="servers_list_tab" aria-hidden="false">
 		<h2 class="sr-only">Server list</h2>
 		<div class="panel-group">
 			<p><a href="<?php outurl('/servers.json') ?>" class="btn btn-default btn-xs">
@@ -186,7 +186,7 @@
 		</form>
 		<?php } ?>
 	</div>
-	<div class="tab-pane fade" id="add">
+	<div class="tab-pane fade" id="add" role="tabpanel" aria-labelledby="servers_add_tab" aria-hidden="true">
 		<h2 class="sr-only">Add server</h2>
 		<div class="alert alert-info">
 			See <a href="<?php outurl('/help#sync_setup')?>" class="alert-link">the sync setup instructions</a> for how to set up the server for key synchronization.
@@ -221,7 +221,7 @@
 			<button type="submit" name="add_server" value="1" class="btn btn-primary">Add server to key management</button>
 		</form>
 	</div>
-	<div class="tab-pane fade" id="add_bulk">
+	<div class="tab-pane fade" id="add_bulk" role="tabpanel" aria-labelledby="servers_add_bulk_tab" aria-hidden="true">
 		<h2 class="sr-only">Add multiple servers</h2>
 		<div class="alert alert-info">
 			See <a href="<?php outurl('/help#sync_setup')?>" class="alert-link">the sync setup instructions</a> for how to set up the server for key synchronization.

@@ -18,15 +18,15 @@
 ?>
 <h1>Groups</h1>
 <?php if($this->get('admin')) { ?>
-<ul class="nav nav-tabs">
-	<li class="nav-item"><a href="#list" class="nav-link active" data-toggle="tab" data-bs-toggle="tab">Group list</a></li>
-	<li class="nav-item"><a href="#add" class="nav-link" data-toggle="tab" data-bs-toggle="tab">Add group</a></li>
+<ul class="nav nav-tabs" role="tablist">
+	<li class="nav-item active" role="presentation"><a href="#list" id="groups_list_tab" class="nav-link active" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="list" aria-selected="true">Group list</a></li>
+	<li class="nav-item" role="presentation"><a href="#add" id="groups_add_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="add" aria-selected="false" tabindex="-1">Add group</a></li>
 </ul>
 <?php } ?>
 
 <!-- Tab panes -->
 <div class="tab-content">
-	<div class="tab-pane fade show active" id="list">
+	<div class="tab-pane fade in active show" id="list" role="tabpanel"<?php if($this->get('admin')) out(' aria-labelledby="groups_list_tab"', ESC_NONE) ?> aria-hidden="false">
 		<h2 class="sr-only">Group list</h2>
 		<div class="panel-group">
 			<div class="panel panel-default">
@@ -99,7 +99,7 @@
 		<?php } ?>
 	</div>
 	<?php if($this->get('admin')) { ?>
-		<div class="tab-pane fade" id="add">
+		<div class="tab-pane fade" id="add" role="tabpanel" aria-labelledby="groups_add_tab" aria-hidden="true">
 		<h2 class="sr-only">Add group</h2>
 		<h3>Create local group</h3>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="form-inline">

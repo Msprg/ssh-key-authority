@@ -27,29 +27,149 @@ $(function() {
 	});
 });
 
-// Tab behavior: default to first tab; honor URL hash if present; do not persist selection
+// Bootstrap 5-compatible tab behavior for migrated tabsets.
 $(function() {
-	function show_initial_tab() {
-		var fragment = window.location.hash.substring(1);
-		if (fragment) {
-			var $tab = $('.nav-tabs a[href="#' + fragment + '"]');
-			if ($tab.length) {
-				$tab.tab('show');
-				return;
+	var selector = '[data-bs-toggle="tab"][data-ska-skip-legacy]';
+	var migratedTabs = document.querySelectorAll(selector);
+
+	if(!migratedTabs.length) {
+		return;
+	}
+
+	function get_tab_target(link) {
+		var target = link.getAttribute('data-bs-target') || link.getAttribute('href') || '';
+		if(target.indexOf('#') !== 0) {
+			return null;
+		}
+		return document.getElementById(target.substring(1));
+	}
+
+	function get_tab_group(link) {
+		return link.closest('.nav-tabs, .nav-pills');
+	}
+
+	function find_active_tab(links) {
+		for(var i = 0; i < links.length; i++) {
+			if(links[i].classList.contains('active')) {
+				return links[i];
+			}
+
+			var item = links[i].closest('li');
+			if(item && item.classList.contains('active')) {
+				return links[i];
 			}
 		}
-		$('a[data-toggle="tab"]:first').tab('show');
-	}
-	show_initial_tab();
 
-	// Update URL hash when switching tabs so refresh keeps the selected tab
-	$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-		if (window.history && history.replaceState) {
-			history.replaceState(null, null, e.target.hash);
+		return null;
+	}
+
+	function set_history_hash(hash) {
+		if(window.history && history.replaceState) {
+			history.replaceState(null, null, hash);
 		} else {
-			window.location.hash = e.target.hash;
+			window.location.hash = hash;
 		}
-	});
+	}
+
+	function show_tab(link, updateHash) {
+		var group = get_tab_group(link);
+		var target = get_tab_target(link);
+		if(!group || !target) {
+			return;
+		}
+
+		var links = group.querySelectorAll(selector);
+		var previous = find_active_tab(links);
+		var showEvent = new CustomEvent('show.bs.tab', {
+			bubbles: true,
+			cancelable: true,
+			detail: {relatedTarget: previous}
+		});
+		if(!link.dispatchEvent(showEvent)) {
+			return;
+		}
+
+		for(var i = 0; i < links.length; i++) {
+			links[i].classList.remove('active');
+			links[i].setAttribute('aria-selected', 'false');
+			links[i].setAttribute('tabindex', '-1');
+
+			var item = links[i].closest('li');
+			if(item) {
+				item.classList.remove('active');
+			}
+		}
+
+		var tabContent = target.closest('.tab-content');
+		if(tabContent) {
+			var panes = tabContent.querySelectorAll('.tab-pane');
+			for(var p = 0; p < panes.length; p++) {
+				panes[p].classList.remove('active');
+				panes[p].classList.remove('in');
+				panes[p].classList.remove('show');
+				panes[p].setAttribute('aria-hidden', 'true');
+			}
+		}
+
+		link.classList.add('active');
+		link.setAttribute('aria-selected', 'true');
+		link.removeAttribute('tabindex');
+
+		var activeItem = link.closest('li');
+		if(activeItem) {
+			activeItem.classList.add('active');
+		}
+
+		target.classList.add('active');
+		target.classList.add('show');
+		if(target.classList.contains('fade')) {
+			target.classList.add('in');
+		}
+		target.setAttribute('aria-hidden', 'false');
+
+		if(updateHash) {
+			set_history_hash('#' + target.id);
+		}
+
+		link.dispatchEvent(new CustomEvent('shown.bs.tab', {
+			bubbles: true,
+			detail: {relatedTarget: previous}
+		}));
+	}
+
+	for(var t = 0; t < migratedTabs.length; t++) {
+		migratedTabs[t].addEventListener('click', function(event) {
+			event.preventDefault();
+			show_tab(this, true);
+		});
+	}
+
+	var groups = document.querySelectorAll('.nav-tabs, .nav-pills');
+	var fragment = window.location.hash ? window.location.hash.substring(1) : '';
+
+	for(var g = 0; g < groups.length; g++) {
+		var groupLinks = groups[g].querySelectorAll(selector);
+		if(!groupLinks.length) {
+			continue;
+		}
+
+		var initial = null;
+		if(fragment) {
+			for(var h = 0; h < groupLinks.length; h++) {
+				var target = get_tab_target(groupLinks[h]);
+				if(target && target.id === fragment) {
+					initial = groupLinks[h];
+					break;
+				}
+			}
+		}
+
+		if(!initial) {
+			initial = find_active_tab(groupLinks) || groupLinks[0];
+		}
+
+		show_tab(initial, false);
+	}
 });
 
 // Remember the expanded-state of a collapsible section

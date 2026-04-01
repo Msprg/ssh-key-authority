@@ -21,15 +21,15 @@
 	<dt>Account type</dt>
 	<dd><?php out($this->get('user')->auth_realm)?></dd>
 </dl>
-<ul class="nav nav-tabs">
-	<li><a href="#details" data-toggle="tab" data-bs-toggle="tab">Details</a></li>
+<ul class="nav nav-tabs" role="tablist">
+	<li class="nav-item active" role="presentation"><a href="#details" id="user_details_tab" class="nav-link active" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="details" aria-selected="true">Details</a></li>
 	<?php if($this->get('user')->auth_realm == 'LDAP' && $this->get('admin')) { ?>
-	<li><a href="#settings" data-toggle="tab" data-bs-toggle="tab">Settings</a></li>
+	<li class="nav-item" role="presentation"><a href="#settings" id="user_settings_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="settings" aria-selected="false" tabindex="-1">Settings</a></li>
 	<?php } ?>
 </ul>
 <!-- Tab panes -->
 <div class="tab-content">
-	<div class="tab-pane fade" id="details">
+	<div class="tab-pane fade in active show" id="details" role="tabpanel" aria-labelledby="user_details_tab" aria-hidden="false">
 		<h2 class="sr-only">Details</h2>
 		<h3><a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys')?>">Public keys</a></h3>
 		<p>
@@ -262,7 +262,7 @@
 		<?php } ?>
 	</div>
 	<?php if($this->get('user')->auth_realm == 'LDAP' && $this->get('admin')) { ?>
-	<div class="tab-pane fade" id="settings">
+	<div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="user_settings_tab" aria-hidden="true">
 		<h2 class="sr-only">Settings</h2>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="form-horizontal">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
