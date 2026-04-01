@@ -48,20 +48,20 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 	The account name <i><?php out($this->get('account')->name) ?></i> is a requested account.  If you reject the access request<?php out(count($this->get('access_requests')) == 1 ? '' : 's')?> below then the account will be removed from the keys system.
 </div>
 <?php } ?>
-<ul class="nav nav-tabs">
+<ul class="nav nav-tabs" role="tablist">
 	<?php if($this->get('server')->key_management == 'keys') { ?>
-	<li><a href="#access" data-toggle="tab" data-bs-toggle="tab">Access</a></li>
+	<li class="nav-item active" role="presentation"><a href="#access" id="serveraccount_access_tab" class="nav-link active" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="access" aria-selected="true">Access</a></li>
 	<?php } ?>
-	<li><a href="#pubkeys" data-toggle="tab" data-bs-toggle="tab">Public keys</a></li>
-	<li><a href="#outbound" data-toggle="tab" data-bs-toggle="tab">Outbound access</a></li>
-	<li><a href="#admins" data-toggle="tab" data-bs-toggle="tab">Leaders</a></li>
-	<li><a href="#log" data-toggle="tab" data-bs-toggle="tab">Log</a></li>
+	<li class="nav-item<?php if($this->get('server')->key_management != 'keys') out(' active', ESC_NONE) ?>" role="presentation"><a href="#pubkeys" id="serveraccount_pubkeys_tab" class="nav-link<?php if($this->get('server')->key_management != 'keys') out(' active', ESC_NONE) ?>" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="pubkeys" aria-selected="<?php out($this->get('server')->key_management == 'keys' ? 'false' : 'true') ?>"<?php if($this->get('server')->key_management == 'keys') out(' tabindex="-1"', ESC_NONE) ?>>Public keys</a></li>
+	<li class="nav-item" role="presentation"><a href="#outbound" id="serveraccount_outbound_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="outbound" aria-selected="false" tabindex="-1">Outbound access</a></li>
+	<li class="nav-item" role="presentation"><a href="#admins" id="serveraccount_admins_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="admins" aria-selected="false" tabindex="-1">Leaders</a></li>
+	<li class="nav-item" role="presentation"><a href="#log" id="serveraccount_log_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="log" aria-selected="false" tabindex="-1">Log</a></li>
 </ul>
 
 <!-- Tab panes -->
 <div class="tab-content">
 	<?php if($this->get('server')->key_management == 'keys') { ?>
-	<div class="tab-pane fade" id="access">
+	<div class="tab-pane fade in active show" id="access" role="tabpanel" aria-labelledby="serveraccount_access_tab" aria-hidden="false">
 		<h2 class="sr-only">Access</h2>
 		<?php if(count($this->get('access')) == 0 && count($this->get('access_requests')) == 0) { ?>
 		<p>No-one has been granted access to this account.</p>
@@ -333,7 +333,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 		<?php } ?>
 	</div>
 	<?php } ?>
-	<div class="tab-pane fade" id="pubkeys">
+	<div class="tab-pane fade<?php if($this->get('server')->key_management != 'keys') out(' in active show', ESC_NONE) ?>" id="pubkeys" role="tabpanel" aria-labelledby="serveraccount_pubkeys_tab" aria-hidden="<?php out($this->get('server')->key_management == 'keys' ? 'true' : 'false') ?>">
 		<h2 class="sr-only">Public keys</h2>
 		<p>
 			<a href="<?php outurl($this->data->relative_request_url.'/pubkeys.txt')?>" class="btn btn-default btn-xs">
@@ -408,7 +408,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<div class="mb-3"><button class="btn btn-primary btn-lg w-100">Add public key to account</button></div>
 		</form>
 	</div>
-	<div class="tab-pane fade" id="outbound">
+	<div class="tab-pane fade" id="outbound" role="tabpanel" aria-labelledby="serveraccount_outbound_tab" aria-hidden="true">
 		<h2 class="sr-only">Outbound access</h2>
 		<?php if(count($this->get('remote_access')) == 0) { ?>
 		<p>This account has not been granted access to any other resources.</p>
@@ -519,7 +519,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 		<?php } ?>
 		<?php } ?>
 	</div>
-	<div class="tab-pane fade" id="admins">
+	<div class="tab-pane fade" id="admins" role="tabpanel" aria-labelledby="serveraccount_admins_tab" aria-hidden="true">
 		<h2 class="sr-only">Account leaders</h2>
 		<?php if(count($this->get('admins')) == 0) { ?>
 		<p>This account does not have any leaders assigned.</p>
@@ -571,7 +571,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 		</form>
 		<?php } ?>
 	</div>
-	<div class="tab-pane fade" id="log">
+	<div class="tab-pane fade" id="log" role="tabpanel" aria-labelledby="serveraccount_log_tab" aria-hidden="true">
 		<h2 class="sr-only">Log</h2>
 		<div class="ska-scroll-container">
 			<table class="table">

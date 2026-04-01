@@ -74,20 +74,20 @@
 <?php } ?>
 <?php } ?>
 <?php if($this->get('admin') || $this->get('server_admin')) { ?>
-<ul class="nav nav-tabs">
-	<li><a href="#accounts" data-toggle="tab" data-bs-toggle="tab">Accounts</a></li>
-	<li><a href="#admins" data-toggle="tab" data-bs-toggle="tab">Leaders</a></li>
-	<li><a href="#settings" data-toggle="tab" data-bs-toggle="tab">Settings</a></li>
-	<li><a href="#log" data-toggle="tab" data-bs-toggle="tab">Log</a></li>
+<ul class="nav nav-tabs" role="tablist">
+	<li class="nav-item active" role="presentation"><a href="#accounts" id="server_accounts_tab" class="nav-link active" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="accounts" aria-selected="true">Accounts</a></li>
+	<li class="nav-item" role="presentation"><a href="#admins" id="server_admins_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="admins" aria-selected="false" tabindex="-1">Leaders</a></li>
+	<li class="nav-item" role="presentation"><a href="#settings" id="server_settings_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="settings" aria-selected="false" tabindex="-1">Settings</a></li>
+	<li class="nav-item" role="presentation"><a href="#log" id="server_log_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="log" aria-selected="false" tabindex="-1">Log</a></li>
 	<?php if($this->get('admin')) { ?>
-	<li><a href="#notes" data-toggle="tab" data-bs-toggle="tab">Notes<?php if(count($this->get('server_notes')) > 0) out(' <span class="badge">'.count($this->get('server_notes')).'</span>', ESC_NONE)?></a></li>
-	<li><a href="#contact" data-toggle="tab" data-bs-toggle="tab">Contact</a></li>
+	<li class="nav-item" role="presentation"><a href="#notes" id="server_notes_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="notes" aria-selected="false" tabindex="-1">Notes<?php if(count($this->get('server_notes')) > 0) out(' <span class="badge">'.count($this->get('server_notes')).'</span>', ESC_NONE)?></a></li>
+	<li class="nav-item" role="presentation"><a href="#contact" id="server_contact_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="contact" aria-selected="false" tabindex="-1">Contact</a></li>
 	<?php } ?>
 </ul>
 
 <!-- Tab panes -->
 <div class="tab-content">
-	<div class="tab-pane fade" id="accounts">
+	<div class="tab-pane fade in active show" id="accounts" role="tabpanel" aria-labelledby="server_accounts_tab" aria-hidden="false">
 		<h2 class="sr-only">
 			<?php if($this->get('server')->authorization == 'manual') { ?>
 				Accounts
@@ -196,7 +196,7 @@
 			<button type="submit" name="add_account" value="1" class="btn btn-primary">Manage this account with SSH Key Authority</button>
 		</form>
 	</div>
-	<div class="tab-pane fade" id="admins">
+	<div class="tab-pane fade" id="admins" role="tabpanel" aria-labelledby="server_admins_tab" aria-hidden="true">
 		<h2 class="sr-only">Server leaders</h2>
 		<?php if(count($this->get('server_admins')) == 0) { ?>
 		<p class="alert alert-danger">This server does not have any leaders assigned.</p>
@@ -262,7 +262,7 @@
 		</form>
 		<?php } ?>
 	</div>
-	<div class="tab-pane fade" id="settings">
+	<div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="server_settings_tab" aria-hidden="true">
 		<h2 class="sr-only">Settings</h2>
 		<form id="server_settings" method="post" action="<?php outurl($this->data->relative_request_url)?>" class="form-horizontal">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
@@ -520,7 +520,7 @@
 			<?php } ?>
 		</form>
 	</div>
-	<div class="tab-pane fade" id="log">
+	<div class="tab-pane fade" id="log" role="tabpanel" aria-labelledby="server_log_tab" aria-hidden="true">
 		<h2 class="sr-only">Log</h2>
 		<div class="ska-scroll-container">
 			<table class="table">
@@ -547,7 +547,7 @@
 		</div>
 	</div>
 	<?php if($this->get('admin')) { ?>
-	<div class="tab-pane fade" id="notes">
+	<div class="tab-pane fade" id="notes" role="tabpanel" aria-labelledby="server_notes_tab" aria-hidden="true">
 		<h2 class="sr-only">Notes</h2>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
@@ -572,7 +572,7 @@
 			</div>
 		</form>
 	</div>
-	<div class="tab-pane fade" id="contact">
+	<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="server_contact_tab" aria-hidden="true">
 		<h2 class="sr-only">Contact</h2>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>

@@ -62,14 +62,14 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 
 ?>
 <h1>Public keys</h1>
-<ul class="nav nav-tabs">
-	<li><a href="#managed" data-toggle="tab" data-bs-toggle="tab">Managed keys</a></li>
-	<li><a href="#new" data-toggle="tab" data-bs-toggle="tab">New keys</a></li>
-	<li><a href="#allowed" data-toggle="tab" data-bs-toggle="tab">Allowed keys</a></li>
-	<li><a href="#denied" data-toggle="tab" data-bs-toggle="tab">Denied keys</a></li>
+<ul class="nav nav-tabs" role="tablist">
+	<li class="nav-item active" role="presentation"><a href="#managed" id="pubkeys_managed_tab" class="nav-link active" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="managed" aria-selected="true">Managed keys</a></li>
+	<li class="nav-item" role="presentation"><a href="#new" id="pubkeys_new_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="new" aria-selected="false" tabindex="-1">New keys</a></li>
+	<li class="nav-item" role="presentation"><a href="#allowed" id="pubkeys_allowed_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="allowed" aria-selected="false" tabindex="-1">Allowed keys</a></li>
+	<li class="nav-item" role="presentation"><a href="#denied" id="pubkeys_denied_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="denied" aria-selected="false" tabindex="-1">Denied keys</a></li>
 </ul>
 <div class="tab-content">
-	<div class="tab-pane fade in active" id="managed">
+	<div class="tab-pane fade in active show" id="managed" role="tabpanel" aria-labelledby="pubkeys_managed_tab" aria-hidden="false">
 		<h2 class="sr-only">Managed keys</h2>
 		<p><a href="<?php outurl('/pubkeys.json') ?>" class="btn btn-default btn-xs">
 			<span class="glyphicon glyphicon-console"></span> JSON
@@ -188,7 +188,7 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 			</table>
 		</div>
 	</div>
-	<div class="tab-pane fade" id="new">
+	<div class="tab-pane fade" id="new" role="tabpanel" aria-labelledby="pubkeys_new_tab" aria-hidden="true">
 		<h2 class="sr-only">New keys</h2>
 		<?php
 		if (empty($this->get('new_keys'))) {
@@ -212,7 +212,7 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 		}
 		?>
 	</div>
-	<div class="tab-pane fade" id="allowed">
+	<div class="tab-pane fade" id="allowed" role="tabpanel" aria-labelledby="pubkeys_allowed_tab" aria-hidden="true">
 		<h2 class="sr-only">Allowed keys</h2>
 		<?php
 		if (empty($this->get('allowed_keys'))) {
@@ -224,7 +224,7 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 		}
 		?>
 	</div>
-	<div class="tab-pane fade" id="denied">
+	<div class="tab-pane fade" id="denied" role="tabpanel" aria-labelledby="pubkeys_denied_tab" aria-hidden="true">
 		<h2 class="sr-only">Denied keys</h2>
 		<?php
 		if (empty($this->get('denied_keys'))) {
