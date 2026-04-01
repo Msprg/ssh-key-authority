@@ -70,12 +70,12 @@ switch(get_class($remote_entity)) {
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title">
-						<a data-toggle="collapse" data-bs-toggle="collapse" href="#advanced_options">
+						<a data-bs-toggle="collapse" data-ska-skip-legacy href="#advanced_options" aria-expanded="false">
 							Advanced options <span class="caret"></span>
 						</a>
 					</h3>
 				</div>
-				<div id="advanced_options" class="collapse">
+				<div id="advanced_options" class="collapse" data-ska-skip-legacy aria-hidden="true">
 	<?php } ?>
 					<div class="panel-body">
 						<p>

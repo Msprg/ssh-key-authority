@@ -174,10 +174,114 @@ $(function() {
 
 // Remember the expanded-state of a collapsible section
 $(function() {
+	var migratedCollapseSelector = '.collapse[data-ska-skip-legacy]';
+	var migratedCollapseTriggers = document.querySelectorAll('[data-bs-toggle="collapse"][data-ska-skip-legacy]');
+
+	function get_collapse_target(trigger) {
+		var target = trigger.getAttribute('data-bs-target') || trigger.getAttribute('href') || '';
+		if(target.indexOf('#') !== 0) {
+			return null;
+		}
+		return document.getElementById(target.substring(1));
+	}
+
+	function get_collapse_triggers(collapse) {
+		var triggers = [];
+		for(var i = 0; i < migratedCollapseTriggers.length; i++) {
+			if(get_collapse_target(migratedCollapseTriggers[i]) === collapse) {
+				triggers.push(migratedCollapseTriggers[i]);
+			}
+		}
+		return triggers;
+	}
+
+	function set_collapse_state(collapse, expanded) {
+		var triggers = get_collapse_triggers(collapse);
+		collapse.classList.toggle('in', expanded);
+		collapse.classList.toggle('show', expanded);
+		collapse.setAttribute('aria-hidden', expanded ? 'false' : 'true');
+
+		for(var i = 0; i < triggers.length; i++) {
+			triggers[i].setAttribute('aria-expanded', expanded ? 'true' : 'false');
+			triggers[i].classList.toggle('collapsed', !expanded);
+		}
+	}
+
+	function collapse_related_sections(trigger, collapse) {
+		var parentSelector = trigger.getAttribute('data-bs-parent') || collapse.getAttribute('data-bs-parent');
+		if(!parentSelector) {
+			return;
+		}
+
+		var parent = document.querySelector(parentSelector);
+		if(!parent) {
+			return;
+		}
+
+		var related = parent.querySelectorAll(migratedCollapseSelector);
+		for(var i = 0; i < related.length; i++) {
+			if(related[i] !== collapse) {
+				set_collapse_state(related[i], false);
+			}
+		}
+	}
+
+	function get_section_fragment() {
+		var url = document.location.toString();
+		if(url.match('#')) {
+			return url.split('#')[1];
+		}
+		return '';
+	}
+
+	function sync_migrated_collapses_from_location() {
+		var fragment = get_section_fragment();
+		var collapses = document.querySelectorAll(migratedCollapseSelector);
+
+		for(var i = 0; i < collapses.length; i++) {
+			var expanded = collapses[i].id === fragment;
+			if(expanded) {
+				var triggers = get_collapse_triggers(collapses[i]);
+				if(triggers.length) {
+					collapse_related_sections(triggers[0], collapses[i]);
+				}
+			}
+			set_collapse_state(collapses[i], expanded);
+		}
+	}
+
+	for(var c = 0; c < migratedCollapseTriggers.length; c++) {
+		migratedCollapseTriggers[c].addEventListener('click', function(event) {
+			var collapse = get_collapse_target(this);
+			if(!collapse) {
+				return;
+			}
+
+			event.preventDefault();
+			var expanded = !collapse.classList.contains('in');
+			if(expanded) {
+				collapse_related_sections(this, collapse);
+				set_collapse_state(collapse, true);
+				if(history) {
+					history.replaceState(null, null, '#' + collapse.id);
+				} else {
+					window.location.hash = collapse.id;
+				}
+			} else {
+				set_collapse_state(collapse, false);
+			}
+		});
+	}
+
+	if(document.querySelector(migratedCollapseSelector)) {
+		sync_migrated_collapses_from_location();
+	}
+
 	get_section_from_location();
 	window.onpopstate = function(event) {
+		sync_migrated_collapses_from_location();
 		get_section_from_location();
-	}
+	};
 	function get_section_from_location() {
 		// Javascript to enable link to section
 		var url = document.location.toString();
@@ -186,14 +290,14 @@ $(function() {
 		} else {
 			var fragment = '';
 		}
-		$(".collapse").each(function(){
+		$(".collapse").not('[data-ska-skip-legacy]').each(function(){
 			if(this.id == fragment) $(this).addClass("in");
 			else $(this).removeClass("in");
 		});
 	}
 
 	// Do the location modifying code after all other setup, since we don't want the initial loading to trigger this
-	$('.panel-collapse').on('show.bs.collapse', function (e) {
+	$('.panel-collapse').not('[data-ska-skip-legacy]').on('show.bs.collapse', function (e) {
 		if(history) {
 			history.replaceState(null, null, '#' + e.target.id);
 		} else {
