@@ -27,7 +27,6 @@ $footer=str_replace("%v", "1.5.0", $web_config['footer']);
 <link rel="stylesheet" href="<?php outurl('/bootstrap5-compat.css?'.filemtime('public_html/bootstrap5-compat.css'))?>">
 <link rel="icon" href="<?php outurl('/key.png')?>">
 <script src="<?php outurl('/header.js?'.filemtime('public_html/header.js'))?>"></script>
-<script src="<?php outurl('/bootstrap5-compat.js?'.filemtime('public_html/bootstrap5-compat.js'))?>"></script>
 <?php out($this->get('head'), ESC_NONE) ?>
 <div id="wrap">
 <a href="#content" class="sr-only visually-hidden visually-hidden-focusable">Skip to main content</a>
