@@ -31,7 +31,7 @@ function show_dynamic_element(element) {
 		return;
 	}
 
-	element.classList.remove('hidden', 'd-none');
+	element.classList.remove('hide', 'hidden', 'd-none');
 	element.style.display = '';
 }
 
@@ -40,7 +40,7 @@ function hide_dynamic_element(element) {
 		return;
 	}
 
-	element.classList.remove('hidden', 'd-none');
+	element.classList.remove('hide', 'hidden', 'd-none');
 	element.style.display = 'none';
 }
 
@@ -50,6 +50,14 @@ function toggle_dynamic_element(element) {
 	}
 
 	if(window.getComputedStyle(element).display === 'none') {
+		show_dynamic_element(element);
+	} else {
+		hide_dynamic_element(element);
+	}
+}
+
+function set_section_visibility(element, visible) {
+	if(visible) {
 		show_dynamic_element(element);
 	} else {
 		hide_dynamic_element(element);
@@ -602,119 +610,225 @@ dom_ready(function() {
 });
 
 // Show/hide appropriate sections of the server settings form
-$(function() {
-	var form = $('#server_settings');
-	form.each(function() {
-		$('#authorization.hide').hide().removeClass('hide');
-		$('#ldap_access_options.hide').hide().removeClass('hide');
-		$('#history_username_env.hide').hide().removeClass('hide');
-		$("input[name='key_management']", form).on('click', function() {display_relevant_options()});
-		$("input[name='authorization']", form).on('click', function() {display_relevant_options()});
-		function display_relevant_options() {
-			if($("input[name='key_management']:checked").val() == 'keys') {
-				$('#authorization').show('fast');
-				$('#supervision').show('fast');
-				$('#history_username_env').show('fast');
-				if($("input[name='authorization']:checked").val() == 'manual') {
-					$('#ldap_access_options').hide('fast');
-				} else {
-					$('#ldap_access_options').show('fast');
-				}
-			} else {
-				$('#authorization').hide('fast');
-				$('#ldap_access_options').hide('fast');
-				$('#supervision').hide('fast');
-				$('#history_username_env').hide('fast');
+dom_ready(function() {
+	var form = document.getElementById('server_settings');
+	if(!form) {
+		return;
+	}
+
+	var authorizationSection = document.getElementById('authorization');
+	var ldapAccessOptionsSection = document.getElementById('ldap_access_options');
+	var historyUsernameEnvSection = document.getElementById('history_username_env');
+	var supervisionSection = document.getElementById('supervision');
+	var keyManagementInputs = form.querySelectorAll('input[name="key_management"]');
+	var authorizationInputs = form.querySelectorAll('input[name="authorization"]');
+	var commandEnabled = form.elements['access_option[command][enabled]'];
+	var commandValue = form.elements['access_option[command][value]'];
+	var fromEnabled = form.elements['access_option[from][enabled]'];
+	var fromValue = form.elements['access_option[from][value]'];
+
+	function get_checked_value(inputs) {
+		for(var i = 0; i < inputs.length; i++) {
+			if(inputs[i].checked) {
+				return inputs[i].value;
 			}
 		}
+		return '';
+	}
 
-		var ao_command_enabled = $("input[name='access_option[command][enabled]']", form);
-		var ao_command_value = $("input[name='access_option[command][value]']", form);
-		var ao_from_enabled = $("input[name='access_option[from][enabled]']", form);
-		var ao_from_value = $("input[name='access_option[from][value]']", form);
-		ao_command_enabled.on('click', function() {ao_update_disabled()});
-		ao_from_enabled.on('click', function() {ao_update_disabled()});
-		ao_update_disabled();
-		function ao_update_disabled() {
-			ao_command_value.prop('disabled', !ao_command_enabled.prop('checked'));
-			ao_command_value.prop('required', ao_command_enabled.prop('checked'));
-			ao_from_value.prop('disabled', !ao_from_enabled.prop('checked'));
-			ao_from_value.prop('required', ao_from_enabled.prop('checked'));
+	function update_relevant_options() {
+		var managesKeys = get_checked_value(keyManagementInputs) === 'keys';
+		set_section_visibility(authorizationSection, managesKeys);
+		set_section_visibility(supervisionSection, managesKeys);
+		set_section_visibility(historyUsernameEnvSection, managesKeys);
+		set_section_visibility(ldapAccessOptionsSection, managesKeys && get_checked_value(authorizationInputs) !== 'manual');
+	}
+
+	function update_disabled_fields() {
+		if(commandValue && commandEnabled) {
+			commandValue.disabled = !commandEnabled.checked;
+			commandValue.required = commandEnabled.checked;
 		}
-	});
+		if(fromValue && fromEnabled) {
+			fromValue.disabled = !fromEnabled.checked;
+			fromValue.required = fromEnabled.checked;
+		}
+	}
+
+	for(var i = 0; i < keyManagementInputs.length; i++) {
+		keyManagementInputs[i].addEventListener('click', update_relevant_options);
+	}
+	for(var j = 0; j < authorizationInputs.length; j++) {
+		authorizationInputs[j].addEventListener('click', update_relevant_options);
+	}
+	if(commandEnabled) {
+		commandEnabled.addEventListener('click', update_disabled_fields);
+	}
+	if(fromEnabled) {
+		fromEnabled.addEventListener('click', update_disabled_fields);
+	}
+
+	update_relevant_options();
+	update_disabled_fields();
 });
 
 // Enable/disable relevant sections of the access options form
-$(function() {
-	var form = $('#access_options');
-	form.each(function() {
-		var ao_command_enabled = $("input[name='access_option[command][enabled]']", form);
-		var ao_command_value = $("input[name='access_option[command][value]']", form);
-		var ao_from_enabled = $("input[name='access_option[from][enabled]']", form);
-		var ao_from_value = $("input[name='access_option[from][value]']", form);
-		var ao_noportfwd_enabled = $("input[name='access_option[no-port-forwarding][enabled]']", form);
-		var ao_nox11fwd_enabled = $("input[name='access_option[no-X11-forwarding][enabled]']", form);
-		var ao_nopty_enabled = $("input[name='access_option[no-pty][enabled]']", form);
+dom_ready(function() {
+	var form = document.getElementById('access_options');
+	if(!form) {
+		return;
+	}
 
-		ao_command_enabled.on('click', function() {ao_update_disabled()});
-		ao_from_enabled.on('click', function() {ao_update_disabled()});
+	var commandEnabled = form.elements['access_option[command][enabled]'];
+	var commandValue = form.elements['access_option[command][value]'];
+	var fromEnabled = form.elements['access_option[from][enabled]'];
+	var fromValue = form.elements['access_option[from][value]'];
+	var noPortForwardingEnabled = form.elements['access_option[no-port-forwarding][enabled]'];
+	var noX11ForwardingEnabled = form.elements['access_option[no-X11-forwarding][enabled]'];
+	var noPtyEnabled = form.elements['access_option[no-pty][enabled]'];
+	var presetButtons = form.querySelectorAll('button[type="button"][data-preset]');
 
-		$("button[type='button']", form).on('click', function(e) {
-			var preset
-			if(preset = $(e.target).attr('data-preset')) {
-				$('input:checkbox', form).val([]);
-				ao_command_value.val('');
-				ao_from_value.val('');
-				if(preset == 'command' || preset == 'dbbackup' || preset == 'checkmk') {
-					ao_command_enabled.prop('checked', true);
-					ao_command_value.focus();
-					ao_noportfwd_enabled.prop('checked', true);
-					ao_nox11fwd_enabled.prop('checked', true);
-					ao_nopty_enabled.prop('checked', true);
+	function update_disabled_fields() {
+		if(commandValue && commandEnabled) {
+			commandValue.disabled = !commandEnabled.checked;
+			commandValue.required = commandEnabled.checked;
+		}
+		if(fromValue && fromEnabled) {
+			fromValue.disabled = !fromEnabled.checked;
+			fromValue.required = fromEnabled.checked;
+		}
+	}
+
+	function reset_checkboxes() {
+		var checkboxes = form.querySelectorAll('input[type="checkbox"]');
+		for(var i = 0; i < checkboxes.length; i++) {
+			checkboxes[i].checked = false;
+		}
+	}
+
+	if(commandEnabled) {
+		commandEnabled.addEventListener('click', update_disabled_fields);
+	}
+	if(fromEnabled) {
+		fromEnabled.addEventListener('click', update_disabled_fields);
+	}
+
+	for(var i = 0; i < presetButtons.length; i++) {
+		presetButtons[i].addEventListener('click', function() {
+			var preset = this.getAttribute('data-preset');
+			if(!preset) {
+				return;
+			}
+
+			reset_checkboxes();
+			if(commandValue) {
+				commandValue.value = '';
+			}
+			if(fromValue) {
+				fromValue.value = '';
+			}
+
+			if(preset === 'command' || preset === 'dbbackup' || preset === 'checkmk') {
+				if(commandEnabled) {
+					commandEnabled.checked = true;
 				}
-				if(preset == 'dbbackup') {
-					ao_command_value.val('/usr/bin/innobackupex --slave-info --defaults-file=/etc/mysql/my.cnf /var/tmp');
-				} else if (preset == 'checkmk') {
-					ao_command_value.val('/usr/bin/check_mk_agent');
+				if(noPortForwardingEnabled) {
+					noPortForwardingEnabled.checked = true;
+				}
+				if(noX11ForwardingEnabled) {
+					noX11ForwardingEnabled.checked = true;
+				}
+				if(noPtyEnabled) {
+					noPtyEnabled.checked = true;
+				}
+				if(commandValue) {
+					commandValue.focus();
 				}
 			}
-			ao_update_disabled();
+
+			if(commandValue && preset === 'dbbackup') {
+				commandValue.value = '/usr/bin/innobackupex --slave-info --defaults-file=/etc/mysql/my.cnf /var/tmp';
+			} else if(commandValue && preset === 'checkmk') {
+				commandValue.value = '/usr/bin/check_mk_agent';
+			}
+
+			update_disabled_fields();
 		});
-		ao_update_disabled();
-		function ao_update_disabled() {
-			ao_command_value.prop('disabled', !ao_command_enabled.prop('checked'));
-			ao_command_value.prop('required', ao_command_enabled.prop('checked'));
-			ao_from_value.prop('disabled', !ao_from_enabled.prop('checked'));
-			ao_from_value.prop('required', ao_from_enabled.prop('checked'));
-		}
-	});
+	}
+
+	update_disabled_fields();
 });
 
 // Provide dynamic reassign form on user page
-$(function() {
-	$('button[data-reassign]').on('click', function() {
-		var id = $(this).data('reassign');
-		var table = $('#' + id);
-		var cell = document.createElement('th');
-		var checkbox = document.createElement('input');
-		checkbox.type = 'checkbox';
-		$(checkbox).on('click', function() {$("input[type='checkbox']", table).prop('checked', this.checked)});
-		cell.appendChild(checkbox);
-		table.children('thead').children('tr').prepend(cell);
-		table.children('tbody').children('tr').each(function() {
-			var hostname = $(this).children('td:first-child').text().trim();
-			var cell = document.createElement('td');
-			var checkbox = document.createElement('input');
-			checkbox.type = 'checkbox';
-			checkbox.name = 'servers[]';
-			checkbox.value = hostname;
-			cell.appendChild(checkbox);
-			$(this).prepend(cell);
+dom_ready(function() {
+	var buttons = document.querySelectorAll('button[data-reassign]');
+	for(var i = 0; i < buttons.length; i++) {
+		buttons[i].addEventListener('click', function() {
+			var id = this.getAttribute('data-reassign');
+			var table = document.getElementById(id);
+			var parent = this.parentElement;
+			if(!table || !parent) {
+				return;
+			}
+
+			var headerRow = table.querySelector('thead tr');
+			var bodyRows = table.querySelectorAll('tbody tr');
+			var selectAllCell = document.createElement('th');
+			var selectAllCheckbox = document.createElement('input');
+			selectAllCheckbox.type = 'checkbox';
+			selectAllCell.appendChild(selectAllCheckbox);
+			if(headerRow) {
+				headerRow.insertBefore(selectAllCell, headerRow.firstChild);
+			}
+
+			var rowCheckboxes = [];
+			for(var rowIndex = 0; rowIndex < bodyRows.length; rowIndex++) {
+				var hostnameCell = bodyRows[rowIndex].querySelector('td:first-child');
+				if(!hostnameCell) {
+					continue;
+				}
+
+				var cell = document.createElement('td');
+				var checkbox = document.createElement('input');
+				checkbox.type = 'checkbox';
+				checkbox.name = 'servers[]';
+				checkbox.value = hostnameCell.textContent.trim();
+				cell.appendChild(checkbox);
+				bodyRows[rowIndex].insertBefore(cell, bodyRows[rowIndex].firstChild);
+				rowCheckboxes.push(checkbox);
+			}
+
+			selectAllCheckbox.addEventListener('click', function() {
+				for(var checkboxIndex = 0; checkboxIndex < rowCheckboxes.length; checkboxIndex++) {
+					rowCheckboxes[checkboxIndex].checked = this.checked;
+				}
+			});
+
+			var reassignWrapper = document.createElement('div');
+			reassignWrapper.className = 'form-group';
+			var label = document.createElement('label');
+			label.textContent = 'Reassign to ';
+			var input = document.createElement('input');
+			input.type = 'text';
+			input.name = 'reassign_to';
+			input.className = 'form-control';
+			label.appendChild(input);
+			reassignWrapper.appendChild(label);
+			parent.appendChild(reassignWrapper);
+
+			var submitWrapper = document.createElement('div');
+			submitWrapper.className = 'form-group';
+			var submitButton = document.createElement('button');
+			submitButton.type = 'submit';
+			submitButton.name = 'reassign_servers';
+			submitButton.className = 'btn btn-primary';
+			submitButton.textContent = 'Reassign selected servers';
+			submitWrapper.appendChild(submitButton);
+			parent.appendChild(submitWrapper);
+
+			this.remove();
 		});
-		$(this).parent().append('<div class="form-group"><label>Reassign to <input type="text" name="reassign_to" class="form-control"></label></div>');
-		$(this).parent().append('<div class="form-group"><button type="submit" name="reassign_servers" class="btn btn-primary">Reassign selected servers</button></div>');
-		$(this).remove();
-	});
+	}
 });
 
 // Server sync status
@@ -828,45 +942,56 @@ $(function() {
 });
 
 // Server add form - multiple leader autocomplete
-$(function() {
-	var server_admin = $('input#server_admin');
-	server_admin.each(function() {
-		server_admin.on('keydown', function(event) {
-			var keycode = (event.keyCode ? event.keyCode : event.which);
-			if((keycode == 13 || keycode == 32 || keycode == 188) && $("#server_admin").val() != '') { // Enter, space, comma
-				appendAdmin();
-				// Reset focus to remove <datalist> autocomplete dialog
-				$("#server_admin").blur();
-				$("#server_admin").focus();
-				return false;
-			}
-		});
-		server_admin.on('blur', function(event) {
-			if($("#server_admin").val()) {
-				appendAdmin();
-			}
-		});
-		function appendAdmin() {
-			if($("#server_admins").val()) {
-				$("#server_admins").val($("#server_admins").val() + ', ' + $("#server_admin").val());
-			} else {
-				$("#server_admins").val($("#server_admin").val());
-			}
-			$("#server_admin").val("");
-			$("#server_admins").removeClass('hidden');
-			$("#server_admin").removeAttr("required");
+dom_ready(function() {
+	var serverAdmin = document.getElementById('server_admin');
+	var serverAdmins = document.getElementById('server_admins');
+	if(!serverAdmin || !serverAdmins) {
+		return;
+	}
+
+	function append_admin() {
+		var newAdmin = serverAdmin.value.trim();
+		if(!newAdmin) {
+			return;
 		}
-		$('input#server_admins').on('blur', function(event) {
-			if(!$("#server_admins").val()) {
-				$("#server_admins").addClass('hidden');
-				$("#server_admin").attr("required", "");
-			}
-		});
-		if($("#server_admins").val()) {
-			$("#server_admins").removeClass('hidden');
-			$("#server_admin").removeAttr("required");
+
+		if(serverAdmins.value) {
+			serverAdmins.value = serverAdmins.value + ', ' + newAdmin;
+		} else {
+			serverAdmins.value = newAdmin;
+		}
+
+		serverAdmin.value = '';
+		serverAdmins.classList.remove('hidden');
+		serverAdmin.removeAttribute('required');
+	}
+
+	serverAdmin.addEventListener('keydown', function(event) {
+		if((event.key === 'Enter' || event.key === ' ' || event.key === ',') && serverAdmin.value.trim() !== '') {
+			event.preventDefault();
+			append_admin();
+			serverAdmin.blur();
+			serverAdmin.focus();
 		}
 	});
+
+	serverAdmin.addEventListener('blur', function() {
+		if(serverAdmin.value.trim()) {
+			append_admin();
+		}
+	});
+
+	serverAdmins.addEventListener('blur', function() {
+		if(!serverAdmins.value.trim()) {
+			serverAdmins.classList.add('hidden');
+			serverAdmin.setAttribute('required', '');
+		}
+	});
+
+	if(serverAdmins.value.trim()) {
+		serverAdmins.classList.remove('hidden');
+		serverAdmin.removeAttribute('required');
+	}
 });
 
 // ldap tree view
