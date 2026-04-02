@@ -90,5 +90,4 @@ $footer=str_replace("%v", "1.5.0", $web_config['footer']);
 		<?php } ?>
 	</div>
 </div>
-<script src="<?php outurl('/jquery/jquery-3.7.1.min.js')?>"></script>
 <script src="<?php outurl('/extra.js?'.filemtime('public_html/extra.js'))?>"></script>
