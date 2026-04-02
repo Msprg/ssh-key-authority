@@ -38,10 +38,10 @@ $owner = $this->get('pubkey')->owner;
 </h1>
 <?php if($this->get('user_is_owner') || $this->get('admin')) { ?>
 <ul class="nav nav-tabs" role="tablist">
-	<li class="nav-item active" role="presentation"><a href="#info" id="pubkey_info_tab" class="nav-link active" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="info" aria-selected="true">Information</a></li>
+	<li class="nav-item active" role="presentation"><a href="#info" id="pubkey_info_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="info" aria-selected="true">Information</a></li>
 	<?php if ($this->get('pubkey')->deletion_date === null) { ?>
-		<li class="nav-item" role="presentation"><a href="#sig" id="pubkey_sig_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="sig" aria-selected="false" tabindex="-1">Key signing</a></li>
-		<li class="nav-item" role="presentation"><a href="#dest" id="pubkey_dest_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="dest" aria-selected="false" tabindex="-1">Destination restrictions</a></li>
+		<li class="nav-item" role="presentation"><a href="#sig" id="pubkey_sig_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="sig" aria-selected="false" tabindex="-1">Key signing</a></li>
+		<li class="nav-item" role="presentation"><a href="#dest" id="pubkey_dest_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="dest" aria-selected="false" tabindex="-1">Destination restrictions</a></li>
 	<?php } ?>
 </ul>
 <?php } ?>

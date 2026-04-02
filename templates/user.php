@@ -22,9 +22,9 @@
 	<dd><?php out($this->get('user')->auth_realm)?></dd>
 </dl>
 <ul class="nav nav-tabs" role="tablist">
-	<li class="nav-item active" role="presentation"><a href="#details" id="user_details_tab" class="nav-link active" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="details" aria-selected="true">Details</a></li>
+	<li class="nav-item active" role="presentation"><a href="#details" id="user_details_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="details" aria-selected="true">Details</a></li>
 	<?php if($this->get('user')->auth_realm == 'LDAP' && $this->get('admin')) { ?>
-	<li class="nav-item" role="presentation"><a href="#settings" id="user_settings_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="settings" aria-selected="false" tabindex="-1">Settings</a></li>
+	<li class="nav-item" role="presentation"><a href="#settings" id="user_settings_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="settings" aria-selected="false" tabindex="-1">Settings</a></li>
 	<?php } ?>
 </ul>
 <!-- Tab panes -->

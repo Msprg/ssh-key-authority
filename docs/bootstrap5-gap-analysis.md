@@ -118,7 +118,7 @@ That file should shrink only after the remaining panel/icon/layout migrations la
 
 3. Reduce the compatibility layer after structural cleanup:
    - trim [public_html/bootstrap5-compat.css](/var/www/ska/public_html/bootstrap5-compat.css)
-   - remove obsolete `data-ska-skip-legacy` markers where they are no longer needed
+   - remove any remaining migration-only markup once pages no longer need compatibility aliases
 
 ## Exit Criteria For Removing Bootstrap 3 CSS
 

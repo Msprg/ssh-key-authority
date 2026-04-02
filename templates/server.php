@@ -75,13 +75,13 @@
 <?php } ?>
 <?php if($this->get('admin') || $this->get('server_admin')) { ?>
 <ul class="nav nav-tabs" role="tablist">
-	<li class="nav-item active" role="presentation"><a href="#accounts" id="server_accounts_tab" class="nav-link active" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="accounts" aria-selected="true">Accounts</a></li>
-	<li class="nav-item" role="presentation"><a href="#admins" id="server_admins_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="admins" aria-selected="false" tabindex="-1">Leaders</a></li>
-	<li class="nav-item" role="presentation"><a href="#settings" id="server_settings_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="settings" aria-selected="false" tabindex="-1">Settings</a></li>
-	<li class="nav-item" role="presentation"><a href="#log" id="server_log_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="log" aria-selected="false" tabindex="-1">Log</a></li>
+	<li class="nav-item active" role="presentation"><a href="#accounts" id="server_accounts_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="accounts" aria-selected="true">Accounts</a></li>
+	<li class="nav-item" role="presentation"><a href="#admins" id="server_admins_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="admins" aria-selected="false" tabindex="-1">Leaders</a></li>
+	<li class="nav-item" role="presentation"><a href="#settings" id="server_settings_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="settings" aria-selected="false" tabindex="-1">Settings</a></li>
+	<li class="nav-item" role="presentation"><a href="#log" id="server_log_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="log" aria-selected="false" tabindex="-1">Log</a></li>
 	<?php if($this->get('admin')) { ?>
-	<li class="nav-item" role="presentation"><a href="#notes" id="server_notes_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="notes" aria-selected="false" tabindex="-1">Notes<?php if(count($this->get('server_notes')) > 0) out(' <span class="badge">'.count($this->get('server_notes')).'</span>', ESC_NONE)?></a></li>
-	<li class="nav-item" role="presentation"><a href="#contact" id="server_contact_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="contact" aria-selected="false" tabindex="-1">Contact</a></li>
+	<li class="nav-item" role="presentation"><a href="#notes" id="server_notes_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="notes" aria-selected="false" tabindex="-1">Notes<?php if(count($this->get('server_notes')) > 0) out(' <span class="badge">'.count($this->get('server_notes')).'</span>', ESC_NONE)?></a></li>
+	<li class="nav-item" role="presentation"><a href="#contact" id="server_contact_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="contact" aria-selected="false" tabindex="-1">Contact</a></li>
 	<?php } ?>
 </ul>
 

@@ -48,7 +48,7 @@ $footer=str_replace("%v", "1.5.0", $web_config['footer']);
 				</ul>
 			</div>
 			<div class="ska-navbar-side dropdown">
-				<button class="ska-side-button dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" data-ska-skip-legacy aria-haspopup="true" aria-expanded="false">
+				<button class="ska-side-button dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					<svg class="ska-dropdown-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5h16M4 12h16M4 19h16"/></svg>
 					<span class="ska-dropdown-name">
 						<?php out($this->get('active_user')->name)?> 
@@ -75,7 +75,7 @@ $footer=str_replace("%v", "1.5.0", $web_config['footer']);
 <div class="container" id="content">
 <?php foreach($this->get('alerts') as $alert) { ?>
 <div class="alert alert-<?php out($alert->class)?> alert-dismissible">
-	<button type="button" class="btn-close" data-bs-dismiss="alert" data-ska-skip-legacy aria-label="Close">&times;</button>
+	<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">&times;</button>
 	<?php out($alert->content, $alert->escaping)?>
 </div>
 <?php } ?>

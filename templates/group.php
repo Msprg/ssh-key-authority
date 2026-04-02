@@ -24,14 +24,14 @@ foreach($this->get('group_members') as $member) {
 <h1><span class="glyphicon glyphicon-list-alt" title="Group"></span> <?php out($this->get('group')->name)?><?php if($this->get('group')->active == 0) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></h1>
 <?php if($this->get('admin') || $this->get('group_admin')) { ?>
 <ul class="nav nav-tabs" role="tablist">
-	<li class="nav-item active" role="presentation"><a href="#members" id="group_members_tab" class="nav-link active" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="members" aria-selected="true">Members</a></li>
-	<li class="nav-item" role="presentation"><a href="#access" id="group_access_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="access" aria-selected="false" tabindex="-1">Access</a></li>
-	<li class="nav-item" role="presentation"><a href="#outbound" id="group_outbound_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="outbound" aria-selected="false" tabindex="-1">Outbound access</a></li>
-	<li class="nav-item" role="presentation"><a href="#admins" id="group_admins_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="admins" aria-selected="false" tabindex="-1">Administrators</a></li>
+	<li class="nav-item active" role="presentation"><a href="#members" id="group_members_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="members" aria-selected="true">Members</a></li>
+	<li class="nav-item" role="presentation"><a href="#access" id="group_access_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="access" aria-selected="false" tabindex="-1">Access</a></li>
+	<li class="nav-item" role="presentation"><a href="#outbound" id="group_outbound_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="outbound" aria-selected="false" tabindex="-1">Outbound access</a></li>
+	<li class="nav-item" role="presentation"><a href="#admins" id="group_admins_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="admins" aria-selected="false" tabindex="-1">Administrators</a></li>
 	<?php if($this->get('admin')) { ?>
-	<li class="nav-item" role="presentation"><a href="#settings" id="group_settings_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="settings" aria-selected="false" tabindex="-1">Settings</a></li>
+	<li class="nav-item" role="presentation"><a href="#settings" id="group_settings_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="settings" aria-selected="false" tabindex="-1">Settings</a></li>
 	<?php } ?>
-	<li class="nav-item" role="presentation"><a href="#log" id="group_log_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="log" aria-selected="false" tabindex="-1">Log</a></li>
+	<li class="nav-item" role="presentation"><a href="#log" id="group_log_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="log" aria-selected="false" tabindex="-1">Log</a></li>
 </ul>
 
 <!-- Tab panes -->

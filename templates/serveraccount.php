@@ -50,12 +50,12 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 <?php } ?>
 <ul class="nav nav-tabs" role="tablist">
 	<?php if($this->get('server')->key_management == 'keys') { ?>
-	<li class="nav-item active" role="presentation"><a href="#access" id="serveraccount_access_tab" class="nav-link active" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="access" aria-selected="true">Access</a></li>
+	<li class="nav-item active" role="presentation"><a href="#access" id="serveraccount_access_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="access" aria-selected="true">Access</a></li>
 	<?php } ?>
-	<li class="nav-item<?php if($this->get('server')->key_management != 'keys') out(' active', ESC_NONE) ?>" role="presentation"><a href="#pubkeys" id="serveraccount_pubkeys_tab" class="nav-link<?php if($this->get('server')->key_management != 'keys') out(' active', ESC_NONE) ?>" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="pubkeys" aria-selected="<?php out($this->get('server')->key_management == 'keys' ? 'false' : 'true') ?>"<?php if($this->get('server')->key_management == 'keys') out(' tabindex="-1"', ESC_NONE) ?>>Public keys</a></li>
-	<li class="nav-item" role="presentation"><a href="#outbound" id="serveraccount_outbound_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="outbound" aria-selected="false" tabindex="-1">Outbound access</a></li>
-	<li class="nav-item" role="presentation"><a href="#admins" id="serveraccount_admins_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="admins" aria-selected="false" tabindex="-1">Leaders</a></li>
-	<li class="nav-item" role="presentation"><a href="#log" id="serveraccount_log_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="log" aria-selected="false" tabindex="-1">Log</a></li>
+	<li class="nav-item<?php if($this->get('server')->key_management != 'keys') out(' active', ESC_NONE) ?>" role="presentation"><a href="#pubkeys" id="serveraccount_pubkeys_tab" class="nav-link<?php if($this->get('server')->key_management != 'keys') out(' active', ESC_NONE) ?>" role="tab" data-bs-toggle="tab" aria-controls="pubkeys" aria-selected="<?php out($this->get('server')->key_management == 'keys' ? 'false' : 'true') ?>"<?php if($this->get('server')->key_management == 'keys') out(' tabindex="-1"', ESC_NONE) ?>>Public keys</a></li>
+	<li class="nav-item" role="presentation"><a href="#outbound" id="serveraccount_outbound_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="outbound" aria-selected="false" tabindex="-1">Outbound access</a></li>
+	<li class="nav-item" role="presentation"><a href="#admins" id="serveraccount_admins_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="admins" aria-selected="false" tabindex="-1">Leaders</a></li>
+	<li class="nav-item" role="presentation"><a href="#log" id="serveraccount_log_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="log" aria-selected="false" tabindex="-1">Log</a></li>
 </ul>
 
 <!-- Tab panes -->

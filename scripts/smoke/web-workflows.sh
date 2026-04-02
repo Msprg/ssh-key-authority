@@ -41,6 +41,7 @@ grep -q '>Logout<' "$TMP_DIR/post-login.html" || smoke_die "Login failed or did 
 ! grep -q '/bootstrap/js/bootstrap.min.js' "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell still loads bootstrap.min.js"
 ! grep -Eq '<script[^>]+src="[^"]*/jquery/jquery-3\.7\.1\.min\.js' "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell still loads jquery"
 ! grep -Eq '<script[^>]+src="[^"]*/bootstrap5-compat\.js' "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell still loads bootstrap5-compat.js"
+! grep -q 'data-ska-skip-legacy' "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell still renders migration-only data-ska-skip-legacy markup"
 grep -q 'data-bs-toggle="dropdown"' "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell is missing Bootstrap 5 dropdown markup"
 
 smoke_log "Adding and deleting a public key for logged-in user"
@@ -55,6 +56,7 @@ HOME_CSRF=$(smoke_extract_csrf "$TMP_DIR/home-before-key.html")
 ! grep -q '/bootstrap/js/bootstrap.min.js' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still loads bootstrap.min.js"
 ! grep -Eq '<script[^>]+src="[^"]*/jquery/jquery-3\.7\.1\.min\.js' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still loads jquery"
 ! grep -Eq '<script[^>]+src="[^"]*/bootstrap5-compat\.js' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still loads bootstrap5-compat.js"
+! grep -q 'data-ska-skip-legacy' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders migration-only data-ska-skip-legacy markup"
 
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" \
     --data-urlencode "csrf_token=$HOME_CSRF" \

@@ -18,9 +18,9 @@
 ?>
 <h1>Servers</h1>
 <ul class="nav nav-tabs" role="tablist">
-	<li class="nav-item active" role="presentation"><a href="#list" id="servers_list_tab" class="nav-link active" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="list" aria-selected="true">Server list</a></li>
-	<li class="nav-item" role="presentation"><a href="#add" id="servers_add_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="add" aria-selected="false" tabindex="-1">Add server</a></li>
-	<li class="nav-item" role="presentation"><a href="#add_bulk" id="servers_add_bulk_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="add_bulk" aria-selected="false" tabindex="-1">Add multiple servers</a></li>
+	<li class="nav-item active" role="presentation"><a href="#list" id="servers_list_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="list" aria-selected="true">Server list</a></li>
+	<li class="nav-item" role="presentation"><a href="#add" id="servers_add_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="add" aria-selected="false" tabindex="-1">Add server</a></li>
+	<li class="nav-item" role="presentation"><a href="#add_bulk" id="servers_add_bulk_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="add_bulk" aria-selected="false" tabindex="-1">Add multiple servers</a></li>
 </ul>
 
 <!-- Tab panes -->

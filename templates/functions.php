@@ -108,9 +108,9 @@ function show_event_participant($participant) {
 function keygen_help($box_position) {
 	?>
 	<ul class="nav nav-tabs" role="tablist">
-		<li class="nav-item active" role="presentation"><a href="#windows_instructions" id="windows_instructions_tab" class="nav-link active" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="windows_instructions" aria-selected="true">Windows</a></li>
-		<li class="nav-item" role="presentation"><a href="#mac_instructions" id="mac_instructions_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="mac_instructions" aria-selected="false" tabindex="-1">Mac</a></li>
-		<li class="nav-item" role="presentation"><a href="#linux_instructions" id="linux_instructions_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="linux_instructions" aria-selected="false" tabindex="-1">Linux</a></li>
+		<li class="nav-item active" role="presentation"><a href="#windows_instructions" id="windows_instructions_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="windows_instructions" aria-selected="true">Windows</a></li>
+		<li class="nav-item" role="presentation"><a href="#mac_instructions" id="mac_instructions_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="mac_instructions" aria-selected="false" tabindex="-1">Mac</a></li>
+		<li class="nav-item" role="presentation"><a href="#linux_instructions" id="linux_instructions_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="linux_instructions" aria-selected="false" tabindex="-1">Linux</a></li>
 	</ul>
 	<div class="tab-content clearfix">
 		<div class="tab-pane fade in active show" id="windows_instructions" role="tabpanel" aria-labelledby="windows_instructions_tab" aria-hidden="false">

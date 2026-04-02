@@ -284,7 +284,7 @@ dom_ready(function() {
 
 // Bootstrap 5-compatible tab behavior for migrated tabsets.
 dom_ready(function() {
-	var selector = '[data-bs-toggle="tab"][data-ska-skip-legacy]';
+	var selector = '[data-bs-toggle="tab"]';
 	var migratedTabs = document.querySelectorAll(selector);
 
 	if(!migratedTabs.length) {
@@ -437,8 +437,8 @@ dom_ready(function() {
 
 // Remember the expanded-state of a collapsible section
 dom_ready(function() {
-	var migratedCollapseSelector = '.collapse[data-ska-skip-legacy]';
-	var migratedCollapseTriggers = document.querySelectorAll('[data-bs-toggle="collapse"][data-ska-skip-legacy]');
+	var migratedCollapseSelector = '.collapse[data-bs-parent], .collapse.ska-collapse-target, .panel-collapse.collapse';
+	var migratedCollapseTriggers = document.querySelectorAll('[data-bs-toggle="collapse"]');
 
 	function get_collapse_target(trigger) {
 		var target = trigger.getAttribute('data-bs-target') || trigger.getAttribute('href') || '';

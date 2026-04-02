@@ -19,8 +19,8 @@
 <h1>Groups</h1>
 <?php if($this->get('admin')) { ?>
 <ul class="nav nav-tabs" role="tablist">
-	<li class="nav-item active" role="presentation"><a href="#list" id="groups_list_tab" class="nav-link active" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="list" aria-selected="true">Group list</a></li>
-	<li class="nav-item" role="presentation"><a href="#add" id="groups_add_tab" class="nav-link" role="tab" data-bs-toggle="tab" data-ska-skip-legacy aria-controls="add" aria-selected="false" tabindex="-1">Add group</a></li>
+	<li class="nav-item active" role="presentation"><a href="#list" id="groups_list_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="list" aria-selected="true">Group list</a></li>
+	<li class="nav-item" role="presentation"><a href="#add" id="groups_add_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="add" aria-selected="false" tabindex="-1">Add group</a></li>
 </ul>
 <?php } ?>
 

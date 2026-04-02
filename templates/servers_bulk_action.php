@@ -22,12 +22,12 @@
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h3 class="panel-title">
-			<a data-bs-toggle="collapse" data-ska-skip-legacy href="#server_list" aria-expanded="false">
+			<a data-bs-toggle="collapse" href="#server_list" aria-expanded="false">
 				Server list
 			</a>
 		</h3>
 	</div>
-	<div id="server_list" class="panel-collapse collapse" data-ska-skip-legacy aria-hidden="true">
+	<div id="server_list" class="panel-collapse collapse" aria-hidden="true">
 		<div class="panel-body">
 			<ul>
 			<?php foreach ($this->data->server_names as $server_name) { ?>
