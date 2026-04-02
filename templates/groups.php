@@ -28,14 +28,14 @@
 <div class="tab-content">
 	<div class="tab-pane fade in active show" id="list" role="tabpanel"<?php if($this->get('admin')) out(' aria-labelledby="groups_list_tab"', ESC_NONE) ?> aria-hidden="false">
 		<h2 class="sr-only">Group list</h2>
-		<div class="panel-group">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h3 class="panel-title">
+		<div class="ska-card-stack">
+			<div class="ska-card">
+				<div class="ska-card-header">
+					<h3 class="ska-card-title">
 						Filter options
 					</h3>
 				</div>
-					<div class="panel-body">
+					<div class="ska-card-body">
 					<form>
 						<div class="row">
 							<div class="col-sm-4">

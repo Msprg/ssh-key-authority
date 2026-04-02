@@ -552,9 +552,9 @@
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<?php foreach($this->get('server_notes') as $note) { ?>
-			<div class="panel panel-default">
-				<div class="panel-body pre-formatted"><?php out($this->get('output_formatter')->comment_format($note->note), ESC_NONE)?></div>
-				<div class="panel-footer">
+			<div class="ska-card">
+				<div class="ska-card-body pre-formatted"><?php out($this->get('output_formatter')->comment_format($note->note), ESC_NONE)?></div>
+				<div class="ska-card-footer">
 					Added <?php out($note->date)?> by <?php out($note->user->name)?>
 					<button name="delete_note" value="<?php out($note->id)?>" class="float-end btn btn-secondary btn-sm"><span class="glyphicon glyphicon-trash"></span> Delete</button>
 				</div>

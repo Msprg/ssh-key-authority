@@ -59,8 +59,59 @@ div.navbar {
 .nav-tabs {
 	margin-bottom: 20px;
 }
-.panel-group + p {
+.ska-card-stack + p {
 	margin-top: 1em;
+}
+
+.ska-card-stack {
+	margin-bottom: 20px;
+}
+
+.ska-card-stack .ska-card + .ska-card {
+	margin-top: 15px;
+}
+
+.ska-card {
+	margin-bottom: 20px;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.ska-card-header {
+	padding: 10px 15px;
+	background-color: #f5f5f5;
+	border-bottom: 1px solid #ddd;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+}
+
+.ska-card-title {
+	margin: 0;
+	font-size: 16px;
+	font-weight: 400;
+}
+
+.ska-card-title > a {
+	display: block;
+	color: inherit;
+}
+
+.ska-card-body {
+	padding: 15px;
+}
+
+.ska-card-header + .ska-card-collapse > .ska-card-body {
+	border-top: 1px solid #ddd;
+}
+
+.ska-card-footer {
+	padding: 10px 15px;
+	background-color: #f5f5f5;
+	border-top: 1px solid #ddd;
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
 }
 /* ===== LINK STYLES ===== */
 a.group, a.server, a.serveraccount, a.user {

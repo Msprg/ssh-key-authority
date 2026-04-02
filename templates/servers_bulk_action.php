@@ -19,16 +19,16 @@
 <h1>Bulk Action for Servers</h1>
 <p>You selected <?php out(count($this->data->server_names)) ?> <?php out($this->data->plural ? 'servers' : 'server') ?> to perform a bulk action.</p>
 
-<div class="panel panel-default">
-	<div class="panel-heading">
-		<h3 class="panel-title">
+<div class="ska-card">
+	<div class="ska-card-header">
+		<h3 class="ska-card-title">
 			<a data-bs-toggle="collapse" href="#server_list" aria-expanded="false">
 				Server list
 			</a>
 		</h3>
 	</div>
-	<div id="server_list" class="panel-collapse collapse" aria-hidden="true">
-		<div class="panel-body">
+	<div id="server_list" class="ska-card-collapse collapse" aria-hidden="true">
+		<div class="ska-card-body">
 			<ul>
 			<?php foreach ($this->data->server_names as $server_name) { ?>
 				<li><?php out($server_name) ?></li>

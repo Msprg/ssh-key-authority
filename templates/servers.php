@@ -27,17 +27,17 @@
 <div class="tab-content">
 	<div class="tab-pane fade in active show" id="list" role="tabpanel" aria-labelledby="servers_list_tab" aria-hidden="false">
 		<h2 class="sr-only">Server list</h2>
-		<div class="panel-group">
+		<div class="ska-card-stack">
 			<p><a href="<?php outurl('/servers.json') ?>" class="btn btn-secondary btn-sm">
 				<span class="glyphicon glyphicon-console"></span> JSON
 			</a></p>
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h3 class="panel-title">
+			<div class="ska-card">
+				<div class="ska-card-header">
+					<h3 class="ska-card-title">
 						Filter options
 					</h3>
 				</div>
-					<div class="panel-body">
+					<div class="ska-card-body">
 					<form>
 						<div class="row">
 							<div class="col-sm-4">

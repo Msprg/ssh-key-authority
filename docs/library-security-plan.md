@@ -9,7 +9,7 @@ The UI now loads these frontend assets from [templates/base.php](/var/www/ska/te
 
 | Asset | Runtime status | Notes |
 | --- | --- | --- |
-| `public_html/bootstrap/css/bootstrap.min.css` | Loaded globally | Bootstrap 3.4.1 baseline CSS; still pulls in glyphicon font references |
+| `public_html/bootstrap/css/bootstrap.min.css` | Loaded globally | Bootstrap 3.4.1 baseline CSS; still carries the legacy shell and helper-class surface |
 | `public_html/bootstrap5-compat.css` | Loaded globally | Local compatibility layer for mixed Bootstrap 5-era markup on top of Bootstrap 3 CSS |
 | `public_html/header.js` | Loaded globally | Pre-paint fingerprint visibility logic |
 | `public_html/extra.js` | Loaded globally | Shared page behaviors, now native DOM/fetch based |
@@ -29,8 +29,8 @@ PHP dependencies remain small:
 
 | Library / asset family | Risk | Why it matters | Current mitigation |
 | --- | --- | --- | --- |
-| Bootstrap 3.4.1 CSS | High | End-of-life frontend baseline; still carries panels, old component styling, and glyphicon font dependency | Incremental template migration plus [public_html/bootstrap5-compat.css](/var/www/ska/public_html/bootstrap5-compat.css) |
-| Glyphicons font assets | Medium | Ties UI semantics and rendering to Bootstrap 3 CSS and legacy icon classes | Avoid new usage; replace with local icons before removing Bootstrap 3 CSS |
+| Bootstrap 3.4.1 CSS | High | End-of-life frontend baseline; still carries the shell, old helper classes, and many implicit component styles | Incremental template migration plus [public_html/bootstrap5-compat.css](/var/www/ska/public_html/bootstrap5-compat.css) |
+| Glyphicons font assets | Low | Bootstrap CSS still vendors the font files, but live icon rendering now goes through local SVG masks in [public_html/style.css](/var/www/ska/public_html/style.css) | Keep avoiding new legacy icon markup; remove the dormant font files when Bootstrap 3 CSS is gone |
 | Local compatibility CSS | Medium | Safe compared with third-party JS, but it can become sticky technical debt if pages never finish migrating | Keep scope explicit and shrink after each structural cleanup slice |
 | Local frontend runtime in `extra.js` | Medium | Now repo-owned rather than third-party, but still central to tabs, collapses, dropdowns, alerts, and sync polling | Covered by smoke tests plus targeted browser verification on interaction-heavy slices |
 | Dormant vendored frontend assets | Low | Unreferenced assets expand reviewer surface and can hide stale dependencies | Remove once runtime/template references are gone |
@@ -44,6 +44,7 @@ Important distinction on the current branch:
 - No jQuery global is present in the browser.
 - No Bootstrap JS plugins are executed.
 - The remaining third-party browser dependency is Bootstrap 3 CSS.
+- Live icon rendering no longer depends on the Bootstrap glyphicon font.
 - No additional legacy browser libraries such as `moment.js`, `select2`, `datepicker`, or old jQuery plugins were found in the runtime asset scan.
 
 That shifts the frontend risk profile substantially: the main remaining exposure is a stale CSS framework, not an active legacy JS/plugin surface.
@@ -68,19 +69,19 @@ Temporary mitigation still in effect:
 
 ### Phase 2: Current focus, remove Bootstrap 3 CSS dependency
 
-Objective: eliminate the legacy CSS bundle and the glyphicon font chain.
+Objective: eliminate the legacy CSS bundle and the remaining Bootstrap 3 markup assumptions.
 
 Priority work:
 
-- replace `panel-*` with Bootstrap 5-compatible card/section markup or SKA-local components
-- replace remaining glyphicon usage with inline SVG or a local icon helper
+- finish replacing remaining Bootstrap 3 shell/helper/layout markup with Bootstrap 5-compatible or SKA-local equivalents
+- replace remaining legacy glyphicon classnames with semantic local icon helpers
 - finish any shell/layout cleanup that still assumes Bootstrap 3 navbar or utility semantics
 - shrink compatibility CSS as migrated pages stop needing aliases
 
 Exit criteria:
 
 - no Bootstrap 3 structural classes remain in templates
-- glyphicon font files are no longer needed by the UI
+- glyphicon font files are no longer needed anywhere in the repo runtime path
 - the shell renders correctly without Bootstrap 3 CSS
 
 ### Phase 3: Remove stale vendored artifacts
@@ -100,8 +101,8 @@ This phase can now proceed incrementally because runtime references are already 
 
 | Timeline | Target |
 | --- | --- |
-| Now | Replace `panel-*` and glyphicon-heavy UI on the busiest admin pages |
-| Next 1-2 PRs | Finish core detail pages (`server`, `serveraccount`, `group`) and key-management views |
+| Now | Finish Bootstrap 3 shell/helper cleanup on `server`, `serveraccount`, `group`, and key-management views |
+| Next 1-2 PRs | Replace legacy icon markup with semantic helpers and trim compatibility CSS |
 | Before removing Bootstrap 3 CSS | Finish shell/layout cleanup and trim compatibility CSS |
 | Final cleanup | Delete remaining dormant Bootstrap 3 artifacts and glyphicons |
 

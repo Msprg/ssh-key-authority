@@ -18,8 +18,8 @@
 
 function show_key(ExternalKey $key, array $buttons, string $relative_request_url, string $csrf_field) {
 	?>
-	<div class="panel panel-default">
-		<dl class="panel-body">
+	<div class="ska-card">
+		<dl class="ska-card-body">
 			<dt>Key data</dt>
 			<dd><pre><?php out($key->type) ?> <?php out($key->keydata) ?></pre></dd>
 			<dt>Occurrences</dt>
@@ -74,13 +74,13 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 		<p><a href="<?php outurl('/pubkeys.json') ?>" class="btn btn-secondary btn-sm">
 			<span class="glyphicon glyphicon-console"></span> JSON
 		</a></p>
-		<div class="panel-group">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h3 class="panel-title">Filter options</h3>
+		<div class="ska-card-stack">
+			<div class="ska-card">
+				<div class="ska-card-header">
+					<h3 class="ska-card-title">Filter options</h3>
 				</div>
 				<div id="search_filter">
-					<div class="panel-body">
+					<div class="ska-card-body">
 						<form>
 							<div class="row">
 								<div class="col-md-6 mb-3">

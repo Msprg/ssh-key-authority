@@ -437,7 +437,7 @@ dom_ready(function() {
 
 // Remember the expanded-state of a collapsible section
 dom_ready(function() {
-	var migratedCollapseSelector = '.collapse[data-bs-parent], .collapse.ska-collapse-target, .panel-collapse.collapse';
+	var migratedCollapseSelector = '.collapse[data-bs-parent], .collapse.ska-collapse-target, .ska-card-collapse.collapse';
 	var migratedCollapseTriggers = document.querySelectorAll('[data-bs-toggle="collapse"]');
 
 	function get_collapse_target(trigger) {

@@ -26,11 +26,11 @@
 	</a>
 </p>
 <?php if($this->get('allow_admin_add')) { ?>
-<div class="panel panel-default">
-	<div class="panel-heading">
-		<h2 class="panel-title">Add public key for <?php out($this->get('user')->name)?></h2>
+<div class="ska-card">
+	<div class="ska-card-header">
+		<h2 class="ska-card-title">Add public key for <?php out($this->get('user')->name)?></h2>
 	</div>
-	<div class="panel-body">
+	<div class="ska-card-body">
 		<form method="post" action="<?php outurl($this->data->relative_request_url) ?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="mb-3">
@@ -44,8 +44,8 @@
 </div>
 <?php } ?>
 <?php foreach($this->get('pubkeys') as $pubkey) { ?>
-<div class="panel panel-default">
-	<dl class="panel-body">
+<div class="ska-card">
+	<dl class="ska-card-body">
 		<dt>Key data</dt>
 		<dd><pre><?php out($pubkey->export())?></pre></dd>
 		<dt>Creation Date</dt>

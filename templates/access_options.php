@@ -66,10 +66,10 @@ switch(get_class($remote_entity)) {
 	</p>
 	<?php if($mode == 'create') { ?>
 	<div class="form-group">
-		<div class="panel-group">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h3 class="panel-title">
+		<div class="ska-card-stack">
+			<div class="ska-card">
+				<div class="ska-card-header">
+					<h3 class="ska-card-title">
 						<a data-bs-toggle="collapse" href="#advanced_options" aria-expanded="false">
 							Advanced options <span class="caret"></span>
 						</a>
@@ -77,7 +77,7 @@ switch(get_class($remote_entity)) {
 				</div>
 				<div id="advanced_options" class="collapse ska-collapse-target" aria-hidden="true">
 	<?php } ?>
-					<div class="panel-body">
+					<div class="ska-card-body">
 						<p>
 							Presets:
 							<button type="button" class="btn btn-secondary btn-sm" data-preset="default">Default</button>
