@@ -466,34 +466,9 @@ dom_ready(function() {
 		sync_migrated_collapses_from_location();
 	}
 
-	get_section_from_location();
-	window.onpopstate = function(event) {
+	window.addEventListener('popstate', function() {
 		sync_migrated_collapses_from_location();
-		get_section_from_location();
-	};
-	function get_section_from_location() {
-		// Javascript to enable link to section
-		var url = document.location.toString();
-		if(url.match('#')) {
-			var fragment = url.split('#')[1];
-		} else {
-			var fragment = '';
-		}
-		$(".collapse").not('[data-ska-skip-legacy]').each(function(){
-			if(this.id == fragment) $(this).addClass("in");
-			else $(this).removeClass("in");
-		});
-	}
-
-	// Do the location modifying code after all other setup, since we don't want the initial loading to trigger this
-	$('.panel-collapse').not('[data-ska-skip-legacy]').on('show.bs.collapse', function (e) {
-		if(history) {
-			history.replaceState(null, null, '#' + e.target.id);
-		} else {
-			window.location.hash = e.target.id;
-		}
 	});
-
 });
 
 // Show only chosen fingerprint hash format in list views
@@ -831,114 +806,177 @@ dom_ready(function() {
 	}
 });
 
-// Server sync status
-$(function() {
-	var status_div = $('#server_sync_status');
-	status_div.each(function() {
-		if(status_div.data('class')) {
-			update_server_sync_status(status_div.data('class'), status_div.data('message'));
-			$('span.server_account_sync_status').each(function() {
-				update_server_account_sync_status(this.id, $(this).data('class'), $(this).data('message'));
-			});
-		} else {
-			$('span', status_div).addClass('text-warning');
-			$('span', status_div).text('Pending');
-			$('span.server_account_sync_status').addClass('text-warning');
-			$('span.server_account_sync_status').text('Pending');
-			var timeout = 1000;
-			var max_timeout = 10000;
-			get_server_sync_status();
+function set_status_text(element, classname, message) {
+	if(!element) {
+		return;
+	}
+
+	element.classList.remove('text-success', 'text-warning', 'text-danger', 'text-info');
+	element.classList.add('text-' + classname);
+	element.textContent = message;
+}
+
+function map_sync_status(syncStatus) {
+	switch(syncStatus) {
+	case 'sync success':
+		return {classname: 'success', message: 'Synced'};
+	case 'sync failure':
+		return {classname: 'danger', message: 'Failed'};
+	case 'sync warning':
+		return {classname: 'warning', message: 'Not synced'};
+	case 'proposed':
+		return {classname: 'info', message: 'Requested'};
+	default:
+		return {classname: 'warning', message: 'Pending'};
+	}
+}
+
+function fetch_json(url) {
+	return fetch(url, {
+		headers: {'Accept': 'application/json'}
+	}).then(function(response) {
+		if(!response.ok) {
+			throw new Error('Request failed: ' + response.status);
 		}
-		function get_server_sync_status() {
-			var xhr = $.ajax({
-				url: window.location.pathname + '/sync_status',
-				dataType: 'json'
-			});
-			xhr.done(function(status) {
-				if(status.pending) {
-					timeout = Math.min(timeout * 1.5, max_timeout);
-					setTimeout(get_server_sync_status, timeout);
-				} else {
-					var classname;
-					if(status.sync_status == 'sync success') classname = 'success';
-					if(status.sync_status == 'sync failure') classname = 'danger';
-					if(status.sync_status == 'sync warning') classname = 'warning';
-					update_server_sync_status(classname, status.last_sync.details);
-				}
-				$.each(status.accounts, function(index, item) {
-					if(!item.pending) {
-						var classname;
-						var message;
-						if(item.sync_status == 'proposed') { classname = 'info'; message = 'Requested'; }
-						if(item.sync_status == 'sync success') { classname = 'success'; message = 'Synced'; }
-						if(item.sync_status == 'sync failure') { classname = 'danger'; message = 'Failed'; }
-						if(item.sync_status == 'sync warning') { classname = 'warning'; message = 'Not synced'; }
-						update_server_account_sync_status('server_account_sync_status_' + item.name, classname, message);
-					}
-				});
-			});
-		}
-		function update_server_sync_status(classname, message) {
-			$('span', status_div).removeClass('text-success text-warning text-danger');
-			$('span', status_div).addClass('text-' + classname);
-			$('span', status_div).text(message);
-			if(classname == 'success') {
-				$('a', status_div).addClass('hidden');
-			} else {
-				$('a', status_div).removeClass('hidden');
-				if(classname == 'warning') $('a', status_div).prop('href', '/help#sync_warning');
-				if(classname == 'danger') $('a', status_div).prop('href', '/help#sync_error');
-			}
-			$('div.spinner', status_div).remove();
-			$('button[name=sync]', status_div).removeClass('invisible');
-		}
-		function update_server_account_sync_status(id, classname, message) {
-			$('#' + id).removeClass('text-success text-warning text-danger');
-			$('#' + id).addClass('text-' + classname);
-			$('#' + id).text(message);
-		}
+		return response.json();
 	});
+}
+
+// Server sync status
+dom_ready(function() {
+	var statusDiv = document.getElementById('server_sync_status');
+	if(!statusDiv) {
+		return;
+	}
+
+	var statusSpan = statusDiv.querySelector('span');
+	var explainLink = statusDiv.querySelector('a');
+	var spinner = statusDiv.querySelector('div.spinner');
+	var syncButton = statusDiv.querySelector('button[name="sync"]');
+	var accountStatusSpans = document.querySelectorAll('span.server_account_sync_status');
+	var timeout = 1000;
+	var maxTimeout = 10000;
+
+	function update_server_sync_status(classname, message) {
+		set_status_text(statusSpan, classname, message);
+		if(explainLink) {
+			if(classname === 'success') {
+				explainLink.classList.add('hidden');
+			} else {
+				explainLink.classList.remove('hidden');
+				if(classname === 'warning') {
+					explainLink.href = '/help#sync_warning';
+				}
+				if(classname === 'danger') {
+					explainLink.href = '/help#sync_error';
+				}
+			}
+		}
+		if(spinner && spinner.parentNode) {
+			spinner.parentNode.removeChild(spinner);
+			spinner = null;
+		}
+		if(syncButton) {
+			syncButton.classList.remove('invisible');
+		}
+	}
+
+	function update_server_account_sync_status_by_id(id, classname, message) {
+		var element = document.getElementById(id);
+		set_status_text(element, classname, message);
+	}
+
+	function set_pending_statuses() {
+		set_status_text(statusSpan, 'warning', 'Pending');
+		for(var i = 0; i < accountStatusSpans.length; i++) {
+			set_status_text(accountStatusSpans[i], 'warning', 'Pending');
+		}
+	}
+
+	function poll_server_sync_status() {
+		fetch_json(window.location.pathname + '/sync_status')
+			.then(function(status) {
+				if(status.pending) {
+					timeout = Math.min(timeout * 1.5, maxTimeout);
+					setTimeout(poll_server_sync_status, timeout);
+				} else {
+					var mappedServerStatus = map_sync_status(status.sync_status);
+					update_server_sync_status(mappedServerStatus.classname, status.last_sync.details);
+				}
+
+				for(var i = 0; i < status.accounts.length; i++) {
+					if(!status.accounts[i].pending) {
+						var mappedAccountStatus = map_sync_status(status.accounts[i].sync_status);
+						update_server_account_sync_status_by_id('server_account_sync_status_' + status.accounts[i].name, mappedAccountStatus.classname, mappedAccountStatus.message);
+					}
+				}
+			})
+			.catch(function() {
+				timeout = Math.min(timeout * 1.5, maxTimeout);
+				setTimeout(poll_server_sync_status, timeout);
+			});
+	}
+
+	if(statusDiv.getAttribute('data-class')) {
+		update_server_sync_status(statusDiv.getAttribute('data-class'), statusDiv.getAttribute('data-message'));
+		for(var i = 0; i < accountStatusSpans.length; i++) {
+			if(accountStatusSpans[i].getAttribute('data-class')) {
+				update_server_account_sync_status_by_id(
+					accountStatusSpans[i].id,
+					accountStatusSpans[i].getAttribute('data-class'),
+					accountStatusSpans[i].getAttribute('data-message')
+				);
+			}
+		}
+	} else {
+		set_pending_statuses();
+		poll_server_sync_status();
+	}
 });
 
 // Server account sync status
-$(function() {
-	var status_div = $('#server_account_sync_status');
-	status_div.each(function() {
-		if(status_div.data('class')) {
-			update_server_account_sync_status(status_div.data('class'), status_div.data('message'));
-		} else {
-			$('span', status_div).addClass('text-warning');
-			$('span', status_div).text('Pending');
-			var timeout = 1000;
-			var max_timeout = 10000;
-			get_server_account_sync_status();
+dom_ready(function() {
+	var statusDiv = document.getElementById('server_account_sync_status');
+	if(!statusDiv) {
+		return;
+	}
+
+	var statusSpan = statusDiv.querySelector('span');
+	var spinner = statusDiv.querySelector('div.spinner');
+	var timeout = 1000;
+	var maxTimeout = 10000;
+
+	function update_server_account_sync_status(classname, message) {
+		set_status_text(statusSpan, classname, message);
+		if(spinner && spinner.parentNode) {
+			spinner.parentNode.removeChild(spinner);
+			spinner = null;
 		}
-		function get_server_account_sync_status() {
-			var xhr = $.ajax({
-				url: window.location.pathname + '/sync_status',
-				dataType: 'json'
-			});
-			xhr.done(function(status) {
-				console.debug(status);
+	}
+
+	function poll_server_account_sync_status() {
+		fetch_json(window.location.pathname + '/sync_status')
+			.then(function(status) {
 				if(status.pending) {
-					timeout = Math.min(timeout * 1.5, max_timeout);
-					setTimeout(get_server_account_sync_status, timeout);
+					timeout = Math.min(timeout * 1.5, maxTimeout);
+					setTimeout(poll_server_account_sync_status, timeout);
 				} else {
-					var classname;
-					if(status.sync_status == 'sync success') { classname = 'success'; message = 'Synced'; }
-					if(status.sync_status == 'sync failure') { classname = 'danger'; message = 'Failed'; }
-					if(status.sync_status == 'sync warning') { classname = 'warning'; message = 'Not synced'; }
-					update_server_account_sync_status(classname, message);
+					var mappedStatus = map_sync_status(status.sync_status);
+					update_server_account_sync_status(mappedStatus.classname, mappedStatus.message);
 				}
+			})
+			.catch(function() {
+				timeout = Math.min(timeout * 1.5, maxTimeout);
+				setTimeout(poll_server_account_sync_status, timeout);
 			});
-		}
-		function update_server_account_sync_status(classname, message) {
-			$('span', status_div).removeClass('text-success text-warning text-danger');
-			$('span', status_div).addClass('text-' + classname);
-			$('span', status_div).text(message);
-			$('div.spinner', status_div).remove();
-		}
-	});
+	}
+
+	if(statusDiv.getAttribute('data-class')) {
+		update_server_account_sync_status(statusDiv.getAttribute('data-class'), statusDiv.getAttribute('data-message'));
+	} else {
+		update_server_account_sync_status('warning', 'Pending');
+		poll_server_account_sync_status();
+	}
 });
 
 // Server add form - multiple leader autocomplete
