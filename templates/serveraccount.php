@@ -23,7 +23,7 @@ case 'sync warning':
 default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 }
 ?>
-<h1><span class="glyphicon glyphicon-log-in" title="Server account"></span> <?php out($this->get('account')->name)?>@<a href="<?php outurl('/servers/'.urlencode($this->get('server')->hostname))?>"><?php out($this->get('server')->hostname)?></a><?php if($this->get('account')->active == 0) out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></h1>
+<h1><span class="glyphicon glyphicon-log-in" title="Server account"></span> <?php out($this->get('account')->name)?>@<a href="<?php outurl('/servers/'.urlencode($this->get('server')->hostname))?>"><?php out($this->get('server')->hostname)?></a><?php if($this->get('account')->active == 0) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></h1>
 <?php if($this->get('server')->key_management == 'keys') { ?>
 <?php if($this->get('account')->name != 'root' && $this->get('server')->sync_status == 'sync warning') { ?>
 <div class="alert alert-danger">
@@ -89,7 +89,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 								?>
 							<td>
 								<a href="<?php outurl('/users/'.urlencode($entity->uid))?>" class="user"><?php out($entity->uid) ?></a>
-								<?php if(!$entity->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?>
+								<?php if(!$entity->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?>
 							</td>
 								<?php
 								break;
@@ -97,7 +97,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 								?>
 							<td>
 								<a href="<?php outurl('/servers/'.urlencode($entity->server->hostname).'/accounts/'.urlencode($entity->name))?>" class="serveraccount"><?php out($entity->name.'@'.$entity->server->hostname) ?></a>
-								<?php if($entity->server->key_management == 'decommissioned') out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?>
+								<?php if($entity->server->key_management == 'decommissioned') out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?>
 							</td>
 								<?php
 								break;
@@ -105,7 +105,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 								?>
 							<td>
 								<a href="<?php outurl('/groups/'.urlencode($entity->name))?>" class="group"><?php out($entity->name) ?></a>
-								<?php if(!$entity->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?>
+								<?php if(!$entity->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?>
 							</td>
 								<?php
 								break;
@@ -133,8 +133,8 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 								<?php } ?>
 							</td>
 							<td class="nowrap">
-								<a href="<?php outurl('/servers/'.urlencode($this->get('server')->hostname).'/accounts/'.urlencode($this->get('account')->name))?>/access_rules/<?php out($access->id, ESC_URL)?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-cog"></span> Configure access</a>
-								<button type="submit" name="delete_access" value="<?php out($access->id)?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-ban-circle"></span> Remove access</button>
+								<a href="<?php outurl('/servers/'.urlencode($this->get('server')->hostname).'/accounts/'.urlencode($this->get('account')->name))?>/access_rules/<?php out($access->id, ESC_URL)?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-cog"></span> Configure access</a>
+								<button type="submit" name="delete_access" value="<?php out($access->id)?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-ban-circle"></span> Remove access</button>
 							</td>
 						</tr>
 						<?php } ?>
@@ -147,7 +147,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 								?>
 							<td>
 								<a href="<?php outurl('/users/'.urlencode($entity->uid))?>" class="user"><?php out($entity->uid) ?></a>
-								<?php if(!$entity->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?>
+								<?php if(!$entity->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?>
 							</td>
 								<?php
 								break;
@@ -155,7 +155,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 								?>
 							<td>
 								<a href="<?php outurl('/servers/'.urlencode($entity->server->hostname).'/accounts/'.urlencode($entity->name))?>" class="serveraccount"><?php out($entity->name.'@'.$entity->server->hostname) ?></a>
-								<?php if($entity->server->key_management == 'decommissioned') out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?>
+								<?php if($entity->server->key_management == 'decommissioned') out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?>
 							</td>
 								<?php
 								break;
@@ -169,8 +169,8 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 							<td>Access requested on <span class="date"><?php out($access->request_date) ?></span> by <a href="<?php outurl('/users/'.urlencode($access->requested_by->uid))?>" class="user"><?php out($access->requested_by->uid) ?></a></td>
 							<td></td>
 							<td class="nowrap">
-								<button type="submit" name="approve_access" value="<?php out($access->id)?>" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-ok"></span> Approve</button>
-								<button type="submit" name="reject_access" value="<?php out($access->id)?>" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span> Reject</button>
+								<button type="submit" name="approve_access" value="<?php out($access->id)?>" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-ok"></span> Approve</button>
+								<button type="submit" name="reject_access" value="<?php out($access->id)?>" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove"></span> Reject</button>
 							</td>
 						</tr>
 						<?php } ?>
@@ -188,7 +188,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<div class="row">
 				<div class="col-md-9 mb-3">
 					<div class="input-group">
-						<span class="input-group-addon"><label for="username"><span class="glyphicon glyphicon-user" title="User"></span><span class="sr-only">User name</span></label></span>
+						<span class="input-group-text"><label for="username"><span class="glyphicon glyphicon-user" title="User"></span><span class="sr-only">User name</span></label></span>
 						<input type="text" id="username" name="username" class="form-control" placeholder="User name" required list="userlist">
 						<datalist id="userlist">
 							<?php foreach($this->get('all_users') as $user) { ?>
@@ -208,13 +208,13 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<div class="row">
 				<div class="col-md-2 mb-3">
 					<div class="input-group">
-						<span class="input-group-addon"><label for="account"><span class="glyphicon glyphicon-log-in" title="Server account"></span><span class="sr-only">Account name</span></label></span>
+						<span class="input-group-text"><label for="account"><span class="glyphicon glyphicon-log-in" title="Server account"></span><span class="sr-only">Account name</span></label></span>
 						<input type="text" id="account" name="account" class="form-control" placeholder="Account name" required>
 					</div>
 				</div>
 				<div class="col-md-7 mb-3">
 					<div class="input-group">
-						<span class="input-group-addon"><label for="hostname">@</label></span>
+						<span class="input-group-text"><label for="hostname">@</label></span>
 						<input type="text" id="hostname" name="hostname" class="form-control" placeholder="Hostname" required list="serverlist">
 						<datalist id="serverlist">
 							<?php foreach($this->get('all_servers') as $server) { ?>
@@ -234,7 +234,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<div class="row">
 				<div class="col-md-9 mb-3">
 					<div class="input-group">
-						<span class="input-group-addon"><label for="group"><span class="glyphicon glyphicon-list-alt" title="Group"></span><span class="sr-only">Group name</span></label></span>
+						<span class="input-group-text"><label for="group"><span class="glyphicon glyphicon-list-alt" title="Group"></span><span class="sr-only">Group name</span></label></span>
 						<input type="text" id="group" name="group" class="form-control" placeholder="Group name" required list="grouplist">
 						<datalist id="grouplist">
 							<?php foreach($this->get('all_groups') as $group) { ?>
@@ -287,13 +287,13 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 						case 'User':
 							?>
 						<td><a href="<?php outurl('/users/'.urlencode($entity->uid))?>" class="user"><?php out($entity->uid) ?></a></td>
-						<td><?php out($entity->name); if(!$entity->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
+						<td><?php out($entity->name); if(!$entity->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
 							<?php
 							break;
 						case 'ServerAccount':
 							?>
 						<td><a href="<?php outurl('/servers/'.urlencode($entity->server->hostname).'/accounts/'.urlencode($entity->name))?>" class="serveraccount"><?php out($entity->name.'@'.$entity->server->hostname) ?></a></td>
-						<td><em>Server-to-server access</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
+						<td><em>Server-to-server access</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
 							<?php
 							break;
 						case 'Group':
@@ -336,10 +336,10 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 	<div class="tab-pane fade<?php if($this->get('server')->key_management != 'keys') out(' in active show', ESC_NONE) ?>" id="pubkeys" role="tabpanel" aria-labelledby="serveraccount_pubkeys_tab" aria-hidden="<?php out($this->get('server')->key_management == 'keys' ? 'true' : 'false') ?>">
 		<h2 class="sr-only">Public keys</h2>
 		<p>
-			<a href="<?php outurl($this->data->relative_request_url.'/pubkeys.txt')?>" class="btn btn-default btn-xs">
+			<a href="<?php outurl($this->data->relative_request_url.'/pubkeys.txt')?>" class="btn btn-secondary btn-sm">
 				<span class="glyphicon glyphicon-console"></span> TXT
 			</a>
-			<a href="<?php outurl($this->data->relative_request_url.'/pubkeys.json')?>" class="btn btn-default btn-xs">
+			<a href="<?php outurl($this->data->relative_request_url.'/pubkeys.json')?>" class="btn btn-secondary btn-sm">
 				<span class="glyphicon glyphicon-console"></span> JSON
 			</a>
 		</p>
@@ -384,7 +384,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 								<?php if ($key->deletion_date !== null) { ?>
 									<i class="glyphicon glyphicon-remove"></i> Deleted
 								<?php } else { ?>
-									<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Delete public key</button>
+									<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-trash"></span> Delete public key</button>
 								<?php } ?>
 							</td>
 						</tr>
@@ -431,13 +431,13 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 						case 'User':
 							?>
 						<td><a href="<?php outurl('/users/'.urlencode($entity->uid))?>" class="user"><?php out($entity->uid) ?></a></td>
-						<td><?php out($entity->name); if(!$entity->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
+						<td><?php out($entity->name); if(!$entity->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
 							<?php
 							break;
 						case 'ServerAccount':
 							?>
 						<td><a href="<?php outurl('/servers/'.urlencode($entity->server->hostname).'/accounts/'.urlencode($entity->name))?>" class="serveraccount"><?php out($entity->name.'@'.$entity->server->hostname) ?></a></td>
-						<td><em>Server-to-server access</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
+						<td><em>Server-to-server access</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
 							<?php
 							break;
 						case 'Group':
@@ -492,13 +492,13 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 						case 'User':
 							?>
 						<td><a href="<?php outurl('/users/'.urlencode($entity->uid))?>" class="user"><?php out($entity->uid) ?></a></td>
-						<td><?php out($entity->name); if(!$entity->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
+						<td><?php out($entity->name); if(!$entity->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
 							<?php
 							break;
 						case 'ServerAccount':
 							?>
 						<td><a href="<?php outurl('/servers/'.urlencode($entity->server->hostname).'/accounts/'.urlencode($entity->name))?>" class="serveraccount"><?php out($entity->name.'@'.$entity->server->hostname) ?></a></td>
-						<td><em>Server-to-server access</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
+						<td><em>Server-to-server access</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
 							<?php
 							break;
 						case 'Group':
@@ -541,10 +541,10 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 						<?php foreach($this->get('admins') as $admin) { ?>
 						<tr>
 							<td><a href="<?php outurl('/users/'.urlencode($admin->uid))?>" class="user"><?php out($admin->uid) ?></a></td>
-							<td><?php out($admin->name); if(!$admin->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
+							<td><?php out($admin->name); if(!$admin->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
 							<?php if($this->get('admin') || $this->get('server_admin')) { ?>
 							<td>
-								<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Remove leader</button>
+								<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-trash"></span> Remove leader</button>
 							</td>
 							<?php } ?>
 						</tr>

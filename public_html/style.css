@@ -98,7 +98,8 @@ a.user::before {
 	content: "\e008";
 }
 /* ===== FORM ELEMENTS ===== */
-.input-group-addon label {
+.input-group-addon label,
+.input-group-text label {
 	margin: 0;
 }
 
