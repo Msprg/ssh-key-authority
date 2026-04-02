@@ -18,13 +18,54 @@
 */
 'use strict';
 
+function dom_ready(callback) {
+	if(document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', callback);
+	} else {
+		callback();
+	}
+}
+
+function show_dynamic_element(element) {
+	if(!element) {
+		return;
+	}
+
+	element.classList.remove('hidden', 'd-none');
+	element.style.display = '';
+}
+
+function hide_dynamic_element(element) {
+	if(!element) {
+		return;
+	}
+
+	element.classList.remove('hidden', 'd-none');
+	element.style.display = 'none';
+}
+
+function toggle_dynamic_element(element) {
+	if(!element) {
+		return;
+	}
+
+	if(window.getComputedStyle(element).display === 'none') {
+		show_dynamic_element(element);
+	} else {
+		hide_dynamic_element(element);
+	}
+}
+
 // Handle 'navigate-back' links
-$(function() {
-	$('a.navigate-back').on('click', function(e) {
-		e.preventDefault();
-		window.history.back();
-		e.stopPropagation();
-	});
+dom_ready(function() {
+	var links = document.querySelectorAll('a.navigate-back');
+	for(var i = 0; i < links.length; i++) {
+		links[i].addEventListener('click', function(event) {
+			event.preventDefault();
+			window.history.back();
+			event.stopPropagation();
+		});
+	}
 });
 
 // Native dropdown and alert-dismiss behavior for the base shell.
@@ -168,7 +209,7 @@ $(function() {
 })();
 
 // Bootstrap 5-compatible tab behavior for migrated tabsets.
-$(function() {
+dom_ready(function() {
 	var selector = '[data-bs-toggle="tab"][data-ska-skip-legacy]';
 	var migratedTabs = document.querySelectorAll(selector);
 
@@ -313,7 +354,7 @@ $(function() {
 });
 
 // Remember the expanded-state of a collapsible section
-$(function() {
+dom_ready(function() {
 	var migratedCollapseSelector = '.collapse[data-ska-skip-legacy]';
 	var migratedCollapseTriggers = document.querySelectorAll('[data-bs-toggle="collapse"][data-ska-skip-legacy]');
 
@@ -448,66 +489,116 @@ $(function() {
 });
 
 // Show only chosen fingerprint hash format in list views
-$(function() {
-	$('table th.fingerprint').first().each(function() {
-		$(this).append(' ');
-		var select = $('<select>');
-		var options = ['MD5', 'SHA256'];
-		for(var i = 0, option; option = options[i]; i++) {
-			select.append($('<option>').text(option).val(option));
+dom_ready(function() {
+	var fingerprintHeader = document.querySelector('table th.fingerprint');
+	if(!fingerprintHeader) {
+		return;
+	}
+
+	var select = document.createElement('select');
+	var options = ['MD5', 'SHA256'];
+	for(var i = 0; i < options.length; i++) {
+		var option = document.createElement('option');
+		option.value = options[i];
+		option.textContent = options[i];
+		select.appendChild(option);
+	}
+
+	if(window.localStorage) {
+		var preferredHash = localStorage.getItem('preferred_fingerprint_hash');
+		if(preferredHash) {
+			select.value = preferredHash;
 		}
-		if(localStorage) {
-			var fingerprint_hash = localStorage.getItem('preferred_fingerprint_hash');
-			if(fingerprint_hash) {
-				select.val(fingerprint_hash);
-			}
+	}
+
+	function update_fingerprint_visibility() {
+		var showSha256 = select.value === 'SHA256';
+		var md5Fingerprints = document.querySelectorAll('span.fingerprint_md5');
+		var sha256Fingerprints = document.querySelectorAll('span.fingerprint_sha256');
+
+		for(var j = 0; j < md5Fingerprints.length; j++) {
+			md5Fingerprints[j].style.display = showSha256 ? 'none' : '';
 		}
-		$(this).append(select);
-		select.on('change', function() {
-			if(this.value == 'SHA256') {
-				$('span.fingerprint_md5').hide();
-				$('span.fingerprint_sha256').show();
-			} else {
-				$('span.fingerprint_sha256').hide();
-				$('span.fingerprint_md5').show();
-			}
-			if(localStorage) {
-				localStorage.setItem('preferred_fingerprint_hash', this.value);
-			}
-		});
-	});
+		for(var k = 0; k < sha256Fingerprints.length; k++) {
+			sha256Fingerprints[k].style.display = showSha256 ? '' : 'none';
+		}
+
+		if(window.localStorage) {
+			localStorage.setItem('preferred_fingerprint_hash', select.value);
+		}
+	}
+
+	fingerprintHeader.appendChild(document.createTextNode(' '));
+	fingerprintHeader.appendChild(select);
+	select.addEventListener('change', update_fingerprint_visibility);
+	update_fingerprint_visibility();
 });
 
 // Add confirmation dialog to all submit buttons with data-confirm attribute
-$(function() {
-	$('button[type="submit"][data-confirm]').each(function() {
-		$(this).on('click', function() { return confirm($(this).data('confirm')); });
-	});
+dom_ready(function() {
+	var buttons = document.querySelectorAll('button[type="submit"][data-confirm]');
+	for(var i = 0; i < buttons.length; i++) {
+		buttons[i].addEventListener('click', function(event) {
+			if(!window.confirm(this.getAttribute('data-confirm'))) {
+				event.preventDefault();
+			}
+		});
+	}
 });
 
 // Add "clear field" button functionality
-$(function() {
-	$('button[data-clear]').each(function() {
-		$(this).on('click', function() { this.form[$(this).data('clear')].value = ''; });
-	});
+dom_ready(function() {
+	var buttons = document.querySelectorAll('button[data-clear]');
+	for(var i = 0; i < buttons.length; i++) {
+		buttons[i].addEventListener('click', function() {
+			if(!this.form) {
+				return;
+			}
+
+			var fieldName = this.getAttribute('data-clear');
+			var field = this.form.elements[fieldName];
+			if(field) {
+				field.value = '';
+			}
+		});
+	}
 });
 
 // Home page dynamic add pubkey form
-$(function() {
-	$('#add_key_button').on('click', function() {
-		$('#help').hide().removeClass('hidden d-none');
-		$('#add_key_form').hide().removeClass('hidden d-none');
-		$('#add_key_form').show('fast');
-		$('#add_key_button').hide();
-		$('#add_public_key').focus();
+dom_ready(function() {
+	var addKeyButton = document.getElementById('add_key_button');
+	var help = document.getElementById('help');
+	var addKeyForm = document.getElementById('add_key_form');
+	var addPublicKey = document.getElementById('add_public_key');
+
+	if(!addKeyButton || !addKeyForm) {
+		return;
+	}
+
+	addKeyButton.addEventListener('click', function(event) {
+		event.preventDefault();
+		hide_dynamic_element(help);
+		show_dynamic_element(addKeyForm);
+		hide_dynamic_element(addKeyButton);
+		if(addPublicKey) {
+			addPublicKey.focus();
+		}
 	});
-	$('#add_key_form [data-action="toggle-help"], #add_key_form button[type=button].btn-info').on('click', function() {
-		$('#help').toggle('fast');
-	});
-	$('#add_key_form [data-action="cancel-add-key"], #add_key_form button[type=button].btn-default').on('click', function() {
-		$('#add_key_form').hide('fast');
-		$('#add_key_button').show();
-	});
+
+	var helpButtons = addKeyForm.querySelectorAll('[data-action="toggle-help"], button[type="button"].btn-info');
+	for(var i = 0; i < helpButtons.length; i++) {
+		helpButtons[i].addEventListener('click', function() {
+			toggle_dynamic_element(help);
+		});
+	}
+
+	var cancelButtons = addKeyForm.querySelectorAll('[data-action="cancel-add-key"], button[type="button"].btn-secondary');
+	for(var j = 0; j < cancelButtons.length; j++) {
+		cancelButtons[j].addEventListener('click', function() {
+			hide_dynamic_element(addKeyForm);
+			show_dynamic_element(addKeyButton);
+		});
+	}
 });
 
 // Show/hide appropriate sections of the server settings form
@@ -865,31 +956,38 @@ function createTreeview(elem) {
 	elem.innerHTML = "";
 	elem.appendChild(genUL(null));
 }
-$(function() {
-	let trees = $('div.ldap-treeview');
-	trees.each(function(idx) {
-		createTreeview(trees[idx]);
-	});
+dom_ready(function() {
+	let trees = document.querySelectorAll('div.ldap-treeview');
+	for(let i = 0; i < trees.length; i++) {
+		createTreeview(trees[i]);
+	}
 });
 
 // Manage "select-all" checkbox on /servers
-$(function() {
-	let select_all = $('#cb_all_servers');
-	if (select_all.length == 1) {
-		select_all = select_all[0];
-		let host_selects = $('[name=selected_servers\\[\\]]');
-		select_all.addEventListener("input", () => {
-			host_selects.each((i, sel) => {
-				sel.checked = select_all.checked;
-			});
-		});
-		function update_select_all_box() {
-			let all_checked = true;
-			host_selects.each((i, sel) => all_checked = all_checked && sel.checked);
-			select_all.checked = all_checked;
-		}
-		host_selects.each((i, sel) => {
-			sel.addEventListener("input", update_select_all_box);
-		});
+dom_ready(function() {
+	let select_all = document.getElementById('cb_all_servers');
+	if(!select_all) {
+		return;
 	}
+
+	let host_selects = document.querySelectorAll('[name="selected_servers[]"]');
+	select_all.addEventListener("input", () => {
+		for(let i = 0; i < host_selects.length; i++) {
+			host_selects[i].checked = select_all.checked;
+		}
+	});
+
+	function update_select_all_box() {
+		let all_checked = host_selects.length > 0;
+		for(let i = 0; i < host_selects.length; i++) {
+			all_checked = all_checked && host_selects[i].checked;
+		}
+		select_all.checked = all_checked;
+	}
+
+	for(let i = 0; i < host_selects.length; i++) {
+		host_selects[i].addEventListener("input", update_select_all_box);
+	}
+
+	update_select_all_box();
 });

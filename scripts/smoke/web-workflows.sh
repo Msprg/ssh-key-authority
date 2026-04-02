@@ -38,6 +38,8 @@ curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" \
     "$BASE_URL/login" -o "$TMP_DIR/post-login.html"
 
 grep -q '>Logout<' "$TMP_DIR/post-login.html" || smoke_die "Login failed or did not reach authenticated UI"
+! grep -q '/bootstrap/js/bootstrap.min.js' "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell still loads bootstrap.min.js"
+grep -q 'data-bs-toggle="dropdown"' "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell is missing Bootstrap 5 dropdown markup"
 
 smoke_log "Adding and deleting a public key for logged-in user"
 KEY_COMMENT="ska-smoke-$(date +%s)"
@@ -48,6 +50,7 @@ PUBLIC_KEY=$(cat "$KEY_PATH.pub")
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/" -o "$TMP_DIR/home-before-key.html"
 HOME_CSRF=$(smoke_extract_csrf "$TMP_DIR/home-before-key.html")
 [ -n "$HOME_CSRF" ] || smoke_die "Home page CSRF token not found before key add"
+! grep -q '/bootstrap/js/bootstrap.min.js' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still loads bootstrap.min.js"
 
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" \
     --data-urlencode "csrf_token=$HOME_CSRF" \
