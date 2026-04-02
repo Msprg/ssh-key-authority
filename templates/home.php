@@ -70,8 +70,8 @@
 						<?php if ($key->deletion_date !== null) { ?>
 							<i class="glyphicon glyphicon-remove"></i> Deleted
 						<?php } else { ?>
-							<a href="<?php outurl('/users/'.urlencode($this->get('uid')).'/pubkeys/'.urlencode($key->id))?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-cog"></span> Manage public key</a>
-							<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Delete public key</button>
+							<a href="<?php outurl('/users/'.urlencode($this->get('uid')).'/pubkeys/'.urlencode($key->id))?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-cog"></span> Manage public key</a>
+							<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-trash"></span> Delete public key</button>
 						<?php } ?>
 					</td>
 				</tr>
@@ -80,7 +80,7 @@
 		</table>
 	</div>
 </form>
-<p><button id="add_key_button" class="btn btn-default">Add another public key</button></p>
+<p><button id="add_key_button" class="btn btn-secondary">Add another public key</button></p>
 <form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="hidden d-none" id="add_key_form">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 	<div class="mb-3">
@@ -95,7 +95,7 @@
 			<button type="button" class="btn btn-info btn-lg w-100" data-action="toggle-help">Help</button>
 		</div>
 		<div class="col-md-2">
-			<button type="button" class="btn btn-default btn-lg w-100" data-action="cancel-add-key">Cancel</button>
+			<button type="button" class="btn btn-secondary btn-lg w-100" data-action="cancel-add-key">Cancel</button>
 		</div>
 	</div>
 	<div id="help" class="hidden d-none">

@@ -80,10 +80,10 @@ switch(get_class($remote_entity)) {
 					<div class="panel-body">
 						<p>
 							Presets:
-							<button type="button" class="btn btn-default btn-xs" data-preset="default">Default</button>
-							<button type="button" class="btn btn-default btn-xs" data-preset="command">Command</button>
-							<button type="button" class="btn btn-default btn-xs" data-preset="dbbackup">DB backup</button>
-							<button type="button" class="btn btn-default btn-xs" data-preset="checkmk">CheckMK</button>
+							<button type="button" class="btn btn-secondary btn-sm" data-preset="default">Default</button>
+							<button type="button" class="btn btn-secondary btn-sm" data-preset="command">Command</button>
+							<button type="button" class="btn btn-secondary btn-sm" data-preset="dbbackup">DB backup</button>
+							<button type="button" class="btn btn-secondary btn-sm" data-preset="checkmk">CheckMK</button>
 						</p>
 						<div class="checkbox">
 							<label><input type="checkbox" name="access_option[command][enabled]"<?php if(isset($options['command'])) out(' checked'); ?>> Specify command (<code>command=&quot;command&quot;</code>)</label>
@@ -119,9 +119,9 @@ switch(get_class($remote_entity)) {
 		</div>
 		<div class="col-md-4">
 			<?php if(isset($server)) { ?>
-			<a href="<?php outurl('/servers/'.urlencode($server->hostname).'/accounts/'.urlencode($account->name))?>" class="btn btn-default w-100">Cancel</a>
+			<a href="<?php outurl('/servers/'.urlencode($server->hostname).'/accounts/'.urlencode($account->name))?>" class="btn btn-secondary w-100">Cancel</a>
 			<?php } elseif(isset($group)) { ?>
-			<a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="btn btn-default w-100">Cancel</a>
+			<a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="btn btn-secondary w-100">Cancel</a>
 			<?php } ?>
 		</div>
 	</div>

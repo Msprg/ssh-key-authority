@@ -16,7 +16,7 @@
 ## limitations under the License.
 ##
 ?>
-<h1><span class="glyphicon glyphicon-user" title="User"></span> <?php out($this->get('user')->name)?> <small>(<?php out($this->get('user')->uid)?>)</small><?php if(!$this->get('user')->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE)?></h1>
+<h1><span class="glyphicon glyphicon-user" title="User"></span> <?php out($this->get('user')->name)?> <small>(<?php out($this->get('user')->uid)?>)</small><?php if(!$this->get('user')->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE)?></h1>
 <dl>
 	<dt>Account type</dt>
 	<dd><?php out($this->get('user')->auth_realm)?></dd>
@@ -33,10 +33,10 @@
 		<h2 class="sr-only">Details</h2>
 		<h3><a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys')?>">Public keys</a></h3>
 		<p>
-			<a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys.txt') ?>" class="btn btn-default btn-xs">
+			<a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys.txt') ?>" class="btn btn-secondary btn-sm">
 				<span class="glyphicon glyphicon-console"></span> TXT
 			</a>
-			<a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys.json') ?>" class="btn btn-default btn-xs">
+			<a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys.json') ?>" class="btn btn-secondary btn-sm">
 				<span class="glyphicon glyphicon-console"></span> JSON
 			</a>
 		</p>
@@ -81,7 +81,7 @@
 						<td><?php out($key->comment) ?></td>
 						<?php if($this->get('admin')) { ?>
 						<td>
-							<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Delete public key</button>
+							<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-trash"></span> Delete public key</button>
 						</td>
 						<?php } ?>
 					</tr>
@@ -256,7 +256,7 @@
 					</tbody>
 				</table>
 			</div>
-			<p><button type="button" class="btn btn-default" data-reassign="admined_servers">Reassign servers</button></p>
+			<p><button type="button" class="btn btn-secondary" data-reassign="admined_servers">Reassign servers</button></p>
 		</form>
 		<?php } ?>
 		<?php } ?>

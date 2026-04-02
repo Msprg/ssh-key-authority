@@ -48,10 +48,10 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 				<form method="post" action="<?php outurl($relative_request_url)?>">
 					<?php out($csrf_field, ESC_NONE) ?>
 					<?php if (in_array('allow', $buttons)) { ?>
-					<button type="submit" name="allow" value="<?php out($key->id) ?>" class="btn btn-default btn-xs">Allow</button>
+					<button type="submit" name="allow" value="<?php out($key->id) ?>" class="btn btn-secondary btn-sm">Allow</button>
 					<?php } ?>
 					<?php if (in_array('deny', $buttons)) { ?>
-					<button type="submit" name="deny" value="<?php out($key->id) ?>" class="btn btn-default btn-xs">Deny</button>
+					<button type="submit" name="deny" value="<?php out($key->id) ?>" class="btn btn-secondary btn-sm">Deny</button>
 					<?php } ?>
 				</form>
 			</dd>
@@ -71,7 +71,7 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 <div class="tab-content">
 	<div class="tab-pane fade in active show" id="managed" role="tabpanel" aria-labelledby="pubkeys_managed_tab" aria-hidden="false">
 		<h2 class="sr-only">Managed keys</h2>
-		<p><a href="<?php outurl('/pubkeys.json') ?>" class="btn btn-default btn-xs">
+		<p><a href="<?php outurl('/pubkeys.json') ?>" class="btn btn-secondary btn-sm">
 			<span class="glyphicon glyphicon-console"></span> JSON
 		</a></p>
 		<div class="panel-group">
@@ -94,14 +94,14 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 								<div class="col-md-2 mb-3">
 									<label for="keysize-min">Min key size</label>
 									<div class="input-group">
-										<span class="input-group-addon">≥</span>
+										<span class="input-group-text">≥</span>
 										<input type="text" id="keysize-min" name="keysize-min" class="form-control" value="<?php out($this->get('filter')['keysize-min'])?>">
 									</div>
 								</div>
 								<div class="col-md-2 mb-3">
 									<label for="keysize-max">Max key size</label>
 									<div class="input-group">
-										<span class="input-group-addon">≤</span>
+										<span class="input-group-text">≤</span>
 										<input type="text" id="keysize-max" name="keysize-max" class="form-control" value="<?php out($this->get('filter')['keysize-max'])?>">
 									</div>
 								</div>
@@ -163,13 +163,13 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 							case 'User':
 							?>
 							<a href="<?php outurl('/users/'.urlencode($pubkey->owner->uid))?>" class="user"><?php out($pubkey->owner->uid)?></a>
-							<?php if(!$pubkey->owner->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?>
+							<?php if(!$pubkey->owner->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?>
 							<?php
 								break;
 							case 'ServerAccount':
 							?>
 							<a href="<?php outurl('/servers/'.urlencode($pubkey->owner->server->hostname))?>/accounts/<?php out($pubkey->owner->name, ESC_URL)?>" class="serveraccount"><?php out($pubkey->owner->name.'@'.$pubkey->owner->server->hostname)?></a>
-							<?php if($pubkey->owner->server->key_management == 'decommissioned') out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?>
+							<?php if($pubkey->owner->server->key_management == 'decommissioned') out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?>
 							<?php
 								break;
 							}

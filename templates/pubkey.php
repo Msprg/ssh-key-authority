@@ -48,7 +48,7 @@ $owner = $this->get('pubkey')->owner;
 <div class="tab-content">
 	<div class="tab-pane fade in active show" id="info" role="tabpanel"<?php if($this->get('user_is_owner') || $this->get('admin')) out(' aria-labelledby="pubkey_info_tab"', ESC_NONE) ?> aria-hidden="false">
 		<h2 class="sr-only">Information</h2>
-		<p><a href="<?php outurl('/pubkeys/'.$this->get('pubkey')->id.'.json') ?>" class="btn btn-default btn-xs">
+		<p><a href="<?php outurl('/pubkeys/'.$this->get('pubkey')->id.'.json') ?>" class="btn btn-secondary btn-sm">
 			<span class="glyphicon glyphicon-console"></span> JSON
 		</a></p>
 		<?php if ($this->get('pubkey')->deletion_date !== null) { ?>
@@ -96,7 +96,7 @@ $owner = $this->get('pubkey')->owner;
 							<td><?php out($sig->fingerprint)?></td>
 							<td><?php out($sig->sign_date)?></td>
 							<td><?php out($sig->upload_date)?></td>
-							<td><button type="submit" name="delete_signature" value="<?php out($sig->id)?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Delete signature</button></td>
+							<td><button type="submit" name="delete_signature" value="<?php out($sig->id)?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-trash"></span> Delete signature</button></td>
 						</tr>
 						<?php } ?>
 					</tbody>
@@ -138,7 +138,7 @@ $owner = $this->get('pubkey')->owner;
 						<tr>
 							<td><?php out($rule->account_name_filter)?></td>
 							<td><?php out($rule->hostname_filter)?></td>
-							<td><button type="submit" name="delete_dest_rule" value="<?php out($rule->id)?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Delete rule</button></td>
+							<td><button type="submit" name="delete_dest_rule" value="<?php out($rule->id)?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-trash"></span> Delete rule</button></td>
 						</tr>
 						<?php } ?>
 					</tbody>

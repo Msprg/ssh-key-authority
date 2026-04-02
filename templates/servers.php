@@ -28,7 +28,7 @@
 	<div class="tab-pane fade in active show" id="list" role="tabpanel" aria-labelledby="servers_list_tab" aria-hidden="false">
 		<h2 class="sr-only">Server list</h2>
 		<div class="panel-group">
-			<p><a href="<?php outurl('/servers.json') ?>" class="btn btn-default btn-xs">
+			<p><a href="<?php outurl('/servers.json') ?>" class="btn btn-secondary btn-sm">
 				<span class="glyphicon glyphicon-console"></span> JSON
 			</a></p>
 			<div class="panel panel-default">
