@@ -52,7 +52,7 @@ foreach($this->get('group_members') as $member) {
 			</div>
 			<?php } ?>
 			<div class="ska-scroll-container">
-				<table class="table table-bordered table-striped">
+				<table class="ska-table ska-table-bordered ska-table-striped">
 					<thead>
 						<tr>
 							<th colspan="2">Member</th>
@@ -164,7 +164,7 @@ foreach($this->get('group_members') as $member) {
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-scroll-container">
-				<table class="table table-bordered table-striped">
+				<table class="ska-table ska-table-bordered ska-table-striped">
 					<thead>
 						<tr>
 							<th colspan="2">Access for</th>
@@ -293,7 +293,7 @@ foreach($this->get('group_members') as $member) {
 		<?php } else { ?>
 		<p>This group has access to the following resources:</p>
 		<div class="ska-scroll-container">
-			<table class="table table-bordered table-striped">
+			<table class="ska-table ska-table-bordered ska-table-striped">
 				<thead>
 					<tr>
 						<th colspan="2">Access to</th>
@@ -342,7 +342,7 @@ foreach($this->get('group_members') as $member) {
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-scroll-container">
-				<table class="table table-bordered table-striped">
+				<table class="ska-table ska-table-bordered ska-table-striped">
 					<thead>
 						<tr>
 							<th>User ID</th>
@@ -408,7 +408,7 @@ foreach($this->get('group_members') as $member) {
 	<div class="ska-tab-pane fade" id="log" role="tabpanel" aria-labelledby="group_log_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Log</h2>
 		<div class="ska-scroll-container">
-			<table class="table">
+			<table class="ska-table">
 				<thead>
 					<tr>
 						<th>Entity</th>

@@ -173,15 +173,6 @@
   width: 100% !important;
 }
 
-.table-sm > thead > tr > th,
-.table-sm > tbody > tr > th,
-.table-sm > tfoot > tr > th,
-.table-sm > thead > tr > td,
-.table-sm > tbody > tr > td,
-.table-sm > tfoot > tr > td {
-  padding: 5px;
-}
-
 @media (min-width: 1200px) {
   .d-xl-none {
     display: none !important;

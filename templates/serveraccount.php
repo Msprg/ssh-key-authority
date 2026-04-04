@@ -69,7 +69,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-scroll-container">
-				<table class="table table-bordered table-hover">
+				<table class="ska-table ska-table-bordered ska-table-hover">
 					<thead>
 						<tr>
 							<th>Access for</th>
@@ -269,7 +269,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			?>
 		<h4><a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="group"><?php out($group->name)?></a></h4>
 		<div class="ska-scroll-container">
-			<table class="table table-bordered table-striped">
+			<table class="ska-table ska-table-bordered ska-table-striped">
 				<thead>
 					<tr>
 						<th colspan="2">Access for</th>
@@ -351,7 +351,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-scroll-container">
-				<table class="table">
+				<table class="ska-table">
 					<thead>
 						<tr>
 							<th>Type</th>
@@ -415,7 +415,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 		<?php } else { ?>
 		<p>This account has access to the following resources:</p>
 		<div class="ska-scroll-container">
-			<table class="table table-bordered table-striped">
+			<table class="ska-table ska-table-bordered ska-table-striped">
 				<thead>
 					<tr>
 						<th colspan="2">Access to</th>
@@ -476,7 +476,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			?>
 		<h4><a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="group"><?php out($group->name)?></a></h4>
 		<div class="ska-scroll-container">
-			<table class="table table-bordered table-striped">
+			<table class="ska-table ska-table-bordered ska-table-striped">
 				<thead>
 					<tr>
 						<th colspan="2">Group has access to</th>
@@ -527,7 +527,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-scroll-container">
-				<table class="table table-bordered table-striped">
+				<table class="ska-table ska-table-bordered ska-table-striped">
 					<thead>
 						<tr>
 							<th>User ID</th>
@@ -574,7 +574,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 	<div class="ska-tab-pane fade" id="log" role="tabpanel" aria-labelledby="serveraccount_log_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Log</h2>
 		<div class="ska-scroll-container">
-			<table class="table">
+			<table class="ska-table">
 				<col></col>
 				<col></col>
 				<col></col>

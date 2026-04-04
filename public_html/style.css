@@ -391,6 +391,72 @@ a.user,
 	flex: 0 0 auto;
 }
 
+/* ===== TABLES ===== */
+.ska-table {
+	width: 100%;
+	max-width: 100%;
+	margin-bottom: 20px;
+	border-collapse: collapse;
+	background-color: #fff;
+}
+
+.ska-table > thead > tr > th,
+.ska-table > tbody > tr > th,
+.ska-table > tfoot > tr > th,
+.ska-table > thead > tr > td,
+.ska-table > tbody > tr > td,
+.ska-table > tfoot > tr > td {
+	padding: 8px;
+	line-height: 1.42857143;
+	vertical-align: top;
+	border-top: 1px solid #ddd;
+}
+
+.ska-table > thead > tr > th {
+	vertical-align: bottom;
+	border-bottom: 2px solid #ddd;
+	text-align: left;
+}
+
+.ska-table > caption + thead > tr:first-child > th,
+.ska-table > colgroup + thead > tr:first-child > th,
+.ska-table > thead:first-child > tr:first-child > th,
+.ska-table > caption + thead > tr:first-child > td,
+.ska-table > colgroup + thead > tr:first-child > td,
+.ska-table > thead:first-child > tr:first-child > td {
+	border-top: 0;
+}
+
+.ska-table-bordered {
+	border: 1px solid #ddd;
+}
+
+.ska-table-bordered > thead > tr > th,
+.ska-table-bordered > tbody > tr > th,
+.ska-table-bordered > tfoot > tr > th,
+.ska-table-bordered > thead > tr > td,
+.ska-table-bordered > tbody > tr > td,
+.ska-table-bordered > tfoot > tr > td {
+	border: 1px solid #ddd;
+}
+
+.ska-table-striped > tbody > tr:nth-of-type(odd) {
+	background-color: #f9f9f9;
+}
+
+.ska-table-hover > tbody > tr:hover {
+	background-color: #f5f5f5;
+}
+
+.ska-table-sm > thead > tr > th,
+.ska-table-sm > tbody > tr > th,
+.ska-table-sm > tfoot > tr > th,
+.ska-table-sm > thead > tr > td,
+.ska-table-sm > tbody > tr > td,
+.ska-table-sm > tfoot > tr > td {
+	padding: 4px;
+}
+
 /* ===== UTILITY CLASSES ===== */
 .indented {
 	padding-left: 2em !important;

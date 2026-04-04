@@ -17,7 +17,7 @@
 ?>
 <h1>Users</h1>
 <div class="ska-scroll-container">
-	<table class="table">
+	<table class="ska-table">
 		<thead>
 			<tr>
 				<th>Username</th>

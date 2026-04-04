@@ -48,7 +48,7 @@
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 		<?php } ?>
 		<div class="ska-scroll-container">
-			<table class="table">
+			<table class="ska-table">
 				<thead>
 					<tr>
 						<th>Type</th>
@@ -108,7 +108,7 @@
 		<?php if(count($this->get('user_groups')) > 0) { ?>
 		<p><?php out($this->get('user')->name)?> is a member of the following groups:</p>
 		<div class="ska-scroll-container">
-			<table class="table">
+			<table class="ska-table">
 				<thead>
 					<tr>
 						<th>Group</th>
@@ -131,7 +131,7 @@
 		<?php if(count($this->get('user_admined_groups')) > 0) { ?>
 		<p><?php out($this->get('user')->name)?> is an administrator of the following groups:</p>
 		<div class="ska-scroll-container">
-			<table class="table">
+			<table class="ska-table">
 				<thead>
 					<tr>
 						<th>Group</th>
@@ -157,7 +157,7 @@
 		<?php } else { ?>
 		<p><?php out($this->get('user')->name)?> has been explicitly granted access to the following entities:</p>
 		<div class="ska-scroll-container">
-			<table class="table">
+			<table class="ska-table">
 				<thead>
 					<tr>
 						<th>Entity</th>
@@ -200,7 +200,7 @@
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-scroll-container">
-				<table class="table" id="admined_servers">
+				<table class="ska-table" id="admined_servers">
 					<thead>
 						<tr>
 							<th>Hostname</th>

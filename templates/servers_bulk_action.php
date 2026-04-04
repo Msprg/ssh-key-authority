@@ -69,7 +69,7 @@
 	<?php foreach ($this->data->server_names as $server_name) { ?>
 		<input type="hidden" name="selected_servers[]" value="<?php out($server_name) ?>">
 	<?php } ?>
-	<table class="table table-bordered table-striped">
+	<table class="ska-table ska-table-bordered ska-table-striped">
 		<thead>
 			<tr>
 				<th>Entity</th>

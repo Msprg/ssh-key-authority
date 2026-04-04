@@ -101,7 +101,7 @@
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-scroll-container">
-				<table class="table table-bordered">
+				<table class="ska-table ska-table-bordered">
 					<thead>
 						<tr>
 							<th>Account</th>
@@ -203,7 +203,7 @@
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-scroll-container">
-				<table class="table table-bordered table-striped">
+				<table class="ska-table ska-table-bordered ska-table-striped">
 					<thead>
 						<tr>
 							<th>Entity</th>
@@ -441,7 +441,7 @@
 	<div class="ska-tab-pane fade" id="log" role="tabpanel" aria-labelledby="server_log_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Log</h2>
 		<div class="ska-scroll-container">
-			<table class="table">
+			<table class="ska-table">
 				<col></col>
 				<col></col>
 				<col></col>
@@ -655,7 +655,7 @@
 <h2>Managed accounts</h2>
 <p>You are a leader for the following accounts on this server:</p>
 <div class="ska-scroll-container">
-	<table class="table table-bordered table-striped">
+	<table class="ska-table ska-table-bordered ska-table-striped">
 		<thead>
 			<tr>
 				<th>Account</th>

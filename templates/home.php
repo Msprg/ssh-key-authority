@@ -35,7 +35,7 @@
 <form method="post" action="<?php out($this->data->relative_request_url)?>">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 	<div class="ska-scroll-container">
-		<table class="table">
+		<table class="ska-table">
 			<thead>
 				<tr>
 					<th>Type</th>
@@ -106,7 +106,7 @@
 <h2>Your servers</h2>
 <p>You are listed as a leader for the following servers:</p>
 <div class="ska-scroll-container">
-	<table class="table">
+	<table class="ska-table">
 		<thead>
 			<tr>
 				<th>Hostname</th>
@@ -211,7 +211,7 @@
 <?php if (count($this->get('allowed_access')) > 0) { ?>
 <p>You are allowed (possibly via some groups) to access the following accounts:</p>
 <div class="ska-scroll-container">
-	<table class="table table-bordered">
+	<table class="ska-table ska-table-bordered">
 		<?php foreach ($this->get('allowed_access') as $account) { ?>
 		<tr>
 			<td><?php out(Format::server_account_link($account), ESC_NONE) ?></td>

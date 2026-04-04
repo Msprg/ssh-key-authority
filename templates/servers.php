@@ -90,7 +90,7 @@
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<p><?php $total = count($this->get('servers')); out(number_format($total).' server'.($total == 1 ? '' : 's').' found')?></p>
 			<div class="ska-scroll-container">
-				<table class="table table-hover table-sm">
+				<table class="ska-table ska-table-hover ska-table-sm">
 					<thead>
 						<tr>
 							<?php if($this->get('admin')) { ?>

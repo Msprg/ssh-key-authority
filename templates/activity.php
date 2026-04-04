@@ -17,7 +17,7 @@
 ?>
 <h1>Activity</h1>
 <div class="ska-scroll-container">
-	<table class="table">
+	<table class="ska-table">
 		<col></col>
 		<col></col>
 		<col></col>

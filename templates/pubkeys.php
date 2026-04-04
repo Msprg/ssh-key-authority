@@ -25,7 +25,7 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 			<dt>Occurrences</dt>
 			<dd>
 				<div class="ska-scroll-container">
-					<table class="table">
+					<table class="ska-table">
 						<thead>
 							<tr>
 								<th>Location</th>
@@ -114,7 +114,7 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 		</div>
 		<p><?php $total = count($this->get('pubkeys')); out(number_format($total).' public key'.($total == 1 ? '' : 's').' found'); ?></p>
 		<div class="ska-scroll-container">
-			<table class="table table-striped">
+			<table class="ska-table ska-table-striped">
 				<thead>
 					<tr>
 						<th class="fingerprint">Fingerprint</th>

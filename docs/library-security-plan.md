@@ -61,6 +61,7 @@ Completed work:
 
 - native tab, collapse, dropdown, and alert-dismiss handlers in [public_html/extra.js](/var/www/ska/public_html/extra.js)
 - repo-local tab styling in [public_html/style.css](/var/www/ska/public_html/style.css) for migrated tabsets, removing the Bootstrap 3 tab CSS dependency from those pages
+- repo-local table styling in [public_html/style.css](/var/www/ska/public_html/style.css) for the busiest list/detail pages, removing their Bootstrap 3 table-class dependency
 - native replacements for the local jQuery form helpers and sync polling
 - removal of runtime `bootstrap.min.js`, jQuery, and `bootstrap5-compat.js`
 - smoke assertions that authenticated pages do not load those scripts
@@ -77,7 +78,7 @@ Objective: eliminate the legacy CSS bundle and the remaining Bootstrap 3 markup 
 Priority work:
 
 - finish replacing remaining Bootstrap 3 shell/helper/layout markup with Bootstrap 5-compatible or SKA-local equivalents
-- continue replacing Bootstrap 3 table/status/layout assumptions on the busiest detail pages
+- continue replacing Bootstrap 3 button, alert, and content styling assumptions on the busiest detail pages
 - trim remaining icon-compatibility selectors as Bootstrap 3 CSS is retired
 - finish any shell/layout cleanup that still assumes Bootstrap 3 navbar or utility semantics
 - shrink compatibility CSS as migrated pages stop needing aliases

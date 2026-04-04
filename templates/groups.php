@@ -68,7 +68,7 @@
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-scroll-container">
-				<table class="table table-striped">
+				<table class="ska-table ska-table-striped">
 					<thead>
 						<tr>
 							<th>Group</th>
