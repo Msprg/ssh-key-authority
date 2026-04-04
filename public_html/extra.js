@@ -163,7 +163,7 @@ dom_ready(function() {
 		if(!root) {
 			return null;
 		}
-		return root.querySelector('.dropdown-menu');
+		return root.querySelector('.ska-dropdown-menu, .dropdown-menu');
 	}
 
 	function close_dropdown(root, trigger, relatedTarget) {

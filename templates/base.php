@@ -30,7 +30,7 @@ $footer=str_replace("%v", "1.5.0", $web_config['footer']);
 <?php out($this->get('head'), ESC_NONE) ?>
 <div id="wrap">
 <a href="#content" class="visually-hidden visually-hidden-focusable">Skip to main content</a>
-<div class="navbar navbar-fixed-top fixed-top">
+<div class="ska-shell-nav">
 	<div class="container h-50px">
 		<div class="ska-navbar">
 			<?php if(!empty($web_config['logo'])) { ?>
@@ -41,9 +41,9 @@ $footer=str_replace("%v", "1.5.0", $web_config['footer']);
 			<?php } ?>
 			<?php if($this->get('active_user')) { ?>
 			<div class="ska-navbar-items">
-				<ul class="nav navbar-nav">
+				<ul class="ska-nav-list">
 					<?php foreach($this->get('menu_items') as $url => $name) { ?>
-					<li<?php if($url == $this->get('relative_request_url')) out(' class="active"', ESC_NONE); ?>><a href="<?php outurl($url)?>"><?php out($name)?></a></li>
+					<li<?php if($url == $this->get('relative_request_url')) out(' class="ska-nav-item is-active"', ESC_NONE); else out(' class="ska-nav-item"', ESC_NONE) ?>><a class="ska-nav-link" href="<?php outurl($url)?>"><?php out($name)?></a></li>
 					<?php } ?>
 				</ul>
 			</div>
@@ -55,16 +55,16 @@ $footer=str_replace("%v", "1.5.0", $web_config['footer']);
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M18.53 9.53a.75.75 0 0 0 0-1.06H5.47a.75.75 0 0 0 0 1.06l6 6a.75.75 0 0 0 1.06 0z"/></svg>
 					</span>
 				</button>
-				<div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton" aria-hidden="true">
+				<div class="ska-dropdown-menu" aria-labelledby="dropdownMenuButton" aria-hidden="true">
 						<div class="ska-dropdown"><span class="ska-dropdown-name-dp d-xl-none">
 							<?php out($this->get('active_user')->name)?> 
 						</span>
 						<div class="ska-divider d-xl-none"></div>
 						<?php foreach($this->get('menu_items') as $url => $name) { ?>
-						<a <?php if($url == $this->get('relative_request_url')) out(' class="dropdown-item ska-dp-item d-xl-none active"', ESC_NONE); else out(' class="dropdown-item ska-dp-item d-xl-none"', ESC_NONE) ?> href="<?php outurl($url)?>"><?php out($name)?></a></li>
+						<a <?php if($url == $this->get('relative_request_url')) out(' class="ska-dp-item d-xl-none is-active"', ESC_NONE); else out(' class="ska-dp-item d-xl-none"', ESC_NONE) ?> href="<?php outurl($url)?>"><?php out($name)?></a></li>
 						<?php } ?>
 						<div class="ska-divider d-xl-none"></div>
-						<a class="dropdown-item ska-dp-item" href="<?php outurl('/logout')?>">Logout</a>
+						<a class="ska-dp-item" href="<?php outurl('/logout')?>">Logout</a>
 					</div>
 				</div>
 			</div>
