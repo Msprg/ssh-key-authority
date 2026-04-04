@@ -31,7 +31,7 @@ PHP dependencies remain small:
 | Library / asset family | Risk | Why it matters | Current mitigation |
 | --- | --- | --- | --- |
 | Bootstrap 3.4.1 CSS | High | End-of-life frontend baseline; still carries the shell, old helper classes, and many implicit component styles | Incremental template migration plus [public_html/bootstrap5-compat.css](/var/www/ska/public_html/bootstrap5-compat.css) |
-| Glyphicons font assets | Low | Bootstrap CSS still vendors the font files, but high-traffic pages now render through semantic local icon helpers backed by [public_html/icons/](/var/www/ska/public_html/icons/) and [public_html/style.css](/var/www/ska/public_html/style.css) | Keep avoiding new legacy icon markup; remove the dormant font files when Bootstrap 3 CSS is gone |
+| Glyphicons font assets | Low | Bootstrap CSS still vendors the font files, but active templates/runtime JS now render through semantic local icon helpers backed by [public_html/icons/](/var/www/ska/public_html/icons/) and [public_html/style.css](/var/www/ska/public_html/style.css) | Remove the dormant font files when Bootstrap 3 CSS is gone |
 | Local compatibility CSS | Medium | Safe compared with third-party JS, but it can become sticky technical debt if pages never finish migrating | Keep scope explicit and shrink after each structural cleanup slice |
 | Local frontend runtime in `extra.js` | Medium | Now repo-owned rather than third-party, but still central to tabs, collapses, dropdowns, alerts, and sync polling | Covered by smoke tests plus targeted browser verification on interaction-heavy slices |
 | Browser-debugging helper `scripts/smoke/browser-capture.sh` | Low | New repo-owned debugging tool that logs into the smoke environment for screenshots | Reuses the existing smoke env vars and is not loaded in application runtime |
@@ -46,7 +46,7 @@ Important distinction on the current branch:
 - No jQuery global is present in the browser.
 - No Bootstrap JS plugins are executed.
 - The remaining third-party browser dependency is Bootstrap 3 CSS.
-- Live icon rendering on the main shell/list/detail pages no longer depends on the Bootstrap glyphicon font or markup.
+- Live icon rendering in templates/runtime JS no longer depends on the Bootstrap glyphicon font or markup.
 - No additional legacy browser libraries such as `moment.js`, `select2`, `datepicker`, or old jQuery plugins were found in the runtime asset scan.
 
 That shifts the frontend risk profile substantially: the main remaining exposure is a stale CSS framework, not an active legacy JS/plugin surface.
@@ -76,7 +76,7 @@ Objective: eliminate the legacy CSS bundle and the remaining Bootstrap 3 markup 
 Priority work:
 
 - finish replacing remaining Bootstrap 3 shell/helper/layout markup with Bootstrap 5-compatible or SKA-local equivalents
-- replace remaining secondary-template icon aliases with semantic local icon helpers
+- trim remaining icon-compatibility selectors as Bootstrap 3 CSS is retired
 - finish any shell/layout cleanup that still assumes Bootstrap 3 navbar or utility semantics
 - shrink compatibility CSS as migrated pages stop needing aliases
 
@@ -105,7 +105,7 @@ This phase can now proceed incrementally because runtime references are already 
 | Timeline | Target |
 | --- | --- |
 | Now | Finish Bootstrap 3 shell/helper cleanup on untargeted secondary pages and trim compatibility CSS |
-| Next 1-2 PRs | Replace the remaining secondary-template icon aliases and finish the shell CSS cleanup |
+| Next 1-2 PRs | Finish the shell CSS cleanup and remove dead Bootstrap 3/icon residue |
 | Before removing Bootstrap 3 CSS | Finish shell/layout cleanup and trim compatibility CSS |
 | Final cleanup | Delete remaining dormant Bootstrap 3 artifacts and glyphicons |
 

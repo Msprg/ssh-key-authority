@@ -41,7 +41,7 @@ Current runtime facts:
 The main remaining blockers are now CSS- and markup-oriented rather than plugin-oriented:
 
 - a few remaining Bootstrap 3 shell/layout conventions
-- legacy icon aliases and local compatibility styling that still need cleanup on untargeted pages
+- final compatibility selectors and Bootstrap 3 CSS assumptions that still need cleanup on untargeted pages
 - remaining global Bootstrap 3 CSS assumptions in the shell and untargeted secondary templates
 - reliance on `public_html/bootstrap5-compat.css` utility aliases while pages are still mixed
 
@@ -62,9 +62,9 @@ The main remaining blockers are now CSS- and markup-oriented rather than plugin-
 | Public key admin `/pubkeys` | `templates/pubkeys.php` | Mixed | Tabs are migrated, filter/details cards are local SKA markup, and high-traffic icon markup is semantic | Some Bootstrap 3 table/status styling remains |
 | Public key detail `/pubkeys/:id` | `templates/pubkey.php` | Mixed | Tabs are migrated, key actions are stable, and icon markup is semantic | Bootstrap 3 table/button styling remains |
 | Help `/help` | `templates/help.php` | Mixed | Accordion now runs on native collapse behavior, local SKA card markup, and semantic iconography | Bootstrap 3 content styling remains |
-| Access options | `templates/access_options.php` | Mixed | Advanced options collapse is native, wrapped in local SKA card markup, and uses local check controls | Remaining blockers are legacy icon classnames and shell baseline CSS |
-| Servers bulk action | `templates/servers_bulk_action.php` | Mixed | Server-list collapse is native and wrapped in local SKA card markup | Legacy icon classnames and Bootstrap 3 form/table styling remain |
-| User public keys | `templates/user_pubkeys.php` | Mixed | Simple data/form page now uses local SKA cards | Export actions still use legacy icon classnames and Bootstrap 3 form styling |
+| Access options | `templates/access_options.php` | Mixed | Advanced options collapse is native, wrapped in local SKA card markup, and uses local check controls | Remaining blockers are shell baseline CSS and mixed utility styling |
+| Servers bulk action | `templates/servers_bulk_action.php` | Mixed | Server-list collapse is native, wrapped in local SKA card markup, and action icons are semantic | Bootstrap 3 form/table styling remains |
+| User public keys | `templates/user_pubkeys.php` | Mixed | Simple data/form page now uses local SKA cards and semantic export icons | Bootstrap 3 form styling remains |
 | Activity | `templates/activity.php` | Bootstrap 5-ready | No significant local Bootstrap 3 markers found | Inherits global CSS baseline only |
 | Report | `templates/report.php` | Mixed | Mostly static content on local SKA card markup | Still inherits Bootstrap 3 content styling |
 | Tools | `templates/tools.php` | Bootstrap 5-ready | No significant local Bootstrap 3 markers found | Inherits global CSS baseline only |
@@ -84,15 +84,15 @@ Most remaining work is now about replacing:
 
 This is the main path to dropping `bootstrap.min.css`.
 
-### 2. Legacy icon aliases remain on untargeted pages
+### 2. Icon migration is functionally complete, but cleanup remains
 
-Most high-traffic pages now use semantic `ska-icon` markup, but legacy glyphicon aliases still remain in untargeted pages and compatibility paths such as:
+Semantic `ska-icon` markup now covers the active templates and runtime JS. Remaining icon-related cleanup is now about deleting compatibility residue and dead references such as:
 
-- untouched secondary templates
-- compatibility selectors in [public_html/style.css](/var/www/ska/public_html/style.css)
-- older string-built or generated markup that has not been migrated yet
+- old documentation references
+- dormant vendored glyphicon font assets bundled with Bootstrap 3 CSS
+- any compatibility selectors that become removable after the final CSS swap
 
-The live font dependency is gone because [public_html/style.css](/var/www/ska/public_html/style.css) now renders those icons through local SVG assets, but the remaining aliases should still be cleaned up.
+The live font dependency is gone because [public_html/style.css](/var/www/ska/public_html/style.css) now renders active icons through local SVG assets.
 
 ### 3. Compatibility CSS is still carrying mixed pages
 
@@ -112,20 +112,16 @@ That file should shrink only after the remaining shell/helper/layout migrations 
    - `templates/servers_bulk_action.php`
    - `templates/user_pubkeys.php`
 
-2. Migrate the remaining secondary-template icon aliases and generated icon markup:
-   - `templates/user_pubkeys.php`
-   - `templates/servers_bulk_action.php`
-   - any untouched string-built icon output outside the main detail flows
-
-3. Reduce the compatibility layer after structural cleanup:
+2. Reduce the compatibility layer after structural cleanup:
    - trim [public_html/bootstrap5-compat.css](/var/www/ska/public_html/bootstrap5-compat.css)
    - remove any remaining migration-only markup once pages no longer need compatibility aliases
+   - delete dead icon compatibility selectors once Bootstrap 3 CSS is removed
 
 ## Exit Criteria For Removing Bootstrap 3 CSS
 
 Bootstrap 3 CSS can be removed when:
 
 - remaining Bootstrap 3 shell/helper/layout classes are eliminated from HTML templates
-- legacy glyphicon aliases and icon shims are replaced with semantic local icons
+- semantic local icons are the only live icon path in templates/runtime JS
 - the shell no longer depends on Bootstrap 3 navbar/layout styling
 - `public_html/bootstrap5-compat.css` no longer needs to alias Bootstrap 3 behaviors to keep mixed pages working
