@@ -370,7 +370,7 @@ foreach($this->get('group_members') as $member) {
 		</form>
 		<?php } ?>
 		<?php if($this->get('admin')) { ?>
-		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="form-inline">
+		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-inline-form">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Add administrator</h3>
 			<div class="form-group">
@@ -384,35 +384,23 @@ foreach($this->get('group_members') as $member) {
 	<?php if($this->get('admin')) { ?>
 	<div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="group_settings_tab" aria-hidden="true">
 		<h2 class="sr-only">Settings</h2>
-		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="form-horizontal">
+		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-settings-form">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<div class="form-group">
-				<label for="name" class="col-sm-2 control-label">Name</label>
-				<div class="col-sm-10">
+			<div class="ska-setting-row">
+				<label for="name" class="ska-setting-label">Name</label>
+				<div class="ska-setting-control">
 					<input type="text" id="name" name="name" value="<?php out($this->get('group')->name)?>" required class="form-control">
 				</div>
 			</div>
-			<div class="form-group">
-				<label class="col-sm-2 control-label">Group status</label>
-				<div class="col-sm-10">
-					<div class="radio">
-						<label class="text-success">
-							<input type="radio" name="active" value="1"<?php if($this->get('group')->active == 1) out(' checked') ?>>
-							Enabled
-						</label>
-					</div>
-					<div class="radio">
-						<label class="text-danger">
-							<input type="radio" name="active" value="0"<?php if($this->get('group')->active == 0) out(' checked') ?>>
-							Disabled
-						</label>
-					</div>
+			<div class="ska-setting-row">
+				<div class="ska-setting-label">Group status</div>
+				<div class="ska-setting-control ska-choice-list">
+					<label class="ska-choice text-success"><input type="radio" name="active" value="1"<?php if($this->get('group')->active == 1) out(' checked') ?>> <span>Enabled</span></label>
+					<label class="ska-choice text-danger"><input type="radio" name="active" value="0"<?php if($this->get('group')->active == 0) out(' checked') ?>> <span>Disabled</span></label>
 				</div>
 			</div>
-			<div class="form-group">
-				<div class="col-sm-offset-2 col-sm-10">
+			<div class="ska-setting-actions">
 					<button type="submit" name="edit_group" value="1" class="btn btn-primary">Change settings</button>
-				</div>
 			</div>
 		</form>
 	</div>

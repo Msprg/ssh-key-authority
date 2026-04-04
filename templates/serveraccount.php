@@ -555,7 +555,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 		</form>
 		<?php } ?>
 		<?php if($this->get('admin') || $this->get('server_admin')) { ?>
-		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="form-inline">
+		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-inline-form">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Add leader</h3>
 			<div class="form-group">
