@@ -18,15 +18,15 @@
 ?>
 <h1>Groups</h1>
 <?php if($this->get('admin')) { ?>
-<ul class="nav nav-tabs" role="tablist">
-	<li class="nav-item active" role="presentation"><a href="#list" id="groups_list_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="list" aria-selected="true">Group list</a></li>
-	<li class="nav-item" role="presentation"><a href="#add" id="groups_add_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="add" aria-selected="false" tabindex="-1">Add group</a></li>
+<ul class="ska-tabs" role="tablist">
+	<li class="ska-tab-item active" role="presentation"><a href="#list" id="groups_list_tab" class="ska-tab-link active" role="tab" data-bs-toggle="tab" aria-controls="list" aria-selected="true">Group list</a></li>
+	<li class="ska-tab-item" role="presentation"><a href="#add" id="groups_add_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="add" aria-selected="false" tabindex="-1">Add group</a></li>
 </ul>
 <?php } ?>
 
 <!-- Tab panes -->
-<div class="tab-content">
-	<div class="tab-pane fade in active show" id="list" role="tabpanel"<?php if($this->get('admin')) out(' aria-labelledby="groups_list_tab"', ESC_NONE) ?> aria-hidden="false">
+<div class="ska-tab-content">
+	<div class="ska-tab-pane fade in active show" id="list" role="tabpanel"<?php if($this->get('admin')) out(' aria-labelledby="groups_list_tab"', ESC_NONE) ?> aria-hidden="false">
 		<h2 class="visually-hidden">Group list</h2>
 		<div class="ska-card-stack">
 			<div class="ska-card">
@@ -99,7 +99,7 @@
 		<?php } ?>
 	</div>
 	<?php if($this->get('admin')) { ?>
-		<div class="tab-pane fade" id="add" role="tabpanel" aria-labelledby="groups_add_tab" aria-hidden="true">
+		<div class="ska-tab-pane fade" id="add" role="tabpanel" aria-labelledby="groups_add_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Add group</h2>
 		<h3>Create local group</h3>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-inline-form">

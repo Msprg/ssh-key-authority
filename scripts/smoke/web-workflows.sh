@@ -76,12 +76,14 @@ grep -q '>Logout<' "$TMP_DIR/groups.html" || smoke_die "Authenticated session wa
 ! grep -Eq 'panel-group|panel panel-default|panel-heading|panel-title|panel-body|panel-footer|panel-collapse' "$TMP_DIR/groups.html" || smoke_die "Groups page still renders legacy panel markup"
 ! grep -Eq 'form-inline|form-horizontal|control-label|col-sm-offset-|help-block|<div class="checkbox|<div class="radio|\bsr-only\b|\bhidden-xl\b' "$TMP_DIR/groups.html" || smoke_die "Groups page still renders legacy Bootstrap 3 form helpers"
 ! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/groups.html" || smoke_die "Groups page still renders legacy glyphicon classes"
+! grep -Eq 'class="nav nav-tabs"|class="[^"]*\\bnav-item\\b|class="[^"]*\\bnav-link\\b|class="tab-content"|class="[^"]*\\btab-pane\\b' "$TMP_DIR/groups.html" || smoke_die "Groups page still renders legacy Bootstrap tab classes"
 
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/servers" -o "$TMP_DIR/servers.html"
 grep -q '>Logout<' "$TMP_DIR/servers.html" || smoke_die "Authenticated session was lost while loading servers page"
 ! grep -Eq 'form-inline|form-horizontal|control-label|col-sm-offset-|help-block|<div class="checkbox|<div class="radio|\bsr-only\b|table-condensed' "$TMP_DIR/servers.html" || smoke_die "Servers page still renders legacy Bootstrap 3 form helpers"
 ! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/servers.html" || smoke_die "Servers page still renders legacy glyphicon classes"
 ! grep -Eq 'class="[^"]*\\bhidden\\b' "$TMP_DIR/servers.html" || smoke_die "Servers page still renders the legacy hidden helper class"
+! grep -Eq 'class="nav nav-tabs"|class="[^"]*\\bnav-item\\b|class="[^"]*\\bnav-link\\b|class="tab-content"|class="[^"]*\\btab-pane\\b' "$TMP_DIR/servers.html" || smoke_die "Servers page still renders legacy Bootstrap tab classes"
 
 TARGET_SERVER_PAGE="/servers/${TARGET_SERVER}"
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL$TARGET_SERVER_PAGE" -o "$TMP_DIR/server.html"
@@ -89,12 +91,14 @@ grep -q '>Logout<' "$TMP_DIR/server.html" || smoke_die "Authenticated session wa
 ! grep -Eq 'form-inline|form-horizontal|control-label|col-sm-offset-|help-block|<div class="checkbox|<div class="radio|\bsr-only\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders legacy Bootstrap 3 form helpers"
 ! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/server.html" || smoke_die "Target server page still renders legacy glyphicon classes"
 ! grep -Eq 'class="[^"]*\\bhidden\\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders the legacy hidden helper class"
+! grep -Eq 'class="nav nav-tabs"|class="[^"]*\\bnav-item\\b|class="[^"]*\\bnav-link\\b|class="tab-content"|class="[^"]*\\btab-pane\\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders legacy Bootstrap tab classes"
 
 TARGET_USER=$(smoke_urlencode "$SKA_SMOKE_USERNAME")
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/users/${TARGET_USER}" -o "$TMP_DIR/user.html"
 grep -q '>Logout<' "$TMP_DIR/user.html" || smoke_die "Authenticated session was lost while loading target user page"
 ! grep -Eq 'form-inline|form-horizontal|control-label|col-sm-offset-|help-block|<div class="checkbox|<div class="radio|\bsr-only\b' "$TMP_DIR/user.html" || smoke_die "Target user page still renders legacy Bootstrap 3 form helpers"
 ! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/user.html" || smoke_die "Target user page still renders legacy glyphicon classes"
+! grep -Eq 'class="nav nav-tabs"|class="[^"]*\\bnav-item\\b|class="[^"]*\\bnav-link\\b|class="tab-content"|class="[^"]*\\btab-pane\\b' "$TMP_DIR/user.html" || smoke_die "Target user page still renders legacy Bootstrap tab classes"
 
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" \
     --data-urlencode "csrf_token=$HOME_CSRF" \
@@ -137,6 +141,7 @@ fetch_account_page() {
     grep -q '>Logout<' "$output_file" || smoke_die "Authenticated session was lost while accessing '${TARGET_PATH}'"
     grep -q 'name="add_access"' "$output_file" || smoke_die "Authenticated user cannot manage access on '${SKA_SMOKE_ACCESS_ACCOUNT_NAME}@${SKA_SMOKE_ACCESS_SERVER_HOSTNAME}' (add_access form missing)"
     ! grep -Eq 'glyphicon-[a-z0-9-]+' "$output_file" || smoke_die "Target account page still renders legacy glyphicon classes"
+    ! grep -Eq 'class="nav nav-tabs"|class="[^"]*\\bnav-item\\b|class="[^"]*\\bnav-link\\b|class="tab-content"|class="[^"]*\\btab-pane\\b' "$output_file" || smoke_die "Target account page still renders legacy Bootstrap tab classes"
 }
 
 require_post_status_ok() {

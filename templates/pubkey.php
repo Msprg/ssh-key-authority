@@ -37,16 +37,16 @@ $owner = $this->get('pubkey')->owner;
 	?>
 </h1>
 <?php if($this->get('user_is_owner') || $this->get('admin')) { ?>
-<ul class="nav nav-tabs" role="tablist">
-	<li class="nav-item active" role="presentation"><a href="#info" id="pubkey_info_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="info" aria-selected="true">Information</a></li>
+<ul class="ska-tabs" role="tablist">
+	<li class="ska-tab-item active" role="presentation"><a href="#info" id="pubkey_info_tab" class="ska-tab-link active" role="tab" data-bs-toggle="tab" aria-controls="info" aria-selected="true">Information</a></li>
 	<?php if ($this->get('pubkey')->deletion_date === null) { ?>
-		<li class="nav-item" role="presentation"><a href="#sig" id="pubkey_sig_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="sig" aria-selected="false" tabindex="-1">Key signing</a></li>
-		<li class="nav-item" role="presentation"><a href="#dest" id="pubkey_dest_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="dest" aria-selected="false" tabindex="-1">Destination restrictions</a></li>
+		<li class="ska-tab-item" role="presentation"><a href="#sig" id="pubkey_sig_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="sig" aria-selected="false" tabindex="-1">Key signing</a></li>
+		<li class="ska-tab-item" role="presentation"><a href="#dest" id="pubkey_dest_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="dest" aria-selected="false" tabindex="-1">Destination restrictions</a></li>
 	<?php } ?>
 </ul>
 <?php } ?>
-<div class="tab-content">
-	<div class="tab-pane fade in active show" id="info" role="tabpanel"<?php if($this->get('user_is_owner') || $this->get('admin')) out(' aria-labelledby="pubkey_info_tab"', ESC_NONE) ?> aria-hidden="false">
+<div class="ska-tab-content">
+	<div class="ska-tab-pane fade in active show" id="info" role="tabpanel"<?php if($this->get('user_is_owner') || $this->get('admin')) out(' aria-labelledby="pubkey_info_tab"', ESC_NONE) ?> aria-hidden="false">
 		<h2 class="visually-hidden">Information</h2>
 		<p><a href="<?php outurl('/pubkeys/'.$this->get('pubkey')->id.'.json') ?>" class="btn btn-secondary btn-sm">
 			<span class="ska-icon ska-icon-console"></span> JSON
@@ -74,7 +74,7 @@ $owner = $this->get('pubkey')->owner;
 		</dl>
 	</div>
 	<?php if(($this->get('user_is_owner') || $this->get('admin')) && $this->get('pubkey')->deletion_date === null) { ?>
-	<div class="tab-pane fade" id="sig" role="tabpanel" aria-labelledby="pubkey_sig_tab" aria-hidden="true">
+	<div class="ska-tab-pane fade" id="sig" role="tabpanel" aria-labelledby="pubkey_sig_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Key signing</h2>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" enctype="multipart/form-data">
 			<?php if(count($this->get('signatures')) == 0) { ?>
@@ -116,7 +116,7 @@ $owner = $this->get('pubkey')->owner;
 			</div>
 		</form>
 	</div>
-	<div class="tab-pane fade" id="dest" role="tabpanel" aria-labelledby="pubkey_dest_tab" aria-hidden="true">
+	<div class="ska-tab-pane fade" id="dest" role="tabpanel" aria-labelledby="pubkey_dest_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Destination restrictions</h2>
 		<?php if(count($this->get('dest_rules')) == 0) { ?>
 		<p>This key will currently be synced to all accounts and servers that <?php out($name)?> is granted access to.  To restrict this key to a subset of that list, add rules below.</p>

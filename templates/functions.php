@@ -107,13 +107,13 @@ function show_event_participant($participant) {
 }
 function keygen_help($box_position) {
 	?>
-	<ul class="nav nav-tabs" role="tablist">
-		<li class="nav-item active" role="presentation"><a href="#windows_instructions" id="windows_instructions_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="windows_instructions" aria-selected="true">Windows</a></li>
-		<li class="nav-item" role="presentation"><a href="#mac_instructions" id="mac_instructions_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="mac_instructions" aria-selected="false" tabindex="-1">Mac</a></li>
-		<li class="nav-item" role="presentation"><a href="#linux_instructions" id="linux_instructions_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="linux_instructions" aria-selected="false" tabindex="-1">Linux</a></li>
+	<ul class="ska-tabs" role="tablist">
+		<li class="ska-tab-item active" role="presentation"><a href="#windows_instructions" id="windows_instructions_tab" class="ska-tab-link active" role="tab" data-bs-toggle="tab" aria-controls="windows_instructions" aria-selected="true">Windows</a></li>
+		<li class="ska-tab-item" role="presentation"><a href="#mac_instructions" id="mac_instructions_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="mac_instructions" aria-selected="false" tabindex="-1">Mac</a></li>
+		<li class="ska-tab-item" role="presentation"><a href="#linux_instructions" id="linux_instructions_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="linux_instructions" aria-selected="false" tabindex="-1">Linux</a></li>
 	</ul>
-	<div class="tab-content clearfix">
-		<div class="tab-pane fade in active show" id="windows_instructions" role="tabpanel" aria-labelledby="windows_instructions_tab" aria-hidden="false">
+	<div class="ska-tab-content clearfix">
+		<div class="ska-tab-pane fade in active show" id="windows_instructions" role="tabpanel" aria-labelledby="windows_instructions_tab" aria-hidden="false">
 				<aside class="float-end"><img src="/putty-key-generator.png" class="rounded img-fluid"></aside>
 			<p>On Windows you will typically use the <a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html">PuTTYgen</a> application to generate your key pair.</p>
 			<ol>
@@ -137,7 +137,7 @@ function keygen_help($box_position) {
 				<strong>Note:</strong> if you are using Cygwin or MSYS bash, the instructions for Linux can be used instead.
 			</div>
 		</div>
-		<div class="tab-pane fade" id="mac_instructions" role="tabpanel" aria-labelledby="mac_instructions_tab" aria-hidden="true">
+		<div class="ska-tab-pane fade" id="mac_instructions" role="tabpanel" aria-labelledby="mac_instructions_tab" aria-hidden="true">
 			<p>On Mac you can generate a key pair with the ssh-keygen command.</p>
 			<ol>
 				<li>Start the "Terminal" program.
@@ -149,7 +149,7 @@ function keygen_help($box_position) {
 				<?php } ?>
 			</ol>
 		</div>
-		<div class="tab-pane fade" id="linux_instructions" role="tabpanel" aria-labelledby="linux_instructions_tab" aria-hidden="true">
+		<div class="ska-tab-pane fade" id="linux_instructions" role="tabpanel" aria-labelledby="linux_instructions_tab" aria-hidden="true">
 			<p>On Linux you can generate a key pair with the ssh-keygen command.</p>
 			<ol>
 				<li>Open a terminal on your machine

@@ -58,9 +58,67 @@ body {
 }
 
 /* ===== COMPONENTS ===== */
-.nav-tabs {
-	margin-bottom: 20px;
+.ska-tabs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0;
+	margin: 0 0 20px;
+	padding: 0;
+	list-style: none;
+	border-bottom: 1px solid #ddd;
 }
+
+.ska-tab-item {
+	margin: 0 0 -1px;
+}
+
+.ska-tab-link {
+	display: block;
+	padding: 10px 15px;
+	border: 1px solid transparent;
+	border-radius: 4px 4px 0 0;
+	color: #337ab7;
+	text-decoration: none;
+}
+
+.ska-tab-link:hover,
+.ska-tab-link:focus {
+	color: #23527c;
+	background-color: #eee;
+	text-decoration: none;
+}
+
+.ska-tab-item.active .ska-tab-link,
+.ska-tab-link.active,
+.ska-tab-item.active .ska-tab-link:hover,
+.ska-tab-link.active:hover,
+.ska-tab-item.active .ska-tab-link:focus,
+.ska-tab-link.active:focus {
+	color: #555;
+	cursor: default;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-bottom-color: transparent;
+}
+
+.ska-tab-content > .ska-tab-pane {
+	display: none;
+}
+
+.ska-tab-content > .ska-tab-pane.active {
+	display: block;
+}
+
+.ska-tab-pane.fade {
+	opacity: 0;
+	transition: opacity 0.15s linear;
+}
+
+.ska-tab-pane.fade.in,
+.ska-tab-pane.fade.show {
+	opacity: 1;
+}
+
 .ska-card-stack + p {
 	margin-top: 1em;
 }

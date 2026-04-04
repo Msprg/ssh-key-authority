@@ -23,20 +23,20 @@ foreach($this->get('group_members') as $member) {
 ?>
 <h1><span class="ska-icon ska-icon-group" title="Group"></span> <?php out($this->get('group')->name)?><?php if($this->get('group')->active == 0) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></h1>
 <?php if($this->get('admin') || $this->get('group_admin')) { ?>
-<ul class="nav nav-tabs" role="tablist">
-	<li class="nav-item active" role="presentation"><a href="#members" id="group_members_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="members" aria-selected="true">Members</a></li>
-	<li class="nav-item" role="presentation"><a href="#access" id="group_access_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="access" aria-selected="false" tabindex="-1">Access</a></li>
-	<li class="nav-item" role="presentation"><a href="#outbound" id="group_outbound_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="outbound" aria-selected="false" tabindex="-1">Outbound access</a></li>
-	<li class="nav-item" role="presentation"><a href="#admins" id="group_admins_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="admins" aria-selected="false" tabindex="-1">Administrators</a></li>
+<ul class="ska-tabs" role="tablist">
+	<li class="ska-tab-item active" role="presentation"><a href="#members" id="group_members_tab" class="ska-tab-link active" role="tab" data-bs-toggle="tab" aria-controls="members" aria-selected="true">Members</a></li>
+	<li class="ska-tab-item" role="presentation"><a href="#access" id="group_access_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="access" aria-selected="false" tabindex="-1">Access</a></li>
+	<li class="ska-tab-item" role="presentation"><a href="#outbound" id="group_outbound_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="outbound" aria-selected="false" tabindex="-1">Outbound access</a></li>
+	<li class="ska-tab-item" role="presentation"><a href="#admins" id="group_admins_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="admins" aria-selected="false" tabindex="-1">Administrators</a></li>
 	<?php if($this->get('admin')) { ?>
-	<li class="nav-item" role="presentation"><a href="#settings" id="group_settings_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="settings" aria-selected="false" tabindex="-1">Settings</a></li>
+	<li class="ska-tab-item" role="presentation"><a href="#settings" id="group_settings_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="settings" aria-selected="false" tabindex="-1">Settings</a></li>
 	<?php } ?>
-	<li class="nav-item" role="presentation"><a href="#log" id="group_log_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="log" aria-selected="false" tabindex="-1">Log</a></li>
+	<li class="ska-tab-item" role="presentation"><a href="#log" id="group_log_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="log" aria-selected="false" tabindex="-1">Log</a></li>
 </ul>
 
 <!-- Tab panes -->
-<div class="tab-content">
-	<div class="tab-pane fade in active show" id="members" role="tabpanel" aria-labelledby="group_members_tab" aria-hidden="false">
+<div class="ska-tab-content">
+	<div class="ska-tab-pane fade in active show" id="members" role="tabpanel" aria-labelledby="group_members_tab" aria-hidden="false">
 		<h2 class="visually-hidden">Group members</h2>
 		<p><a href="<?php outurl('/groups/'.urlencode($this->get('group')->name).'/members.json') ?>" class="btn btn-secondary btn-sm">
 			<span class="ska-icon ska-icon-console"></span> JSON
@@ -154,7 +154,7 @@ foreach($this->get('group_members') as $member) {
 		</form>
 		<?php } ?>
 	</div>
-	<div class="tab-pane fade" id="access" role="tabpanel" aria-labelledby="group_access_tab" aria-hidden="true">
+	<div class="ska-tab-pane fade" id="access" role="tabpanel" aria-labelledby="group_access_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Access</h2>
 		<?php if(count($this->get('group_access')) == 0) { ?>
 		<?php if($membercounts['ServerAccount'] > 0 || $membercounts['Group'] > 0) { ?>
@@ -286,7 +286,7 @@ foreach($this->get('group_members') as $member) {
 		</form>
 		<?php } ?>
 	</div>
-	<div class="tab-pane fade" id="outbound" role="tabpanel" aria-labelledby="group_outbound_tab" aria-hidden="true">
+	<div class="ska-tab-pane fade" id="outbound" role="tabpanel" aria-labelledby="group_outbound_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Outbound access</h2>
 		<?php if(count($this->get('group_remote_access')) == 0) { ?>
 		<p>This group has not been granted access to other resources.</p>
@@ -334,7 +334,7 @@ foreach($this->get('group_members') as $member) {
 		</div>
 		<?php } ?>
 	</div>
-	<div class="tab-pane fade" id="admins" role="tabpanel" aria-labelledby="group_admins_tab" aria-hidden="true">
+	<div class="ska-tab-pane fade" id="admins" role="tabpanel" aria-labelledby="group_admins_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Group administrators</h2>
 		<?php if(count($this->get('group_admins')) == 0) { ?>
 		<p class="alert alert-danger">This group does not have any administrators assigned.</p>
@@ -382,7 +382,7 @@ foreach($this->get('group_members') as $member) {
 		<?php } ?>
 	</div>
 	<?php if($this->get('admin')) { ?>
-	<div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="group_settings_tab" aria-hidden="true">
+	<div class="ska-tab-pane fade" id="settings" role="tabpanel" aria-labelledby="group_settings_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Settings</h2>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-settings-form">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
@@ -405,7 +405,7 @@ foreach($this->get('group_members') as $member) {
 		</form>
 	</div>
 	<?php } ?>
-	<div class="tab-pane fade" id="log" role="tabpanel" aria-labelledby="group_log_tab" aria-hidden="true">
+	<div class="ska-tab-pane fade" id="log" role="tabpanel" aria-labelledby="group_log_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Log</h2>
 		<div class="ska-scroll-container">
 			<table class="table">

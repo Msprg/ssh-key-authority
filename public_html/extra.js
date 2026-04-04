@@ -285,6 +285,7 @@ dom_ready(function() {
 // Bootstrap 5-compatible tab behavior for migrated tabsets.
 dom_ready(function() {
 	var selector = '[data-bs-toggle="tab"]';
+	var tabGroupSelector = '.ska-tabs, .nav-tabs, .nav-pills';
 	var migratedTabs = document.querySelectorAll(selector);
 
 	if(!migratedTabs.length) {
@@ -300,7 +301,7 @@ dom_ready(function() {
 	}
 
 	function get_tab_group(link) {
-		return link.closest('.nav-tabs, .nav-pills');
+		return link.closest(tabGroupSelector);
 	}
 
 	function find_active_tab(links) {
@@ -355,9 +356,9 @@ dom_ready(function() {
 			}
 		}
 
-		var tabContent = target.closest('.tab-content');
+		var tabContent = target.closest('.ska-tab-content, .tab-content');
 		if(tabContent) {
-			var panes = tabContent.querySelectorAll('.tab-pane');
+			var panes = tabContent.querySelectorAll('.ska-tab-pane, .tab-pane');
 			for(var p = 0; p < panes.length; p++) {
 				panes[p].classList.remove('active');
 				panes[p].classList.remove('in');
@@ -407,7 +408,7 @@ dom_ready(function() {
 		});
 	}
 
-	var groups = document.querySelectorAll('.nav-tabs, .nav-pills');
+	var groups = document.querySelectorAll(tabGroupSelector);
 	var fragment = window.location.hash ? window.location.hash.substring(1) : '';
 
 	for(var g = 0; g < groups.length; g++) {
