@@ -264,29 +264,17 @@
 	<?php if($this->get('user')->auth_realm == 'LDAP' && $this->get('admin')) { ?>
 	<div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="user_settings_tab" aria-hidden="true">
 		<h2 class="sr-only">Settings</h2>
-		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="form-horizontal">
+		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-settings-form">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<div class="form-group">
-				<label class="col-sm-2 control-label">User status</label>
-				<div class="col-sm-10">
-					<div class="radio">
-						<label>
-							<input type="radio" name="force_disable" value="0"<?php if(!$this->get('user')->force_disable) out(' checked') ?>>
-							Use status from LDAP
-						</label>
-					</div>
-					<div class="radio">
-						<label class="text-danger">
-							<input type="radio" name="force_disable" value="1"<?php if($this->get('user')->force_disable) out(' checked') ?>>
-							Disable account (override LDAP)
-						</label>
-					</div>
+			<div class="ska-setting-row">
+				<div class="ska-setting-label">User status</div>
+				<div class="ska-setting-control ska-choice-list">
+					<label class="ska-choice"><input type="radio" name="force_disable" value="0"<?php if(!$this->get('user')->force_disable) out(' checked') ?>> <span>Use status from LDAP</span></label>
+					<label class="ska-choice text-danger"><input type="radio" name="force_disable" value="1"<?php if($this->get('user')->force_disable) out(' checked') ?>> <span>Disable account (override LDAP)</span></label>
 				</div>
 			</div>
-			<div class="form-group">
-				<div class="col-sm-offset-2 col-sm-10">
+			<div class="ska-setting-actions">
 					<button type="submit" name="edit_user" value="1" class="btn btn-primary">Change settings</button>
-				</div>
 			</div>
 		</form>
 	</div>

@@ -61,7 +61,7 @@
 								foreach($options as $value => $label) {
 									$checked = in_array($value, $this->get('filter')['key_management']) ? ' checked' : '';
 								?>
-								<div class="checkbox"><label><input type="checkbox" name="key_management[]" value="<?php out($value)?>"<?php out($checked) ?>> <?php out($label) ?></label></div>
+								<div class="form-check"><label class="form-check-label"><input type="checkbox" class="form-check-input" name="key_management[]" value="<?php out($value)?>"<?php out($checked) ?>> <span><?php out($label) ?></span></label></div>
 								<?php } ?>
 							</div>
 							<div class="col-sm-2">
@@ -75,7 +75,7 @@
 								foreach($options as $value => $label) {
 									$checked = in_array($value, $this->get('filter')['sync_status']) ? ' checked' : '';
 								?>
-								<div class="checkbox"><label><input type="checkbox" name="sync_status[]" value="<?php out($value)?>"<?php out($checked) ?>> <?php out($label) ?></label></div>
+								<div class="form-check"><label class="form-check-label"><input type="checkbox" class="form-check-input" name="sync_status[]" value="<?php out($value)?>"<?php out($checked) ?>> <span><?php out($label) ?></span></label></div>
 								<?php } ?>
 							</div>
 						</div>

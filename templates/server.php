@@ -508,30 +508,30 @@
 			</div>
 			<div class="mb-3">
 				<label>Recipients</label>
-				<div class="radio form-check">
-					<label>
+				<div class="form-check">
+					<label class="form-check-label">
 						<input type="radio" class="form-check-input" name="recipients" value="admins" checked>
-						Server leaders of <?php out($this->get('server')->hostname) ?>
+						<span>Server leaders of <?php out($this->get('server')->hostname) ?></span>
 					</label>
 				</div>
-				<div class="radio form-check">
-					<label>
+				<div class="form-check">
+					<label class="form-check-label">
 						<input type="radio" class="form-check-input" name="recipients" value="root_users">
-						All users with access to root@<?php out($this->get('server')->hostname) ?>
+						<span>All users with access to root@<?php out($this->get('server')->hostname) ?></span>
 					</label>
 				</div>
-				<div class="radio form-check">
-					<label>
+				<div class="form-check">
+					<label class="form-check-label">
 						<input type="radio" class="form-check-input" name="recipients" value="users">
-						All users with access to accounts on <?php out($this->get('server')->hostname) ?>
+						<span>All users with access to accounts on <?php out($this->get('server')->hostname) ?></span>
 					</label>
 				</div>
 			</div>
 			<div class="mb-3">
-				<div class="checkbox form-check">
-					<label>
+				<div class="form-check">
+					<label class="form-check-label">
 						<input type="checkbox" class="form-check-input" id="hide_recipients" name="hide_recipients">
-						Hide recipient list
+						<span>Hide recipient list</span>
 					</label>
 				</div>
 			</div>

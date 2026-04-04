@@ -315,6 +315,24 @@ a.user,
 	margin: 0;
 }
 
+.form-check {
+	display: block;
+	margin-bottom: 10px;
+}
+
+.form-check-label {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	font-weight: 400;
+	margin: 0;
+}
+
+.form-check-input {
+	margin-top: 0.25em;
+	flex: 0 0 auto;
+}
+
 /* ===== UTILITY CLASSES ===== */
 .indented {
 	padding-left: 2em !important;

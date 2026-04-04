@@ -53,7 +53,7 @@
 								foreach($options as $value => $label) {
 									$checked = in_array($value, $this->get('filter')['active']) ? ' checked' : '';
 								?>
-								<div class="checkbox"><label><input type="checkbox" name="active[]" value="<?php out($value)?>"<?php out($checked) ?>> <?php out($label) ?></label></div>
+								<div class="form-check"><label class="form-check-label"><input type="checkbox" class="form-check-input" name="active[]" value="<?php out($value)?>"<?php out($checked) ?>> <span><?php out($label) ?></span></label></div>
 								<?php } ?>
 							</div>
 						</div>
