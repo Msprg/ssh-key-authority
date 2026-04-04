@@ -55,10 +55,6 @@
   left: auto;
 }
 
-.alert-dismissible {
-  padding-right: 35px;
-}
-
 /* Bootstrap 5 style close button on Bootstrap 3 */
 .btn-close {
   float: right;
@@ -133,26 +129,6 @@
 .form-control + .input-group-text {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
-}
-
-.btn-secondary {
-  color: #333;
-  background-color: #fff;
-  border-color: #ccc;
-}
-
-.btn-secondary:focus,
-.btn-secondary:hover {
-  color: #333;
-  background-color: #e6e6e6;
-  border-color: #adadad;
-}
-
-.btn-secondary.active,
-.btn-secondary:active {
-  color: #333;
-  background-color: #d4d4d4;
-  border-color: #8c8c8c;
 }
 
 .d-none {

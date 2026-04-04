@@ -36,6 +36,7 @@ Current runtime facts:
 - Tabs, collapses, dropdowns, alert dismissal, and the local form helpers now run through native DOM code in [public_html/extra.js](/var/www/ska/public_html/extra.js).
 - Migrated tabsets now use repo-local `ska-tabs` / `ska-tab-content` / `ska-tab-pane` classes in [public_html/style.css](/var/www/ska/public_html/style.css), so active tab behavior and styling no longer depend on Bootstrap 3 tab CSS.
 - High-traffic list/detail tables on the main shell pages now use repo-local `ska-table*` classes in [public_html/style.css](/var/www/ska/public_html/style.css), reducing dependence on Bootstrap 3 table CSS.
+- Shared button and alert presentation now has a repo-local baseline in [public_html/style.css](/var/www/ska/public_html/style.css), so active pages no longer rely on Bootstrap 3 for those visual primitives.
 - High-traffic pages now use semantic `ska-icon` helpers and entity-link icons rendered through repo-owned SVG assets in [public_html/icons/](/var/www/ska/public_html/icons/) via [public_html/style.css](/var/www/ska/public_html/style.css), not the Bootstrap font glyphs.
 - Bootstrap 3 `panel-*` markup has been migrated to local `ska-card*` classes in active templates.
 - [public_html/bootstrap5-compat.css](/var/www/ska/public_html/bootstrap5-compat.css) has been trimmed down to the aliases that still have live runtime usage.
@@ -82,7 +83,7 @@ The main remaining blockers are now CSS- and markup-oriented rather than plugin-
 Most remaining work is now about replacing:
 
 - Bootstrap 3 navbar/layout structures still assumed by the shell
-- remaining template markup that still assumes Bootstrap 3 spacing, button, alert, or component defaults
+- remaining template markup that still assumes Bootstrap 3 spacing, form-grid, or component defaults
 - untargeted secondary pages that still inherit old Bootstrap 3 conventions without page-local cleanup
 
 This is the main path to dropping `bootstrap.min.css`.
