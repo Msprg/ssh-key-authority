@@ -67,8 +67,12 @@ div.navbar {
 	margin-bottom: 20px;
 }
 
+.ska-card-stack .ska-card {
+	margin-bottom: 0;
+}
+
 .ska-card-stack .ska-card + .ska-card {
-	margin-top: 15px;
+	margin-top: 5px;
 }
 
 .ska-card {
@@ -131,7 +135,7 @@ a.user::before {
 	line-height: 1;
 	position: relative;
 	top: 0.12em;
-	padding-right: 0.4em;
+	margin-right: 0.4em;
 	background-color: currentColor;
 	-webkit-mask: var(--ska-icon-mask) center / contain no-repeat;
 	mask: var(--ska-icon-mask) center / contain no-repeat;
@@ -180,6 +184,20 @@ a.user,
 	background-color: currentColor;
 	-webkit-mask: var(--ska-icon-mask) center / contain no-repeat;
 	mask: var(--ska-icon-mask) center / contain no-repeat;
+}
+
+@supports not ((-webkit-mask: url("")) or (mask: url(""))) {
+	a.group::before,
+	a.server::before,
+	a.serveraccount::before,
+	a.user::before,
+	.glyphicon::before {
+		background-color: transparent;
+		background-image: var(--ska-icon-mask);
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: contain;
+	}
 }
 
 .glyphicon-cog {
@@ -473,6 +491,10 @@ a:hover {
 
 .deleted .glyphicon-remove {
 	color: #c00;
+}
+
+.ska-note-card {
+	margin-bottom: 10px;
 }
 
 /* ===== TREE VIEWS ===== */

@@ -552,7 +552,7 @@
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<?php foreach($this->get('server_notes') as $note) { ?>
-			<div class="ska-card">
+			<div class="ska-card ska-note-card">
 				<div class="ska-card-body pre-formatted"><?php out($this->get('output_formatter')->comment_format($note->note), ESC_NONE)?></div>
 				<div class="ska-card-footer">
 					Added <?php out($note->date)?> by <?php out($note->user->name)?>
