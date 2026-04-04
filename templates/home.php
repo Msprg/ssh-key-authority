@@ -138,7 +138,7 @@
 				<td rowspan="2">
 					<a href="<?php outurl('/servers/'.urlencode($server->hostname)) ?>" class="server"><?php out($server->hostname) ?></a>
 					<?php if($server->pending_requests > 0) { ?>
-					<a href="<?php outurl('/servers/'.urlencode($server->hostname).'#requests') ?>"><span class="badge" title="Pending requests"><?php out(number_format($server->pending_requests)) ?></span></a>
+					<a href="<?php outurl('/servers/'.urlencode($server->hostname).'#requests') ?>"><span class="badge text-bg-secondary" title="Pending requests"><?php out(number_format($server->pending_requests)) ?></span></a>
 					<?php } ?>
 				</td>
 				<td>

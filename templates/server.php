@@ -425,19 +425,15 @@
 					<?php } ?>
 				</dl>
 			<?php if($this->get('server_admin_can_reset_host_key')) { ?>
-			<div class="form-group">
-				<label for="host_key" class="col-sm-2 control-label">Host key</label>
-				<div class="col-sm-4">
+			<div class="ska-setting-row">
+				<label for="host_key" class="ska-setting-label">Host key</label>
+				<div class="ska-setting-control">
 					<input type="text" id="host_key" name="host_key" value="<?php out($this->get('server')->host_key)?>" readonly class="form-control">
-				</div>
-				<div class="col-sm-6">
 					<button type="button" class="btn btn-secondary" data-clear="host_key">Clear</button>
 				</div>
 			</div>
-			<div class="form-group">
-				<div class="col-sm-offset-2 col-sm-10">
+			<div class="ska-setting-actions">
 					<button type="submit" name="edit_server" value="1" class="btn btn-primary">Change settings</button>
-				</div>
 			</div>
 			<?php } ?>
 			<?php } ?>

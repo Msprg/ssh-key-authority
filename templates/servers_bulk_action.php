@@ -38,7 +38,7 @@
 	</div>
 </div>
 
-<form action="<?php outurl($this->data->relative_request_url)?>" method="post" class="form-inline">
+<form action="<?php outurl($this->data->relative_request_url)?>" method="post" class="ska-inline-form">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 	<?php foreach ($this->data->server_names as $server_name) { ?>
 		<input type="hidden" name="selected_servers[]" value="<?php out($server_name) ?>">

@@ -37,7 +37,7 @@
 				<label for="add_public_key">Public key</label>
 				<textarea class="form-control" rows="4" id="add_public_key" name="add_public_key" required></textarea>
 			</div>
-			<p class="help-block">The key will be added to <?php out($this->get('user')->uid)?>.</p>
+			<p class="ska-help-text">The key will be added to <?php out($this->get('user')->uid)?>.</p>
 			<button type="submit" class="btn btn-primary">Add public key</button>
 		</form>
 	</div>

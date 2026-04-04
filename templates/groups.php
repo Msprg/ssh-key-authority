@@ -65,7 +65,7 @@
 		<?php if(count($this->get('groups')) == 0) { ?>
 		<p>No groups found.</p>
 		<?php } else { ?>
-		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="form-inline">
+		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-scroll-container">
 				<table class="table table-striped">
@@ -102,7 +102,7 @@
 		<div class="tab-pane fade" id="add" role="tabpanel" aria-labelledby="groups_add_tab" aria-hidden="true">
 		<h2 class="sr-only">Add group</h2>
 		<h3>Create local group</h3>
-		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="form-inline">
+		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-inline-form">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="form-group mb-3">
 				<label for="name" class="sr-only">Group name</label>
@@ -120,7 +120,7 @@
 			<button type="submit" name="add_group" value="1" class="btn btn-primary">Create group</button>
 		</form>
 		<h3>Connect ldap group</h3>
-		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="form-inline">
+		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-inline-form">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ldap-treeview">For the tree-view of ldap groups, javascript is necessary.</div>
 			<div class="form-group mb-3">
