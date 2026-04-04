@@ -72,6 +72,14 @@ body {
 	white-space: normal !important;
 }
 
+.hide {
+	display: none !important;
+}
+
+.show {
+	display: block !important;
+}
+
 /* ===== NAVIGATION ===== */
 .ska-shell-nav {
 	position: fixed;
@@ -92,6 +100,43 @@ body {
 }
 
 /* ===== LAYOUT ===== */
+.container {
+	width: 100%;
+	max-width: 1170px;
+	margin-right: auto;
+	margin-left: auto;
+	padding-right: 15px;
+	padding-left: 15px;
+}
+
+.row {
+	display: flex;
+	flex-wrap: wrap;
+	margin-right: -15px;
+	margin-left: -15px;
+}
+
+.col-sm-2,
+.col-sm-3,
+.col-sm-4,
+.col-sm-5,
+.col-sm-7,
+.col-md-2,
+.col-md-3,
+.col-md-4,
+.col-md-6,
+.col-md-7,
+.col-md-8,
+.col-md-9,
+.col-md-12 {
+	position: relative;
+	min-height: 1px;
+	padding-right: 15px;
+	padding-left: 15px;
+	flex: 0 0 100%;
+	max-width: 100%;
+}
+
 #wrap {
 	min-height: 100%;
 	height: auto;
@@ -775,6 +820,26 @@ fieldset[disabled] .btn {
 	background-color: #777 !important;
 }
 
+.text-center {
+	text-align: center;
+}
+
+.text-muted {
+	color: #777;
+}
+
+.text-success {
+	color: #3c763d;
+}
+
+.text-warning {
+	color: #8a6d3b;
+}
+
+.text-danger {
+	color: #a94442;
+}
+
 /* ===== UTILITY CLASSES ===== */
 .indented {
 	padding-left: 2em !important;
@@ -1120,6 +1185,75 @@ textarea {
 
 	.ska-setting-actions {
 		padding-left: 0;
+	}
+}
+
+@media (min-width: 768px) {
+	.col-sm-2 {
+		flex-basis: 16.66666667%;
+		max-width: 16.66666667%;
+	}
+
+	.col-sm-3 {
+		flex-basis: 25%;
+		max-width: 25%;
+	}
+
+	.col-sm-4 {
+		flex-basis: 33.33333333%;
+		max-width: 33.33333333%;
+	}
+
+	.col-sm-5 {
+		flex-basis: 41.66666667%;
+		max-width: 41.66666667%;
+	}
+
+	.col-sm-7 {
+		flex-basis: 58.33333333%;
+		max-width: 58.33333333%;
+	}
+}
+
+@media (min-width: 992px) {
+	.col-md-2 {
+		flex-basis: 16.66666667%;
+		max-width: 16.66666667%;
+	}
+
+	.col-md-3 {
+		flex-basis: 25%;
+		max-width: 25%;
+	}
+
+	.col-md-4 {
+		flex-basis: 33.33333333%;
+		max-width: 33.33333333%;
+	}
+
+	.col-md-6 {
+		flex-basis: 50%;
+		max-width: 50%;
+	}
+
+	.col-md-7 {
+		flex-basis: 58.33333333%;
+		max-width: 58.33333333%;
+	}
+
+	.col-md-8 {
+		flex-basis: 66.66666667%;
+		max-width: 66.66666667%;
+	}
+
+	.col-md-9 {
+		flex-basis: 75%;
+		max-width: 75%;
+	}
+
+	.col-md-12 {
+		flex-basis: 100%;
+		max-width: 100%;
 	}
 }
 

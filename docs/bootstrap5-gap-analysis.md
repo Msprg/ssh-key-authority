@@ -35,6 +35,7 @@ Current runtime facts:
 - Migrated tabsets now use repo-local `ska-tabs` / `ska-tab-content` / `ska-tab-pane` classes in [public_html/style.css](/var/www/ska/public_html/style.css), so active tab behavior and styling no longer depend on Bootstrap 3 tab CSS.
 - High-traffic list/detail tables on the main shell pages now use repo-local `ska-table*` classes in [public_html/style.css](/var/www/ska/public_html/style.css), reducing dependence on Bootstrap 3 table CSS.
 - Shared button and alert presentation now has a repo-local baseline in [public_html/style.css](/var/www/ska/public_html/style.css), so active pages no longer rely on Bootstrap 3 for those visual primitives.
+- Shared `container`, `row`, `col-sm-*`, `col-md-*`, and text/status utility styling now has a repo-local baseline in [public_html/style.css](/var/www/ska/public_html/style.css), reducing dependence on Bootstrap 3’s grid layer.
 - High-traffic pages now use semantic `ska-icon` helpers and entity-link icons rendered through repo-owned SVG assets in [public_html/icons/](/var/www/ska/public_html/icons/) via [public_html/style.css](/var/www/ska/public_html/style.css), not the Bootstrap font glyphs.
 - Bootstrap 3 `panel-*` markup has been migrated to local `ska-card*` classes in active templates.
 - `public_html/bootstrap5-compat.css` has been retired; its remaining live utility and component aliases were folded into [public_html/style.css](/var/www/ska/public_html/style.css).
@@ -51,15 +52,15 @@ The main remaining blockers are now CSS- and markup-oriented rather than plugin-
 | Page / Route | Template | Status | Current state | Remaining blockers |
 | --- | --- | --- | --- | --- |
 | Global shell | `templates/base.php` | Mixed | Native dropdown and alert-dismiss behavior; no jQuery or Bootstrap JS | Still uses Bootstrap 3 navbar/layout CSS and global Bootstrap 3 stylesheet |
-| Login `/login` | `templates/login.php` | Bootstrap 5-ready | Form markup is already modern and low-complexity | Inherits Bootstrap 3 shell/base CSS |
-| Home `/` | `templates/home.php` | Mixed | Native add-key interactions; core form flow is stable; high-traffic icon markup and table markup are now local | Still inherits Bootstrap 3 button/shell styling |
+| Login `/login` | `templates/login.php` | Bootstrap 5-ready | Form markup is already modern and low-complexity; shared spacing/grid/text utilities are local | Inherits Bootstrap 3 base typography only |
+| Home `/` | `templates/home.php` | Mixed | Native add-key interactions; high-traffic icon markup, table markup, and shared grid utilities are local | Still inherits some Bootstrap 3 form/input-group defaults |
 | Users list `/users` | `templates/users.php` | Bootstrap 5-ready | No significant template-local Bootstrap 3 markers | Inherits global CSS baseline only |
 | User detail `/users/:uid` | `templates/user.php` | Mixed | Tabs, high-traffic tables, and icons are now local | Still uses Bootstrap 3 form styling in key-management areas |
-| Groups list `/groups` | `templates/groups.php` | Mixed | Tabs are local; filter card, group-list table, and add forms use local SKA/Bootstrap 5-style markup; action icons are semantic | Remaining blockers are Bootstrap 3 shell/button styling |
-| Group detail `/groups/:name` | `templates/group.php` | Mixed | Tabs, major detail tables, add flows, settings forms, and icon markup are migrated to local SKA/Bootstrap 5-style markup | Still dense with Bootstrap 3 layout/button styling |
-| Servers list `/servers` | `templates/servers.php` | Mixed | Tabs are local; filter card, server-list table, and action icons are local | Remaining blockers are Bootstrap 3 shell/button styling |
-| Server detail `/servers/:hostname` | `templates/server.php` | Mixed | Local tabs, high-traffic tables, native settings toggles, modernized settings/contact forms, local note cards, and semantic icon markup | Still uses some legacy utility hooks plus Bootstrap 3 shell/button styling |
-| Server account `/servers/:hostname/accounts/:name` | `templates/serveraccount.php` | Mixed | Local tabs, high-traffic tables, native sync polling, modernized access/public-key forms, add-leader flow updated, and semantic icon markup | Remaining blockers are Bootstrap 3 layout/button styling across multiple panes |
+| Groups list `/groups` | `templates/groups.php` | Mixed | Tabs are local; filter card, group-list table, add forms, and shared grid utilities are local; action icons are semantic | Remaining blockers are Bootstrap 3 form/input defaults and shell typography |
+| Group detail `/groups/:name` | `templates/group.php` | Mixed | Tabs, major detail tables, add flows, settings forms, shared grid utilities, and icon markup are local | Still dense with Bootstrap 3 input-group/form defaults |
+| Servers list `/servers` | `templates/servers.php` | Mixed | Tabs are local; filter card, server-list table, and shared grid utilities are local | Remaining blockers are Bootstrap 3 form/input defaults and shell typography |
+| Server detail `/servers/:hostname` | `templates/server.php` | Mixed | Local tabs, high-traffic tables, shared grid utilities, native settings toggles, modernized settings/contact forms, local note cards, and semantic icon markup | Still uses some legacy utility hooks plus Bootstrap 3 input-group/form defaults |
+| Server account `/servers/:hostname/accounts/:name` | `templates/serveraccount.php` | Mixed | Local tabs, high-traffic tables, shared grid utilities, native sync polling, modernized access/public-key forms, add-leader flow updated, and semantic icon markup | Remaining blockers are Bootstrap 3 input-group/form defaults across multiple panes |
 | Public key admin `/pubkeys` | `templates/pubkeys.php` | Mixed | Local tabs, high-traffic tables, filter/details cards, and semantic icon markup | Some Bootstrap 3 status/button styling remains |
 | Public key detail `/pubkeys/:id` | `templates/pubkey.php` | Mixed | Local tabs, major detail tables, key actions, and semantic icon markup | Bootstrap 3 button/content styling remains |
 | Help `/help` | `templates/help.php` | Mixed | Accordion now runs on native collapse behavior, local SKA card markup, and semantic iconography | Bootstrap 3 content styling remains |
@@ -80,7 +81,7 @@ The main remaining blockers are now CSS- and markup-oriented rather than plugin-
 Most remaining work is now about replacing:
 
 - Bootstrap 3 navbar/layout structures still assumed by the shell
-- remaining template markup that still assumes Bootstrap 3 spacing, form-grid, or component defaults
+- remaining template markup that still assumes Bootstrap 3 form-control, input-group, or component defaults
 - untargeted secondary pages that still inherit old Bootstrap 3 conventions without page-local cleanup
 
 This is the main path to dropping `bootstrap.min.css`.
@@ -99,7 +100,6 @@ The live font dependency is gone because [public_html/style.css](/var/www/ska/pu
 
 The dedicated compatibility file is gone, but there is still meaningful Bootstrap 3 CSS reliance in:
 
-- legacy `container` / `row` / `col-*` grid usage
 - remaining `.form-group`, `.form-control`, and `.input-group` layout assumptions
 - secondary templates that have not yet been restyled locally
 
@@ -114,7 +114,7 @@ The next structural work should target those shared layout primitives directly.
    - `templates/user_pubkeys.php`
 
 2. Continue shared form/grid cleanup after structural cleanup:
-   - replace remaining Bootstrap 3 form/grid assumptions on high-traffic pages
+   - replace remaining Bootstrap 3 form/input-group assumptions on high-traffic pages
    - remove any remaining migration-only markup once pages no longer need Bootstrap 3 layout behavior
    - delete dead icon compatibility selectors once Bootstrap 3 CSS is removed
 
