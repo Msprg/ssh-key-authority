@@ -9,13 +9,13 @@ The UI now loads these frontend assets from [templates/base.php](/var/www/ska/te
 
 | Asset | Runtime status | Notes |
 | --- | --- | --- |
-| `public_html/bootstrap/css/bootstrap.min.css` | Loaded globally | Bootstrap 3.4.1 baseline CSS; still carries the legacy shell and helper-class surface |
 | `public_html/header.js` | Loaded globally | Pre-paint fingerprint visibility logic |
 | `public_html/extra.js` | Loaded globally | Shared page behaviors, now native DOM/fetch based |
 | `public_html/icons/*.svg` | Loaded on demand | Repo-owned icon assets used by semantic `ska-icon` markup and entity-link icons |
 
 Retired from runtime on this branch:
 
+- `public_html/bootstrap/css/bootstrap.min.css`
 - `public_html/jquery/jquery-3.7.1.min.js`
 - `public_html/bootstrap/js/bootstrap.min.js`
 - `public_html/bootstrap5-compat.js`
@@ -29,12 +29,11 @@ PHP dependencies remain small:
 
 | Library / asset family | Risk | Why it matters | Current mitigation |
 | --- | --- | --- | --- |
-| Bootstrap 3.4.1 CSS | High | End-of-life frontend baseline; still carries the shell, old helper classes, and many implicit component styles | Incremental template migration plus repo-local replacements in [public_html/style.css](/var/www/ska/public_html/style.css) |
-| Glyphicons font assets | Low | Bootstrap CSS still vendors the font files, but active templates/runtime JS now render through semantic local icon helpers backed by [public_html/icons/](/var/www/ska/public_html/icons/) and [public_html/style.css](/var/www/ska/public_html/style.css) | Remove the dormant font files when Bootstrap 3 CSS is gone |
-| Local compatibility CSS | Medium | Safe compared with third-party JS, but it can become sticky technical debt if pages never finish migrating | Keep scope explicit and keep trimming unused aliases after each structural cleanup slice |
+| Dormant Bootstrap 3.4.1 CSS asset | Medium | The runtime no longer loads it, but the vendored file can still confuse reviewers and hide dead references if left around indefinitely | Remove or quarantine the vendored CSS once docs/checkpoints and any fallback references are cleaned up |
+| Glyphicons font assets | Low | Active templates/runtime JS no longer use the font, but the vendored Bootstrap bundle still ships the files | Remove the dormant font files when the Bootstrap vendor directory is finally pruned |
 | Local frontend runtime in `extra.js` | Medium | Now repo-owned rather than third-party, but still central to tabs, collapses, dropdowns, alerts, and sync polling | Covered by smoke tests plus targeted browser verification on interaction-heavy slices |
 | Browser-debugging helper `scripts/smoke/browser-capture.sh` | Low | New repo-owned debugging tool that logs into the smoke environment for screenshots | Reuses the existing smoke env vars and is not loaded in application runtime |
-| Dormant vendored frontend assets | Low | Unreferenced assets expand reviewer surface and can hide stale dependencies | Remove once runtime/template references are gone |
+| Dormant vendored frontend assets | Low | Unreferenced assets expand reviewer surface and can hide stale dependencies | Remove once docs/checkpoints and fallback references are gone |
 | `phpseclib` 3.x | Low | Runtime cryptography and SSH dependency still deserves continuous monitoring | `composer audit` in `make ci-check`, lockfile already updated to a non-advised release |
 
 ## What Is Actually Exposed At Runtime
@@ -44,11 +43,11 @@ Important distinction on the current branch:
 - No third-party frontend JavaScript is loaded at runtime.
 - No jQuery global is present in the browser.
 - No Bootstrap JS plugins are executed.
-- The remaining third-party browser dependency is Bootstrap 3 CSS.
+- No third-party frontend CSS framework is loaded at runtime.
 - Live icon rendering in templates/runtime JS no longer depends on the Bootstrap glyphicon font or markup.
 - No additional legacy browser libraries such as `moment.js`, `select2`, `datepicker`, or old jQuery plugins were found in the runtime asset scan.
 
-That shifts the frontend risk profile substantially: the main remaining exposure is a stale CSS framework, not an active legacy JS/plugin surface.
+That shifts the frontend risk profile substantially: the main remaining exposure is dormant vendored frontend baggage and page-local rendering regressions, not an active legacy library in the browser runtime.
 
 ## Upgrade / Deprecation Plan
 
@@ -65,33 +64,32 @@ Completed work:
 - retirement of runtime `public_html/bootstrap5-compat.css` by folding its live aliases into [public_html/style.css](/var/www/ska/public_html/style.css)
 - repo-local grid/text utility styling in [public_html/style.css](/var/www/ska/public_html/style.css) for the live `container`, `row`, `col-*`, and status text classes used by high-traffic pages
 - repo-local form/input-group styling in [public_html/style.css](/var/www/ska/public_html/style.css) for the live `form-group`, `form-control`, and `input-group` classes used by the busiest forms, plus migration of active templates to local `ska-form-group` wrappers
+- repo-local base typography/content, badge, and collapse-state styling in [public_html/style.css](/var/www/ska/public_html/style.css), allowing the app shell to render without Bootstrap CSS
 - native replacements for the local jQuery form helpers and sync polling
-- removal of runtime `bootstrap.min.js`, jQuery, and `bootstrap5-compat.js`
-- smoke assertions that authenticated pages do not load those scripts
+- removal of runtime `bootstrap.min.css`, `bootstrap.min.js`, jQuery, and `bootstrap5-compat.js`
+- smoke assertions that authenticated pages do not load those assets
 
 Temporary mitigation still in effect:
 
 - keep repo-local utility/component styling in [public_html/style.css](/var/www/ska/public_html/style.css) while templates remain mixed
 - preserve Bootstrap-style custom events from native handlers where existing code may still observe them
 
-### Phase 2: Current focus, remove Bootstrap 3 CSS dependency
+### Phase 2: Current focus, clean up after Bootstrap CSS removal
 
-Objective: eliminate the legacy CSS bundle and the remaining Bootstrap 3 markup assumptions.
+Objective: remove dormant vendor residue and finish page-local cleanup now that the legacy CSS bundle is out of the runtime.
 
 Priority work:
 
-- finish replacing remaining Bootstrap 3 shell/helper/layout markup with Bootstrap 5-compatible or SKA-local equivalents
-- continue replacing the remaining Bootstrap 3 content/helper styling assumptions on the busiest detail pages
-- trim remaining icon-compatibility selectors as Bootstrap 3 CSS is retired
-- finish any shell/layout cleanup that still assumes Bootstrap 3 navbar or utility semantics
-- keep consolidating shared styling into [public_html/style.css](/var/www/ska/public_html/style.css) as migrated pages stop needing Bootstrap 3 defaults
+- visually recheck untargeted secondary pages under the repo-local baseline
+- finish removing stale Bootstrap-era helper/content assumptions from mixed templates
+- trim remaining icon-compatibility selectors and stale documentation references
+- remove dormant vendored Bootstrap/Glyphicon assets once no longer needed for historical checkpoints
 
 Exit criteria:
 
-- no Bootstrap 3 structural classes remain in templates
-- glyphicon font files are no longer needed anywhere in the repo runtime path
-- the shell renders correctly without Bootstrap 3 CSS
-- smoke/browser capture confirms the cleaned high-traffic pages still render acceptably after the CSS swap
+- no Bootstrap-era helper/content assumptions remain on active templates
+- glyphicon font files and dormant Bootstrap CSS assets are no longer needed anywhere in the repo runtime path
+- smoke/browser capture confirms the cleaned high-traffic and secondary pages still render acceptably under the repo-local baseline
 
 ### Phase 3: Remove stale vendored artifacts
 
@@ -99,6 +97,7 @@ Objective: reduce dormant supply-chain surface and maintenance burden.
 
 Safe cleanup targets once unreferenced:
 
+- Bootstrap CSS files
 - Bootstrap theme CSS files
 - obsolete Bootstrap JS files
 - obsolete jQuery files
@@ -110,16 +109,16 @@ This phase can now proceed incrementally because runtime references are already 
 
 | Timeline | Target |
 | --- | --- |
-| Now | Finish Bootstrap 3 shell/helper cleanup on untargeted secondary pages and continue content/helper cleanup |
-| Next 1-2 PRs | Finish the shell CSS cleanup and remove dead Bootstrap 3/icon residue |
-| Before removing Bootstrap 3 CSS | Finish shell/layout cleanup and shared form/grid replacements |
+| Now | Recheck untargeted secondary pages and remove dead Bootstrap/Glyphicon residue |
+| Next 1-2 PRs | Finish page-local cleanup and prune dormant vendored assets |
+| Before final Bootstrap cleanup | Remove stale docs/checkpoints and any remaining fallback references |
 | Final cleanup | Delete remaining dormant Bootstrap 3 artifacts and glyphicons |
 
 ## Repository Policy For Remaining Mixed Pages
 
-Until Bootstrap 3 CSS is fully gone:
+Now that Bootstrap 3 CSS is gone from runtime:
 
-- touched pages should move toward Bootstrap 5-compatible markup rather than add new Bootstrap 3 structures
-- local compatibility CSS may remain, but new compatibility hacks should be explicit and narrowly scoped
+- touched pages should move toward Bootstrap 5-compatible or SKA-local markup rather than add new Bootstrap-era structures
+- new compatibility hacks should be explicit and narrowly scoped
 - no secrets, config, or key material are introduced
 - smoke-critical LDAP auth, key lifecycle, access rules, sync output, and audit/event behavior must remain unchanged

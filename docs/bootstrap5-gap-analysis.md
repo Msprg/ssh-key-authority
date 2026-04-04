@@ -21,13 +21,13 @@ Status legend:
 
 Current pages load the frontend shell from [templates/base.php](/var/www/ska/templates/base.php) with:
 
-- `public_html/bootstrap/css/bootstrap.min.css`
 - `public_html/style.css`
 - `public_html/header.js`
 - `public_html/extra.js`
 
 Current runtime facts:
 
+- Bootstrap 3 CSS is no longer loaded.
 - Bootstrap 3 JS is no longer loaded.
 - jQuery is no longer loaded.
 - `public_html/bootstrap5-compat.js` has been retired.
@@ -38,24 +38,25 @@ Current runtime facts:
 - Shared `container`, `row`, `col-sm-*`, `col-md-*`, and text/status utility styling now has a repo-local baseline in [public_html/style.css](/var/www/ska/public_html/style.css), reducing dependence on Bootstrap 3’s grid layer.
 - Shared `form-group`, `form-control`, and `input-group` styling now has a repo-local baseline in [public_html/style.css](/var/www/ska/public_html/style.css), reducing dependence on Bootstrap 3’s form/layout layer across the busiest pages.
 - Active form-heavy templates now render local `ska-form-group` wrappers instead of the Bootstrap 3-only `form-group` helper, and the shell dropdown root uses repo-local class hooks.
+- Base typography/content defaults, badge styling, and collapse state styling now have repo-local coverage in [public_html/style.css](/var/www/ska/public_html/style.css), allowing the shell to render without `bootstrap.min.css`.
 - High-traffic pages now use semantic `ska-icon` helpers and entity-link icons rendered through repo-owned SVG assets in [public_html/icons/](/var/www/ska/public_html/icons/) via [public_html/style.css](/var/www/ska/public_html/style.css), not the Bootstrap font glyphs.
 - Bootstrap 3 `panel-*` markup has been migrated to local `ska-card*` classes in active templates.
 - `public_html/bootstrap5-compat.css` has been retired; its remaining live utility and component aliases were folded into [public_html/style.css](/var/www/ska/public_html/style.css).
 - Headless browser capture is now available through [scripts/smoke/browser-capture.sh](/var/www/ska/scripts/smoke/browser-capture.sh) for authenticated visual regression checks.
 
-The main remaining blockers are now CSS- and markup-oriented rather than plugin-oriented:
+The main remaining blockers are now page-local CSS- and markup-oriented rather than framework/plugin-oriented:
 
-- a few remaining Bootstrap 3 shell/base conventions
-- remaining global Bootstrap 3 CSS assumptions in the shell and untargeted secondary templates
-- Bootstrap 3 content/typography assumptions and untargeted secondary templates
+- untargeted secondary templates that may still assume older Bootstrap-era content defaults
+- remaining page-local helper/content cleanup on mixed templates
+- cleanup of now-dormant vendored Bootstrap assets and stale docs references
 
 ## Page Inventory
 
 | Page / Route | Template | Status | Current state | Remaining blockers |
 | --- | --- | --- | --- | --- |
-| Global shell | `templates/base.php` | Mixed | Native dropdown and alert-dismiss behavior; no jQuery or Bootstrap JS; dropdown root classes are repo-local | Still inherits the global Bootstrap 3 stylesheet and some shell/base defaults |
-| Login `/login` | `templates/login.php` | Bootstrap 5-ready | Form markup is already modern and low-complexity; shared spacing/grid/text utilities are local | Inherits Bootstrap 3 base typography only |
-| Home `/` | `templates/home.php` | Mixed | Native add-key interactions; high-traffic icon markup, table markup, shared grid utilities, and shared form-control styling are local | Still inherits Bootstrap 3 content/typography defaults |
+| Global shell | `templates/base.php` | Bootstrap 5-ready | Native dropdown and alert-dismiss behavior; no Bootstrap or jQuery runtime assets; dropdown root classes are repo-local | Residual risk is visual parity on less-traveled shell states, not framework dependency |
+| Login `/login` | `templates/login.php` | Bootstrap 5-ready | Form markup is already modern and low-complexity; shared spacing/grid/text utilities and base typography are local | Residual risk is visual-only |
+| Home `/` | `templates/home.php` | Bootstrap 5-ready | Native add-key interactions; high-traffic icon markup, table markup, shared grid utilities, shared form-control styling, and base typography are local | Residual risk is visual-only |
 | Users list `/users` | `templates/users.php` | Bootstrap 5-ready | No significant template-local Bootstrap 3 markers | Inherits global CSS baseline only |
 | User detail `/users/:uid` | `templates/user.php` | Mixed | Tabs, high-traffic tables, and icons are now local | Still uses Bootstrap 3 form styling in key-management areas |
 | Groups list `/groups` | `templates/groups.php` | Mixed | Tabs are local; filter card, group-list table, add forms, shared grid/form utilities, and action icons are semantic | Remaining blockers are Bootstrap 3 content defaults and shell typography |
@@ -78,15 +79,15 @@ The main remaining blockers are now CSS- and markup-oriented rather than plugin-
 
 ## Common Blockers
 
-### 1. Bootstrap 3 shell and global CSS baseline still dominate several pages
+### 1. Remaining visual cleanup is now page-local
 
 Most remaining work is now about replacing:
 
-- Bootstrap 3 navbar/layout structures still assumed by the shell
-- remaining template markup that still assumes Bootstrap 3 helper, content, or component defaults
-- untargeted secondary pages that still inherit old Bootstrap 3 conventions without page-local cleanup
+- untargeted secondary pages that still assume older Bootstrap-era helper or content defaults
+- remaining template markup that can be simplified now that the repo no longer loads Bootstrap CSS
+- stale vendored assets and references that are no longer part of the runtime
 
-This is the main path to dropping `bootstrap.min.css`.
+This is the main path to finishing the Bootstrap 5 migration cleanup.
 
 ### 2. Icon migration is functionally complete, but cleanup remains
 
@@ -98,14 +99,14 @@ Semantic `ska-icon` markup now covers the active templates and runtime JS. Remai
 
 The live font dependency is gone because [public_html/style.css](/var/www/ska/public_html/style.css) now renders active icons through local SVG assets.
 
-### 3. Bootstrap 3 CSS still backs the content/baseline layer
+### 3. Bootstrap 3 CSS is gone from runtime, but cleanup remains
 
-The dedicated compatibility file is gone, and the busiest shared grid/form primitives are now local. Remaining Bootstrap 3 CSS reliance is concentrated in:
+The dedicated compatibility file is gone, and `bootstrap.min.css` is no longer loaded. Remaining work is concentrated in:
 
-- global type/content defaults inherited by untouched templates
-- secondary templates that have not yet been restyled locally
+- secondary templates that have not yet been visually rechecked under the repo-local baseline
+- vendored Bootstrap CSS artifacts and stale docs/checkpoint references that still mention the old runtime path
 
-The next structural work should target those remaining helper/content primitives directly.
+The next structural work should target those residual page-local assumptions and dead assets directly.
 
 ## Recommended Next Slices
 
@@ -116,15 +117,15 @@ The next structural work should target those remaining helper/content primitives
    - `templates/user_pubkeys.php`
 
 2. Continue shell/content cleanup after structural cleanup:
-   - replace remaining Bootstrap 3 content/helper assumptions on high-traffic pages
-   - remove any remaining migration-only markup once pages no longer need Bootstrap 3 baseline behavior
-   - delete dead icon compatibility selectors once Bootstrap 3 CSS is removed
+   - visually recheck untargeted secondary pages under the repo-local baseline
+   - remove any remaining migration-only markup once pages no longer need Bootstrap-era behavior
+   - delete dead Bootstrap/icon compatibility selectors and vendored assets now that Bootstrap 3 CSS is gone
 
-## Exit Criteria For Removing Bootstrap 3 CSS
+## Exit Criteria For Completing The CSS Migration
 
-Bootstrap 3 CSS can be removed when:
+The CSS migration is complete when:
 
-- remaining Bootstrap 3 shell/helper/layout classes are eliminated from HTML templates
+- remaining Bootstrap-era helper/content assumptions are eliminated from active templates
 - semantic local icons are the only live icon path in templates/runtime JS
-- the shell no longer depends on Bootstrap 3 navbar/layout styling
-- repo-local CSS covers the shared utility/component primitives still used by active pages
+- stale vendored Bootstrap assets are removed from the runtime path and repository where safe
+- smoke/browser capture confirms the cleaned high-traffic and secondary pages still render acceptably under the repo-local baseline
