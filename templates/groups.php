@@ -26,7 +26,7 @@
 
 <!-- Tab panes -->
 <div class="ska-tab-content">
-	<div class="ska-tab-pane fade in active show" id="list" role="tabpanel"<?php if($this->get('admin')) out(' aria-labelledby="groups_list_tab"', ESC_NONE) ?> aria-hidden="false">
+	<div class="ska-tab-pane fade active show" id="list" role="tabpanel"<?php if($this->get('admin')) out(' aria-labelledby="groups_list_tab"', ESC_NONE) ?> aria-hidden="false">
 		<h2 class="visually-hidden">Group list</h2>
 		<div class="ska-card-stack">
 			<div class="ska-card">

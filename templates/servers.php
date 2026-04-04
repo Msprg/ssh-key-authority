@@ -25,7 +25,7 @@
 
 <!-- Tab panes -->
 <div class="ska-tab-content">
-	<div class="ska-tab-pane fade in active show" id="list" role="tabpanel" aria-labelledby="servers_list_tab" aria-hidden="false">
+	<div class="ska-tab-pane fade active show" id="list" role="tabpanel" aria-labelledby="servers_list_tab" aria-hidden="false">
 		<h2 class="visually-hidden">Server list</h2>
 		<div class="ska-card-stack">
 			<p><a href="<?php outurl('/servers.json') ?>" class="btn btn-secondary btn-sm">

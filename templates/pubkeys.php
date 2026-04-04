@@ -69,7 +69,7 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 	<li class="ska-tab-item" role="presentation"><a href="#denied" id="pubkeys_denied_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="denied" aria-selected="false" tabindex="-1">Denied keys</a></li>
 </ul>
 <div class="ska-tab-content">
-	<div class="ska-tab-pane fade in active show" id="managed" role="tabpanel" aria-labelledby="pubkeys_managed_tab" aria-hidden="false">
+	<div class="ska-tab-pane fade active show" id="managed" role="tabpanel" aria-labelledby="pubkeys_managed_tab" aria-hidden="false">
 		<h2 class="visually-hidden">Managed keys</h2>
 		<p><a href="<?php outurl('/pubkeys.json') ?>" class="btn btn-secondary btn-sm">
 			<span class="ska-icon ska-icon-console"></span> JSON

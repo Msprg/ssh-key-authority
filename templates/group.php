@@ -36,7 +36,7 @@ foreach($this->get('group_members') as $member) {
 
 <!-- Tab panes -->
 <div class="ska-tab-content">
-	<div class="ska-tab-pane fade in active show" id="members" role="tabpanel" aria-labelledby="group_members_tab" aria-hidden="false">
+	<div class="ska-tab-pane fade active show" id="members" role="tabpanel" aria-labelledby="group_members_tab" aria-hidden="false">
 		<h2 class="visually-hidden">Group members</h2>
 		<p><a href="<?php outurl('/groups/'.urlencode($this->get('group')->name).'/members.json') ?>" class="btn btn-secondary btn-sm">
 			<span class="ska-icon ska-icon-console"></span> JSON

@@ -61,7 +61,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 <!-- Tab panes -->
 <div class="ska-tab-content">
 	<?php if($this->get('server')->key_management == 'keys') { ?>
-	<div class="ska-tab-pane fade in active show" id="access" role="tabpanel" aria-labelledby="serveraccount_access_tab" aria-hidden="false">
+	<div class="ska-tab-pane fade active show" id="access" role="tabpanel" aria-labelledby="serveraccount_access_tab" aria-hidden="false">
 		<h2 class="visually-hidden">Access</h2>
 		<?php if(count($this->get('access')) == 0 && count($this->get('access_requests')) == 0) { ?>
 		<p>No-one has been granted access to this account.</p>
@@ -333,7 +333,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 		<?php } ?>
 	</div>
 	<?php } ?>
-	<div class="ska-tab-pane fade<?php if($this->get('server')->key_management != 'keys') out(' in active show', ESC_NONE) ?>" id="pubkeys" role="tabpanel" aria-labelledby="serveraccount_pubkeys_tab" aria-hidden="<?php out($this->get('server')->key_management == 'keys' ? 'true' : 'false') ?>">
+	<div class="ska-tab-pane fade<?php if($this->get('server')->key_management != 'keys') out(' active show', ESC_NONE) ?>" id="pubkeys" role="tabpanel" aria-labelledby="serveraccount_pubkeys_tab" aria-hidden="<?php out($this->get('server')->key_management == 'keys' ? 'true' : 'false') ?>">
 		<h2 class="visually-hidden">Public keys</h2>
 		<p>
 			<a href="<?php outurl($this->data->relative_request_url.'/pubkeys.txt')?>" class="btn btn-secondary btn-sm">

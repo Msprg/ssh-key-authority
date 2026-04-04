@@ -87,7 +87,7 @@
 
 <!-- Tab panes -->
 <div class="ska-tab-content">
-	<div class="ska-tab-pane fade in active show" id="accounts" role="tabpanel" aria-labelledby="server_accounts_tab" aria-hidden="false">
+	<div class="ska-tab-pane fade active show" id="accounts" role="tabpanel" aria-labelledby="server_accounts_tab" aria-hidden="false">
 		<h2 class="visually-hidden">
 			<?php if($this->get('server')->authorization == 'manual') { ?>
 				Accounts

@@ -29,7 +29,7 @@
 </ul>
 <!-- Tab panes -->
 <div class="ska-tab-content">
-	<div class="ska-tab-pane fade in active show" id="details" role="tabpanel" aria-labelledby="user_details_tab" aria-hidden="false">
+	<div class="ska-tab-pane fade active show" id="details" role="tabpanel" aria-labelledby="user_details_tab" aria-hidden="false">
 		<h2 class="visually-hidden">Details</h2>
 		<h3><a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys')?>">Public keys</a></h3>
 		<p>

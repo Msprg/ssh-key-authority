@@ -361,7 +361,6 @@ dom_ready(function() {
 			var panes = tabContent.querySelectorAll('.ska-tab-pane, .tab-pane');
 			for(var p = 0; p < panes.length; p++) {
 				panes[p].classList.remove('active');
-				panes[p].classList.remove('in');
 				panes[p].classList.remove('show');
 				panes[p].setAttribute('aria-hidden', 'true');
 			}
@@ -377,17 +376,17 @@ dom_ready(function() {
 		}
 
 		target.classList.add('active');
-		target.classList.add('show');
 		if(target.classList.contains('fade')) {
 			if(animate) {
-				target.classList.remove('in');
 				force_reflow(target);
 				window.requestAnimationFrame(function() {
-					target.classList.add('in');
+					target.classList.add('show');
 				});
 			} else {
-				target.classList.add('in');
+				target.classList.add('show');
 			}
+		} else {
+			target.classList.add('show');
 		}
 		target.setAttribute('aria-hidden', 'false');
 
@@ -462,7 +461,6 @@ dom_ready(function() {
 	function finish_collapse_animation(collapse, expanded) {
 		collapse.classList.remove('collapsing');
 		collapse.classList.add('collapse');
-		collapse.classList.toggle('in', expanded);
 		collapse.classList.toggle('show', expanded);
 		collapse.style.removeProperty('height');
 		collapse.__skaCollapseTimer = null;
@@ -485,14 +483,13 @@ dom_ready(function() {
 		if(!animate) {
 			collapse.classList.remove('collapsing');
 			collapse.classList.add('collapse');
-			collapse.classList.toggle('in', expanded);
 			collapse.classList.toggle('show', expanded);
 			collapse.style.removeProperty('height');
 			return;
 		}
 
 		if(expanded) {
-			collapse.classList.remove('collapse', 'in', 'show');
+			collapse.classList.remove('collapse', 'show');
 			collapse.classList.add('collapsing');
 			collapse.style.height = '0px';
 			force_reflow(collapse);
@@ -500,7 +497,7 @@ dom_ready(function() {
 		} else {
 			collapse.style.height = collapse.scrollHeight + 'px';
 			force_reflow(collapse);
-			collapse.classList.remove('collapse', 'in', 'show');
+			collapse.classList.remove('collapse', 'show');
 			collapse.classList.add('collapsing');
 			collapse.style.height = '0px';
 		}
@@ -561,7 +558,7 @@ dom_ready(function() {
 			}
 
 			event.preventDefault();
-			var expanded = !collapse.classList.contains('in');
+			var expanded = !collapse.classList.contains('show');
 			if(expanded) {
 				var showEvent = new CustomEvent('show.bs.collapse', {
 					bubbles: true,

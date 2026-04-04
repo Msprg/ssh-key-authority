@@ -46,7 +46,7 @@ $owner = $this->get('pubkey')->owner;
 </ul>
 <?php } ?>
 <div class="ska-tab-content">
-	<div class="ska-tab-pane fade in active show" id="info" role="tabpanel"<?php if($this->get('user_is_owner') || $this->get('admin')) out(' aria-labelledby="pubkey_info_tab"', ESC_NONE) ?> aria-hidden="false">
+	<div class="ska-tab-pane fade active show" id="info" role="tabpanel"<?php if($this->get('user_is_owner') || $this->get('admin')) out(' aria-labelledby="pubkey_info_tab"', ESC_NONE) ?> aria-hidden="false">
 		<h2 class="visually-hidden">Information</h2>
 		<p><a href="<?php outurl('/pubkeys/'.$this->get('pubkey')->id.'.json') ?>" class="btn btn-secondary btn-sm">
 			<span class="ska-icon ska-icon-console"></span> JSON

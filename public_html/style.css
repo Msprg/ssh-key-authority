@@ -258,7 +258,6 @@ kbd {
 	display: none;
 }
 
-.collapse.in,
 .collapse.show {
 	display: block;
 }
@@ -275,7 +274,6 @@ kbd {
 	transition: opacity 0.15s linear;
 }
 
-.fade.in,
 .fade.show {
 	opacity: 1;
 }
@@ -418,7 +416,6 @@ kbd {
 	transition: opacity 0.15s linear;
 }
 
-.ska-tab-pane.fade.in,
 .ska-tab-pane.fade.show {
 	opacity: 1;
 }
