@@ -65,13 +65,13 @@ switch(get_class($remote_entity)) {
 		<a href="<?php outurl($re_url)?>" class="<?php out(strtolower(get_class($remote_entity)))?>"><?php out($remote_entity_name)?></a>.
 	</p>
 	<?php if($mode == 'create') { ?>
-	<div class="form-group">
+	<div class="ska-form-group">
 		<div class="ska-card-stack">
 			<div class="ska-card">
 				<div class="ska-card-header">
 					<h3 class="ska-card-title">
 						<a data-bs-toggle="collapse" href="#advanced_options" aria-expanded="false">
-							Advanced options <span class="caret"></span>
+							Advanced options <span class="ska-caret" aria-hidden="true"></span>
 						</a>
 					</h3>
 				</div>

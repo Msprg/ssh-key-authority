@@ -373,7 +373,7 @@ foreach($this->get('group_members') as $member) {
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-inline-form">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Add administrator</h3>
-			<div class="form-group">
+			<div class="ska-form-group">
 				<label for="user_name" class="visually-hidden">User name</label>
 				<input type="text" id="user_name" name="user_name" class="form-control" placeholder="User name" required list="userlist">
 			</div>

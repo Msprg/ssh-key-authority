@@ -45,7 +45,7 @@
 	<?php } ?>
 
 	<h3>Add a new leader to all selected servers</h3>
-	<div class="form-group mb-3">
+	<div class="ska-form-group mb-3">
 		<label for="user_name" class="visually-hidden">User or group name</label>
 		<input type="text" id="user_name" name="user_name" class="form-control" placeholder="User or group name" required list="userlist">
 		<datalist id="userlist">

@@ -156,14 +156,14 @@ dom_ready(function() {
 	}
 
 	function get_dropdown_root(trigger) {
-		return trigger.closest('.dropdown') || trigger.parentElement;
+		return trigger.closest('.ska-dropdown-root') || trigger.parentElement;
 	}
 
 	function get_dropdown_menu(root) {
 		if(!root) {
 			return null;
 		}
-		return root.querySelector('.ska-dropdown-menu, .dropdown-menu');
+		return root.querySelector('.ska-dropdown-menu');
 	}
 
 	function close_dropdown(root, trigger, relatedTarget) {
@@ -188,7 +188,7 @@ dom_ready(function() {
 	}
 
 	function close_other_dropdowns(currentRoot, relatedTarget) {
-		var openDropdowns = document.querySelectorAll('.dropdown.open');
+		var openDropdowns = document.querySelectorAll('.ska-dropdown-root.open');
 		for(var i = 0; i < openDropdowns.length; i++) {
 			if(openDropdowns[i] === currentRoot) {
 				continue;
@@ -271,7 +271,7 @@ dom_ready(function() {
 			return;
 		}
 
-		var openDropdowns = document.querySelectorAll('.dropdown.open');
+		var openDropdowns = document.querySelectorAll('.ska-dropdown-root.open');
 		for(var i = 0; i < openDropdowns.length; i++) {
 			var trigger = openDropdowns[i].querySelector(dropdownSelector);
 			close_dropdown(openDropdowns[i], trigger, event.target);
@@ -917,7 +917,7 @@ dom_ready(function() {
 			});
 
 			var reassignWrapper = document.createElement('div');
-			reassignWrapper.className = 'form-group';
+			reassignWrapper.className = 'ska-form-group';
 			var label = document.createElement('label');
 			label.textContent = 'Reassign to ';
 			var input = document.createElement('input');
@@ -929,7 +929,7 @@ dom_ready(function() {
 			parent.appendChild(reassignWrapper);
 
 			var submitWrapper = document.createElement('div');
-			submitWrapper.className = 'form-group';
+			submitWrapper.className = 'ska-form-group';
 			var submitButton = document.createElement('button');
 			submitButton.type = 'submit';
 			submitButton.name = 'reassign_servers';

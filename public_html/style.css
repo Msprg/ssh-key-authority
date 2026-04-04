@@ -290,6 +290,7 @@ body {
 	margin-bottom: 20px;
 }
 
+.ska-inline-form .ska-form-group,
 .ska-inline-form .form-group {
 	flex: 1 1 18rem;
 	min-width: min(18rem, 100%);
@@ -1054,7 +1055,7 @@ code {
 	z-index: 1001;
 }
 
-.dropdown.open > .ska-dropdown-menu {
+.ska-dropdown-root.open > .ska-dropdown-menu {
 	display: block;
 }
 
@@ -1162,6 +1163,7 @@ textarea {
 	margin: 0 auto;
 }
 
+.ska-form-group,
 .form-group {
 	margin-bottom: 15px;
 }
@@ -1237,8 +1239,20 @@ fieldset[disabled] .form-control {
 	transition: transform 0.2s ease;
 }
 
+.login-container .ska-form-group,
 .login-container .form-group {
 	margin-bottom: 20px;
+}
+
+.ska-caret {
+	display: inline-block;
+	width: 0;
+	height: 0;
+	margin-left: 0.35em;
+	vertical-align: middle;
+	border-top: 4px dashed;
+	border-right: 4px solid transparent;
+	border-left: 4px solid transparent;
 }
 
 .login-container .form-control {

@@ -64,7 +64,7 @@ Completed work:
 - repo-local button and alert styling in [public_html/style.css](/var/www/ska/public_html/style.css), shrinking reliance on Bootstrap 3 for those shared primitives
 - retirement of runtime `public_html/bootstrap5-compat.css` by folding its live aliases into [public_html/style.css](/var/www/ska/public_html/style.css)
 - repo-local grid/text utility styling in [public_html/style.css](/var/www/ska/public_html/style.css) for the live `container`, `row`, `col-*`, and status text classes used by high-traffic pages
-- repo-local form/input-group styling in [public_html/style.css](/var/www/ska/public_html/style.css) for the live `form-group`, `form-control`, and `input-group` classes used by the busiest forms
+- repo-local form/input-group styling in [public_html/style.css](/var/www/ska/public_html/style.css) for the live `form-group`, `form-control`, and `input-group` classes used by the busiest forms, plus migration of active templates to local `ska-form-group` wrappers
 - native replacements for the local jQuery form helpers and sync polling
 - removal of runtime `bootstrap.min.js`, jQuery, and `bootstrap5-compat.js`
 - smoke assertions that authenticated pages do not load those scripts

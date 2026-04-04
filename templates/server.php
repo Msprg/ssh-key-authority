@@ -188,7 +188,7 @@
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-inline-form">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Create<?php if($this->get('server')->authorization != 'manual') out(' non-LDAP'); ?> account</h3>
-			<div class="form-group">
+			<div class="ska-form-group">
 				<label for="account_name" class="visually-hidden">Account name</label>
 				<input type="text" id="account_name" name="account_name" class="form-control" placeholder="Account name" required pattern=".*[^\s].*">
 			</div>
@@ -245,7 +245,7 @@
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-inline-form">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Add leader</h3>
-			<div class="form-group">
+			<div class="ska-form-group">
 				<label for="user_name" class="visually-hidden">User or group name</label>
 				<input type="text" id="user_name" name="user_name" class="form-control" placeholder="User or group name" required list="userlist">
 				<datalist id="userlist">

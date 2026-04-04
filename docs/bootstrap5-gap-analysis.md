@@ -37,6 +37,7 @@ Current runtime facts:
 - Shared button and alert presentation now has a repo-local baseline in [public_html/style.css](/var/www/ska/public_html/style.css), so active pages no longer rely on Bootstrap 3 for those visual primitives.
 - Shared `container`, `row`, `col-sm-*`, `col-md-*`, and text/status utility styling now has a repo-local baseline in [public_html/style.css](/var/www/ska/public_html/style.css), reducing dependence on Bootstrap 3’s grid layer.
 - Shared `form-group`, `form-control`, and `input-group` styling now has a repo-local baseline in [public_html/style.css](/var/www/ska/public_html/style.css), reducing dependence on Bootstrap 3’s form/layout layer across the busiest pages.
+- Active form-heavy templates now render local `ska-form-group` wrappers instead of the Bootstrap 3-only `form-group` helper, and the shell dropdown root uses repo-local class hooks.
 - High-traffic pages now use semantic `ska-icon` helpers and entity-link icons rendered through repo-owned SVG assets in [public_html/icons/](/var/www/ska/public_html/icons/) via [public_html/style.css](/var/www/ska/public_html/style.css), not the Bootstrap font glyphs.
 - Bootstrap 3 `panel-*` markup has been migrated to local `ska-card*` classes in active templates.
 - `public_html/bootstrap5-compat.css` has been retired; its remaining live utility and component aliases were folded into [public_html/style.css](/var/www/ska/public_html/style.css).
@@ -44,7 +45,7 @@ Current runtime facts:
 
 The main remaining blockers are now CSS- and markup-oriented rather than plugin-oriented:
 
-- a few remaining Bootstrap 3 shell/layout conventions
+- a few remaining Bootstrap 3 shell/base conventions
 - remaining global Bootstrap 3 CSS assumptions in the shell and untargeted secondary templates
 - Bootstrap 3 content/typography assumptions and untargeted secondary templates
 
@@ -52,7 +53,7 @@ The main remaining blockers are now CSS- and markup-oriented rather than plugin-
 
 | Page / Route | Template | Status | Current state | Remaining blockers |
 | --- | --- | --- | --- | --- |
-| Global shell | `templates/base.php` | Mixed | Native dropdown and alert-dismiss behavior; no jQuery or Bootstrap JS | Still uses Bootstrap 3 navbar/layout CSS and global Bootstrap 3 stylesheet |
+| Global shell | `templates/base.php` | Mixed | Native dropdown and alert-dismiss behavior; no jQuery or Bootstrap JS; dropdown root classes are repo-local | Still inherits the global Bootstrap 3 stylesheet and some shell/base defaults |
 | Login `/login` | `templates/login.php` | Bootstrap 5-ready | Form markup is already modern and low-complexity; shared spacing/grid/text utilities are local | Inherits Bootstrap 3 base typography only |
 | Home `/` | `templates/home.php` | Mixed | Native add-key interactions; high-traffic icon markup, table markup, shared grid utilities, and shared form-control styling are local | Still inherits Bootstrap 3 content/typography defaults |
 | Users list `/users` | `templates/users.php` | Bootstrap 5-ready | No significant template-local Bootstrap 3 markers | Inherits global CSS baseline only |
