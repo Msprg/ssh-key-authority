@@ -29,8 +29,7 @@ PHP dependencies remain small:
 
 | Library / asset family | Risk | Why it matters | Current mitigation |
 | --- | --- | --- | --- |
-| Dormant Bootstrap 3.4.1 CSS asset | Medium | The runtime no longer loads it, but the vendored file can still confuse reviewers and hide dead references if left around indefinitely | Remove or quarantine the vendored CSS once docs/checkpoints and any fallback references are cleaned up |
-| Glyphicons font assets | Low | Active templates/runtime JS no longer use the font, but the vendored Bootstrap bundle still ships the files | Remove the dormant font files when the Bootstrap vendor directory is finally pruned |
+| Historical Bootstrap/Glyphicon references | Low | Older docs and checkpoints can mislead future work after the runtime asset removal | Keep current-state docs updated and trim stale references as cleanup continues |
 | Local frontend runtime in `extra.js` | Medium | Now repo-owned rather than third-party, but still central to tabs, collapses, dropdowns, alerts, and sync polling | Covered by smoke tests plus targeted browser verification on interaction-heavy slices |
 | Browser-debugging helper `scripts/smoke/browser-capture.sh` | Low | New repo-owned debugging tool that logs into the smoke environment for screenshots | Reuses the existing smoke env vars and is not loaded in application runtime |
 | Dormant vendored frontend assets | Low | Unreferenced assets expand reviewer surface and can hide stale dependencies | Remove once docs/checkpoints and fallback references are gone |
@@ -47,7 +46,7 @@ Important distinction on the current branch:
 - Live icon rendering in templates/runtime JS no longer depends on the Bootstrap glyphicon font or markup.
 - No additional legacy browser libraries such as `moment.js`, `select2`, `datepicker`, or old jQuery plugins were found in the runtime asset scan.
 
-That shifts the frontend risk profile substantially: the main remaining exposure is dormant vendored frontend baggage and page-local rendering regressions, not an active legacy library in the browser runtime.
+That shifts the frontend risk profile substantially: the main remaining exposure is page-local rendering regressions and stale historical references, not an active legacy library in the browser runtime.
 
 ## Upgrade / Deprecation Plan
 
@@ -97,7 +96,6 @@ Objective: reduce dormant supply-chain surface and maintenance burden.
 
 Safe cleanup targets once unreferenced:
 
-- Bootstrap CSS files
 - Bootstrap theme CSS files
 - obsolete Bootstrap JS files
 - obsolete jQuery files
@@ -110,7 +108,7 @@ This phase can now proceed incrementally because runtime references are already 
 | Timeline | Target |
 | --- | --- |
 | Now | Recheck untargeted secondary pages and remove dead Bootstrap/Glyphicon residue |
-| Next 1-2 PRs | Finish page-local cleanup and prune dormant vendored assets |
+| Next 1-2 PRs | Finish page-local cleanup and trim stale migration references |
 | Before final Bootstrap cleanup | Remove stale docs/checkpoints and any remaining fallback references |
 | Final cleanup | Delete remaining dormant Bootstrap 3 artifacts and glyphicons |
 

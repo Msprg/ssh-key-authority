@@ -48,7 +48,7 @@ The main remaining blockers are now page-local CSS- and markup-oriented rather t
 
 - untargeted secondary templates that may still assume older Bootstrap-era content defaults
 - remaining page-local helper/content cleanup on mixed templates
-- cleanup of now-dormant vendored Bootstrap assets and stale docs references
+- cleanup of stale docs/checkpoint references from earlier migration phases
 
 ## Page Inventory
 
@@ -85,7 +85,7 @@ Most remaining work is now about replacing:
 
 - untargeted secondary pages that still assume older Bootstrap-era helper or content defaults
 - remaining template markup that can be simplified now that the repo no longer loads Bootstrap CSS
-- stale vendored assets and references that are no longer part of the runtime
+- stale references and checkpoints that are no longer part of the runtime
 
 This is the main path to finishing the Bootstrap 5 migration cleanup.
 
@@ -104,7 +104,7 @@ The live font dependency is gone because [public_html/style.css](/var/www/ska/pu
 The dedicated compatibility file is gone, and `bootstrap.min.css` is no longer loaded. Remaining work is concentrated in:
 
 - secondary templates that have not yet been visually rechecked under the repo-local baseline
-- vendored Bootstrap CSS artifacts and stale docs/checkpoint references that still mention the old runtime path
+- stale docs/checkpoint references that still mention the old runtime path
 
 The next structural work should target those residual page-local assumptions and dead assets directly.
 
@@ -119,7 +119,7 @@ The next structural work should target those residual page-local assumptions and
 2. Continue shell/content cleanup after structural cleanup:
    - visually recheck untargeted secondary pages under the repo-local baseline
    - remove any remaining migration-only markup once pages no longer need Bootstrap-era behavior
-   - delete dead Bootstrap/icon compatibility selectors and vendored assets now that Bootstrap 3 CSS is gone
+   - delete dead Bootstrap/icon compatibility selectors and stale migration references now that Bootstrap 3 CSS is gone
 
 ## Exit Criteria For Completing The CSS Migration
 
@@ -127,5 +127,5 @@ The CSS migration is complete when:
 
 - remaining Bootstrap-era helper/content assumptions are eliminated from active templates
 - semantic local icons are the only live icon path in templates/runtime JS
-- stale vendored Bootstrap assets are removed from the runtime path and repository where safe
+- stale migration references are trimmed so docs match the live runtime
 - smoke/browser capture confirms the cleaned high-traffic and secondary pages still render acceptably under the repo-local baseline

@@ -6,9 +6,8 @@ This document gives AI agents enough context to work safely in this repo.
 - Modernization phases 0-10 are implemented on the Bootstrap 5 modernization branch (`bootstrap5-upgrade*` lineage).
 - Runtime state container is in use (`services/runtime_state.php`) with compatibility fallback paths still present.
 - Request/auth/CSRF/security-header flow is service-based in `requesthandler.php`.
-- Bootstrap 3/5 compatibility layer is active:
-  - `public_html/bootstrap5-compat.css`
-  - `public_html/bootstrap5-compat.js`
+- Bootstrap, jQuery, and the Bootstrap 5 compatibility runtime are no longer loaded in the browser.
+- Frontend shell/layout behavior is now repo-local in `public_html/style.css` and `public_html/extra.js`.
 - Smoke harness and quality gates are available and expected in agent workflow.
 
 ## What this project is

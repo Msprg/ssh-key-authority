@@ -15,8 +15,6 @@ parameters:
     - */migrations/*
     - */templates/*
     - */views/*
-    - */public_html/bootstrap/*
-    - */public_html/jquery/*
   tmpDir: var/phpstan
 
 includes:

@@ -43,9 +43,8 @@ Scope: behavior-preserving modernization of architecture, dependencies, frontend
 - Migrations auto-run during bootstrap via `MigrationDirectory::LAST_MIGRATION`.
 
 ### Frontend
-- Bootstrap 3 assets vendored in repo (`public_html/bootstrap/*`) with glyphicons.
-- jQuery currently at 3.7.1 and loaded globally.
-- Templates tightly coupled to Bootstrap 3 classes and jQuery plugin behaviors.
+- Bootstrap and jQuery runtime assets have been removed from the browser path; remaining vendored Bootstrap files are now dormant cleanup targets.
+- Templates are still mid-migration away from Bootstrap-era classes on some secondary pages.
 - No frontend build pipeline; static assets are directly served.
 
 ### Security posture (current)
