@@ -88,7 +88,7 @@
 <!-- Tab panes -->
 <div class="tab-content">
 	<div class="tab-pane fade in active show" id="accounts" role="tabpanel" aria-labelledby="server_accounts_tab" aria-hidden="false">
-		<h2 class="sr-only">
+		<h2 class="visually-hidden">
 			<?php if($this->get('server')->authorization == 'manual') { ?>
 				Accounts
 			<?php } else { ?>
@@ -190,14 +190,14 @@
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Create<?php if($this->get('server')->authorization != 'manual') out(' non-LDAP'); ?> account</h3>
 			<div class="form-group">
-				<label for="account_name" class="sr-only">Account name</label>
+				<label for="account_name" class="visually-hidden">Account name</label>
 				<input type="text" id="account_name" name="account_name" class="form-control" placeholder="Account name" required pattern=".*[^\s].*">
 			</div>
 			<button type="submit" name="add_account" value="1" class="btn btn-primary">Manage this account with SSH Key Authority</button>
 		</form>
 	</div>
 	<div class="tab-pane fade" id="admins" role="tabpanel" aria-labelledby="server_admins_tab" aria-hidden="true">
-		<h2 class="sr-only">Server leaders</h2>
+		<h2 class="visually-hidden">Server leaders</h2>
 		<?php if(count($this->get('server_admins')) == 0) { ?>
 		<p class="alert alert-danger">This server does not have any leaders assigned.</p>
 		<?php } else { ?>
@@ -247,7 +247,7 @@
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Add leader</h3>
 			<div class="form-group">
-				<label for="user_name" class="sr-only">User or group name</label>
+				<label for="user_name" class="visually-hidden">User or group name</label>
 				<input type="text" id="user_name" name="user_name" class="form-control" placeholder="User or group name" required list="userlist">
 				<datalist id="userlist">
 					<?php foreach($this->get('all_users') as $user) { ?>
@@ -263,7 +263,7 @@
 		<?php } ?>
 	</div>
 	<div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="server_settings_tab" aria-hidden="true">
-		<h2 class="sr-only">Settings</h2>
+		<h2 class="visually-hidden">Settings</h2>
 		<form id="server_settings" method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-settings-form">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<?php if($this->get('admin')) { ?>
@@ -440,7 +440,7 @@
 		</form>
 	</div>
 	<div class="tab-pane fade" id="log" role="tabpanel" aria-labelledby="server_log_tab" aria-hidden="true">
-		<h2 class="sr-only">Log</h2>
+		<h2 class="visually-hidden">Log</h2>
 		<div class="ska-scroll-container">
 			<table class="table">
 				<col></col>
@@ -467,7 +467,7 @@
 	</div>
 	<?php if($this->get('admin')) { ?>
 	<div class="tab-pane fade" id="notes" role="tabpanel" aria-labelledby="server_notes_tab" aria-hidden="true">
-		<h2 class="sr-only">Notes</h2>
+		<h2 class="visually-hidden">Notes</h2>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<?php foreach($this->get('server_notes') as $note) { ?>
@@ -492,7 +492,7 @@
 		</form>
 	</div>
 	<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="server_contact_tab" aria-hidden="true">
-		<h2 class="sr-only">Contact</h2>
+		<h2 class="visually-hidden">Contact</h2>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="mb-3">
@@ -558,7 +558,7 @@
 	<h4>Request access to account</h4>
 	<div class="row">
 		<div class="col-sm-5">
-			<label for="account_name" class="sr-only">Account name</label>
+			<label for="account_name" class="visually-hidden">Account name</label>
 			<div class="input-group">
 				<span class="input-group-text"><span class="glyphicon glyphicon-log-in" title="Server account"></span></span>
 				<input type="text" id="account_name" name="account_name" class="form-control" placeholder="Account name" list="accountlist" required pattern=".*[^\s].*">
@@ -583,7 +583,7 @@
 		<div class="col-sm-3 mb-3">
 			<div class="input-group">
 				<span class="input-group-text">From: </span>
-				<span class="input-group-text"><label for="account"><span class="glyphicon glyphicon-log-in" title="Server account"></span><span class="sr-only">Account name</span></label></span>
+				<span class="input-group-text"><label for="account"><span class="glyphicon glyphicon-log-in" title="Server account"></span><span class="visually-hidden">Account name</span></label></span>
 				<input type="text" id="account_remote" name="account_remote" class="form-control" placeholder="Account name" required pattern=".*[^\s].*">
 			</div>
 		</div>
@@ -601,7 +601,7 @@
 	</div>
 	<div class="row">
 		<div class="col-sm-5">
-			<label for="account_name_s2s" class="sr-only">Account name</label>
+			<label for="account_name_s2s" class="visually-hidden">Account name</label>
 			<div class="input-group">
 				<span class="input-group-text">To: </span>
 				<span class="input-group-text"><span class="glyphicon glyphicon-log-in" title="Server account"></span></span>
@@ -621,7 +621,7 @@
 	<div class="row">
 		<div class="col-sm-5 mb-3">
 			 <div class="input-group">
-				<span class="input-group-text"><label for="account"><span class="glyphicon glyphicon-list-alt" title="Group account"></span><span class="sr-only">Group name</span></label></span>
+				<span class="input-group-text"><label for="account"><span class="glyphicon glyphicon-list-alt" title="Group account"></span><span class="visually-hidden">Group name</span></label></span>
 				<input type="text" id="group_account" name="group_account" class="form-control" placeholder="Group name" list="grouplist" required>
 				<datalist id="grouplist">
 					<?php foreach($this->get('all_groups') as $group) { ?>
@@ -633,7 +633,7 @@
 	</div>
 	<div class="row">
 		<div class="col-sm-5">
-			<label for="account_name_group" class="sr-only">Account name</label>
+			<label for="account_name_group" class="visually-hidden">Account name</label>
 			<div class="input-group">
 				<span class="input-group-text">To: </span>
 				<span class="input-group-text"><span class="glyphicon glyphicon-log-in" title="Server account"></span></span>

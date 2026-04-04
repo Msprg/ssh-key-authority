@@ -26,7 +26,7 @@
 <!-- Tab panes -->
 <div class="tab-content">
 	<div class="tab-pane fade in active show" id="list" role="tabpanel" aria-labelledby="servers_list_tab" aria-hidden="false">
-		<h2 class="sr-only">Server list</h2>
+		<h2 class="visually-hidden">Server list</h2>
 		<div class="ska-card-stack">
 			<p><a href="<?php outurl('/servers.json') ?>" class="btn btn-secondary btn-sm">
 				<span class="glyphicon glyphicon-console"></span> JSON
@@ -90,7 +90,7 @@
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<p><?php $total = count($this->get('servers')); out(number_format($total).' server'.($total == 1 ? '' : 's').' found')?></p>
 			<div class="ska-scroll-container">
-				<table class="table table-hover table-condensed">
+				<table class="table table-hover table-sm">
 					<thead>
 						<tr>
 							<?php if($this->get('admin')) { ?>
@@ -187,7 +187,7 @@
 		<?php } ?>
 	</div>
 	<div class="tab-pane fade" id="add" role="tabpanel" aria-labelledby="servers_add_tab" aria-hidden="true">
-		<h2 class="sr-only">Add server</h2>
+		<h2 class="visually-hidden">Add server</h2>
 		<div class="alert alert-info">
 			See <a href="<?php outurl('/help#sync_setup')?>" class="alert-link">the sync setup instructions</a> for how to set up the server for key synchronization.
 		</div>
@@ -222,7 +222,7 @@
 		</form>
 	</div>
 	<div class="tab-pane fade" id="add_bulk" role="tabpanel" aria-labelledby="servers_add_bulk_tab" aria-hidden="true">
-		<h2 class="sr-only">Add multiple servers</h2>
+		<h2 class="visually-hidden">Add multiple servers</h2>
 		<div class="alert alert-info">
 			See <a href="<?php outurl('/help#sync_setup')?>" class="alert-link">the sync setup instructions</a> for how to set up the server for key synchronization.
 		</div>

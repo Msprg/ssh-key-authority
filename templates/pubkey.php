@@ -47,7 +47,7 @@ $owner = $this->get('pubkey')->owner;
 <?php } ?>
 <div class="tab-content">
 	<div class="tab-pane fade in active show" id="info" role="tabpanel"<?php if($this->get('user_is_owner') || $this->get('admin')) out(' aria-labelledby="pubkey_info_tab"', ESC_NONE) ?> aria-hidden="false">
-		<h2 class="sr-only">Information</h2>
+		<h2 class="visually-hidden">Information</h2>
 		<p><a href="<?php outurl('/pubkeys/'.$this->get('pubkey')->id.'.json') ?>" class="btn btn-secondary btn-sm">
 			<span class="glyphicon glyphicon-console"></span> JSON
 		</a></p>
@@ -75,7 +75,7 @@ $owner = $this->get('pubkey')->owner;
 	</div>
 	<?php if(($this->get('user_is_owner') || $this->get('admin')) && $this->get('pubkey')->deletion_date === null) { ?>
 	<div class="tab-pane fade" id="sig" role="tabpanel" aria-labelledby="pubkey_sig_tab" aria-hidden="true">
-		<h2 class="sr-only">Key signing</h2>
+		<h2 class="visually-hidden">Key signing</h2>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" enctype="multipart/form-data">
 			<?php if(count($this->get('signatures')) == 0) { ?>
 			<p>No signatures have been uploaded for this key yet.</p>
@@ -117,7 +117,7 @@ $owner = $this->get('pubkey')->owner;
 		</form>
 	</div>
 	<div class="tab-pane fade" id="dest" role="tabpanel" aria-labelledby="pubkey_dest_tab" aria-hidden="true">
-		<h2 class="sr-only">Destination restrictions</h2>
+		<h2 class="visually-hidden">Destination restrictions</h2>
 		<?php if(count($this->get('dest_rules')) == 0) { ?>
 		<p>This key will currently be synced to all accounts and servers that <?php out($name)?> is granted access to.  To restrict this key to a subset of that list, add rules below.</p>
 		<?php } else { ?>

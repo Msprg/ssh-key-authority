@@ -230,8 +230,27 @@
   display: block !important;
 }
 
+.img-fluid {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.rounded {
+  border-radius: 6px;
+}
+
 .w-100 {
   width: 100% !important;
+}
+
+.table-sm > thead > tr > th,
+.table-sm > tbody > tr > th,
+.table-sm > tfoot > tr > th,
+.table-sm > thead > tr > td,
+.table-sm > tbody > tr > td,
+.table-sm > tfoot > tr > td {
+  padding: 5px;
 }
 
 .gap-1 { gap: .25rem !important; }
@@ -239,6 +258,12 @@
 .gap-3 { gap: 1rem !important; }
 .gap-4 { gap: 1.5rem !important; }
 .gap-5 { gap: 3rem !important; }
+
+@media (min-width: 1200px) {
+  .d-xl-none {
+    display: none !important;
+  }
+}
 
 .text-bg-success { color: #fff !important; background-color: #5cb85c !important; }
 .text-bg-secondary { color: #fff !important; background-color: #777 !important; }

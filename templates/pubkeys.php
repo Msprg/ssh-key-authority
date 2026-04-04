@@ -70,7 +70,7 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 </ul>
 <div class="tab-content">
 	<div class="tab-pane fade in active show" id="managed" role="tabpanel" aria-labelledby="pubkeys_managed_tab" aria-hidden="false">
-		<h2 class="sr-only">Managed keys</h2>
+		<h2 class="visually-hidden">Managed keys</h2>
 		<p><a href="<?php outurl('/pubkeys.json') ?>" class="btn btn-secondary btn-sm">
 			<span class="glyphicon glyphicon-console"></span> JSON
 		</a></p>
@@ -189,7 +189,7 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 		</div>
 	</div>
 	<div class="tab-pane fade" id="new" role="tabpanel" aria-labelledby="pubkeys_new_tab" aria-hidden="true">
-		<h2 class="sr-only">New keys</h2>
+		<h2 class="visually-hidden">New keys</h2>
 		<?php
 		if (empty($this->get('new_keys'))) {
 			?><p>There are currently no new, unknown keys.</p><?php
@@ -213,7 +213,7 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 		?>
 	</div>
 	<div class="tab-pane fade" id="allowed" role="tabpanel" aria-labelledby="pubkeys_allowed_tab" aria-hidden="true">
-		<h2 class="sr-only">Allowed keys</h2>
+		<h2 class="visually-hidden">Allowed keys</h2>
 		<?php
 		if (empty($this->get('allowed_keys'))) {
 			?><p>There are currently no explicitly allowed keys.</p><?php
@@ -225,7 +225,7 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 		?>
 	</div>
 	<div class="tab-pane fade" id="denied" role="tabpanel" aria-labelledby="pubkeys_denied_tab" aria-hidden="true">
-		<h2 class="sr-only">Denied keys</h2>
+		<h2 class="visually-hidden">Denied keys</h2>
 		<?php
 		if (empty($this->get('denied_keys'))) {
 			?><p>There are currently no explicitly denied keys.</p><?php

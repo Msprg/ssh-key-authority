@@ -27,7 +27,7 @@
 <!-- Tab panes -->
 <div class="tab-content">
 	<div class="tab-pane fade in active show" id="list" role="tabpanel"<?php if($this->get('admin')) out(' aria-labelledby="groups_list_tab"', ESC_NONE) ?> aria-hidden="false">
-		<h2 class="sr-only">Group list</h2>
+		<h2 class="visually-hidden">Group list</h2>
 		<div class="ska-card-stack">
 			<div class="ska-card">
 				<div class="ska-card-header">
@@ -100,16 +100,16 @@
 	</div>
 	<?php if($this->get('admin')) { ?>
 		<div class="tab-pane fade" id="add" role="tabpanel" aria-labelledby="groups_add_tab" aria-hidden="true">
-		<h2 class="sr-only">Add group</h2>
+		<h2 class="visually-hidden">Add group</h2>
 		<h3>Create local group</h3>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-inline-form">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="form-group mb-3">
-				<label for="name" class="sr-only">Group name</label>
+				<label for="name" class="visually-hidden">Group name</label>
 				<input type="text" id="name" name="name" class="form-control" placeholder="Group name" required>
 			</div>
 			<div class="form-group mb-3">
-				<label for="admin_uid" class="sr-only">Administrator</label>
+				<label for="admin_uid" class="visually-hidden">Administrator</label>
 				<input type="text" size="40" id="admin_uid" name="admin_uid" class="form-control" placeholder="Administrator" required list="userlist">
 				<datalist id="userlist">
 					<?php foreach($this->get('all_users') as $user) { ?>
@@ -124,7 +124,7 @@
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ldap-treeview">For the tree-view of ldap groups, javascript is necessary.</div>
 			<div class="form-group mb-3">
-				<label for="name" class="sr-only">Group name</label>
+				<label for="name" class="visually-hidden">Group name</label>
 			</div>
 			<button type="submit" name="add_ldap_group" value="1" class="btn btn-primary">Connect selected groups</button>
 		</form>

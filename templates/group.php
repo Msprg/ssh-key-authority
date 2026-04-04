@@ -37,7 +37,7 @@ foreach($this->get('group_members') as $member) {
 <!-- Tab panes -->
 <div class="tab-content">
 	<div class="tab-pane fade in active show" id="members" role="tabpanel" aria-labelledby="group_members_tab" aria-hidden="false">
-		<h2 class="sr-only">Group members</h2>
+		<h2 class="visually-hidden">Group members</h2>
 		<p><a href="<?php outurl('/groups/'.urlencode($this->get('group')->name).'/members.json') ?>" class="btn btn-secondary btn-sm">
 			<span class="glyphicon glyphicon-console"></span> JSON
 		</a></p>
@@ -107,7 +107,7 @@ foreach($this->get('group_members') as $member) {
 			<div class="row">
 				<div class="col-md-9 mb-3">
 					<div class="input-group">
-						<span class="input-group-text"><label for="username"><span class="glyphicon glyphicon-user" title="User"></span><span class="sr-only">User name</span></label></span>
+						<span class="input-group-text"><label for="username"><span class="glyphicon glyphicon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
 						<input type="text" id="username" name="username" class="form-control" placeholder="User name" required list="userlist">
 					</div>
 				</div>
@@ -122,7 +122,7 @@ foreach($this->get('group_members') as $member) {
 			<div class="row">
 				<div class="col-md-2 mb-3">
 					<div class="input-group">
-						<span class="input-group-text"><label for="account"><span class="glyphicon glyphicon-log-in" title="Server account"></span><span class="sr-only">Account</span></label></span>
+						<span class="input-group-text"><label for="account"><span class="glyphicon glyphicon-log-in" title="Server account"></span><span class="visually-hidden">Account</span></label></span>
 						<input type="text" id="account" name="account" class="form-control" placeholder="Account name" required>
 					</div>
 				</div>
@@ -155,7 +155,7 @@ foreach($this->get('group_members') as $member) {
 		<?php } ?>
 	</div>
 	<div class="tab-pane fade" id="access" role="tabpanel" aria-labelledby="group_access_tab" aria-hidden="true">
-		<h2 class="sr-only">Access</h2>
+		<h2 class="visually-hidden">Access</h2>
 		<?php if(count($this->get('group_access')) == 0) { ?>
 		<?php if($membercounts['ServerAccount'] > 0 || $membercounts['Group'] > 0) { ?>
 		<p>No access has been granted to this group's resources.</p>
@@ -239,7 +239,7 @@ foreach($this->get('group_members') as $member) {
 			<div class="row">
 				<div class="col-md-8 mb-3">
 					<div class="input-group">
-						<span class="input-group-text"><label for="access-username"><span class="glyphicon glyphicon-user" title="User"></span><span class="sr-only">User name</span></label></span>
+						<span class="input-group-text"><label for="access-username"><span class="glyphicon glyphicon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
 						<input type="text" id="access-username" name="username" class="form-control" placeholder="User name" required list="userlist">
 					</div>
 				</div>
@@ -254,7 +254,7 @@ foreach($this->get('group_members') as $member) {
 			<div class="row">
 				<div class="col-md-2 mb-3">
 					<div class="input-group">
-						<span class="input-group-text"><label for="access-account"><span class="glyphicon glyphicon-log-in" title="Server account"></span><span class="sr-only">Account</span></label></span>
+						<span class="input-group-text"><label for="access-account"><span class="glyphicon glyphicon-log-in" title="Server account"></span><span class="visually-hidden">Account</span></label></span>
 						<input type="text" id="access-account" name="account" class="form-control" placeholder="Account name" required>
 					</div>
 				</div>
@@ -275,7 +275,7 @@ foreach($this->get('group_members') as $member) {
 			<div class="row">
 				<div class="col-md-8 mb-3">
 					<div class="input-group">
-						<span class="input-group-text"><label for="access-group"><span class="glyphicon glyphicon-list-alt" title="Group"></span><span class="sr-only">Group name</span></label></span>
+						<span class="input-group-text"><label for="access-group"><span class="glyphicon glyphicon-list-alt" title="Group"></span><span class="visually-hidden">Group name</span></label></span>
 						<input type="text" id="access-group" name="group" class="form-control" placeholder="Group name" required list="grouplist">
 					</div>
 				</div>
@@ -287,7 +287,7 @@ foreach($this->get('group_members') as $member) {
 		<?php } ?>
 	</div>
 	<div class="tab-pane fade" id="outbound" role="tabpanel" aria-labelledby="group_outbound_tab" aria-hidden="true">
-		<h2 class="sr-only">Outbound access</h2>
+		<h2 class="visually-hidden">Outbound access</h2>
 		<?php if(count($this->get('group_remote_access')) == 0) { ?>
 		<p>This group has not been granted access to other resources.</p>
 		<?php } else { ?>
@@ -335,7 +335,7 @@ foreach($this->get('group_members') as $member) {
 		<?php } ?>
 	</div>
 	<div class="tab-pane fade" id="admins" role="tabpanel" aria-labelledby="group_admins_tab" aria-hidden="true">
-		<h2 class="sr-only">Group administrators</h2>
+		<h2 class="visually-hidden">Group administrators</h2>
 		<?php if(count($this->get('group_admins')) == 0) { ?>
 		<p class="alert alert-danger">This group does not have any administrators assigned.</p>
 		<?php } else { ?>
@@ -374,7 +374,7 @@ foreach($this->get('group_members') as $member) {
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Add administrator</h3>
 			<div class="form-group">
-				<label for="user_name" class="sr-only">User name</label>
+				<label for="user_name" class="visually-hidden">User name</label>
 				<input type="text" id="user_name" name="user_name" class="form-control" placeholder="User name" required list="userlist">
 			</div>
 			<button type="submit" name="add_admin" value="1" class="btn btn-primary">Add administrator to group</button>
@@ -383,7 +383,7 @@ foreach($this->get('group_members') as $member) {
 	</div>
 	<?php if($this->get('admin')) { ?>
 	<div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="group_settings_tab" aria-hidden="true">
-		<h2 class="sr-only">Settings</h2>
+		<h2 class="visually-hidden">Settings</h2>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-settings-form">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-setting-row">
@@ -406,7 +406,7 @@ foreach($this->get('group_members') as $member) {
 	</div>
 	<?php } ?>
 	<div class="tab-pane fade" id="log" role="tabpanel" aria-labelledby="group_log_tab" aria-hidden="true">
-		<h2 class="sr-only">Log</h2>
+		<h2 class="visually-hidden">Log</h2>
 		<div class="ska-scroll-container">
 			<table class="table">
 				<thead>

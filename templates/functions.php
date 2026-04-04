@@ -114,7 +114,7 @@ function keygen_help($box_position) {
 	</ul>
 	<div class="tab-content clearfix">
 		<div class="tab-pane fade in active show" id="windows_instructions" role="tabpanel" aria-labelledby="windows_instructions_tab" aria-hidden="false">
-				<aside class="float-end"><img src="/putty-key-generator.png" class="img-rounded img-responsive"></aside>
+				<aside class="float-end"><img src="/putty-key-generator.png" class="rounded img-fluid"></aside>
 			<p>On Windows you will typically use the <a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html">PuTTYgen</a> application to generate your key pair.</p>
 			<ol>
 				<li>Download and run the latest Windows installer from the <a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html">PuTTY download page</a>.

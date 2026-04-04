@@ -29,7 +29,7 @@ $footer=str_replace("%v", "1.5.0", $web_config['footer']);
 <script src="<?php outurl('/header.js?'.filemtime('public_html/header.js'))?>"></script>
 <?php out($this->get('head'), ESC_NONE) ?>
 <div id="wrap">
-<a href="#content" class="sr-only visually-hidden visually-hidden-focusable">Skip to main content</a>
+<a href="#content" class="visually-hidden visually-hidden-focusable">Skip to main content</a>
 <div class="navbar navbar-fixed-top fixed-top">
 	<div class="container h-50px">
 		<div class="ska-navbar">
@@ -56,14 +56,14 @@ $footer=str_replace("%v", "1.5.0", $web_config['footer']);
 					</span>
 				</button>
 				<div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton" aria-hidden="true">
-						<div class="ska-dropdown"><span class="ska-dropdown-name-dp hidden-xl">
+						<div class="ska-dropdown"><span class="ska-dropdown-name-dp d-xl-none">
 							<?php out($this->get('active_user')->name)?> 
 						</span>
-						<div class="ska-divider hidden-xl"></div>
+						<div class="ska-divider d-xl-none"></div>
 						<?php foreach($this->get('menu_items') as $url => $name) { ?>
-						<a <?php if($url == $this->get('relative_request_url')) out(' class="dropdown-item ska-dp-item hidden-xl active"', ESC_NONE); else out(' class="dropdown-item ska-dp-item hidden-xl"', ESC_NONE) ?> href="<?php outurl($url)?>"><?php out($name)?></a></li>
+						<a <?php if($url == $this->get('relative_request_url')) out(' class="dropdown-item ska-dp-item d-xl-none active"', ESC_NONE); else out(' class="dropdown-item ska-dp-item d-xl-none"', ESC_NONE) ?> href="<?php outurl($url)?>"><?php out($name)?></a></li>
 						<?php } ?>
-						<div class="ska-divider hidden-xl"></div>
+						<div class="ska-divider d-xl-none"></div>
 						<a class="dropdown-item ska-dp-item" href="<?php outurl('/logout')?>">Logout</a>
 					</div>
 				</div>

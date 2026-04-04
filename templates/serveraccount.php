@@ -62,7 +62,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 <div class="tab-content">
 	<?php if($this->get('server')->key_management == 'keys') { ?>
 	<div class="tab-pane fade in active show" id="access" role="tabpanel" aria-labelledby="serveraccount_access_tab" aria-hidden="false">
-		<h2 class="sr-only">Access</h2>
+		<h2 class="visually-hidden">Access</h2>
 		<?php if(count($this->get('access')) == 0 && count($this->get('access_requests')) == 0) { ?>
 		<p>No-one has been granted access to this account.</p>
 		<?php } else { ?>
@@ -188,7 +188,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<div class="row">
 				<div class="col-md-9 mb-3">
 					<div class="input-group">
-						<span class="input-group-text"><label for="username"><span class="glyphicon glyphicon-user" title="User"></span><span class="sr-only">User name</span></label></span>
+						<span class="input-group-text"><label for="username"><span class="glyphicon glyphicon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
 						<input type="text" id="username" name="username" class="form-control" placeholder="User name" required list="userlist">
 						<datalist id="userlist">
 							<?php foreach($this->get('all_users') as $user) { ?>
@@ -208,7 +208,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<div class="row">
 				<div class="col-md-2 mb-3">
 					<div class="input-group">
-						<span class="input-group-text"><label for="account"><span class="glyphicon glyphicon-log-in" title="Server account"></span><span class="sr-only">Account name</span></label></span>
+						<span class="input-group-text"><label for="account"><span class="glyphicon glyphicon-log-in" title="Server account"></span><span class="visually-hidden">Account name</span></label></span>
 						<input type="text" id="account" name="account" class="form-control" placeholder="Account name" required>
 					</div>
 				</div>
@@ -234,7 +234,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<div class="row">
 				<div class="col-md-9 mb-3">
 					<div class="input-group">
-						<span class="input-group-text"><label for="group"><span class="glyphicon glyphicon-list-alt" title="Group"></span><span class="sr-only">Group name</span></label></span>
+						<span class="input-group-text"><label for="group"><span class="glyphicon glyphicon-list-alt" title="Group"></span><span class="visually-hidden">Group name</span></label></span>
 						<input type="text" id="group" name="group" class="form-control" placeholder="Group name" required list="grouplist">
 						<datalist id="grouplist">
 							<?php foreach($this->get('all_groups') as $group) { ?>
@@ -334,7 +334,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 	</div>
 	<?php } ?>
 	<div class="tab-pane fade<?php if($this->get('server')->key_management != 'keys') out(' in active show', ESC_NONE) ?>" id="pubkeys" role="tabpanel" aria-labelledby="serveraccount_pubkeys_tab" aria-hidden="<?php out($this->get('server')->key_management == 'keys' ? 'true' : 'false') ?>">
-		<h2 class="sr-only">Public keys</h2>
+		<h2 class="visually-hidden">Public keys</h2>
 		<p>
 			<a href="<?php outurl($this->data->relative_request_url.'/pubkeys.txt')?>" class="btn btn-secondary btn-sm">
 				<span class="glyphicon glyphicon-console"></span> TXT
@@ -409,7 +409,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 		</form>
 	</div>
 	<div class="tab-pane fade" id="outbound" role="tabpanel" aria-labelledby="serveraccount_outbound_tab" aria-hidden="true">
-		<h2 class="sr-only">Outbound access</h2>
+		<h2 class="visually-hidden">Outbound access</h2>
 		<?php if(count($this->get('remote_access')) == 0) { ?>
 		<p>This account has not been granted access to any other resources.</p>
 		<?php } else { ?>
@@ -520,7 +520,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 		<?php } ?>
 	</div>
 	<div class="tab-pane fade" id="admins" role="tabpanel" aria-labelledby="serveraccount_admins_tab" aria-hidden="true">
-		<h2 class="sr-only">Account leaders</h2>
+		<h2 class="visually-hidden">Account leaders</h2>
 		<?php if(count($this->get('admins')) == 0) { ?>
 		<p>This account does not have any leaders assigned.</p>
 		<?php } else { ?>
@@ -559,7 +559,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Add leader</h3>
 			<div class="form-group">
-				<label for="user_name" class="sr-only">Account name</label>
+				<label for="user_name" class="visually-hidden">Account name</label>
 				<input type="text" id="user_name" name="user_name" class="form-control" placeholder="User name" required list="userlist">
 				<datalist id="userlist">
 					<?php foreach($this->get('all_users') as $user) { ?>
@@ -572,7 +572,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 		<?php } ?>
 	</div>
 	<div class="tab-pane fade" id="log" role="tabpanel" aria-labelledby="serveraccount_log_tab" aria-hidden="true">
-		<h2 class="sr-only">Log</h2>
+		<h2 class="visually-hidden">Log</h2>
 		<div class="ska-scroll-container">
 			<table class="table">
 				<col></col>

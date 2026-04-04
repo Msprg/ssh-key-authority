@@ -30,7 +30,7 @@
 <!-- Tab panes -->
 <div class="tab-content">
 	<div class="tab-pane fade in active show" id="details" role="tabpanel" aria-labelledby="user_details_tab" aria-hidden="false">
-		<h2 class="sr-only">Details</h2>
+		<h2 class="visually-hidden">Details</h2>
 		<h3><a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys')?>">Public keys</a></h3>
 		<p>
 			<a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys.txt') ?>" class="btn btn-secondary btn-sm">
@@ -263,7 +263,7 @@
 	</div>
 	<?php if($this->get('user')->auth_realm == 'LDAP' && $this->get('admin')) { ?>
 	<div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="user_settings_tab" aria-hidden="true">
-		<h2 class="sr-only">Settings</h2>
+		<h2 class="visually-hidden">Settings</h2>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-settings-form">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-setting-row">

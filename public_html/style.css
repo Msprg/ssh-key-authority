@@ -423,10 +423,6 @@ code {
 	display: block;
 }
 
-.hidden-xl {
-	display: inherit;
-}
-
 /* Navbar Components */
 .ska-navbar {
 	display: flex;
@@ -538,9 +534,6 @@ code {
 		display: flex;
 	}
 
-	.hidden-xl {
-		display: none;
-	}
 }
 /* ===== TYPOGRAPHY ===== */
 .monospace {
