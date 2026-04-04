@@ -36,6 +36,7 @@ Current runtime facts:
 - Tabs, collapses, dropdowns, alert dismissal, and the local form helpers now run through native DOM code in [public_html/extra.js](/var/www/ska/public_html/extra.js).
 - High-traffic pages now use semantic `ska-icon` helpers and entity-link icons rendered through repo-owned SVG assets in [public_html/icons/](/var/www/ska/public_html/icons/) via [public_html/style.css](/var/www/ska/public_html/style.css), not the Bootstrap font glyphs.
 - Bootstrap 3 `panel-*` markup has been migrated to local `ska-card*` classes in active templates.
+- [public_html/bootstrap5-compat.css](/var/www/ska/public_html/bootstrap5-compat.css) has been trimmed down to the aliases that still have live runtime usage.
 - Headless browser capture is now available through [scripts/smoke/browser-capture.sh](/var/www/ska/scripts/smoke/browser-capture.sh) for authenticated visual regression checks.
 
 The main remaining blockers are now CSS- and markup-oriented rather than plugin-oriented:
@@ -96,7 +97,7 @@ The live font dependency is gone because [public_html/style.css](/var/www/ska/pu
 
 ### 3. Compatibility CSS is still carrying mixed pages
 
-[public_html/bootstrap5-compat.css](/var/www/ska/public_html/bootstrap5-compat.css) is still doing real work:
+[public_html/bootstrap5-compat.css](/var/www/ska/public_html/bootstrap5-compat.css) is still doing real work, but it is now much smaller and closer to a final removal candidate:
 
 - utility aliases (`float-end`, spacing, visibility, badges, etc.)
 - Bootstrap 5-style close button styling
