@@ -64,6 +64,7 @@ Completed work:
 - repo-local button and alert styling in [public_html/style.css](/var/www/ska/public_html/style.css), shrinking reliance on Bootstrap 3 for those shared primitives
 - retirement of runtime `public_html/bootstrap5-compat.css` by folding its live aliases into [public_html/style.css](/var/www/ska/public_html/style.css)
 - repo-local grid/text utility styling in [public_html/style.css](/var/www/ska/public_html/style.css) for the live `container`, `row`, `col-*`, and status text classes used by high-traffic pages
+- repo-local form/input-group styling in [public_html/style.css](/var/www/ska/public_html/style.css) for the live `form-group`, `form-control`, and `input-group` classes used by the busiest forms
 - native replacements for the local jQuery form helpers and sync polling
 - removal of runtime `bootstrap.min.js`, jQuery, and `bootstrap5-compat.js`
 - smoke assertions that authenticated pages do not load those scripts
@@ -80,7 +81,7 @@ Objective: eliminate the legacy CSS bundle and the remaining Bootstrap 3 markup 
 Priority work:
 
 - finish replacing remaining Bootstrap 3 shell/helper/layout markup with Bootstrap 5-compatible or SKA-local equivalents
-- continue replacing Bootstrap 3 form-control/input-group and content styling assumptions on the busiest detail pages
+- continue replacing the remaining Bootstrap 3 content/helper styling assumptions on the busiest detail pages
 - trim remaining icon-compatibility selectors as Bootstrap 3 CSS is retired
 - finish any shell/layout cleanup that still assumes Bootstrap 3 navbar or utility semantics
 - keep consolidating shared styling into [public_html/style.css](/var/www/ska/public_html/style.css) as migrated pages stop needing Bootstrap 3 defaults
@@ -109,7 +110,7 @@ This phase can now proceed incrementally because runtime references are already 
 
 | Timeline | Target |
 | --- | --- |
-| Now | Finish Bootstrap 3 shell/helper cleanup on untargeted secondary pages and continue form/input-group cleanup |
+| Now | Finish Bootstrap 3 shell/helper cleanup on untargeted secondary pages and continue content/helper cleanup |
 | Next 1-2 PRs | Finish the shell CSS cleanup and remove dead Bootstrap 3/icon residue |
 | Before removing Bootstrap 3 CSS | Finish shell/layout cleanup and shared form/grid replacements |
 | Final cleanup | Delete remaining dormant Bootstrap 3 artifacts and glyphicons |

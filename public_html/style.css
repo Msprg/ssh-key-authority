@@ -474,42 +474,65 @@ a.user,
 
 /* ===== FORM ELEMENTS ===== */
 .input-group-text {
-	display: table-cell;
-	width: 1%;
-	height: 34px;
+	display: flex;
+	align-items: center;
+	flex: 0 0 auto;
+	min-height: 34px;
 	padding: 6px 12px;
 	font-size: 14px;
 	font-weight: 400;
-	line-height: 1;
+	line-height: 1.42857143;
 	color: #555;
 	text-align: center;
 	white-space: nowrap;
-	vertical-align: middle;
 	background-color: #eee;
 	border: 1px solid #ccc;
 	border-radius: 4px;
 }
 
-.input-group-text:first-child {
+.input-group {
+	position: relative;
+	display: flex;
+	align-items: stretch;
+	width: 100%;
+}
+
+.input-group > .form-control {
+	position: relative;
+	flex: 1 1 auto;
+	width: 1%;
+	min-width: 0;
+	margin-bottom: 0;
+}
+
+.input-group > .input-group-text:first-child,
+.input-group > .input-group-text:first-child + .input-group-text {
 	border-right: 0;
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
 }
 
-.input-group-text:last-child {
+.input-group > .input-group-text:last-child,
+.input-group > .form-control + .input-group-text {
 	border-left: 0;
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
 }
 
-.input-group-text + .form-control {
+.input-group > .input-group-text + .form-control,
+.input-group > .input-group-text + .input-group-text + .form-control {
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
 }
 
-.form-control + .input-group-text {
+.input-group > .form-control:not(:first-child) {
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
+}
+
+.input-group > .form-control:not(:last-child) {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
 }
 
 .input-group-text label {
@@ -1140,20 +1163,67 @@ textarea {
 }
 
 .form-group {
-	margin-bottom: 20px;
+	margin-bottom: 15px;
 }
 
 .form-control {
-	border: 2px solid #e1e5e9;
-	border-radius: 8px;
-	padding: 12px 15px;
-	font-size: 16px;
-	transition: border-color 0.3s ease;
+	display: block;
+	width: 100%;
+	height: 34px;
+	padding: 6px 12px;
+	font-size: 14px;
+	line-height: 1.42857143;
+	color: #555;
+	background-color: #fff;
+	background-image: none;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
 }
 
 .form-control:focus {
-	border-color: #e30613;
-	box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+	border-color: #66afe9;
+	outline: 0;
+	box-shadow:
+		inset 0 1px 1px rgba(0, 0, 0, 0.075),
+		0 0 8px rgba(102, 175, 233, 0.6);
+}
+
+.input-group .form-control:focus {
+	z-index: 2;
+}
+
+select.form-control {
+	height: 34px;
+}
+
+textarea.form-control {
+	height: auto;
+	min-height: 34px;
+}
+
+input[type="file"].form-control {
+	height: auto;
+	padding-top: 6px;
+	padding-bottom: 6px;
+}
+
+.form-control::placeholder {
+	color: #999;
+	opacity: 1;
+}
+
+.form-control[disabled],
+.form-control[readonly],
+fieldset[disabled] .form-control {
+	background-color: #eee;
+	opacity: 1;
+}
+
+.form-control[disabled],
+fieldset[disabled] .form-control {
+	cursor: not-allowed;
 }
 
 .btn-login {
@@ -1165,6 +1235,24 @@ textarea {
 	color: #000;
 	width: 100%;
 	transition: transform 0.2s ease;
+}
+
+.login-container .form-group {
+	margin-bottom: 20px;
+}
+
+.login-container .form-control {
+	height: auto;
+	border: 2px solid #e1e5e9;
+	border-radius: 8px;
+	padding: 12px 15px;
+	font-size: 16px;
+	box-shadow: none;
+}
+
+.login-container .form-control:focus {
+	border-color: #e30613;
+	box-shadow: 0 0 0 0.2rem rgba(227, 6, 19, 0.15);
 }
 
 .btn-login:hover {
