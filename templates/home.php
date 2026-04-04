@@ -81,7 +81,7 @@
 	</div>
 </form>
 <p><button id="add_key_button" class="btn btn-secondary">Add another public key</button></p>
-<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="hidden d-none" id="add_key_form">
+<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="d-none" id="add_key_form">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 	<div class="mb-3">
 		<label for="add_public_key">Public key</label>
@@ -98,7 +98,7 @@
 			<button type="button" class="btn btn-secondary btn-lg w-100" data-action="cancel-add-key">Cancel</button>
 		</div>
 	</div>
-	<div id="help" class="hidden d-none">
+	<div id="help" class="d-none">
 		<?php keygen_help('above') ?>
 	</div>
 </form>

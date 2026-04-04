@@ -37,7 +37,7 @@
 		>
 			<span></span>
 			<div class="spinner"></div>
-			<a href="<?php outurl('/help')?>" class="btn btn-info btn-sm hidden">Explain</a>
+			<a href="<?php outurl('/help')?>" class="btn btn-info btn-sm d-none">Explain</a>
 			<button name="sync" value="1" type="submit" class="btn btn-secondary btn-sm invisible">Sync now</button>
 		</dd>
 	</dl>

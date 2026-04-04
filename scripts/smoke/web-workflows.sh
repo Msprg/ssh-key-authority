@@ -59,6 +59,7 @@ HOME_CSRF=$(smoke_extract_csrf "$TMP_DIR/home-before-key.html")
 ! grep -Eq '<script[^>]+src="[^"]*/bootstrap5-compat\.js' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still loads bootstrap5-compat.js"
 ! grep -q 'data-ska-skip-legacy' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders migration-only data-ska-skip-legacy markup"
 ! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders legacy glyphicon classes"
+! grep -Eq 'class="[^"]*\\bhidden\\b' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders the legacy hidden helper class"
 
 TARGET_SERVER=$(smoke_urlencode "$SKA_SMOKE_ACCESS_SERVER_HOSTNAME")
 TARGET_ACCOUNT=$(smoke_urlencode "$SKA_SMOKE_ACCESS_ACCOUNT_NAME")
@@ -80,12 +81,14 @@ curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/servers" -o "$TMP_DIR/
 grep -q '>Logout<' "$TMP_DIR/servers.html" || smoke_die "Authenticated session was lost while loading servers page"
 ! grep -Eq 'form-inline|form-horizontal|control-label|col-sm-offset-|help-block|<div class="checkbox|<div class="radio|\bsr-only\b|table-condensed' "$TMP_DIR/servers.html" || smoke_die "Servers page still renders legacy Bootstrap 3 form helpers"
 ! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/servers.html" || smoke_die "Servers page still renders legacy glyphicon classes"
+! grep -Eq 'class="[^"]*\\bhidden\\b' "$TMP_DIR/servers.html" || smoke_die "Servers page still renders the legacy hidden helper class"
 
 TARGET_SERVER_PAGE="/servers/${TARGET_SERVER}"
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL$TARGET_SERVER_PAGE" -o "$TMP_DIR/server.html"
 grep -q '>Logout<' "$TMP_DIR/server.html" || smoke_die "Authenticated session was lost while loading target server page"
 ! grep -Eq 'form-inline|form-horizontal|control-label|col-sm-offset-|help-block|<div class="checkbox|<div class="radio|\bsr-only\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders legacy Bootstrap 3 form helpers"
 ! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/server.html" || smoke_die "Target server page still renders legacy glyphicon classes"
+! grep -Eq 'class="[^"]*\\bhidden\\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders the legacy hidden helper class"
 
 TARGET_USER=$(smoke_urlencode "$SKA_SMOKE_USERNAME")
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/users/${TARGET_USER}" -o "$TMP_DIR/user.html"

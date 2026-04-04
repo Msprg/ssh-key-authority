@@ -997,9 +997,9 @@ dom_ready(function() {
 		set_status_text(statusSpan, classname, message);
 		if(explainLink) {
 			if(classname === 'success') {
-				explainLink.classList.add('hidden');
+				explainLink.classList.add('d-none');
 			} else {
-				explainLink.classList.remove('hidden');
+				explainLink.classList.remove('d-none');
 				if(classname === 'warning') {
 					explainLink.href = '/help#sync_warning';
 				}
@@ -1136,7 +1136,7 @@ dom_ready(function() {
 		}
 
 		serverAdmin.value = '';
-		serverAdmins.classList.remove('hidden');
+		serverAdmins.classList.remove('d-none');
 		serverAdmin.removeAttribute('required');
 	}
 
@@ -1157,13 +1157,13 @@ dom_ready(function() {
 
 	serverAdmins.addEventListener('blur', function() {
 		if(!serverAdmins.value.trim()) {
-			serverAdmins.classList.add('hidden');
+			serverAdmins.classList.add('d-none');
 			serverAdmin.setAttribute('required', '');
 		}
 	});
 
 	if(serverAdmins.value.trim()) {
-		serverAdmins.classList.remove('hidden');
+		serverAdmins.classList.remove('d-none');
 		serverAdmin.removeAttribute('required');
 	}
 });
