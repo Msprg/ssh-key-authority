@@ -16,7 +16,7 @@
 ## limitations under the License.
 ##
 ?>
-<h1><span class="glyphicon glyphicon-user" title="User"></span> <?php out($this->get('user')->name)?> <small>(<?php out($this->get('user')->uid)?>)</small><?php if(!$this->get('user')->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE)?></h1>
+<h1><span class="ska-icon ska-icon-user" title="User"></span> <?php out($this->get('user')->name)?> <small>(<?php out($this->get('user')->uid)?>)</small><?php if(!$this->get('user')->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE)?></h1>
 <dl>
 	<dt>Account type</dt>
 	<dd><?php out($this->get('user')->auth_realm)?></dd>
@@ -34,10 +34,10 @@
 		<h3><a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys')?>">Public keys</a></h3>
 		<p>
 			<a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys.txt') ?>" class="btn btn-secondary btn-sm">
-				<span class="glyphicon glyphicon-console"></span> TXT
+				<span class="ska-icon ska-icon-console"></span> TXT
 			</a>
 			<a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys.json') ?>" class="btn btn-secondary btn-sm">
-				<span class="glyphicon glyphicon-console"></span> JSON
+				<span class="ska-icon ska-icon-console"></span> JSON
 			</a>
 		</p>
 		<?php if(count($this->get('active_user_keys')) == 0) { ?>
@@ -73,15 +73,15 @@
 							</a>
 						</td>
 						<td>
-							<?php if(count($key->list_signatures()) > 0) { ?><a href="<?php outurl('/pubkeys/'.urlencode($key->id).'#sig')?>"><span class="glyphicon glyphicon-pencil" title="Signed key"></span></a><?php } ?>
-							<?php if(count($key->list_destination_rules()) > 0) { ?><a href="<?php outurl('/pubkeys/'.urlencode($key->id).'#dest')?>"><span class="glyphicon glyphicon-pushpin" title="Destination-restricted"></span></a><?php } ?>
+							<?php if(count($key->list_signatures()) > 0) { ?><a href="<?php outurl('/pubkeys/'.urlencode($key->id).'#sig')?>"><span class="ska-icon ska-icon-pencil" title="Signed key"></span></a><?php } ?>
+							<?php if(count($key->list_destination_rules()) > 0) { ?><a href="<?php outurl('/pubkeys/'.urlencode($key->id).'#dest')?>"><span class="ska-icon ska-icon-pushpin" title="Destination-restricted"></span></a><?php } ?>
 						</td>
 						<td><?php out($key->format_creation_date()) ?></td>
 						<td><?php out($key->keysize) ?></td>
 						<td><?php out($key->comment) ?></td>
 						<?php if($this->get('admin')) { ?>
 						<td>
-							<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-trash"></span> Delete public key</button>
+							<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete public key</button>
 						</td>
 						<?php } ?>
 					</tr>

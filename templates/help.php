@@ -50,13 +50,13 @@ $security_config = $this->get('security_config');
 			<div class="ska-card-body">
 				<h3>Iconography</h3>
 				<p>Most objects that are known by SSH Key Authority are represented by icons:</p>
-				<h4><span class="glyphicon glyphicon-hdd"></span> Servers</h4>
+				<h4><span class="ska-icon ska-icon-server"></span> Servers</h4>
 				<p>Physical or virtual servers.</p>
-				<h4><span class="glyphicon glyphicon-log-in"></span> Server accounts</h4>
+				<h4><span class="ska-icon ska-icon-serveraccount"></span> Server accounts</h4>
 				<p>Accounts on servers (eg. root@myserver is a server account).</p>
-				<h4><span class="glyphicon glyphicon-user"></span> Users</h4>
+				<h4><span class="ska-icon ska-icon-user"></span> Users</h4>
 				<p>Users of SSH Key Authority.</p>
-				<h4><span class="glyphicon glyphicon-list-alt"></span> Groups</h4>
+				<h4><span class="ska-icon ska-icon-group"></span> Groups</h4>
 				<p>Collections of users or server accounts.</p>
 			</div>
 		</div>

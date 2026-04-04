@@ -87,7 +87,7 @@
 							<td><?php out($group->admins)?></td>
 							<?php if($this->get('admin')) { ?>
 							<td>
-								<a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-cog"></span> Manage group</a>
+								<a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-cog"></span> Manage group</a>
 							</td>
 							<?php } ?>
 						</tr>

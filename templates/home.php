@@ -59,8 +59,8 @@
 						</a>
 					</td>
 					<td>
-						<?php if(count($key->list_signatures()) > 0) { ?><a href="<?php outurl('/users/'.urlencode($this->get('uid')).'/pubkeys/'.urlencode($key->id).'#sig')?>"><span class="glyphicon glyphicon-pencil" title="Signed key"></span></a><?php } ?>
-						<?php if(count($key->list_destination_rules()) > 0) { ?><a href="<?php outurl('/users/'.urlencode($this->get('uid')).'/pubkeys/'.urlencode($key->id).'#dest')?>"><span class="glyphicon glyphicon-pushpin" title="Destination-restricted"></span></a><?php } ?>
+						<?php if(count($key->list_signatures()) > 0) { ?><a href="<?php outurl('/users/'.urlencode($this->get('uid')).'/pubkeys/'.urlencode($key->id).'#sig')?>"><span class="ska-icon ska-icon-pencil" title="Signed key"></span></a><?php } ?>
+						<?php if(count($key->list_destination_rules()) > 0) { ?><a href="<?php outurl('/users/'.urlencode($this->get('uid')).'/pubkeys/'.urlencode($key->id).'#dest')?>"><span class="ska-icon ska-icon-pushpin" title="Destination-restricted"></span></a><?php } ?>
 					</td>
 					<td><?php out($key->format_creation_date()) ?></td>
 					<td><?php out($key->format_deletion_date()) ?></td>
@@ -68,10 +68,10 @@
 					<td><?php out($key->comment) ?></td>
 					<td>
 						<?php if ($key->deletion_date !== null) { ?>
-							<i class="glyphicon glyphicon-remove"></i> Deleted
+							<i class="ska-icon ska-icon-remove"></i> Deleted
 						<?php } else { ?>
-							<a href="<?php outurl('/users/'.urlencode($this->get('uid')).'/pubkeys/'.urlencode($key->id))?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-cog"></span> Manage public key</a>
-							<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-trash"></span> Delete public key</button>
+							<a href="<?php outurl('/users/'.urlencode($this->get('uid')).'/pubkeys/'.urlencode($key->id))?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-cog"></span> Manage public key</a>
+							<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete public key</button>
 						<?php } ?>
 					</td>
 				</tr>
@@ -165,7 +165,7 @@
 						$type = substr($admin, 0, 1);
 						$name = substr($admin, 2);
 						if($type == 'G') {
-							$admin_list .= '<span class="glyphicon glyphicon-list-alt"></span> ';
+							$admin_list .= '<span class="ska-icon ska-icon-group"></span> ';
 						}
 						$admin_list .= hesc($name).', ';
 					}
@@ -192,7 +192,7 @@
 								$list[] = hesc($entity->name.'@'.$entity->server->hostname);
 								break;
 							case 'Group':
-								$list[] = '<span class="glyphicon glyphicon-list-alt"></span> '.hesc($entity->name);
+								$list[] = '<span class="ska-icon ska-icon-group"></span> '.hesc($entity->name);
 								break;
 							}
 						}

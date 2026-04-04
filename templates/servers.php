@@ -29,7 +29,7 @@
 		<h2 class="visually-hidden">Server list</h2>
 		<div class="ska-card-stack">
 			<p><a href="<?php outurl('/servers.json') ?>" class="btn btn-secondary btn-sm">
-				<span class="glyphicon glyphicon-console"></span> JSON
+				<span class="ska-icon ska-icon-console"></span> JSON
 			</a></p>
 			<div class="ska-card">
 				<div class="ska-card-header">
@@ -165,7 +165,7 @@
 									$type = substr($admin, 0, 1);
 									$name = substr($admin, 2);
 									if($type == 'G') {
-										$admin_list .= '<span class="glyphicon glyphicon-list-alt"></span> ';
+										$admin_list .= '<span class="ska-icon ska-icon-group"></span> ';
 									}
 									$admin_list .= hesc($name).', ';
 								}

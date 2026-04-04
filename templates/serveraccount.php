@@ -23,7 +23,7 @@ case 'sync warning':
 default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 }
 ?>
-<h1><span class="glyphicon glyphicon-log-in" title="Server account"></span> <?php out($this->get('account')->name)?>@<a href="<?php outurl('/servers/'.urlencode($this->get('server')->hostname))?>"><?php out($this->get('server')->hostname)?></a><?php if($this->get('account')->active == 0) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></h1>
+<h1><span class="ska-icon ska-icon-serveraccount" title="Server account"></span> <?php out($this->get('account')->name)?>@<a href="<?php outurl('/servers/'.urlencode($this->get('server')->hostname))?>"><?php out($this->get('server')->hostname)?></a><?php if($this->get('account')->active == 0) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></h1>
 <?php if($this->get('server')->key_management == 'keys') { ?>
 <?php if($this->get('account')->name != 'root' && $this->get('server')->sync_status == 'sync warning') { ?>
 <div class="alert alert-danger">
@@ -133,8 +133,8 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 								<?php } ?>
 							</td>
 							<td class="nowrap">
-								<a href="<?php outurl('/servers/'.urlencode($this->get('server')->hostname).'/accounts/'.urlencode($this->get('account')->name))?>/access_rules/<?php out($access->id, ESC_URL)?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-cog"></span> Configure access</a>
-								<button type="submit" name="delete_access" value="<?php out($access->id)?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-ban-circle"></span> Remove access</button>
+								<a href="<?php outurl('/servers/'.urlencode($this->get('server')->hostname).'/accounts/'.urlencode($this->get('account')->name))?>/access_rules/<?php out($access->id, ESC_URL)?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-cog"></span> Configure access</a>
+								<button type="submit" name="delete_access" value="<?php out($access->id)?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-ban-circle"></span> Remove access</button>
 							</td>
 						</tr>
 						<?php } ?>
@@ -169,8 +169,8 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 							<td>Access requested on <span class="date"><?php out($access->request_date) ?></span> by <a href="<?php outurl('/users/'.urlencode($access->requested_by->uid))?>" class="user"><?php out($access->requested_by->uid) ?></a></td>
 							<td></td>
 							<td class="nowrap">
-								<button type="submit" name="approve_access" value="<?php out($access->id)?>" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-ok"></span> Approve</button>
-								<button type="submit" name="reject_access" value="<?php out($access->id)?>" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove"></span> Reject</button>
+								<button type="submit" name="approve_access" value="<?php out($access->id)?>" class="btn btn-success btn-sm"><span class="ska-icon ska-icon-ok"></span> Approve</button>
+								<button type="submit" name="reject_access" value="<?php out($access->id)?>" class="btn btn-danger btn-sm"><span class="ska-icon ska-icon-remove"></span> Reject</button>
 							</td>
 						</tr>
 						<?php } ?>
@@ -188,7 +188,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<div class="row">
 				<div class="col-md-9 mb-3">
 					<div class="input-group">
-						<span class="input-group-text"><label for="username"><span class="glyphicon glyphicon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
+						<span class="input-group-text"><label for="username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
 						<input type="text" id="username" name="username" class="form-control" placeholder="User name" required list="userlist">
 						<datalist id="userlist">
 							<?php foreach($this->get('all_users') as $user) { ?>
@@ -208,7 +208,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<div class="row">
 				<div class="col-md-2 mb-3">
 					<div class="input-group">
-						<span class="input-group-text"><label for="account"><span class="glyphicon glyphicon-log-in" title="Server account"></span><span class="visually-hidden">Account name</span></label></span>
+						<span class="input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account name</span></label></span>
 						<input type="text" id="account" name="account" class="form-control" placeholder="Account name" required>
 					</div>
 				</div>
@@ -234,7 +234,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<div class="row">
 				<div class="col-md-9 mb-3">
 					<div class="input-group">
-						<span class="input-group-text"><label for="group"><span class="glyphicon glyphicon-list-alt" title="Group"></span><span class="visually-hidden">Group name</span></label></span>
+						<span class="input-group-text"><label for="group"><span class="ska-icon ska-icon-group" title="Group"></span><span class="visually-hidden">Group name</span></label></span>
 						<input type="text" id="group" name="group" class="form-control" placeholder="Group name" required list="grouplist">
 						<datalist id="grouplist">
 							<?php foreach($this->get('all_groups') as $group) { ?>
@@ -337,10 +337,10 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 		<h2 class="visually-hidden">Public keys</h2>
 		<p>
 			<a href="<?php outurl($this->data->relative_request_url.'/pubkeys.txt')?>" class="btn btn-secondary btn-sm">
-				<span class="glyphicon glyphicon-console"></span> TXT
+				<span class="ska-icon ska-icon-console"></span> TXT
 			</a>
 			<a href="<?php outurl($this->data->relative_request_url.'/pubkeys.json')?>" class="btn btn-secondary btn-sm">
-				<span class="glyphicon glyphicon-console"></span> JSON
+				<span class="ska-icon ska-icon-console"></span> JSON
 			</a>
 		</p>
 		<p class="alert alert-info">Keys added here will be used for <strong>outgoing</strong> connections <em>from</em> this account to any account that it has been granted remote access to.</p>
@@ -374,17 +374,17 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 								</a>
 							</td>
 							<td>
-								<?php if(count($key->list_signatures()) > 0) { ?><a href="<?php outurl('/pubkeys/'.urlencode($key->id).'#sig')?>"><span class="glyphicon glyphicon-pencil" title="Signed key"></span></a><?php } ?>
-								<?php if(count($key->list_destination_rules()) > 0) { ?><a href="<?php outurl('/pubkeys/'.urlencode($key->id).'#dest')?>"><span class="glyphicon glyphicon-pushpin" title="Destination-restricted"></span></a><?php } ?>
+								<?php if(count($key->list_signatures()) > 0) { ?><a href="<?php outurl('/pubkeys/'.urlencode($key->id).'#sig')?>"><span class="ska-icon ska-icon-pencil" title="Signed key"></span></a><?php } ?>
+								<?php if(count($key->list_destination_rules()) > 0) { ?><a href="<?php outurl('/pubkeys/'.urlencode($key->id).'#dest')?>"><span class="ska-icon ska-icon-pushpin" title="Destination-restricted"></span></a><?php } ?>
 							</td>
 							<td><?php out($key->format_creation_date()) ?></td>
 							<td><?php out($key->keysize) ?></td>
 							<td><?php out($key->comment) ?></td>
 							<td>
 								<?php if ($key->deletion_date !== null) { ?>
-									<i class="glyphicon glyphicon-remove"></i> Deleted
+									<i class="ska-icon ska-icon-remove"></i> Deleted
 								<?php } else { ?>
-									<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-trash"></span> Delete public key</button>
+									<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete public key</button>
 								<?php } ?>
 							</td>
 						</tr>
@@ -544,7 +544,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 							<td><?php out($admin->name); if(!$admin->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
 							<?php if($this->get('admin') || $this->get('server_admin')) { ?>
 							<td>
-								<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-trash"></span> Remove leader</button>
+								<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove leader</button>
 							</td>
 							<?php } ?>
 						</tr>

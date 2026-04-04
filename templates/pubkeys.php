@@ -72,7 +72,7 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 	<div class="tab-pane fade in active show" id="managed" role="tabpanel" aria-labelledby="pubkeys_managed_tab" aria-hidden="false">
 		<h2 class="visually-hidden">Managed keys</h2>
 		<p><a href="<?php outurl('/pubkeys.json') ?>" class="btn btn-secondary btn-sm">
-			<span class="glyphicon glyphicon-console"></span> JSON
+			<span class="ska-icon ska-icon-console"></span> JSON
 		</a></p>
 		<div class="ska-card-stack">
 			<div class="ska-card">
@@ -177,7 +177,7 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 						</td>
 						<td>
 							<?php if ($pubkey->deletion_date !== null) { ?>
-								<i class="glyphicon glyphicon-remove"></i> Deleted
+								<i class="ska-icon ska-icon-remove"></i> Deleted
 							<?php } ?>
 						</td>
 					</tr>

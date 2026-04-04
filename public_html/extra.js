@@ -1188,11 +1188,11 @@ function registerClickHandler(li, link, icon, guid) {
 		if (ul == null) {
 			ul = genUL(guid);
 			li.appendChild(ul);
-			icon.classList.remove("glyphicon-folder-close");
-			icon.classList.add("glyphicon-folder-open");
+			icon.classList.remove("ska-icon-folder-close");
+			icon.classList.add("ska-icon-folder-open");
 		} else {
-			icon.classList.remove("glyphicon-folder-open");
-			icon.classList.add("glyphicon-folder-close");
+			icon.classList.remove("ska-icon-folder-open");
+			icon.classList.add("ska-icon-folder-close");
 			li.removeChild(ul);
 			ul = null;
 		}
@@ -1202,8 +1202,8 @@ function addOU(li, ou) {
 	let link = document.createElement("a");
 	link.setAttribute("href", "#");
 	let icon = document.createElement("i");
-	icon.classList.add("glyphicon");
-	icon.classList.add("glyphicon-folder-close");
+	icon.classList.add("ska-icon");
+	icon.classList.add("ska-icon-folder-close");
 	link.appendChild(icon);
 	let text = document.createTextNode(" " + ou.name);
 	link.appendChild(text);

@@ -16,7 +16,7 @@
 ## limitations under the License.
 ##
 ?>
-<h1><span class="glyphicon glyphicon-hdd" title="Server"></span> <?php out($this->get('server')->hostname)?><?php if($this->get('server')->key_management == 'decommissioned') out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></h1>
+<h1><span class="ska-icon ska-icon-server" title="Server"></span> <?php out($this->get('server')->hostname)?><?php if($this->get('server')->key_management == 'decommissioned') out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></h1>
 <?php if($this->get('server')->key_management == 'keys') { ?>
 <form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
@@ -141,11 +141,10 @@
 							</td>
 							<?php } ?>
 							<td rowspan="<?php out(max(1, count($access_list)))?>">
-								<a href="<?php outurl($this->data->relative_request_url.'/accounts/'.urlencode($account->name))?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-cog"></span> Manage account</a>
+								<a href="<?php outurl($this->data->relative_request_url.'/accounts/'.urlencode($account->name))?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-cog"></span> Manage account</a>
 								<?php if(!array_key_exists($account->name, $this->get('default_accounts'))) { ?>
-								<button type="submit" name="delete_account" value="<?php out($account->id) ?>" class="btn btn-secondary btn-sm" data-confirm="Are you sure you want to delete this account?"><span class="glyphicon glyphicon-trash"></span> Delete account</button>
+								<button type="submit" name="delete_account" value="<?php out($account->id) ?>" class="btn btn-secondary btn-sm" data-confirm="Are you sure you want to delete this account?"><span class="ska-icon ska-icon-trash"></span> Delete account</button>
 								<?php } ?>
-								<!--<button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span> Grant user access</button>-->
 							</td>
 							<?php if(empty($access_list)) { ?>
 							<td colspan="3"><em>No-one</em></td>
@@ -222,7 +221,7 @@
 									<td><?php out($admin->name); if(!$admin->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
 									<?php if($this->get('admin')) {?>
 									<td>
-										<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-trash"></span> Remove leader</button>
+										<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove leader</button>
 									</td>
 									<?php } ?>
 								</tr>
@@ -232,7 +231,7 @@
 									<td><?php out($admin->name); if(!$admin->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
 									<?php if($this->get('admin')) { ?>
 									<td>
-										<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-trash"></span> Remove leader</button>
+										<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove leader</button>
 									</td>
 									<?php } ?>
 								</tr>
@@ -475,7 +474,7 @@
 				<div class="ska-card-body pre-formatted"><?php out($this->get('output_formatter')->comment_format($note->note), ESC_NONE)?></div>
 				<div class="ska-card-footer">
 					Added <?php out($note->date)?> by <?php out($note->user->name)?>
-					<button name="delete_note" value="<?php out($note->id)?>" class="float-end btn btn-secondary btn-sm"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+					<button name="delete_note" value="<?php out($note->id)?>" class="float-end btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete</button>
 				</div>
 			</div>
 			<?php } ?>
@@ -560,7 +559,7 @@
 		<div class="col-sm-5">
 			<label for="account_name" class="visually-hidden">Account name</label>
 			<div class="input-group">
-				<span class="input-group-text"><span class="glyphicon glyphicon-log-in" title="Server account"></span></span>
+				<span class="input-group-text"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span></span>
 				<input type="text" id="account_name" name="account_name" class="form-control" placeholder="Account name" list="accountlist" required pattern=".*[^\s].*">
 				<span class="input-group-text">@<?php out($this->get('server')->hostname)?></span>
 				<datalist id="accountlist">
@@ -583,7 +582,7 @@
 		<div class="col-sm-3 mb-3">
 			<div class="input-group">
 				<span class="input-group-text">From: </span>
-				<span class="input-group-text"><label for="account"><span class="glyphicon glyphicon-log-in" title="Server account"></span><span class="visually-hidden">Account name</span></label></span>
+				<span class="input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account name</span></label></span>
 				<input type="text" id="account_remote" name="account_remote" class="form-control" placeholder="Account name" required pattern=".*[^\s].*">
 			</div>
 		</div>
@@ -604,7 +603,7 @@
 			<label for="account_name_s2s" class="visually-hidden">Account name</label>
 			<div class="input-group">
 				<span class="input-group-text">To: </span>
-				<span class="input-group-text"><span class="glyphicon glyphicon-log-in" title="Server account"></span></span>
+				<span class="input-group-text"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span></span>
 				<input type="text" id="account_name_s2s" name="account_name" class="form-control" placeholder="Account name" list="accountlist" required pattern=".*[^\s].*">
 				<span class="input-group-text">@<?php out($this->get('server')->hostname)?></span>
 			</div>
@@ -621,7 +620,7 @@
 	<div class="row">
 		<div class="col-sm-5 mb-3">
 			 <div class="input-group">
-				<span class="input-group-text"><label for="account"><span class="glyphicon glyphicon-list-alt" title="Group account"></span><span class="visually-hidden">Group name</span></label></span>
+				<span class="input-group-text"><label for="account"><span class="ska-icon ska-icon-group" title="Group account"></span><span class="visually-hidden">Group name</span></label></span>
 				<input type="text" id="group_account" name="group_account" class="form-control" placeholder="Group name" list="grouplist" required>
 				<datalist id="grouplist">
 					<?php foreach($this->get('all_groups') as $group) { ?>
@@ -636,7 +635,7 @@
 			<label for="account_name_group" class="visually-hidden">Account name</label>
 			<div class="input-group">
 				<span class="input-group-text">To: </span>
-				<span class="input-group-text"><span class="glyphicon glyphicon-log-in" title="Server account"></span></span>
+				<span class="input-group-text"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span></span>
 				<input type="text" id="account_name_group" name="account_name" class="form-control" placeholder="Account name" list="accountlist" required pattern=".*[^\s].*">
 				<span class="input-group-text">@<?php out($this->get('server')->hostname)?></span>
 			</div>
@@ -689,7 +688,7 @@
 					<?php } ?>
 				</td>
 				<td rowspan="<?php out(max(1, count($access_list)))?>">
-					<a href="<?php outurl($this->data->relative_request_url.'/accounts/'.urlencode($account->name))?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-cog"></span> Manage account</a>
+					<a href="<?php outurl($this->data->relative_request_url.'/accounts/'.urlencode($account->name))?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-cog"></span> Manage account</a>
 				</td>
 				<?php if(empty($access_list)) { ?>
 				<td colspan="3"><em>No-one</em></td>

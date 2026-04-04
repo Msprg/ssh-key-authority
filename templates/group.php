@@ -21,7 +21,7 @@ foreach($this->get('group_members') as $member) {
 	$membercounts[get_class($member)]++;
 }
 ?>
-<h1><span class="glyphicon glyphicon-list-alt" title="Group"></span> <?php out($this->get('group')->name)?><?php if($this->get('group')->active == 0) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></h1>
+<h1><span class="ska-icon ska-icon-group" title="Group"></span> <?php out($this->get('group')->name)?><?php if($this->get('group')->active == 0) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></h1>
 <?php if($this->get('admin') || $this->get('group_admin')) { ?>
 <ul class="nav nav-tabs" role="tablist">
 	<li class="nav-item active" role="presentation"><a href="#members" id="group_members_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="members" aria-selected="true">Members</a></li>
@@ -39,7 +39,7 @@ foreach($this->get('group_members') as $member) {
 	<div class="tab-pane fade in active show" id="members" role="tabpanel" aria-labelledby="group_members_tab" aria-hidden="false">
 		<h2 class="visually-hidden">Group members</h2>
 		<p><a href="<?php outurl('/groups/'.urlencode($this->get('group')->name).'/members.json') ?>" class="btn btn-secondary btn-sm">
-			<span class="glyphicon glyphicon-console"></span> JSON
+			<span class="ska-icon ska-icon-console"></span> JSON
 		</a></p>
 		<?php if(count($this->get('group_members')) == 0) { ?>
 		<p>No members have been added to this group yet.</p>
@@ -90,7 +90,7 @@ foreach($this->get('group_members') as $member) {
 							<td>Added on <?php out($member->add_date) ?> by <a href="<?php outurl('/users/'.urlencode($member->added_by->uid))?>" class="user"><?php out($member->added_by->uid) ?></a></td>
 							<?php if(!$this->get('group')->system) { ?>
 							<td>
-								<button type="submit" name="delete_member" value="<?php out($member->entity_id)?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-ban-circle"></span> Remove from group</button>
+								<button type="submit" name="delete_member" value="<?php out($member->entity_id)?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-ban-circle"></span> Remove from group</button>
 							</td>
 							<?php } ?>
 							<?php } ?>
@@ -107,7 +107,7 @@ foreach($this->get('group_members') as $member) {
 			<div class="row">
 				<div class="col-md-9 mb-3">
 					<div class="input-group">
-						<span class="input-group-text"><label for="username"><span class="glyphicon glyphicon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
+						<span class="input-group-text"><label for="username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
 						<input type="text" id="username" name="username" class="form-control" placeholder="User name" required list="userlist">
 					</div>
 				</div>
@@ -122,7 +122,7 @@ foreach($this->get('group_members') as $member) {
 			<div class="row">
 				<div class="col-md-2 mb-3">
 					<div class="input-group">
-						<span class="input-group-text"><label for="account"><span class="glyphicon glyphicon-log-in" title="Server account"></span><span class="visually-hidden">Account</span></label></span>
+						<span class="input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account</span></label></span>
 						<input type="text" id="account" name="account" class="form-control" placeholder="Account name" required>
 					</div>
 				</div>
@@ -220,8 +220,8 @@ foreach($this->get('group_members') as $member) {
 								<?php } ?>
 							</td>
 							<td>
-								<a href="<?php outurl('/groups/'.urlencode($this->get('group')->name).'/access_rules/'.urlencode($access->id))?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-cog"></span> Configure access</a>
-								<button type="submit" name="delete_access" value="<?php out($access->id)?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-ban-circle"></span> Remove access</button>
+								<a href="<?php outurl('/groups/'.urlencode($this->get('group')->name).'/access_rules/'.urlencode($access->id))?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-cog"></span> Configure access</a>
+								<button type="submit" name="delete_access" value="<?php out($access->id)?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-ban-circle"></span> Remove access</button>
 							</td>
 							<?php } ?>
 						</tr>
@@ -239,7 +239,7 @@ foreach($this->get('group_members') as $member) {
 			<div class="row">
 				<div class="col-md-8 mb-3">
 					<div class="input-group">
-						<span class="input-group-text"><label for="access-username"><span class="glyphicon glyphicon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
+						<span class="input-group-text"><label for="access-username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
 						<input type="text" id="access-username" name="username" class="form-control" placeholder="User name" required list="userlist">
 					</div>
 				</div>
@@ -254,7 +254,7 @@ foreach($this->get('group_members') as $member) {
 			<div class="row">
 				<div class="col-md-2 mb-3">
 					<div class="input-group">
-						<span class="input-group-text"><label for="access-account"><span class="glyphicon glyphicon-log-in" title="Server account"></span><span class="visually-hidden">Account</span></label></span>
+						<span class="input-group-text"><label for="access-account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account</span></label></span>
 						<input type="text" id="access-account" name="account" class="form-control" placeholder="Account name" required>
 					</div>
 				</div>
@@ -275,7 +275,7 @@ foreach($this->get('group_members') as $member) {
 			<div class="row">
 				<div class="col-md-8 mb-3">
 					<div class="input-group">
-						<span class="input-group-text"><label for="access-group"><span class="glyphicon glyphicon-list-alt" title="Group"></span><span class="visually-hidden">Group name</span></label></span>
+						<span class="input-group-text"><label for="access-group"><span class="ska-icon ska-icon-group" title="Group"></span><span class="visually-hidden">Group name</span></label></span>
 						<input type="text" id="access-group" name="group" class="form-control" placeholder="Group name" required list="grouplist">
 					</div>
 				</div>
@@ -359,7 +359,7 @@ foreach($this->get('group_members') as $member) {
 							<td><?php out($admin->name); if(!$admin->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
 							<?php if($this->get('admin')) { ?>
 							<td>
-								<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="glyphicon glyphicon-trash"></span> Remove admin</button>
+								<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove admin</button>
 							</td>
 							<?php } ?>
 						</tr>

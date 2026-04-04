@@ -204,7 +204,8 @@ a.group::before,
 a.server::before,
 a.serveraccount::before,
 a.user::before,
-.glyphicon::before {
+.glyphicon::before,
+.ska-icon::before {
 	content: "" !important;
 	display: inline-block;
 	background-image: var(--ska-icon-image);
@@ -225,27 +226,32 @@ a.user::before {
 }
 
 a.group,
+.ska-icon-group,
 .glyphicon-list-alt {
 	--ska-icon-image: url("/icons/group.svg");
 }
 
 a.server,
+.ska-icon-server,
 .glyphicon-hdd {
 	--ska-icon-image: url("/icons/server.svg");
 }
 
 a.serveraccount,
+.ska-icon-serveraccount,
 .glyphicon-log-in {
 	--ska-icon-image: url("/icons/serveraccount.svg");
 }
 
 a.user,
+.ska-icon-user,
 .glyphicon-user {
 	--ska-icon-image: url("/icons/user.svg");
 }
 
 /* Replace Bootstrap glyphicon font rendering with local SVG icons. */
-.glyphicon {
+.glyphicon,
+.ska-icon {
 	--ska-icon-image: none;
 	position: relative;
 	top: auto;
@@ -259,52 +265,64 @@ a.user,
 	vertical-align: -0.125em;
 }
 
-.glyphicon::before {
+.glyphicon::before,
+.ska-icon::before {
 	display: block;
 	width: 100%;
 	height: 100%;
 }
 
+.ska-icon-cog,
 .glyphicon-cog {
 	--ska-icon-image: url("/icons/cog.svg");
 }
 
+.ska-icon-console,
 .glyphicon-console {
 	--ska-icon-image: url("/icons/console.svg");
 }
 
+.ska-icon-trash,
 .glyphicon-trash {
 	--ska-icon-image: url("/icons/trash.svg");
 }
 
+.ska-icon-ban-circle,
 .glyphicon-ban-circle {
 	--ska-icon-image: url("/icons/ban-circle.svg");
 }
 
+.ska-icon-ok,
 .glyphicon-ok {
 	--ska-icon-image: url("/icons/ok.svg");
 }
 
+.ska-icon-remove,
 .glyphicon-remove {
 	--ska-icon-image: url("/icons/remove.svg");
 }
 
+.ska-icon-pencil,
 .glyphicon-pencil {
 	--ska-icon-image: url("/icons/pencil.svg");
 }
 
+.ska-icon-pushpin,
 .glyphicon-pushpin {
 	--ska-icon-image: url("/icons/pushpin.svg");
 }
 
+.ska-icon-plus,
 .glyphicon-plus {
 	--ska-icon-image: url("/icons/plus.svg");
 }
 
+.ska-icon-folder-close,
 .glyphicon-folder-close {
 	--ska-icon-image: url("/icons/folder-close.svg");
 }
 
+.ska-icon-folder-open,
 .glyphicon-folder-open {
 	--ska-icon-image: url("/icons/folder-open.svg");
 }
@@ -566,7 +584,8 @@ a:hover {
 	opacity: 0.5;
 }
 
-.deleted .glyphicon-remove {
+.deleted .glyphicon-remove,
+.deleted .ska-icon-remove {
 	color: #c00;
 }
 

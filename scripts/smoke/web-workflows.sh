@@ -58,6 +58,7 @@ HOME_CSRF=$(smoke_extract_csrf "$TMP_DIR/home-before-key.html")
 ! grep -Eq '<script[^>]+src="[^"]*/jquery/jquery-3\.7\.1\.min\.js' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still loads jquery"
 ! grep -Eq '<script[^>]+src="[^"]*/bootstrap5-compat\.js' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still loads bootstrap5-compat.js"
 ! grep -q 'data-ska-skip-legacy' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders migration-only data-ska-skip-legacy markup"
+! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders legacy glyphicon classes"
 
 TARGET_SERVER=$(smoke_urlencode "$SKA_SMOKE_ACCESS_SERVER_HOSTNAME")
 TARGET_ACCOUNT=$(smoke_urlencode "$SKA_SMOKE_ACCESS_ACCOUNT_NAME")
@@ -67,25 +68,30 @@ smoke_log "Checking help and groups pages for card migration regressions"
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/help" -o "$TMP_DIR/help.html"
 grep -q '>Logout<' "$TMP_DIR/help.html" || smoke_die "Authenticated session was lost while loading help page"
 ! grep -Eq 'panel-group|panel panel-default|panel-heading|panel-title|panel-body|panel-footer|panel-collapse' "$TMP_DIR/help.html" || smoke_die "Help page still renders legacy panel markup"
+! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/help.html" || smoke_die "Help page still renders legacy glyphicon classes"
 
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/groups" -o "$TMP_DIR/groups.html"
 grep -q '>Logout<' "$TMP_DIR/groups.html" || smoke_die "Authenticated session was lost while loading groups page"
 ! grep -Eq 'panel-group|panel panel-default|panel-heading|panel-title|panel-body|panel-footer|panel-collapse' "$TMP_DIR/groups.html" || smoke_die "Groups page still renders legacy panel markup"
 ! grep -Eq 'form-inline|form-horizontal|control-label|col-sm-offset-|help-block|<div class="checkbox|<div class="radio|\bsr-only\b|\bhidden-xl\b' "$TMP_DIR/groups.html" || smoke_die "Groups page still renders legacy Bootstrap 3 form helpers"
+! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/groups.html" || smoke_die "Groups page still renders legacy glyphicon classes"
 
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/servers" -o "$TMP_DIR/servers.html"
 grep -q '>Logout<' "$TMP_DIR/servers.html" || smoke_die "Authenticated session was lost while loading servers page"
 ! grep -Eq 'form-inline|form-horizontal|control-label|col-sm-offset-|help-block|<div class="checkbox|<div class="radio|\bsr-only\b|table-condensed' "$TMP_DIR/servers.html" || smoke_die "Servers page still renders legacy Bootstrap 3 form helpers"
+! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/servers.html" || smoke_die "Servers page still renders legacy glyphicon classes"
 
 TARGET_SERVER_PAGE="/servers/${TARGET_SERVER}"
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL$TARGET_SERVER_PAGE" -o "$TMP_DIR/server.html"
 grep -q '>Logout<' "$TMP_DIR/server.html" || smoke_die "Authenticated session was lost while loading target server page"
 ! grep -Eq 'form-inline|form-horizontal|control-label|col-sm-offset-|help-block|<div class="checkbox|<div class="radio|\bsr-only\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders legacy Bootstrap 3 form helpers"
+! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/server.html" || smoke_die "Target server page still renders legacy glyphicon classes"
 
 TARGET_USER=$(smoke_urlencode "$SKA_SMOKE_USERNAME")
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/users/${TARGET_USER}" -o "$TMP_DIR/user.html"
 grep -q '>Logout<' "$TMP_DIR/user.html" || smoke_die "Authenticated session was lost while loading target user page"
 ! grep -Eq 'form-inline|form-horizontal|control-label|col-sm-offset-|help-block|<div class="checkbox|<div class="radio|\bsr-only\b' "$TMP_DIR/user.html" || smoke_die "Target user page still renders legacy Bootstrap 3 form helpers"
+! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/user.html" || smoke_die "Target user page still renders legacy glyphicon classes"
 
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" \
     --data-urlencode "csrf_token=$HOME_CSRF" \
@@ -127,6 +133,7 @@ fetch_account_page() {
     fi
     grep -q '>Logout<' "$output_file" || smoke_die "Authenticated session was lost while accessing '${TARGET_PATH}'"
     grep -q 'name="add_access"' "$output_file" || smoke_die "Authenticated user cannot manage access on '${SKA_SMOKE_ACCESS_ACCOUNT_NAME}@${SKA_SMOKE_ACCESS_SERVER_HOSTNAME}' (add_access form missing)"
+    ! grep -Eq 'glyphicon-[a-z0-9-]+' "$output_file" || smoke_die "Target account page still renders legacy glyphicon classes"
 }
 
 require_post_status_ok() {
