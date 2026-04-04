@@ -9,7 +9,6 @@ This inventory covers the rendered HTML templates and the globally loaded fronte
 
 - `templates/base.php`
 - `templates/*.php`
-- `public_html/bootstrap5-compat.css`
 - `public_html/extra.js`
 
 Status legend:
@@ -24,7 +23,6 @@ Current pages load the frontend shell from [templates/base.php](/var/www/ska/tem
 
 - `public_html/bootstrap/css/bootstrap.min.css`
 - `public_html/style.css`
-- `public_html/bootstrap5-compat.css`
 - `public_html/header.js`
 - `public_html/extra.js`
 
@@ -39,15 +37,14 @@ Current runtime facts:
 - Shared button and alert presentation now has a repo-local baseline in [public_html/style.css](/var/www/ska/public_html/style.css), so active pages no longer rely on Bootstrap 3 for those visual primitives.
 - High-traffic pages now use semantic `ska-icon` helpers and entity-link icons rendered through repo-owned SVG assets in [public_html/icons/](/var/www/ska/public_html/icons/) via [public_html/style.css](/var/www/ska/public_html/style.css), not the Bootstrap font glyphs.
 - Bootstrap 3 `panel-*` markup has been migrated to local `ska-card*` classes in active templates.
-- [public_html/bootstrap5-compat.css](/var/www/ska/public_html/bootstrap5-compat.css) has been trimmed down to the aliases that still have live runtime usage.
+- `public_html/bootstrap5-compat.css` has been retired; its remaining live utility and component aliases were folded into [public_html/style.css](/var/www/ska/public_html/style.css).
 - Headless browser capture is now available through [scripts/smoke/browser-capture.sh](/var/www/ska/scripts/smoke/browser-capture.sh) for authenticated visual regression checks.
 
 The main remaining blockers are now CSS- and markup-oriented rather than plugin-oriented:
 
 - a few remaining Bootstrap 3 shell/layout conventions
-- final compatibility selectors and Bootstrap 3 CSS assumptions that still need cleanup on untargeted pages
 - remaining global Bootstrap 3 CSS assumptions in the shell and untargeted secondary templates
-- reliance on `public_html/bootstrap5-compat.css` utility aliases while pages are still mixed
+- Bootstrap 3 CSS assumptions in forms, layout grids, and untargeted secondary templates
 
 ## Page Inventory
 
@@ -98,15 +95,15 @@ Semantic `ska-icon` markup now covers the active templates and runtime JS. Remai
 
 The live font dependency is gone because [public_html/style.css](/var/www/ska/public_html/style.css) now renders active icons through local SVG assets.
 
-### 3. Compatibility CSS is still carrying mixed pages
+### 3. Bootstrap 3 CSS still backs the form/grid layer
 
-[public_html/bootstrap5-compat.css](/var/www/ska/public_html/bootstrap5-compat.css) is still doing real work, but it is now much smaller and closer to a final removal candidate:
+The dedicated compatibility file is gone, but there is still meaningful Bootstrap 3 CSS reliance in:
 
-- utility aliases (`float-end`, spacing, visibility, badges, etc.)
-- Bootstrap 5-style close button styling
-- mixed-layout support while templates are only partially migrated
+- legacy `container` / `row` / `col-*` grid usage
+- remaining `.form-group`, `.form-control`, and `.input-group` layout assumptions
+- secondary templates that have not yet been restyled locally
 
-That file should shrink only after the remaining shell/helper/layout migrations land.
+The next structural work should target those shared layout primitives directly.
 
 ## Recommended Next Slices
 
@@ -116,9 +113,9 @@ That file should shrink only after the remaining shell/helper/layout migrations 
    - `templates/servers_bulk_action.php`
    - `templates/user_pubkeys.php`
 
-2. Reduce the compatibility layer after structural cleanup:
-   - trim [public_html/bootstrap5-compat.css](/var/www/ska/public_html/bootstrap5-compat.css)
-   - remove any remaining migration-only markup once pages no longer need compatibility aliases
+2. Continue shared form/grid cleanup after structural cleanup:
+   - replace remaining Bootstrap 3 form/grid assumptions on high-traffic pages
+   - remove any remaining migration-only markup once pages no longer need Bootstrap 3 layout behavior
    - delete dead icon compatibility selectors once Bootstrap 3 CSS is removed
 
 ## Exit Criteria For Removing Bootstrap 3 CSS
@@ -128,4 +125,4 @@ Bootstrap 3 CSS can be removed when:
 - remaining Bootstrap 3 shell/helper/layout classes are eliminated from HTML templates
 - semantic local icons are the only live icon path in templates/runtime JS
 - the shell no longer depends on Bootstrap 3 navbar/layout styling
-- `public_html/bootstrap5-compat.css` no longer needs to alias Bootstrap 3 behaviors to keep mixed pages working
+- repo-local CSS covers the shared utility/component primitives still used by active pages

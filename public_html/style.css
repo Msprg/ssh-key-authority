@@ -13,6 +13,65 @@ body {
 	padding: 0;
 }
 
+.mt-3 {
+	margin-top: 1rem !important;
+}
+
+.mb-0 {
+	margin-bottom: 0 !important;
+}
+
+.mb-1 {
+	margin-bottom: 0.25rem !important;
+}
+
+.mb-3 {
+	margin-bottom: 1rem !important;
+}
+
+.mb-4 {
+	margin-bottom: 1.5rem !important;
+}
+
+.float-end {
+	float: right !important;
+}
+
+.visually-hidden {
+	position: absolute !important;
+	width: 1px !important;
+	height: 1px !important;
+	padding: 0 !important;
+	margin: -1px !important;
+	overflow: hidden !important;
+	clip: rect(0, 0, 0, 0) !important;
+	white-space: nowrap !important;
+	border: 0 !important;
+}
+
+.visually-hidden-focusable {
+	position: absolute !important;
+	width: 1px !important;
+	height: 1px !important;
+	padding: 0 !important;
+	margin: -1px !important;
+	overflow: hidden !important;
+	clip: rect(0, 0, 0, 0) !important;
+	white-space: nowrap !important;
+	border: 0 !important;
+}
+
+.visually-hidden-focusable:active,
+.visually-hidden-focusable:focus {
+	position: static !important;
+	width: auto !important;
+	height: auto !important;
+	margin: 0 !important;
+	overflow: visible !important;
+	clip: auto !important;
+	white-space: normal !important;
+}
+
 /* ===== NAVIGATION ===== */
 .ska-shell-nav {
 	position: fixed;
@@ -369,12 +428,53 @@ a.user,
 }
 
 /* ===== FORM ELEMENTS ===== */
+.input-group-text {
+	display: table-cell;
+	width: 1%;
+	height: 34px;
+	padding: 6px 12px;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 1;
+	color: #555;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	background-color: #eee;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+
+.input-group-text:first-child {
+	border-right: 0;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+.input-group-text:last-child {
+	border-left: 0;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+.input-group-text + .form-control {
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+.form-control + .input-group-text {
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
 .input-group-text label {
 	margin: 0;
 }
 
 .form-check {
+	position: relative;
 	display: block;
+	margin-top: 10px;
 	margin-bottom: 10px;
 }
 
@@ -387,6 +487,7 @@ a.user,
 }
 
 .form-check-input {
+	margin-right: 6px;
 	margin-top: 0.25em;
 	flex: 0 0 auto;
 }
@@ -587,6 +688,26 @@ fieldset[disabled] .btn {
 	box-shadow: none;
 }
 
+.btn-close {
+	float: right;
+	font-size: 21px;
+	font-weight: 700;
+	line-height: 1;
+	color: #000;
+	text-shadow: 0 1px 0 #fff;
+	background: transparent;
+	border: 0;
+	opacity: 0.2;
+}
+
+.btn-close:focus,
+.btn-close:hover {
+	color: #000;
+	text-decoration: none;
+	cursor: pointer;
+	opacity: 0.5;
+}
+
 .invisible {
 	visibility: hidden;
 }
@@ -629,6 +750,29 @@ fieldset[disabled] .btn {
 
 .alert-link {
 	font-weight: 700;
+}
+
+.d-none {
+	display: none !important;
+}
+
+.img-fluid {
+	display: block;
+	max-width: 100%;
+	height: auto;
+}
+
+.rounded {
+	border-radius: 6px;
+}
+
+.w-100 {
+	width: 100% !important;
+}
+
+.text-bg-secondary {
+	color: #fff !important;
+	background-color: #777 !important;
 }
 
 /* ===== UTILITY CLASSES ===== */
@@ -976,5 +1120,11 @@ textarea {
 
 	.ska-setting-actions {
 		padding-left: 0;
+	}
+}
+
+@media (min-width: 1200px) {
+	.d-xl-none {
+		display: none !important;
 	}
 }

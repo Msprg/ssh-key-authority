@@ -24,7 +24,6 @@ $footer=str_replace("%v", "1.5.0", $web_config['footer']);
 <title><?php out($this->get('title'))?></title>
 <link rel="stylesheet" href="<?php outurl('/bootstrap/css/bootstrap.min.css')?>">
 <link rel="stylesheet" href="<?php outurl('/style.css?'.filemtime('public_html/style.css'))?>">
-<link rel="stylesheet" href="<?php outurl('/bootstrap5-compat.css?'.filemtime('public_html/bootstrap5-compat.css'))?>">
 <link rel="icon" href="<?php outurl('/key.png')?>">
 <script src="<?php outurl('/header.js?'.filemtime('public_html/header.js'))?>"></script>
 <?php out($this->get('head'), ESC_NONE) ?>

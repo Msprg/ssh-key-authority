@@ -10,7 +10,6 @@ The UI now loads these frontend assets from [templates/base.php](/var/www/ska/te
 | Asset | Runtime status | Notes |
 | --- | --- | --- |
 | `public_html/bootstrap/css/bootstrap.min.css` | Loaded globally | Bootstrap 3.4.1 baseline CSS; still carries the legacy shell and helper-class surface |
-| `public_html/bootstrap5-compat.css` | Loaded globally | Narrowed compatibility layer for the remaining live Bootstrap 5-era aliases on top of Bootstrap 3 CSS |
 | `public_html/header.js` | Loaded globally | Pre-paint fingerprint visibility logic |
 | `public_html/extra.js` | Loaded globally | Shared page behaviors, now native DOM/fetch based |
 | `public_html/icons/*.svg` | Loaded on demand | Repo-owned icon assets used by semantic `ska-icon` markup and entity-link icons |
@@ -30,7 +29,7 @@ PHP dependencies remain small:
 
 | Library / asset family | Risk | Why it matters | Current mitigation |
 | --- | --- | --- | --- |
-| Bootstrap 3.4.1 CSS | High | End-of-life frontend baseline; still carries the shell, old helper classes, and many implicit component styles | Incremental template migration plus [public_html/bootstrap5-compat.css](/var/www/ska/public_html/bootstrap5-compat.css) |
+| Bootstrap 3.4.1 CSS | High | End-of-life frontend baseline; still carries the shell, old helper classes, and many implicit component styles | Incremental template migration plus repo-local replacements in [public_html/style.css](/var/www/ska/public_html/style.css) |
 | Glyphicons font assets | Low | Bootstrap CSS still vendors the font files, but active templates/runtime JS now render through semantic local icon helpers backed by [public_html/icons/](/var/www/ska/public_html/icons/) and [public_html/style.css](/var/www/ska/public_html/style.css) | Remove the dormant font files when Bootstrap 3 CSS is gone |
 | Local compatibility CSS | Medium | Safe compared with third-party JS, but it can become sticky technical debt if pages never finish migrating | Keep scope explicit and keep trimming unused aliases after each structural cleanup slice |
 | Local frontend runtime in `extra.js` | Medium | Now repo-owned rather than third-party, but still central to tabs, collapses, dropdowns, alerts, and sync polling | Covered by smoke tests plus targeted browser verification on interaction-heavy slices |
@@ -63,13 +62,14 @@ Completed work:
 - repo-local tab styling in [public_html/style.css](/var/www/ska/public_html/style.css) for migrated tabsets, removing the Bootstrap 3 tab CSS dependency from those pages
 - repo-local table styling in [public_html/style.css](/var/www/ska/public_html/style.css) for the busiest list/detail pages, removing their Bootstrap 3 table-class dependency
 - repo-local button and alert styling in [public_html/style.css](/var/www/ska/public_html/style.css), shrinking reliance on Bootstrap 3 for those shared primitives
+- retirement of runtime `public_html/bootstrap5-compat.css` by folding its live aliases into [public_html/style.css](/var/www/ska/public_html/style.css)
 - native replacements for the local jQuery form helpers and sync polling
 - removal of runtime `bootstrap.min.js`, jQuery, and `bootstrap5-compat.js`
 - smoke assertions that authenticated pages do not load those scripts
 
 Temporary mitigation still in effect:
 
-- keep [public_html/bootstrap5-compat.css](/var/www/ska/public_html/bootstrap5-compat.css) while templates remain mixed
+- keep repo-local utility/component styling in [public_html/style.css](/var/www/ska/public_html/style.css) while templates remain mixed
 - preserve Bootstrap-style custom events from native handlers where existing code may still observe them
 
 ### Phase 2: Current focus, remove Bootstrap 3 CSS dependency
@@ -82,7 +82,7 @@ Priority work:
 - continue replacing Bootstrap 3 form-grid and content styling assumptions on the busiest detail pages
 - trim remaining icon-compatibility selectors as Bootstrap 3 CSS is retired
 - finish any shell/layout cleanup that still assumes Bootstrap 3 navbar or utility semantics
-- shrink compatibility CSS as migrated pages stop needing aliases
+- keep consolidating shared styling into [public_html/style.css](/var/www/ska/public_html/style.css) as migrated pages stop needing Bootstrap 3 defaults
 
 Exit criteria:
 
@@ -108,9 +108,9 @@ This phase can now proceed incrementally because runtime references are already 
 
 | Timeline | Target |
 | --- | --- |
-| Now | Finish Bootstrap 3 shell/helper cleanup on untargeted secondary pages and trim compatibility CSS |
+| Now | Finish Bootstrap 3 shell/helper cleanup on untargeted secondary pages and continue form/grid cleanup |
 | Next 1-2 PRs | Finish the shell CSS cleanup and remove dead Bootstrap 3/icon residue |
-| Before removing Bootstrap 3 CSS | Finish shell/layout cleanup and trim compatibility CSS |
+| Before removing Bootstrap 3 CSS | Finish shell/layout cleanup and shared form/grid replacements |
 | Final cleanup | Delete remaining dormant Bootstrap 3 artifacts and glyphicons |
 
 ## Repository Policy For Remaining Mixed Pages
