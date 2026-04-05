@@ -50,7 +50,7 @@ function show_dynamic_element(element, animate) {
 	}
 
 	clear_dynamic_animation(element);
-	element.classList.remove('ska-hide', 'hide', 'hidden', 'ska-d-none', 'd-none');
+	element.classList.remove('ska-hide', 'hidden', 'ska-d-none');
 	if(!animate) {
 		element.style.display = '';
 		element.style.removeProperty('height');
@@ -83,7 +83,7 @@ function hide_dynamic_element(element, animate) {
 	}
 
 	clear_dynamic_animation(element);
-	element.classList.remove('ska-hide', 'hide', 'hidden', 'ska-d-none', 'd-none');
+	element.classList.remove('ska-hide', 'hidden', 'ska-d-none');
 	if(!animate) {
 		element.style.display = 'none';
 		element.style.removeProperty('height');
@@ -247,7 +247,7 @@ dom_ready(function() {
 				alertElement = document.querySelector(alertTargetSelector);
 			}
 			if(!alertElement) {
-				alertElement = dismissButton.closest('.ska-alert, .alert');
+				alertElement = dismissButton.closest('.ska-alert');
 			}
 			if(!alertElement) {
 				return;
@@ -945,7 +945,7 @@ function set_status_text(element, classname, message) {
 		return;
 	}
 
-	element.classList.remove('ska-text-success', 'ska-text-warning', 'ska-text-danger', 'ska-text-info', 'text-success', 'text-warning', 'text-danger', 'text-info');
+	element.classList.remove('ska-text-success', 'ska-text-warning', 'ska-text-danger', 'ska-text-info');
 	element.classList.add('ska-text-' + classname);
 	element.textContent = message;
 }

@@ -38,7 +38,7 @@ class Format {
 	 */
 	public static function user_link(User $user): string {
 		$url = hesc(rrurl('/users/'.urlencode($user->uid)));
-		$class = 'user' . ($user->active ? '' : ' text-muted');
+		$class = 'user' . ($user->active ? '' : ' ska-text-muted');
 		$linktext = hesc($user->uid);
 		return "<a href=\"$url\" class=\"$class\">$linktext</a>";
 	}
@@ -55,7 +55,7 @@ class Format {
 		$linktext = hesc($account->name.'@'.$account->server->hostname);
 		$decommissioned_banner = "";
 		if ($account->server->key_management == 'decommissioned') {
-			$decommissioned_banner = ' <span class="label label-default">Inactive</span>';
+			$decommissioned_banner = ' <span class="ska-badge ska-badge-muted">Inactive</span>';
 		}
 		return "<a href=\"$url\" class=\"serveraccount\">$linktext</a>$decommissioned_banner";
 	}
