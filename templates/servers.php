@@ -43,11 +43,11 @@
 							<div class="col-sm-4">
 								<div class="mb-3">
 									<label for="hostname-search">Hostname (<a href="https://mariadb.com/kb/en/mariadb/regular-expressions-overview/">regexp</a>)</label>
-									<input type="text" id="hostname-search" name="hostname" class="form-control" value="<?php out($this->get('filter')['hostname'])?>" autofocus>
+									<input type="text" id="hostname-search" name="hostname" class="ska-form-control" value="<?php out($this->get('filter')['hostname'])?>" autofocus>
 								</div>
 								<div class="mb-3">
 									<label for="ipaddress-search">IP address</label>
-									<input type="text" id="ipaddress-search" name="ip_address" class="form-control" value="<?php out($this->get('filter')['ip_address'])?>">
+									<input type="text" id="ipaddress-search" name="ip_address" class="ska-form-control" value="<?php out($this->get('filter')['ip_address'])?>">
 								</div>
 							</div>
 							<div class="col-sm-3">
@@ -195,20 +195,20 @@
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="mb-3">
 				<label for="hostname">Server hostname</label>
-				<input type="text" id="hostname" name="hostname" class="form-control" required>
+				<input type="text" id="hostname" name="hostname" class="ska-form-control" required>
 			</div>
 			<div class="mb-3">
 				<label for="port">SSH port number</label>
-				<input type="number" id="port" name="port" class="form-control" value="22" required>
+				<input type="number" id="port" name="port" class="ska-form-control" value="22" required>
 			</div>
 			<div class="mb-3">
 				<label for="jumphosts">Jumphosts (<a href="<?php outurl('/help#jumphost_format')?>">format</a>)</label>
-				<input type="text" id="jumphosts" name="jumphosts" pattern="([^@ >]+@[a-zA-Z0-9\-.\u0080-\uffff]+(:[0-9]+)?(,[^@ >]+@[a-zA-Z0-9\-.\u0080-\uffff]+(:[0-9]+)?)*)?( *-> *[a-zA-Z0-9\-.\u0080-\uffff]+)?" class="form-control">
+				<input type="text" id="jumphosts" name="jumphosts" pattern="([^@ >]+@[a-zA-Z0-9\-.\u0080-\uffff]+(:[0-9]+)?(,[^@ >]+@[a-zA-Z0-9\-.\u0080-\uffff]+(:[0-9]+)?)*)?( *-> *[a-zA-Z0-9\-.\u0080-\uffff]+)?" class="ska-form-control">
 			</div>
 			<div class="mb-3">
 				<label for="server_admin">Leaders</label>
-				<input type="text" id="server_admins" name="admins" class="form-control d-none" required>
-				<input type="text" id="server_admin" name="admin" class="form-control" placeholder="Type user/group name and press 'Enter' key" list="adminlist" required>
+				<input type="text" id="server_admins" name="admins" class="ska-form-control d-none" required>
+				<input type="text" id="server_admin" name="admin" class="ska-form-control" placeholder="Type user/group name and press 'Enter' key" list="adminlist" required>
 				<datalist id="adminlist">
 					<?php foreach($this->get('all_users') as $user) { ?>
 					<option value="<?php out($user->uid)?>" label="<?php out($user->name)?>">
@@ -243,7 +243,7 @@ host3.example.com,22,,ld_group4;leader2</pre>
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="mb-3">
 				<label for="import">CSV import data</label>
-				<textarea id="import" name="import" class="form-control" required></textarea>
+				<textarea id="import" name="import" class="ska-form-control" required></textarea>
 			</div>
 			<button type="submit" name="add_bulk" value="1" class="btn btn-primary">Add servers to key management</button>
 		</form>

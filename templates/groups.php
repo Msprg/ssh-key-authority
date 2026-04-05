@@ -41,7 +41,7 @@
 							<div class="col-sm-4">
 								<div class="mb-3">
 									<label for="name-search">Name (<a href="https://mariadb.com/kb/en/mariadb/regular-expressions-overview/">regexp</a>)</label>
-									<input type="text" id="name-search" name="name" class="form-control" value="<?php out($this->get('filter')['name'])?>" autofocus>
+									<input type="text" id="name-search" name="name" class="ska-form-control" value="<?php out($this->get('filter')['name'])?>" autofocus>
 								</div>
 							</div>
 							<div class="col-sm-3">
@@ -106,11 +106,11 @@
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-form-group mb-3">
 				<label for="name" class="visually-hidden">Group name</label>
-				<input type="text" id="name" name="name" class="form-control" placeholder="Group name" required>
+				<input type="text" id="name" name="name" class="ska-form-control" placeholder="Group name" required>
 			</div>
 			<div class="ska-form-group mb-3">
 				<label for="admin_uid" class="visually-hidden">Administrator</label>
-				<input type="text" size="40" id="admin_uid" name="admin_uid" class="form-control" placeholder="Administrator" required list="userlist">
+				<input type="text" size="40" id="admin_uid" name="admin_uid" class="ska-form-control" placeholder="Administrator" required list="userlist">
 				<datalist id="userlist">
 					<?php foreach($this->get('all_users') as $user) { ?>
 					<option value="<?php out($user->uid)?>" label="<?php out($user->name)?>">

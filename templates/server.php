@@ -190,7 +190,7 @@
 			<h3>Create<?php if($this->get('server')->authorization != 'manual') out(' non-LDAP'); ?> account</h3>
 			<div class="ska-form-group">
 				<label for="account_name" class="visually-hidden">Account name</label>
-				<input type="text" id="account_name" name="account_name" class="form-control" placeholder="Account name" required pattern=".*[^\s].*">
+				<input type="text" id="account_name" name="account_name" class="ska-form-control" placeholder="Account name" required pattern=".*[^\s].*">
 			</div>
 			<button type="submit" name="add_account" value="1" class="btn btn-primary">Manage this account with SSH Key Authority</button>
 		</form>
@@ -247,7 +247,7 @@
 			<h3>Add leader</h3>
 			<div class="ska-form-group">
 				<label for="user_name" class="visually-hidden">User or group name</label>
-				<input type="text" id="user_name" name="user_name" class="form-control" placeholder="User or group name" required list="userlist">
+				<input type="text" id="user_name" name="user_name" class="ska-form-control" placeholder="User or group name" required list="userlist">
 				<datalist id="userlist">
 					<?php foreach($this->get('all_users') as $user) { ?>
 					<option value="<?php out($user->uid)?>" label="<?php out($user->name)?>">
@@ -269,26 +269,26 @@
 			<div class="ska-setting-row">
 				<label for="hostname" class="ska-setting-label">Hostname</label>
 				<div class="ska-setting-control">
-					<input type="text" id="hostname" name="hostname" value="<?php out($this->get('server')->hostname)?>" required class="form-control">
+					<input type="text" id="hostname" name="hostname" value="<?php out($this->get('server')->hostname)?>" required class="ska-form-control">
 				</div>
 			</div>
 			<div class="ska-setting-row">
 				<label for="port" class="ska-setting-label">SSH port number</label>
 				<div class="ska-setting-control">
-					<input type="number" id="port" name="port" value="<?php out($this->get('server')->port)?>" required class="form-control">
+					<input type="number" id="port" name="port" value="<?php out($this->get('server')->port)?>" required class="ska-form-control">
 				</div>
 			</div>
 			<div class="ska-setting-row">
 				<label for="host_key" class="ska-setting-label">Host key</label>
 				<div class="ska-setting-control">
-					<input type="text" id="host_key" name="host_key" value="<?php out($this->get('server')->host_key)?>" readonly class="form-control">
+					<input type="text" id="host_key" name="host_key" value="<?php out($this->get('server')->host_key)?>" readonly class="ska-form-control">
 					<button type="button" class="btn btn-secondary" data-clear="host_key">Clear</button>
 				</div>
 			</div>
 			<div class="ska-setting-row">
 				<label for="host_key" class="ska-setting-label">Jumphosts (<a href="<?php outurl('/help#jumphost_format')?>">format</a>)</label>
 				<div class="ska-setting-control">
-					<input type="text" id="jumphosts" name="jumphosts" value="<?php out($this->get('server')->jumphosts)?>" pattern="([^@ >]+@[a-zA-Z0-9\-.\u0080-\uffff]+(:[0-9]+)?(,[^@ >]+@[a-zA-Z0-9\-.\u0080-\uffff]+(:[0-9]+)?)*)?( *-> *[a-zA-Z0-9\-.\u0080-\uffff]+)?" class="form-control">
+					<input type="text" id="jumphosts" name="jumphosts" value="<?php out($this->get('server')->jumphosts)?>" pattern="([^@ >]+@[a-zA-Z0-9\-.\u0080-\uffff]+(:[0-9]+)?(,[^@ >]+@[a-zA-Z0-9\-.\u0080-\uffff]+(:[0-9]+)?)*)?( *-> *[a-zA-Z0-9\-.\u0080-\uffff]+)?" class="ska-form-control">
 				</div>
 			</div>
 			<div class="ska-setting-row">
@@ -321,9 +321,9 @@
 				<div class="ska-setting-label">LDAP access options</div>
 				<div class="ska-setting-control">
 					<label class="ska-choice"><input type="checkbox" name="access_option[command][enabled]"<?php if(isset($options['command'])) out(' checked'); ?>> <span>Specify command (<code>command=&quot;command&quot;</code>)</span></label>
-					<input type="text" id="command_value" name="access_option[command][value]" value="<?php if(isset($options['command'])) out($options['command']->value); ?>" class="form-control">
+					<input type="text" id="command_value" name="access_option[command][value]" value="<?php if(isset($options['command'])) out($options['command']->value); ?>" class="ska-form-control">
 					<label class="ska-choice"><input type="checkbox" name="access_option[from][enabled]"<?php if(isset($options['from'])) out(' checked'); ?>> <span>Restrict source address (<code>from=&quot;<abbr title="A pattern-list is a comma-separated list of patterns.  Each pattern can be either a hostname or an IP address, with wildcards (* and ?) allowed.">pattern-list</abbr>&quot;</code>)</span></label>
-					<input type="text" id="from_value" name="access_option[from][value]" value="<?php if(isset($options['from'])) out($options['from']->value); ?>" class="form-control">
+					<input type="text" id="from_value" name="access_option[from][value]" value="<?php if(isset($options['from'])) out($options['from']->value); ?>" class="ska-form-control">
 					<label class="ska-choice"><input type="checkbox" name="access_option[no-port-forwarding][enabled]"<?php if(isset($options['no-port-forwarding'])) out(' checked'); ?>> <span>Disallow port forwarding (<code>no-port-forwarding</code>)</span></label>
 					<label class="ska-choice"><input type="checkbox" name="access_option[no-X11-forwarding][enabled]"<?php if(isset($options['no-X11-forwarding'])) out(' checked'); ?>> <span>Disallow X11 forwarding (<code>no-X11-forwarding</code>)</span></label>
 					<label class="ska-choice"><input type="checkbox" name="access_option[no-pty][enabled]"<?php if(isset($options['no-pty'])) out(' checked'); ?>> <span>Disable terminal (<code>no-pty</code>)</span></label>
@@ -345,7 +345,7 @@
 							<label class="ska-choice"><input type="radio" name="history_username_env_mode" value="disabled"<?php if($history_username_env_mode == 'disabled') out(' checked') ?>> <span>Force disabled</span></label>
 						</div>
 						<label for="history_username_env_format">Format override (optional)</label>
-						<input type="text" id="history_username_env_format" name="history_username_env_format" value="<?php out($history_username_env_format); ?>" class="form-control">
+						<input type="text" id="history_username_env_format" name="history_username_env_format" value="<?php out($history_username_env_format); ?>" class="ska-form-control">
 						<p class="ska-help-text">Supported placeholder: <code>{uid}</code>. Format must include both <code>=</code> and <code>{uid}</code>; invalid values fall back to <code>BASH_HISTORY_USERNAME={uid}</code>.</p>
 					</div>
 				</div>
@@ -427,7 +427,7 @@
 			<div class="ska-setting-row">
 				<label for="host_key" class="ska-setting-label">Host key</label>
 				<div class="ska-setting-control">
-					<input type="text" id="host_key" name="host_key" value="<?php out($this->get('server')->host_key)?>" readonly class="form-control">
+					<input type="text" id="host_key" name="host_key" value="<?php out($this->get('server')->host_key)?>" readonly class="ska-form-control">
 					<button type="button" class="btn btn-secondary" data-clear="host_key">Clear</button>
 				</div>
 			</div>
@@ -483,7 +483,7 @@
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="mb-3">
 				<label for="note">Note</label>
-				<textarea class="form-control" rows="4" id="note" name="note" required></textarea>
+				<textarea class="ska-form-control" rows="4" id="note" name="note" required></textarea>
 			</div>
 			<div class="mb-3">
 				<button type="submit" name="add_note" value="1" class="btn btn-primary btn-lg w-100">Add note</button>
@@ -496,7 +496,7 @@
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="mb-3">
 				<label for="anonymous">From</label>
-				<select class="form-control" id="anonymous" name="anonymous">
+				<select class="ska-form-control" id="anonymous" name="anonymous">
 					<option value="0"><?php out("{$this->get('active_user')->name} <{$this->get('active_user')->email}>");?></option>
 					<option value="1"><?php out($this->get('email_config')['from_name'])?> &lt;<?php out($this->get('email_config')['from_address'])?>&gt; (Reply-to: <?php out($this->get('email_config')['admin_address']) ?>)</option>
 				</select>
@@ -532,11 +532,11 @@
 			</div>
 			<div class="mb-3">
 				<label for="subject">Subject</label>
-				<input type="text" class="form-control" id="subject" name="subject" required value="Server <?php out('"'.$this->get('server')->hostname.'"') ?>">
+				<input type="text" class="ska-form-control" id="subject" name="subject" required value="Server <?php out('"'.$this->get('server')->hostname.'"') ?>">
 			</div>
 			<div class="mb-3">
 				<label for="body">Body</label>
-				<textarea class="form-control" rows="20" id="body" name="body" required></textarea>
+				<textarea class="ska-form-control" rows="20" id="body" name="body" required></textarea>
 			</div>
 			<div class="mb-3"><button type="submit" name="send_mail" value="1" data-confirm="Send mail? Are you sure?" class="btn btn-primary btn-lg w-100">Send mail</button></div>
 		</form>
@@ -560,7 +560,7 @@
 			<label for="account_name" class="visually-hidden">Account name</label>
 			<div class="ska-input-group">
 				<span class="ska-input-group-text"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span></span>
-				<input type="text" id="account_name" name="account_name" class="form-control" placeholder="Account name" list="accountlist" required pattern=".*[^\s].*">
+				<input type="text" id="account_name" name="account_name" class="ska-form-control" placeholder="Account name" list="accountlist" required pattern=".*[^\s].*">
 				<span class="ska-input-group-text">@<?php out($this->get('server')->hostname)?></span>
 				<datalist id="accountlist">
 					<?php foreach($this->get('all_accounts') as $accounts) { ?>
@@ -583,13 +583,13 @@
 			<div class="ska-input-group">
 				<span class="ska-input-group-text">From: </span>
 				<span class="ska-input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account name</span></label></span>
-				<input type="text" id="account_remote" name="account_remote" class="form-control" placeholder="Account name" required pattern=".*[^\s].*">
+				<input type="text" id="account_remote" name="account_remote" class="ska-form-control" placeholder="Account name" required pattern=".*[^\s].*">
 			</div>
 		</div>
 		<div class="col-sm-3 mb-3">
 			<div class="ska-input-group">
 				<span class="ska-input-group-text"><label for="hostname">@</label></span>
-				<input type="text" id="hostname_remote" name="hostname_remote" class="form-control" placeholder="Hostname" list="serverlist" required>
+				<input type="text" id="hostname_remote" name="hostname_remote" class="ska-form-control" placeholder="Hostname" list="serverlist" required>
 				<datalist id="serverlist">
 					<?php foreach($this->get('all_servers') as $server) { ?>
 					<option value="<?php out($server->hostname)?>">
@@ -604,7 +604,7 @@
 			<div class="ska-input-group">
 				<span class="ska-input-group-text">To: </span>
 				<span class="ska-input-group-text"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span></span>
-				<input type="text" id="account_name_s2s" name="account_name" class="form-control" placeholder="Account name" list="accountlist" required pattern=".*[^\s].*">
+				<input type="text" id="account_name_s2s" name="account_name" class="ska-form-control" placeholder="Account name" list="accountlist" required pattern=".*[^\s].*">
 				<span class="ska-input-group-text">@<?php out($this->get('server')->hostname)?></span>
 			</div>
 		</div>
@@ -621,7 +621,7 @@
 		<div class="col-sm-5 mb-3">
 			 <div class="ska-input-group">
 				<span class="ska-input-group-text"><label for="account"><span class="ska-icon ska-icon-group" title="Group account"></span><span class="visually-hidden">Group name</span></label></span>
-				<input type="text" id="group_account" name="group_account" class="form-control" placeholder="Group name" list="grouplist" required>
+				<input type="text" id="group_account" name="group_account" class="ska-form-control" placeholder="Group name" list="grouplist" required>
 				<datalist id="grouplist">
 					<?php foreach($this->get('all_groups') as $group) { ?>
 					<option value="<?php out($group->name)?>">
@@ -636,7 +636,7 @@
 			<div class="ska-input-group">
 				<span class="ska-input-group-text">To: </span>
 				<span class="ska-input-group-text"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span></span>
-				<input type="text" id="account_name_group" name="account_name" class="form-control" placeholder="Account name" list="accountlist" required pattern=".*[^\s].*">
+				<input type="text" id="account_name_group" name="account_name" class="ska-form-control" placeholder="Account name" list="accountlist" required pattern=".*[^\s].*">
 				<span class="ska-input-group-text">@<?php out($this->get('server')->hostname)?></span>
 			</div>
 		</div>

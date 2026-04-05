@@ -108,7 +108,7 @@ foreach($this->get('group_members') as $member) {
 				<div class="col-md-9 mb-3">
 					<div class="ska-input-group">
 						<span class="ska-input-group-text"><label for="username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
-						<input type="text" id="username" name="username" class="form-control" placeholder="User name" required list="userlist">
+						<input type="text" id="username" name="username" class="ska-form-control" placeholder="User name" required list="userlist">
 					</div>
 				</div>
 				<div class="col-md-3 mb-3">
@@ -123,13 +123,13 @@ foreach($this->get('group_members') as $member) {
 				<div class="col-md-2 mb-3">
 					<div class="ska-input-group">
 						<span class="ska-input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account</span></label></span>
-						<input type="text" id="account" name="account" class="form-control" placeholder="Account name" required>
+						<input type="text" id="account" name="account" class="ska-form-control" placeholder="Account name" required>
 					</div>
 				</div>
 				<div class="col-md-7 mb-3">
 					<div class="ska-input-group">
 						<span class="ska-input-group-text"><label for="hostname">@</label></span>
-						<input type="text" id="hostname" name="hostname" class="form-control" placeholder="Hostname" required list="<?php out($this->get('admin') ? 'serverlist' : 'adminedserverlist')?>">
+						<input type="text" id="hostname" name="hostname" class="ska-form-control" placeholder="Hostname" required list="<?php out($this->get('admin') ? 'serverlist' : 'adminedserverlist')?>">
 					</div>
 				</div>
 				<div class="col-md-3 mb-3">
@@ -143,7 +143,7 @@ foreach($this->get('group_members') as $member) {
 			<p>Enter a list of accounts, one per line, in the form accountname@hostname</p>
 			<div class="row">
 				<div class="col-md-12 mb-3">
-					<textarea name="accounts" class="form-control"></textarea>
+					<textarea name="accounts" class="ska-form-control"></textarea>
 				</div>
 			</div>
 			<div class="row">
@@ -240,7 +240,7 @@ foreach($this->get('group_members') as $member) {
 				<div class="col-md-8 mb-3">
 					<div class="ska-input-group">
 						<span class="ska-input-group-text"><label for="access-username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
-						<input type="text" id="access-username" name="username" class="form-control" placeholder="User name" required list="userlist">
+						<input type="text" id="access-username" name="username" class="ska-form-control" placeholder="User name" required list="userlist">
 					</div>
 				</div>
 				<div class="col-md-4 mb-3">
@@ -255,13 +255,13 @@ foreach($this->get('group_members') as $member) {
 				<div class="col-md-2 mb-3">
 					<div class="ska-input-group">
 						<span class="ska-input-group-text"><label for="access-account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account</span></label></span>
-						<input type="text" id="access-account" name="account" class="form-control" placeholder="Account name" required>
+						<input type="text" id="access-account" name="account" class="ska-form-control" placeholder="Account name" required>
 					</div>
 				</div>
 				<div class="col-md-6 mb-3">
 					<div class="ska-input-group">
 						<span class="ska-input-group-text"><label for="access-hostname">@</label></span>
-						<input type="text" id="access-hostname" name="hostname" class="form-control" placeholder="Hostname" required list="serverlist">
+						<input type="text" id="access-hostname" name="hostname" class="ska-form-control" placeholder="Hostname" required list="serverlist">
 					</div>
 				</div>
 				<div class="col-md-4 mb-3">
@@ -276,7 +276,7 @@ foreach($this->get('group_members') as $member) {
 				<div class="col-md-8 mb-3">
 					<div class="ska-input-group">
 						<span class="ska-input-group-text"><label for="access-group"><span class="ska-icon ska-icon-group" title="Group"></span><span class="visually-hidden">Group name</span></label></span>
-						<input type="text" id="access-group" name="group" class="form-control" placeholder="Group name" required list="grouplist">
+						<input type="text" id="access-group" name="group" class="ska-form-control" placeholder="Group name" required list="grouplist">
 					</div>
 				</div>
 				<div class="col-md-4 mb-3">
@@ -375,7 +375,7 @@ foreach($this->get('group_members') as $member) {
 			<h3>Add administrator</h3>
 			<div class="ska-form-group">
 				<label for="user_name" class="visually-hidden">User name</label>
-				<input type="text" id="user_name" name="user_name" class="form-control" placeholder="User name" required list="userlist">
+				<input type="text" id="user_name" name="user_name" class="ska-form-control" placeholder="User name" required list="userlist">
 			</div>
 			<button type="submit" name="add_admin" value="1" class="btn btn-primary">Add administrator to group</button>
 		</form>
@@ -389,7 +389,7 @@ foreach($this->get('group_members') as $member) {
 			<div class="ska-setting-row">
 				<label for="name" class="ska-setting-label">Name</label>
 				<div class="ska-setting-control">
-					<input type="text" id="name" name="name" value="<?php out($this->get('group')->name)?>" required class="form-control">
+					<input type="text" id="name" name="name" value="<?php out($this->get('group')->name)?>" required class="ska-form-control">
 				</div>
 			</div>
 			<div class="ska-setting-row">

@@ -89,13 +89,13 @@ switch(get_class($remote_entity)) {
 							<label class="ska-form-check-label"><input type="checkbox" class="ska-form-check-input" name="access_option[command][enabled]"<?php if(isset($options['command'])) out(' checked'); ?>> <span>Specify command (<code>command=&quot;command&quot;</code>)</span></label>
 						</div>
 						<div class="mb-3">
-							<input type="text" id="command_value" name="access_option[command][value]" value="<?php if(isset($options['command'])) out($options['command']->value); ?>" class="form-control">
+							<input type="text" id="command_value" name="access_option[command][value]" value="<?php if(isset($options['command'])) out($options['command']->value); ?>" class="ska-form-control">
 						</div>
 						<div class="ska-form-check">
 							<label class="ska-form-check-label"><input type="checkbox" class="ska-form-check-input" name="access_option[from][enabled]"<?php if(isset($options['from'])) out(' checked'); ?>> <span>Restrict source address (<code>from=&quot;<abbr title="A pattern-list is a comma-separated list of patterns.  Each pattern can be either a hostname or an IP address, with wildcards (* and ?) allowed.">pattern-list</abbr>&quot;</code>)</span></label>
 						</div>
 						<div class="mb-3">
-							<input type="text" id="from_value" name="access_option[from][value]" value="<?php if(isset($options['from'])) out($options['from']->value); ?>" class="form-control">
+							<input type="text" id="from_value" name="access_option[from][value]" value="<?php if(isset($options['from'])) out($options['from']->value); ?>" class="ska-form-control">
 						</div>
 						<div class="ska-form-check">
 							<label class="ska-form-check-label"><input type="checkbox" class="ska-form-check-input" name="access_option[no-port-forwarding][enabled]"<?php if(isset($options['no-port-forwarding'])) out(' checked'); ?>> <span>Disallow port forwarding (<code>no-port-forwarding</code>)</span></label>

@@ -189,7 +189,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 				<div class="col-md-9 mb-3">
 					<div class="ska-input-group">
 						<span class="ska-input-group-text"><label for="username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
-						<input type="text" id="username" name="username" class="form-control" placeholder="User name" required list="userlist">
+						<input type="text" id="username" name="username" class="ska-form-control" placeholder="User name" required list="userlist">
 						<datalist id="userlist">
 							<?php foreach($this->get('all_users') as $user) { ?>
 							<option value="<?php out($user->uid)?>" label="<?php out($user->name)?>">
@@ -209,13 +209,13 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 				<div class="col-md-2 mb-3">
 					<div class="ska-input-group">
 						<span class="ska-input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account name</span></label></span>
-						<input type="text" id="account" name="account" class="form-control" placeholder="Account name" required>
+						<input type="text" id="account" name="account" class="ska-form-control" placeholder="Account name" required>
 					</div>
 				</div>
 				<div class="col-md-7 mb-3">
 					<div class="ska-input-group">
 						<span class="ska-input-group-text"><label for="hostname">@</label></span>
-						<input type="text" id="hostname" name="hostname" class="form-control" placeholder="Hostname" required list="serverlist">
+						<input type="text" id="hostname" name="hostname" class="ska-form-control" placeholder="Hostname" required list="serverlist">
 						<datalist id="serverlist">
 							<?php foreach($this->get('all_servers') as $server) { ?>
 							<option value="<?php out($server->hostname)?>">
@@ -235,7 +235,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 				<div class="col-md-9 mb-3">
 					<div class="ska-input-group">
 						<span class="ska-input-group-text"><label for="group"><span class="ska-icon ska-icon-group" title="Group"></span><span class="visually-hidden">Group name</span></label></span>
-						<input type="text" id="group" name="group" class="form-control" placeholder="Group name" required list="grouplist">
+						<input type="text" id="group" name="group" class="ska-form-control" placeholder="Group name" required list="grouplist">
 						<datalist id="grouplist">
 							<?php foreach($this->get('all_groups') as $group) { ?>
 							<option value="<?php out($group->name)?>">
@@ -398,7 +398,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="mb-3">
 				<label for="add_public_key">Public key</label>
-				<textarea class="form-control" rows="4" id="add_public_key" name="add_public_key" required></textarea>
+				<textarea class="ska-form-control" rows="4" id="add_public_key" name="add_public_key" required></textarea>
 			</div>
 			<?php if($this->get('active_user')->admin) { ?>
 			<div class="ska-form-check mb-3">
@@ -560,7 +560,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<h3>Add leader</h3>
 			<div class="ska-form-group">
 				<label for="user_name" class="visually-hidden">Account name</label>
-				<input type="text" id="user_name" name="user_name" class="form-control" placeholder="User name" required list="userlist">
+				<input type="text" id="user_name" name="user_name" class="ska-form-control" placeholder="User name" required list="userlist">
 				<datalist id="userlist">
 					<?php foreach($this->get('all_users') as $user) { ?>
 					<option value="<?php out($user->uid)?>" label="<?php out($user->name)?>">

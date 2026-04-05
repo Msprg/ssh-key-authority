@@ -40,7 +40,7 @@ Current runtime facts:
 - Active form-heavy templates now render local `ska-form-group` wrappers instead of the Bootstrap 3-only `form-group` helper, and the shell dropdown root uses repo-local class hooks.
 - Base typography/content defaults, badge styling, and collapse state styling now have repo-local coverage in [public_html/style.css](/var/www/ska/public_html/style.css), allowing the shell to render without `bootstrap.min.css`.
 - Tabs and collapses now use `show` state only; the Bootstrap 3-only `in` marker has been retired from active templates and native runtime code.
-- Bootstrap handoff prep has started: repo-local aliases such as `ska-btn*`, `ska-alert*`, `ska-form-label`, `ska-form-control`, `ska-input-group*`, `ska-form-check*`, and `ska-badge*` now exist and are in use on the shell/login plus the busiest list/detail pages.
+- Bootstrap handoff prep has started: repo-local aliases such as `ska-btn*`, `ska-alert*`, `ska-form-label`, `ska-form-control`, `ska-input-group*`, `ska-form-check*`, and `ska-badge*` now exist and are in use on the shell/login plus the busiest list/detail pages, with the main list/detail forms now migrated to `ska-form-control`.
 - High-traffic pages now use semantic `ska-icon` helpers and entity-link icons rendered through repo-owned SVG assets in [public_html/icons/](/var/www/ska/public_html/icons/) via [public_html/style.css](/var/www/ska/public_html/style.css), not the Bootstrap font glyphs.
 - Bootstrap 3 `panel-*` markup has been migrated to local `ska-card*` classes in active templates.
 - `public_html/bootstrap5-compat.css` has been retired; its remaining live utility and component aliases were folded into [public_html/style.css](/var/www/ska/public_html/style.css).

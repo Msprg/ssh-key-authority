@@ -93,6 +93,8 @@ grep -q '>Logout<' "$TMP_DIR/groups.html" || smoke_die "Authenticated session wa
 ! grep -Eq 'class="[^"]*\\btable\\b|class="[^"]*\\btable-bordered\\b|class="[^"]*\\btable-striped\\b|class="[^"]*\\btable-hover\\b|class="[^"]*\\btable-sm\\b' "$TMP_DIR/groups.html" || smoke_die "Groups page still renders legacy Bootstrap table classes"
 ! grep -Eq 'class="nav nav-tabs"|class="[^"]*\\bnav-item\\b|class="[^"]*\\bnav-link\\b|class="tab-content"|class="[^"]*\\btab-pane\\b' "$TMP_DIR/groups.html" || smoke_die "Groups page still renders legacy Bootstrap tab classes"
 ! grep -Eq "$LEGACY_IN_CLASS_RE" "$TMP_DIR/groups.html" || smoke_die "Groups page still renders legacy collapse/tab state classes"
+! grep -Eq 'class="[^"]*\\bform-control\\b' "$TMP_DIR/groups.html" || smoke_die "Groups page still renders Bootstrap-named form-control classes"
+grep -Eq 'class="[^"]*ska-form-control' "$TMP_DIR/groups.html" || smoke_die "Groups page is missing SKA-owned form-control classes"
 
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/servers" -o "$TMP_DIR/servers.html"
 grep -q '>Logout<' "$TMP_DIR/servers.html" || smoke_die "Authenticated session was lost while loading servers page"
@@ -104,7 +106,9 @@ grep -q '>Logout<' "$TMP_DIR/servers.html" || smoke_die "Authenticated session w
 ! grep -Eq "$LEGACY_IN_CLASS_RE" "$TMP_DIR/servers.html" || smoke_die "Servers page still renders legacy collapse/tab state classes"
 ! grep -Eq 'class="[^"]*\\bform-check\\b|class="[^"]*\\bform-check-label\\b|class="[^"]*\\bform-check-input\\b' "$TMP_DIR/servers.html" || smoke_die "Servers page still renders Bootstrap-named form-check classes"
 ! grep -Eq 'class="[^"]*\\btext-bg-secondary\\b' "$TMP_DIR/servers.html" || smoke_die "Servers page still renders Bootstrap-named inactive badge classes"
+! grep -Eq 'class="[^"]*\\bform-control\\b' "$TMP_DIR/servers.html" || smoke_die "Servers page still renders Bootstrap-named form-control classes"
 grep -Eq 'class="[^"]*ska-form-check' "$TMP_DIR/servers.html" || smoke_die "Servers page is missing SKA-owned form-check classes"
+grep -Eq 'class="[^"]*ska-form-control' "$TMP_DIR/servers.html" || smoke_die "Servers page is missing SKA-owned form-control classes"
 
 TARGET_SERVER_PAGE="/servers/${TARGET_SERVER}"
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL$TARGET_SERVER_PAGE" -o "$TMP_DIR/server.html"
@@ -118,6 +122,8 @@ grep -q '>Logout<' "$TMP_DIR/server.html" || smoke_die "Authenticated session wa
 ! grep -Eq 'class="[^"]*\\binput-group\\b|class="[^"]*\\binput-group-text\\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders Bootstrap-named input-group classes"
 ! grep -Eq 'class="[^"]*\\bform-check\\b|class="[^"]*\\bform-check-label\\b|class="[^"]*\\bform-check-input\\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders Bootstrap-named form-check classes"
 ! grep -Eq 'class="[^"]*\\btext-bg-secondary\\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders Bootstrap-named inactive badge classes"
+! grep -Eq 'class="[^"]*\\bform-control\\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders Bootstrap-named form-control classes"
+grep -Eq 'class="[^"]*ska-form-control' "$TMP_DIR/server.html" || smoke_die "Target server page is missing SKA-owned form-control classes"
 
 TARGET_USER=$(smoke_urlencode "$SKA_SMOKE_USERNAME")
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/users/${TARGET_USER}" -o "$TMP_DIR/user.html"
@@ -134,6 +140,11 @@ grep -q '>Logout<' "$TMP_DIR/bulk-mail.html" || smoke_die "Authenticated session
 grep -Eq 'class="[^"]*ska-alert[^"]*ska-alert-warning' "$TMP_DIR/bulk-mail.html" || smoke_die "Bulk mail page is missing SKA-owned alert classes"
 grep -Eq 'class="[^"]*ska-form-control' "$TMP_DIR/bulk-mail.html" || smoke_die "Bulk mail page is missing SKA-owned form-control classes"
 grep -Eq 'class="[^"]*ska-btn[^"]*ska-btn-primary' "$TMP_DIR/bulk-mail.html" || smoke_die "Bulk mail page is missing SKA-owned button classes"
+
+curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/pubkeys" -o "$TMP_DIR/pubkeys.html"
+grep -q '>Logout<' "$TMP_DIR/pubkeys.html" || smoke_die "Authenticated session was lost while loading public keys page"
+! grep -Eq 'class="[^"]*\\bform-control\\b' "$TMP_DIR/pubkeys.html" || smoke_die "Public keys page still renders Bootstrap-named form-control classes"
+grep -Eq 'class="[^"]*ska-form-control' "$TMP_DIR/pubkeys.html" || smoke_die "Public keys page is missing SKA-owned form-control classes"
 
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" \
     --data-urlencode "csrf_token=$HOME_CSRF" \
@@ -183,6 +194,8 @@ fetch_account_page() {
     ! grep -Eq 'class="[^"]*\\binput-group\\b|class="[^"]*\\binput-group-text\\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named input-group classes"
     ! grep -Eq 'class="[^"]*\\bform-check\\b|class="[^"]*\\bform-check-label\\b|class="[^"]*\\bform-check-input\\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named form-check classes"
     ! grep -Eq 'class="[^"]*\\btext-bg-secondary\\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named inactive badge classes"
+    ! grep -Eq 'class="[^"]*\\bform-control\\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named form-control classes"
+    grep -Eq 'class="[^"]*ska-form-control' "$output_file" || smoke_die "Target account page is missing SKA-owned form-control classes"
 }
 
 require_post_status_ok() {
@@ -245,7 +258,9 @@ grep -q '>Logout<' "$TMP_DIR/access-options.html" || smoke_die "Authenticated se
 ! grep -Eq "$LEGACY_FORM_GROUP_RE" "$TMP_DIR/access-options.html" || smoke_die "Access options page still renders legacy form-group markup"
 ! grep -Eq "$LEGACY_CARET_RE" "$TMP_DIR/access-options.html" || smoke_die "Access options page still renders legacy caret markup"
 ! grep -Eq 'class="[^"]*\\bform-check\\b|class="[^"]*\\bform-check-label\\b|class="[^"]*\\bform-check-input\\b' "$TMP_DIR/access-options.html" || smoke_die "Access options page still renders Bootstrap-named form-check classes"
+! grep -Eq 'class="[^"]*\\bform-control\\b' "$TMP_DIR/access-options.html" || smoke_die "Access options page still renders Bootstrap-named form-control classes"
 grep -Eq 'class="[^"]*ska-form-check' "$TMP_DIR/access-options.html" || smoke_die "Access options page is missing SKA-owned form-check classes"
+grep -Eq 'class="[^"]*ska-form-control' "$TMP_DIR/access-options.html" || smoke_die "Access options page is missing SKA-owned form-control classes"
 
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL$TARGET_PATH" -o "$TMP_DIR/account-before-access-delete.html"
 ACCOUNT_DELETE_CSRF=$(smoke_extract_csrf "$TMP_DIR/account-before-access-delete.html")

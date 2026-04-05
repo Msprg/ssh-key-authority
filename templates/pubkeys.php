@@ -85,24 +85,24 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 							<div class="row">
 								<div class="col-md-6 mb-3">
 									<label for="fingerprint-search">Fingerprint</label>
-									<input type="text" id="fingerprint-search" name="fingerprint" class="form-control" value="<?php out($this->get('filter')['fingerprint'])?>">
+									<input type="text" id="fingerprint-search" name="fingerprint" class="ska-form-control" value="<?php out($this->get('filter')['fingerprint'])?>">
 								</div>
 								<div class="col-md-2 mb-3">
 									<label for="type-search">Key type</label>
-									<input type="text" id="type-search" name="type" class="form-control" value="<?php out($this->get('filter')['type'])?>">
+									<input type="text" id="type-search" name="type" class="ska-form-control" value="<?php out($this->get('filter')['type'])?>">
 								</div>
 								<div class="col-md-2 mb-3">
 									<label for="keysize-min">Min key size</label>
 									<div class="ska-input-group">
 										<span class="ska-input-group-text">≥</span>
-										<input type="text" id="keysize-min" name="keysize-min" class="form-control" value="<?php out($this->get('filter')['keysize-min'])?>">
+										<input type="text" id="keysize-min" name="keysize-min" class="ska-form-control" value="<?php out($this->get('filter')['keysize-min'])?>">
 									</div>
 								</div>
 								<div class="col-md-2 mb-3">
 									<label for="keysize-max">Max key size</label>
 									<div class="ska-input-group">
 										<span class="ska-input-group-text">≤</span>
-										<input type="text" id="keysize-max" name="keysize-max" class="form-control" value="<?php out($this->get('filter')['keysize-max'])?>">
+										<input type="text" id="keysize-max" name="keysize-max" class="ska-form-control" value="<?php out($this->get('filter')['keysize-max'])?>">
 									</div>
 								</div>
 							</div>

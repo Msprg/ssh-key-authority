@@ -108,7 +108,7 @@ $owner = $this->get('pubkey')->owner;
 			<div class="mb-3">
 				<label>
 					Signature file
-					<input type="file" name="signature" class="form-control">
+					<input type="file" name="signature" class="ska-form-control">
 				</label>
 			</div>
 			<div class="mb-3">
@@ -152,11 +152,11 @@ $owner = $this->get('pubkey')->owner;
 			<p>You can make use of wildcards (<kbd>*</kbd>) in each field below.</p>
 			<div class="mb-3">
 				<label for="account_name_filter">Account name</label>
-				<input type="text" id="account_name_filter" name="account_name_filter" class="form-control" value="*" required>
+				<input type="text" id="account_name_filter" name="account_name_filter" class="ska-form-control" value="*" required>
 			</div>
 			<div class="mb-3">
 				<label for="hostname_filter">Hostname</label>
-				<input type="text" id="hostname_filter" name="hostname_filter" class="form-control" value="*" required>
+				<input type="text" id="hostname_filter" name="hostname_filter" class="ska-form-control" value="*" required>
 			</div>
 			<div class="mb-3">
 				<button type="submit" name="add_dest_rule" value="1" class="btn btn-primary w-100">Add rule</button>
