@@ -37,22 +37,22 @@ $owner = $this->get('pubkey')->owner;
 	?>
 </h1>
 <?php if($this->get('user_is_owner') || $this->get('admin')) { ?>
-<ul class="ska-tabs" role="tablist">
-	<li class="ska-tab-item active" role="presentation"><a href="#info" id="pubkey_info_tab" class="ska-tab-link active" role="tab" data-bs-toggle="tab" aria-controls="info" aria-selected="true">Information</a></li>
+<ul class="nav nav-tabs" role="tablist">
+	<li class="nav-item" role="presentation"><a href="#info" id="pubkey_info_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="info" aria-selected="true">Information</a></li>
 	<?php if ($this->get('pubkey')->deletion_date === null) { ?>
-		<li class="ska-tab-item" role="presentation"><a href="#sig" id="pubkey_sig_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="sig" aria-selected="false" tabindex="-1">Key signing</a></li>
-		<li class="ska-tab-item" role="presentation"><a href="#dest" id="pubkey_dest_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="dest" aria-selected="false" tabindex="-1">Destination restrictions</a></li>
+		<li class="nav-item" role="presentation"><a href="#sig" id="pubkey_sig_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="sig" aria-selected="false" tabindex="-1">Key signing</a></li>
+		<li class="nav-item" role="presentation"><a href="#dest" id="pubkey_dest_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="dest" aria-selected="false" tabindex="-1">Destination restrictions</a></li>
 	<?php } ?>
 </ul>
 <?php } ?>
-<div class="ska-tab-content">
-	<div class="ska-tab-pane fade active show" id="info" role="tabpanel"<?php if($this->get('user_is_owner') || $this->get('admin')) out(' aria-labelledby="pubkey_info_tab"', ESC_NONE) ?> aria-hidden="false">
+<div class="tab-content">
+	<div class="tab-pane fade active show" id="info" role="tabpanel"<?php if($this->get('user_is_owner') || $this->get('admin')) out(' aria-labelledby="pubkey_info_tab"', ESC_NONE) ?> aria-hidden="false">
 		<h2 class="visually-hidden">Information</h2>
-		<p><a href="<?php outurl('/pubkeys/'.$this->get('pubkey')->id.'.json') ?>" class="ska-btn ska-btn-secondary ska-btn-sm">
+		<p><a href="<?php outurl('/pubkeys/'.$this->get('pubkey')->id.'.json') ?>" class="btn btn-secondary btn-sm">
 			<span class="ska-icon ska-icon-console"></span> JSON
 		</a></p>
 		<?php if ($this->get('pubkey')->deletion_date !== null) { ?>
-			<div class="ska-alert ska-alert-danger">This key has been deleted</div>
+			<div class="alert alert-danger">This key has been deleted</div>
 		<?php } ?>
 		<dl>
 			<dt>Key data</dt>
@@ -74,14 +74,14 @@ $owner = $this->get('pubkey')->owner;
 		</dl>
 	</div>
 	<?php if(($this->get('user_is_owner') || $this->get('admin')) && $this->get('pubkey')->deletion_date === null) { ?>
-	<div class="ska-tab-pane fade" id="sig" role="tabpanel" aria-labelledby="pubkey_sig_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="sig" role="tabpanel" aria-labelledby="pubkey_sig_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Key signing</h2>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" enctype="multipart/form-data">
 			<?php if(count($this->get('signatures')) == 0) { ?>
 			<p>No signatures have been uploaded for this key yet.</p>
 			<?php } else { ?>
 			<div class="ska-scroll-container">
-				<table class="ska-table ska-table-bordered ska-table-striped">
+				<table class="table table-bordered table-striped">
 					<thead>
 						<tr>
 							<th>Signing key</th>
@@ -96,7 +96,7 @@ $owner = $this->get('pubkey')->owner;
 							<td><?php out($sig->fingerprint)?></td>
 							<td><?php out($sig->sign_date)?></td>
 							<td><?php out($sig->upload_date)?></td>
-							<td><button type="submit" name="delete_signature" value="<?php out($sig->id)?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete signature</button></td>
+							<td><button type="submit" name="delete_signature" value="<?php out($sig->id)?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete signature</button></td>
 						</tr>
 						<?php } ?>
 					</tbody>
@@ -106,17 +106,17 @@ $owner = $this->get('pubkey')->owner;
 			<h3>Add signature</h3>
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-mb-3">
-				<label>
+				<label class="form-label">
 					Signature file
-					<input type="file" name="signature" class="ska-form-control">
+					<input type="file" name="signature" class="form-control">
 				</label>
 			</div>
 			<div class="ska-mb-3">
-				<button type="submit" name="add_signature" value="1" class="ska-btn ska-btn-primary">Upload signature</button>
+				<button type="submit" name="add_signature" value="1" class="btn btn-primary">Upload signature</button>
 			</div>
 		</form>
 	</div>
-	<div class="ska-tab-pane fade" id="dest" role="tabpanel" aria-labelledby="pubkey_dest_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="dest" role="tabpanel" aria-labelledby="pubkey_dest_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Destination restrictions</h2>
 		<?php if(count($this->get('dest_rules')) == 0) { ?>
 		<p>This key will currently be synced to all accounts and servers that <?php out($name)?> is granted access to.  To restrict this key to a subset of that list, add rules below.</p>
@@ -125,7 +125,7 @@ $owner = $this->get('pubkey')->owner;
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-scroll-container">
-				<table class="ska-table ska-table-bordered ska-table-striped">
+				<table class="table table-bordered table-striped">
 					<thead>
 						<tr>
 							<th>Account name</th>
@@ -138,7 +138,7 @@ $owner = $this->get('pubkey')->owner;
 						<tr>
 							<td><?php out($rule->account_name_filter)?></td>
 							<td><?php out($rule->hostname_filter)?></td>
-							<td><button type="submit" name="delete_dest_rule" value="<?php out($rule->id)?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete rule</button></td>
+							<td><button type="submit" name="delete_dest_rule" value="<?php out($rule->id)?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete rule</button></td>
 						</tr>
 						<?php } ?>
 					</tbody>
@@ -151,15 +151,15 @@ $owner = $this->get('pubkey')->owner;
 			<h3>Add new rule</h3>
 			<p>You can make use of wildcards (<kbd>*</kbd>) in each field below.</p>
 			<div class="ska-mb-3">
-				<label for="account_name_filter">Account name</label>
-				<input type="text" id="account_name_filter" name="account_name_filter" class="ska-form-control" value="*" required>
+				<label for="account_name_filter" class="form-label">Account name</label>
+				<input type="text" id="account_name_filter" name="account_name_filter" class="form-control" value="*" required>
 			</div>
 			<div class="ska-mb-3">
-				<label for="hostname_filter">Hostname</label>
-				<input type="text" id="hostname_filter" name="hostname_filter" class="ska-form-control" value="*" required>
+				<label for="hostname_filter" class="form-label">Hostname</label>
+				<input type="text" id="hostname_filter" name="hostname_filter" class="form-control" value="*" required>
 			</div>
 			<div class="ska-mb-3">
-				<button type="submit" name="add_dest_rule" value="1" class="ska-btn ska-btn-primary ska-w-100">Add rule</button>
+				<button type="submit" name="add_dest_rule" value="1" class="btn btn-primary w-100">Add rule</button>
 			</div>
 		</form>
 	</div>

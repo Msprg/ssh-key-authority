@@ -230,6 +230,21 @@ if ! KEY_ID=$(php "$SCRIPT_DIR/helpers/find_user_public_key.php" \
     smoke_die "Added key was not found in active key set"
 fi
 
+curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/users/${TARGET_USER}/pubkeys" -o "$TMP_DIR/user-pubkeys.html"
+grep -q '>Logout<' "$TMP_DIR/user-pubkeys.html" || smoke_die "Authenticated session was lost while loading user public keys page"
+grep -Eq 'class="[^"]*card' "$TMP_DIR/user-pubkeys.html" || smoke_die "User public keys page is missing Bootstrap 5 card classes"
+grep -Eq 'class="[^"]*btn[^"]*btn-secondary' "$TMP_DIR/user-pubkeys.html" || smoke_die "User public keys page is missing Bootstrap 5 secondary button classes"
+if grep -q 'name="add_public_key"' "$TMP_DIR/user-pubkeys.html"; then
+    grep -Eq 'class="[^"]*form-control' "$TMP_DIR/user-pubkeys.html" || smoke_die "User public keys page is missing Bootstrap 5 form-control classes"
+    grep -Eq 'class="[^"]*btn[^"]*btn-primary' "$TMP_DIR/user-pubkeys.html" || smoke_die "User public keys page is missing Bootstrap 5 primary button classes"
+fi
+
+curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/pubkeys/${KEY_ID}" -o "$TMP_DIR/pubkey-detail.html"
+grep -q '>Logout<' "$TMP_DIR/pubkey-detail.html" || smoke_die "Authenticated session was lost while loading public key detail page"
+grep -Eq 'class="[^"]*nav[^"]*nav-tabs' "$TMP_DIR/pubkey-detail.html" || smoke_die "Public key detail page is missing Bootstrap 5 nav-tab classes"
+grep -Eq 'class="[^"]*tab-content' "$TMP_DIR/pubkey-detail.html" || smoke_die "Public key detail page is missing Bootstrap 5 tab-content classes"
+grep -Eq 'class="[^"]*btn[^"]*btn-secondary' "$TMP_DIR/pubkey-detail.html" || smoke_die "Public key detail page is missing Bootstrap 5 secondary button classes"
+
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/" -o "$TMP_DIR/home-before-key-delete.html"
 HOME_DELETE_CSRF=$(smoke_extract_csrf "$TMP_DIR/home-before-key-delete.html")
 [ -n "$HOME_DELETE_CSRF" ] || smoke_die "Home page CSRF token not found before key delete"

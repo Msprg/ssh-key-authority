@@ -18,34 +18,34 @@
 ?>
 <h1>Public keys for <a href="<?php outurl('/users/'.urlencode($this->get('user')->uid))?>"><?php out($this->get('user')->name)?></a></h1>
 <p class="ska-action-row">
-	<a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys.txt') ?>" class="ska-btn ska-btn-secondary ska-btn-sm">
+	<a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys.txt') ?>" class="btn btn-secondary btn-sm">
 		<span class="ska-icon ska-icon-console"></span> TXT
 	</a>
-	<a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys.json') ?>" class="ska-btn ska-btn-secondary ska-btn-sm">
+	<a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys.json') ?>" class="btn btn-secondary btn-sm">
 		<span class="ska-icon ska-icon-console"></span> JSON
 	</a>
 </p>
 <?php if($this->get('allow_admin_add')) { ?>
-<div class="ska-card">
-	<div class="ska-card-header">
-		<h2 class="ska-card-title">Add public key for <?php out($this->get('user')->name)?></h2>
+<div class="card">
+	<div class="card-header">
+		<h2 class="h5 mb-0">Add public key for <?php out($this->get('user')->name)?></h2>
 	</div>
-	<div class="ska-card-body">
+	<div class="card-body">
 		<form method="post" action="<?php outurl($this->data->relative_request_url) ?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-mb-3">
-				<label for="add_public_key" class="ska-form-label">Public key</label>
-				<textarea class="ska-form-control" rows="4" id="add_public_key" name="add_public_key" required></textarea>
+				<label for="add_public_key" class="form-label">Public key</label>
+				<textarea class="form-control" rows="4" id="add_public_key" name="add_public_key" required></textarea>
 			</div>
 			<p class="ska-help-text">The key will be added to <?php out($this->get('user')->uid)?>.</p>
-			<button type="submit" class="ska-btn ska-btn-primary">Add public key</button>
+			<button type="submit" class="btn btn-primary">Add public key</button>
 		</form>
 	</div>
 </div>
 <?php } ?>
 <?php foreach($this->get('pubkeys') as $pubkey) { ?>
-<div class="ska-card">
-	<dl class="ska-card-body">
+<div class="card">
+	<dl class="card-body mb-0">
 		<dt>Key data</dt>
 		<dd><pre><?php out($pubkey->export())?></pre></dd>
 		<dt>Creation Date</dt>
