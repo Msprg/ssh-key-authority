@@ -18,30 +18,30 @@
 ?>
 <h1>Groups</h1>
 <?php if($this->get('admin')) { ?>
-<ul class="ska-tabs" role="tablist">
-	<li class="ska-tab-item active" role="presentation"><a href="#list" id="groups_list_tab" class="ska-tab-link active" role="tab" data-bs-toggle="tab" aria-controls="list" aria-selected="true">Group list</a></li>
-	<li class="ska-tab-item" role="presentation"><a href="#add" id="groups_add_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="add" aria-selected="false" tabindex="-1">Add group</a></li>
+<ul class="nav nav-tabs" role="tablist">
+	<li class="nav-item" role="presentation"><a href="#list" id="groups_list_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="list" aria-selected="true">Group list</a></li>
+	<li class="nav-item" role="presentation"><a href="#add" id="groups_add_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="add" aria-selected="false" tabindex="-1">Add group</a></li>
 </ul>
 <?php } ?>
 
 <!-- Tab panes -->
-<div class="ska-tab-content">
-	<div class="ska-tab-pane fade active show" id="list" role="tabpanel"<?php if($this->get('admin')) out(' aria-labelledby="groups_list_tab"', ESC_NONE) ?> aria-hidden="false">
+<div class="tab-content">
+	<div class="tab-pane fade active show" id="list" role="tabpanel"<?php if($this->get('admin')) out(' aria-labelledby="groups_list_tab"', ESC_NONE) ?> aria-hidden="false">
 		<h2 class="visually-hidden">Group list</h2>
 		<div class="ska-card-stack">
-			<div class="ska-card">
-				<div class="ska-card-header">
-					<h3 class="ska-card-title">
+			<div class="card">
+				<div class="card-header">
+					<h3 class="h5 ska-mb-0">
 						Filter options
 					</h3>
 				</div>
-					<div class="ska-card-body">
+					<div class="card-body">
 					<form>
 						<div class="ska-row">
 							<div class="ska-col-sm-4">
 								<div class="ska-mb-3">
 									<label for="name-search">Name (<a href="https://mariadb.com/kb/en/mariadb/regular-expressions-overview/">regexp</a>)</label>
-									<input type="text" id="name-search" name="name" class="ska-form-control" value="<?php out($this->get('filter')['name'])?>" autofocus>
+										<input type="text" id="name-search" name="name" class="form-control" value="<?php out($this->get('filter')['name'])?>" autofocus>
 								</div>
 							</div>
 							<div class="ska-col-sm-3">
@@ -53,14 +53,14 @@
 								foreach($options as $value => $label) {
 									$checked = in_array($value, $this->get('filter')['active']) ? ' checked' : '';
 								?>
-								<div class="ska-form-check"><label class="ska-form-check-label"><input type="checkbox" class="ska-form-check-input" name="active[]" value="<?php out($value)?>"<?php out($checked) ?>> <span><?php out($label) ?></span></label></div>
-								<?php } ?>
+									<div class="form-check"><label class="form-check-label"><input type="checkbox" class="form-check-input" name="active[]" value="<?php out($value)?>"<?php out($checked) ?>> <span><?php out($label) ?></span></label></div>
+									<?php } ?>
+								</div>
 							</div>
-						</div>
-						<button type="submit" class="ska-btn ska-btn-primary">Display results</button>
-					</form>
+							<button type="submit" class="btn btn-primary">Display results</button>
+						</form>
+					</div>
 				</div>
-			</div>
 		</div>
 		<?php if(count($this->get('groups')) == 0) { ?>
 		<p>No groups found.</p>
@@ -68,7 +68,7 @@
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-scroll-container">
-				<table class="ska-table ska-table-striped">
+					<table class="table table-striped">
 					<thead>
 						<tr>
 							<th>Group</th>
@@ -87,7 +87,7 @@
 							<td><?php out($group->admins)?></td>
 							<?php if($this->get('admin')) { ?>
 							<td>
-								<a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-cog"></span> Manage group</a>
+									<a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-cog"></span> Manage group</a>
 							</td>
 							<?php } ?>
 						</tr>
@@ -99,25 +99,25 @@
 		<?php } ?>
 	</div>
 	<?php if($this->get('admin')) { ?>
-		<div class="ska-tab-pane fade" id="add" role="tabpanel" aria-labelledby="groups_add_tab" aria-hidden="true">
+		<div class="tab-pane fade" id="add" role="tabpanel" aria-labelledby="groups_add_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Add group</h2>
 		<h3>Create local group</h3>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-inline-form">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-form-group ska-mb-3">
 				<label for="name" class="visually-hidden">Group name</label>
-				<input type="text" id="name" name="name" class="ska-form-control" placeholder="Group name" required>
+				<input type="text" id="name" name="name" class="form-control" placeholder="Group name" required>
 			</div>
 			<div class="ska-form-group ska-mb-3">
 				<label for="admin_uid" class="visually-hidden">Administrator</label>
-				<input type="text" size="40" id="admin_uid" name="admin_uid" class="ska-form-control" placeholder="Administrator" required list="userlist">
+				<input type="text" size="40" id="admin_uid" name="admin_uid" class="form-control" placeholder="Administrator" required list="userlist">
 				<datalist id="userlist">
 					<?php foreach($this->get('all_users') as $user) { ?>
 					<option value="<?php out($user->uid)?>" label="<?php out($user->name)?>">
 					<?php } ?>
 				</datalist>
 			</div>
-			<button type="submit" name="add_group" value="1" class="ska-btn ska-btn-primary">Create group</button>
+			<button type="submit" name="add_group" value="1" class="btn btn-primary">Create group</button>
 		</form>
 		<h3>Connect ldap group</h3>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-inline-form">
@@ -126,7 +126,7 @@
 			<div class="ska-form-group ska-mb-3">
 				<label for="name" class="visually-hidden">Group name</label>
 			</div>
-			<button type="submit" name="add_ldap_group" value="1" class="ska-btn ska-btn-primary">Connect selected groups</button>
+			<button type="submit" name="add_ldap_group" value="1" class="btn btn-primary">Connect selected groups</button>
 		</form>
 	</div>
 	<?php } ?>
