@@ -1,5 +1,7 @@
 # Phase 10 Checkpoint: Final Cleanup and Docs Refresh
 
+Note from current branch state on 2026-04-05: this document is historical. The transitional Bootstrap compatibility/runtime references below no longer describe the live branch state.
+
 Date: 2026-02-10
 Branch: `bootstrap5-upgrade`
 
@@ -45,7 +47,7 @@ Result: full quality gates and smoke workflows passed after Phase 10 changes.
 ## Residual risks
 
 - Runtime-state/global compatibility fallback paths still exist by design for conservative compatibility and may be retired in a future major cleanup.
-- Bootstrap 3/5 compatibility layer remains transitional until complete frontend runtime migration is declared.
+- At the time, the Bootstrap 3/5 compatibility layer remained transitional until complete frontend runtime migration was declared.
 
 ## Rollback strategy (Phase 10)
 

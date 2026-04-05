@@ -36,12 +36,16 @@ function server_list(array $servers, array $suffix = ["", ""]): string {
 ?>
 <h1>Permissions report</h1>
 
-<p>Content</p>
-<ol>
-	<li><a href="#server_leaders">Server leaders</a></li>
-	<li><a href="#access_rights">Access rights</a></li>
-	<li><a href="#server_to_server_accesses">Server-to-Server accesses</a></li>
-</ol>
+<div class="ska-card">
+	<div class="ska-card-body">
+		<p>Content</p>
+		<ol class="ska-link-list">
+			<li><a href="#server_leaders">Server leaders</a></li>
+			<li><a href="#access_rights">Access rights</a></li>
+			<li><a href="#server_to_server_accesses">Server-to-Server accesses</a></li>
+		</ol>
+	</div>
+</div>
 
 <h2 id="server_leaders">Server leaders</h2>
 <?php foreach($this->get('report')->get_leaders_report() as $group) { ?>
@@ -49,7 +53,7 @@ function server_list(array $servers, array $suffix = ["", ""]): string {
 	<div class="ska-card-body">
 		<p><?php out(server_list($group[1], [" has", " have"]), ESC_NONE) ?> the following leaders:</p>
 		<div class="ska-scroll-container">
-			<table class="table table-bordered">
+			<table class="ska-table ska-table-bordered">
 				<tr>
 					<th colspan="2">Server leaders</th>
 				</tr>
@@ -94,7 +98,7 @@ function server_list(array $servers, array $suffix = ["", ""]): string {
 		<p><?php out(server_list($access[1], [" has", " have"]), ESC_NONE) ?> the following access rules:</p>
 		<?php if (!empty($access[0]->access_rights)) { ?>
 		<div class="ska-scroll-container">
-			<table class="table table-bordered">
+			<table class="ska-table ska-table-bordered">
 				<?php foreach ($access[0]->access_rights as $account_name => $accessors) { ?>
 				<tr>
 					<th><?php out($account_name) ?></th>
@@ -122,7 +126,7 @@ function server_list(array $servers, array $suffix = ["", ""]): string {
 		<p><?php out(server_list($access[1]), ESC_NONE) ?> can be accessed by the following other server accounts:</p>
 		<?php if (!empty($access[0]->access_rights)) { ?>
 		<div class="ska-scroll-container">
-			<table class="table table-bordered">
+			<table class="ska-table ska-table-bordered">
 				<?php foreach ($access[0]->access_rights as $account_name => $accessors) { ?>
 				<tr>
 					<th><?php out($account_name) ?></th>

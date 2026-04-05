@@ -467,6 +467,14 @@ kbd {
 	padding: 15px;
 }
 
+.ska-card-body > :first-child {
+	margin-top: 0;
+}
+
+.ska-card-body > :last-child {
+	margin-bottom: 0;
+}
+
 .ska-card-header + .ska-card-collapse > .ska-card-body {
 	border-top: 1px solid #ddd;
 }
@@ -547,6 +555,26 @@ kbd {
 	margin-top: 8px;
 	color: #6c757d;
 	font-size: 0.875em;
+}
+
+.ska-page-stack {
+	display: grid;
+	gap: 20px;
+}
+
+.ska-action-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	align-items: center;
+}
+
+.ska-link-list {
+	margin-bottom: 0;
+}
+
+.ska-link-list li + li {
+	margin-top: 4px;
 }
 
 .ska-setting-actions {

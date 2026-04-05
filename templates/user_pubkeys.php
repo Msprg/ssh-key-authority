@@ -17,7 +17,7 @@
 ##
 ?>
 <h1>Public keys for <a href="<?php outurl('/users/'.urlencode($this->get('user')->uid))?>"><?php out($this->get('user')->name)?></a></h1>
-<p>
+<p class="ska-action-row">
 	<a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys.txt') ?>" class="btn btn-secondary btn-sm">
 		<span class="ska-icon ska-icon-console"></span> TXT
 	</a>
