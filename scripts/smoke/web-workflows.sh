@@ -121,6 +121,28 @@ grep -Eq 'class="[^"]*btn[^"]*btn-primary' "$TMP_DIR/groups.html" || smoke_die "
 grep -Eq 'class="[^"]*btn[^"]*btn-secondary' "$TMP_DIR/groups.html" || smoke_die "Groups page is missing Bootstrap 5 secondary button classes"
 grep -Eq 'class="[^"]*form-check' "$TMP_DIR/groups.html" || smoke_die "Groups page is missing Bootstrap 5 form-check classes"
 
+TARGET_GROUP_PATH=$(grep -Eo '/groups/[^"#?]+' "$TMP_DIR/groups.html" | head -n1 || true)
+[ -n "$TARGET_GROUP_PATH" ] || smoke_die "Could not find a group detail link on groups page"
+curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL$TARGET_GROUP_PATH" -o "$TMP_DIR/group-detail.html"
+grep -q '>Logout<' "$TMP_DIR/group-detail.html" || smoke_die "Authenticated session was lost while loading target group page"
+! grep -Eq 'panel-group|panel panel-default|panel-heading|panel-title|panel-body|panel-footer|panel-collapse' "$TMP_DIR/group-detail.html" || smoke_die "Target group page still renders legacy panel markup"
+! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/group-detail.html" || smoke_die "Target group page still renders legacy glyphicon classes"
+! grep -Eq "$LEGACY_IN_CLASS_RE" "$TMP_DIR/group-detail.html" || smoke_die "Target group page still renders legacy collapse/tab state classes"
+! grep -Eq "$LEGACY_LAYOUT_RE" "$TMP_DIR/group-detail.html" || smoke_die "Target group page still renders Bootstrap-named layout/utility classes"
+! grep -Eq 'class="[^"]*\\btext-center\\b|class="[^"]*\\btext-muted\\b|class="[^"]*\\btext-success\\b|class="[^"]*\\btext-warning\\b|class="[^"]*\\btext-danger\\b|class="[^"]*\\btext-info\\b|class="[^"]*\\brounded\\b|class="[^"]*\\bimg-fluid\\b|class="[^"]*\\bclearfix\\b|class="[^"]*\\bd-xl-none\\b|class="[^"]*\\bh-50px\\b' "$TMP_DIR/group-detail.html" || smoke_die "Target group page still renders Bootstrap-named semantic helper classes"
+! grep -Eq 'class="[^"]*\\btext-bg-secondary\\b' "$TMP_DIR/group-detail.html" || smoke_die "Target group page still renders Bootstrap-named inactive badge classes"
+grep -Eq 'class="[^"]*nav[^"]*nav-tabs' "$TMP_DIR/group-detail.html" || smoke_die "Target group page is missing Bootstrap 5 nav-tab classes"
+grep -Eq 'class="[^"]*tab-content' "$TMP_DIR/group-detail.html" || smoke_die "Target group page is missing Bootstrap 5 tab-content classes"
+grep -Eq 'class="[^"]*table' "$TMP_DIR/group-detail.html" || smoke_die "Target group page is missing Bootstrap 5 table classes"
+grep -Eq 'class="[^"]*btn[^"]*btn-secondary' "$TMP_DIR/group-detail.html" || smoke_die "Target group page is missing Bootstrap 5 secondary button classes"
+if grep -Eq 'name="add_member"|name="add_members"|name="add_access"|name="add_admin"|name="edit_group"' "$TMP_DIR/group-detail.html"; then
+    grep -Eq 'class="[^"]*btn[^"]*btn-primary' "$TMP_DIR/group-detail.html" || smoke_die "Target group page is missing Bootstrap 5 primary button classes"
+    grep -Eq 'class="[^"]*form-control' "$TMP_DIR/group-detail.html" || smoke_die "Target group page is missing Bootstrap 5 form-control classes"
+fi
+if grep -Eq 'name="add_member"|name="add_members"|name="add_access"' "$TMP_DIR/group-detail.html"; then
+    grep -Eq 'class="[^"]*input-group' "$TMP_DIR/group-detail.html" || smoke_die "Target group page is missing Bootstrap 5 input-group classes"
+fi
+
 smoke_log "Checking secondary pages for Bootstrap 5 class handoff regressions"
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/activity" -o "$TMP_DIR/activity.html"
 grep -q '>Logout<' "$TMP_DIR/activity.html" || smoke_die "Authenticated session was lost while loading activity page"

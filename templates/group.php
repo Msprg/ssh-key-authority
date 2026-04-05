@@ -23,22 +23,22 @@ foreach($this->get('group_members') as $member) {
 ?>
 <h1><span class="ska-icon ska-icon-group" title="Group"></span> <?php out($this->get('group')->name)?><?php if($this->get('group')->active == 0) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></h1>
 <?php if($this->get('admin') || $this->get('group_admin')) { ?>
-<ul class="ska-tabs" role="tablist">
-	<li class="ska-tab-item active" role="presentation"><a href="#members" id="group_members_tab" class="ska-tab-link active" role="tab" data-bs-toggle="tab" aria-controls="members" aria-selected="true">Members</a></li>
-	<li class="ska-tab-item" role="presentation"><a href="#access" id="group_access_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="access" aria-selected="false" tabindex="-1">Access</a></li>
-	<li class="ska-tab-item" role="presentation"><a href="#outbound" id="group_outbound_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="outbound" aria-selected="false" tabindex="-1">Outbound access</a></li>
-	<li class="ska-tab-item" role="presentation"><a href="#admins" id="group_admins_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="admins" aria-selected="false" tabindex="-1">Administrators</a></li>
+<ul class="nav nav-tabs" role="tablist">
+	<li class="nav-item" role="presentation"><a href="#members" id="group_members_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="members" aria-selected="true">Members</a></li>
+	<li class="nav-item" role="presentation"><a href="#access" id="group_access_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="access" aria-selected="false" tabindex="-1">Access</a></li>
+	<li class="nav-item" role="presentation"><a href="#outbound" id="group_outbound_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="outbound" aria-selected="false" tabindex="-1">Outbound access</a></li>
+	<li class="nav-item" role="presentation"><a href="#admins" id="group_admins_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="admins" aria-selected="false" tabindex="-1">Administrators</a></li>
 	<?php if($this->get('admin')) { ?>
-	<li class="ska-tab-item" role="presentation"><a href="#settings" id="group_settings_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="settings" aria-selected="false" tabindex="-1">Settings</a></li>
+	<li class="nav-item" role="presentation"><a href="#settings" id="group_settings_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="settings" aria-selected="false" tabindex="-1">Settings</a></li>
 	<?php } ?>
-	<li class="ska-tab-item" role="presentation"><a href="#log" id="group_log_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="log" aria-selected="false" tabindex="-1">Log</a></li>
+	<li class="nav-item" role="presentation"><a href="#log" id="group_log_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="log" aria-selected="false" tabindex="-1">Log</a></li>
 </ul>
 
 <!-- Tab panes -->
-<div class="ska-tab-content">
-	<div class="ska-tab-pane fade active show" id="members" role="tabpanel" aria-labelledby="group_members_tab" aria-hidden="false">
+<div class="tab-content">
+	<div class="tab-pane fade active show" id="members" role="tabpanel" aria-labelledby="group_members_tab" aria-hidden="false">
 		<h2 class="visually-hidden">Group members</h2>
-		<p><a href="<?php outurl('/groups/'.urlencode($this->get('group')->name).'/members.json') ?>" class="ska-btn ska-btn-secondary ska-btn-sm">
+		<p><a href="<?php outurl('/groups/'.urlencode($this->get('group')->name).'/members.json') ?>" class="btn btn-secondary btn-sm">
 			<span class="ska-icon ska-icon-console"></span> JSON
 		</a></p>
 		<?php if(count($this->get('group_members')) == 0) { ?>
@@ -47,12 +47,12 @@ foreach($this->get('group_members') as $member) {
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<?php if($this->get('group')->system) { ?>
-			<div class="ska-alert ska-alert-info">
+			<div class="alert alert-info">
 				This is a system group. Its membership list cannot be edited.
 			</div>
 			<?php } ?>
 			<div class="ska-scroll-container">
-				<table class="ska-table ska-table-bordered ska-table-striped">
+				<table class="table table-bordered table-striped">
 					<thead>
 						<tr>
 							<th colspan="2">Member</th>
@@ -90,7 +90,7 @@ foreach($this->get('group_members') as $member) {
 							<td>Added on <?php out($member->add_date) ?> by <a href="<?php outurl('/users/'.urlencode($member->added_by->uid))?>" class="user"><?php out($member->added_by->uid) ?></a></td>
 							<?php if(!$this->get('group')->system) { ?>
 							<td>
-								<button type="submit" name="delete_member" value="<?php out($member->entity_id)?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-ban-circle"></span> Remove from group</button>
+								<button type="submit" name="delete_member" value="<?php out($member->entity_id)?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-ban-circle"></span> Remove from group</button>
 							</td>
 							<?php } ?>
 							<?php } ?>
@@ -108,11 +108,11 @@ foreach($this->get('group_members') as $member) {
 				<div class="ska-col-md-9 ska-mb-3">
 					<div class="ska-input-group">
 						<span class="ska-input-group-text"><label for="username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
-						<input type="text" id="username" name="username" class="ska-form-control" placeholder="User name" required list="userlist">
+						<input type="text" id="username" name="username" class="form-control" placeholder="User name" required list="userlist">
 					</div>
 				</div>
 				<div class="ska-col-md-3 ska-mb-3">
-					<button type="submit" name="add_member" value="1" class="ska-btn ska-btn-primary ska-w-100">Add user to group</button>
+					<button type="submit" name="add_member" value="1" class="btn btn-primary w-100">Add user to group</button>
 				</div>
 			</div>
 		</form>
@@ -121,19 +121,19 @@ foreach($this->get('group_members') as $member) {
 			<h3>Add server account</h3>
 			<div class="ska-row">
 				<div class="ska-col-md-2 ska-mb-3">
-					<div class="ska-input-group">
-						<span class="ska-input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account</span></label></span>
-						<input type="text" id="account" name="account" class="ska-form-control" placeholder="Account name" required>
+					<div class="input-group">
+						<span class="input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account</span></label></span>
+						<input type="text" id="account" name="account" class="form-control" placeholder="Account name" required>
 					</div>
 				</div>
 				<div class="ska-col-md-7 ska-mb-3">
-					<div class="ska-input-group">
-						<span class="ska-input-group-text"><label for="hostname">@</label></span>
-						<input type="text" id="hostname" name="hostname" class="ska-form-control" placeholder="Hostname" required list="<?php out($this->get('admin') ? 'serverlist' : 'adminedserverlist')?>">
+					<div class="input-group">
+						<span class="input-group-text"><label for="hostname">@</label></span>
+						<input type="text" id="hostname" name="hostname" class="form-control" placeholder="Hostname" required list="<?php out($this->get('admin') ? 'serverlist' : 'adminedserverlist')?>">
 					</div>
 				</div>
 				<div class="ska-col-md-3 ska-mb-3">
-					<button type="submit" name="add_member" value="1" class="ska-btn ska-btn-primary ska-w-100">Add server account to group</button>
+					<button type="submit" name="add_member" value="1" class="btn btn-primary w-100">Add server account to group</button>
 				</div>
 			</div>
 		</form>
@@ -143,18 +143,18 @@ foreach($this->get('group_members') as $member) {
 			<p>Enter a list of accounts, one per line, in the form accountname@hostname</p>
 			<div class="ska-row">
 				<div class="ska-col-md-12 ska-mb-3">
-					<textarea name="accounts" class="ska-form-control"></textarea>
+					<textarea name="accounts" class="form-control"></textarea>
 				</div>
 			</div>
 			<div class="ska-row">
 				<div class="ska-col-md-3 ska-mb-3">
-					<button type="submit" name="add_members" value="1" class="ska-btn ska-btn-primary ska-w-100">Add server accounts to group</button>
+					<button type="submit" name="add_members" value="1" class="btn btn-primary w-100">Add server accounts to group</button>
 				</div>
 			</div>
 		</form>
 		<?php } ?>
 	</div>
-	<div class="ska-tab-pane fade" id="access" role="tabpanel" aria-labelledby="group_access_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="access" role="tabpanel" aria-labelledby="group_access_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Access</h2>
 		<?php if(count($this->get('group_access')) == 0) { ?>
 		<?php if($membercounts['ServerAccount'] > 0 || $membercounts['Group'] > 0) { ?>
@@ -164,7 +164,7 @@ foreach($this->get('group_members') as $member) {
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-scroll-container">
-				<table class="ska-table ska-table-bordered ska-table-striped">
+				<table class="table table-bordered table-striped">
 					<thead>
 						<tr>
 							<th colspan="2">Access for</th>
@@ -220,8 +220,8 @@ foreach($this->get('group_members') as $member) {
 								<?php } ?>
 							</td>
 							<td>
-								<a href="<?php outurl('/groups/'.urlencode($this->get('group')->name).'/access_rules/'.urlencode($access->id))?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-cog"></span> Configure access</a>
-								<button type="submit" name="delete_access" value="<?php out($access->id)?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-ban-circle"></span> Remove access</button>
+								<a href="<?php outurl('/groups/'.urlencode($this->get('group')->name).'/access_rules/'.urlencode($access->id))?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-cog"></span> Configure access</a>
+								<button type="submit" name="delete_access" value="<?php out($access->id)?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-ban-circle"></span> Remove access</button>
 							</td>
 							<?php } ?>
 						</tr>
@@ -238,13 +238,13 @@ foreach($this->get('group_members') as $member) {
 			<h3>Grant user access</h3>
 			<div class="ska-row">
 				<div class="ska-col-md-8 ska-mb-3">
-					<div class="ska-input-group">
-						<span class="ska-input-group-text"><label for="access-username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
-						<input type="text" id="access-username" name="username" class="ska-form-control" placeholder="User name" required list="userlist">
+					<div class="input-group">
+						<span class="input-group-text"><label for="access-username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
+						<input type="text" id="access-username" name="username" class="form-control" placeholder="User name" required list="userlist">
 					</div>
 				</div>
 				<div class="ska-col-md-4 ska-mb-3">
-					<button type="submit" name="add_access" value="1" class="ska-btn ska-btn-primary ska-w-100">Grant user access to group resources</button>
+					<button type="submit" name="add_access" value="1" class="btn btn-primary w-100">Grant user access to group resources</button>
 				</div>
 			</div>
 		</form>
@@ -253,19 +253,19 @@ foreach($this->get('group_members') as $member) {
 			<h3>Grant server account access</h3>
 			<div class="ska-row">
 				<div class="ska-col-md-2 ska-mb-3">
-					<div class="ska-input-group">
-						<span class="ska-input-group-text"><label for="access-account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account</span></label></span>
-						<input type="text" id="access-account" name="account" class="ska-form-control" placeholder="Account name" required>
+					<div class="input-group">
+						<span class="input-group-text"><label for="access-account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account</span></label></span>
+						<input type="text" id="access-account" name="account" class="form-control" placeholder="Account name" required>
 					</div>
 				</div>
 				<div class="ska-col-md-6 ska-mb-3">
-					<div class="ska-input-group">
-						<span class="ska-input-group-text"><label for="access-hostname">@</label></span>
-						<input type="text" id="access-hostname" name="hostname" class="ska-form-control" placeholder="Hostname" required list="serverlist">
+					<div class="input-group">
+						<span class="input-group-text"><label for="access-hostname">@</label></span>
+						<input type="text" id="access-hostname" name="hostname" class="form-control" placeholder="Hostname" required list="serverlist">
 					</div>
 				</div>
 				<div class="ska-col-md-4 ska-mb-3">
-					<button type="submit" name="add_access" value="1" class="ska-btn ska-btn-primary ska-w-100">Grant server account access to group resources</button>
+					<button type="submit" name="add_access" value="1" class="btn btn-primary w-100">Grant server account access to group resources</button>
 				</div>
 			</div>
 		</form>
@@ -274,26 +274,26 @@ foreach($this->get('group_members') as $member) {
 			<h3>Grant group access</h3>
 			<div class="ska-row">
 				<div class="ska-col-md-8 ska-mb-3">
-					<div class="ska-input-group">
-						<span class="ska-input-group-text"><label for="access-group"><span class="ska-icon ska-icon-group" title="Group"></span><span class="visually-hidden">Group name</span></label></span>
-						<input type="text" id="access-group" name="group" class="ska-form-control" placeholder="Group name" required list="grouplist">
+					<div class="input-group">
+						<span class="input-group-text"><label for="access-group"><span class="ska-icon ska-icon-group" title="Group"></span><span class="visually-hidden">Group name</span></label></span>
+						<input type="text" id="access-group" name="group" class="form-control" placeholder="Group name" required list="grouplist">
 					</div>
 				</div>
 				<div class="ska-col-md-4 ska-mb-3">
-					<button type="submit" name="add_access" value="1" class="ska-btn ska-btn-primary ska-w-100">Grant a group access to this group's resources</button>
+					<button type="submit" name="add_access" value="1" class="btn btn-primary w-100">Grant a group access to this group's resources</button>
 				</div>
 			</div>
 		</form>
 		<?php } ?>
 	</div>
-	<div class="ska-tab-pane fade" id="outbound" role="tabpanel" aria-labelledby="group_outbound_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="outbound" role="tabpanel" aria-labelledby="group_outbound_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Outbound access</h2>
 		<?php if(count($this->get('group_remote_access')) == 0) { ?>
 		<p>This group has not been granted access to other resources.</p>
 		<?php } else { ?>
 		<p>This group has access to the following resources:</p>
 		<div class="ska-scroll-container">
-			<table class="ska-table ska-table-bordered ska-table-striped">
+			<table class="table table-bordered table-striped">
 				<thead>
 					<tr>
 						<th colspan="2">Access to</th>
@@ -334,15 +334,15 @@ foreach($this->get('group_members') as $member) {
 		</div>
 		<?php } ?>
 	</div>
-	<div class="ska-tab-pane fade" id="admins" role="tabpanel" aria-labelledby="group_admins_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="admins" role="tabpanel" aria-labelledby="group_admins_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Group administrators</h2>
 		<?php if(count($this->get('group_admins')) == 0) { ?>
-		<p class="ska-alert ska-alert-danger">This group does not have any administrators assigned.</p>
+		<p class="alert alert-danger">This group does not have any administrators assigned.</p>
 		<?php } else { ?>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-scroll-container">
-				<table class="ska-table ska-table-bordered ska-table-striped">
+				<table class="table table-bordered table-striped">
 					<thead>
 						<tr>
 							<th>User ID</th>
@@ -359,7 +359,7 @@ foreach($this->get('group_members') as $member) {
 							<td><?php out($admin->name); if(!$admin->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 							<?php if($this->get('admin')) { ?>
 							<td>
-								<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove admin</button>
+								<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove admin</button>
 							</td>
 							<?php } ?>
 						</tr>
@@ -375,21 +375,21 @@ foreach($this->get('group_members') as $member) {
 			<h3>Add administrator</h3>
 			<div class="ska-form-group">
 				<label for="user_name" class="visually-hidden">User name</label>
-				<input type="text" id="user_name" name="user_name" class="ska-form-control" placeholder="User name" required list="userlist">
+				<input type="text" id="user_name" name="user_name" class="form-control" placeholder="User name" required list="userlist">
 			</div>
-			<button type="submit" name="add_admin" value="1" class="ska-btn ska-btn-primary">Add administrator to group</button>
+			<button type="submit" name="add_admin" value="1" class="btn btn-primary">Add administrator to group</button>
 		</form>
 		<?php } ?>
 	</div>
 	<?php if($this->get('admin')) { ?>
-	<div class="ska-tab-pane fade" id="settings" role="tabpanel" aria-labelledby="group_settings_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="group_settings_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Settings</h2>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-settings-form">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-setting-row">
 				<label for="name" class="ska-setting-label">Name</label>
 				<div class="ska-setting-control">
-					<input type="text" id="name" name="name" value="<?php out($this->get('group')->name)?>" required class="ska-form-control">
+					<input type="text" id="name" name="name" value="<?php out($this->get('group')->name)?>" required class="form-control">
 				</div>
 			</div>
 			<div class="ska-setting-row">
@@ -400,15 +400,15 @@ foreach($this->get('group_members') as $member) {
 				</div>
 			</div>
 			<div class="ska-setting-actions">
-					<button type="submit" name="edit_group" value="1" class="ska-btn ska-btn-primary">Change settings</button>
+					<button type="submit" name="edit_group" value="1" class="btn btn-primary">Change settings</button>
 			</div>
 		</form>
 	</div>
 	<?php } ?>
-	<div class="ska-tab-pane fade" id="log" role="tabpanel" aria-labelledby="group_log_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="log" role="tabpanel" aria-labelledby="group_log_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Log</h2>
 		<div class="ska-scroll-container">
-			<table class="ska-table">
+			<table class="table">
 				<thead>
 					<tr>
 						<th>Entity</th>
