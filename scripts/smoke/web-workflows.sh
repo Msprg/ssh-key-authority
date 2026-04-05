@@ -203,7 +203,6 @@ grep -q '>Logout<' "$TMP_DIR/server.html" || smoke_die "Authenticated session wa
 ! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/server.html" || smoke_die "Target server page still renders legacy glyphicon classes"
 ! grep -Eq 'class="[^"]*\\bhidden\\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders the legacy hidden helper class"
 ! grep -Eq "$LEGACY_IN_CLASS_RE" "$TMP_DIR/server.html" || smoke_die "Target server page still renders legacy collapse/tab state classes"
-! grep -Eq "$LEGACY_LAYOUT_RE" "$TMP_DIR/server.html" || smoke_die "Target server page still renders Bootstrap-named layout/utility classes"
 ! grep -Eq 'class="[^"]*\\btext-center\\b|class="[^"]*\\btext-muted\\b|class="[^"]*\\btext-success\\b|class="[^"]*\\btext-warning\\b|class="[^"]*\\btext-danger\\b|class="[^"]*\\btext-info\\b|class="[^"]*\\brounded\\b|class="[^"]*\\bimg-fluid\\b|class="[^"]*\\bclearfix\\b|class="[^"]*\\bd-xl-none\\b|class="[^"]*\\bh-50px\\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders Bootstrap-named semantic helper classes"
 ! grep -Eq 'class="[^"]*\\btext-bg-secondary\\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders Bootstrap-named inactive badge classes"
 if grep -Eq 'id="server_accounts_tab"|id="server_admins_tab"|id="server_settings_tab"' "$TMP_DIR/server.html"; then
@@ -218,7 +217,12 @@ if grep -Eq 'name="add_account"|name="add_admin"|name="edit_server"|name="reques
     grep -Eq 'class="[^"]*btn[^"]*btn-primary|class="[^"]*btn[^"]*btn-secondary|class="[^"]*btn[^"]*btn-info' "$TMP_DIR/server.html" || smoke_die "Target server page is missing Bootstrap 5 button classes"
 fi
 if grep -Eq 'name="request_access"' "$TMP_DIR/server.html"; then
+    grep -Eq 'class="[^"]*row' "$TMP_DIR/server.html" || smoke_die "Target server page is missing Bootstrap 5 row classes"
+    grep -Eq 'class="[^"]*col-sm-[0-9]+' "$TMP_DIR/server.html" || smoke_die "Target server page is missing Bootstrap 5 column classes"
     grep -Eq 'class="[^"]*input-group' "$TMP_DIR/server.html" || smoke_die "Target server page is missing Bootstrap 5 input-group classes"
+fi
+if grep -Eq 'name="add_note"|name="send_mail"' "$TMP_DIR/server.html"; then
+    grep -Eq 'class="[^"]*w-100' "$TMP_DIR/server.html" || smoke_die "Target server page is missing Bootstrap 5 width helpers on primary actions"
 fi
 if grep -Eq 'name="key_management"|name="key_scan"|name="authorization"|name="access_option\[' "$TMP_DIR/server.html"; then
     grep -Eq 'class="[^"]*form-check' "$TMP_DIR/server.html" || smoke_die "Target server page is missing Bootstrap 5 form-check classes"
@@ -319,17 +323,19 @@ fetch_account_page() {
     ! grep -Eq "$LEGACY_FORM_GROUP_RE" "$output_file" || smoke_die "Target account page still renders legacy form-group markup"
     ! grep -Eq 'glyphicon-[a-z0-9-]+' "$output_file" || smoke_die "Target account page still renders legacy glyphicon classes"
     ! grep -Eq "$LEGACY_IN_CLASS_RE" "$output_file" || smoke_die "Target account page still renders legacy collapse/tab state classes"
-    ! grep -Eq "$LEGACY_LAYOUT_RE" "$output_file" || smoke_die "Target account page still renders Bootstrap-named layout/utility classes"
     ! grep -Eq 'class="[^"]*\\btext-center\\b|class="[^"]*\\btext-muted\\b|class="[^"]*\\btext-success\\b|class="[^"]*\\btext-warning\\b|class="[^"]*\\btext-danger\\b|class="[^"]*\\btext-info\\b|class="[^"]*\\brounded\\b|class="[^"]*\\bimg-fluid\\b|class="[^"]*\\bclearfix\\b|class="[^"]*\\bd-xl-none\\b|class="[^"]*\\bh-50px\\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named semantic helper classes"
     ! grep -Eq 'class="[^"]*\\btext-bg-secondary\\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named inactive badge classes"
     grep -Eq 'class="[^"]*nav[^"]*nav-tabs' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 nav-tab classes"
     grep -Eq 'class="[^"]*tab-content' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 tab-content classes"
     grep -Eq 'class="[^"]*table' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 table classes"
+    grep -Eq 'class="[^"]*row' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 row classes"
+    grep -Eq 'class="[^"]*col-md-[0-9]+' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 column classes"
     grep -Eq 'class="[^"]*input-group' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 input-group classes"
     grep -Eq 'class="[^"]*form-control' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 form-control classes"
     grep -Eq 'class="[^"]*btn[^"]*btn-primary' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 primary button classes"
     grep -Eq 'class="[^"]*btn[^"]*btn-secondary' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 secondary button classes"
     grep -Eq 'class="[^"]*alert[^"]*alert-info' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 info alert classes"
+    grep -Eq 'class="[^"]*w-100' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 width helpers on primary actions"
     if grep -Eq 'name="approve_access"|name="reject_access"' "$output_file"; then
         grep -Eq 'class="[^"]*btn[^"]*btn-success' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 success button classes"
         grep -Eq 'class="[^"]*btn[^"]*btn-danger' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 danger button classes"

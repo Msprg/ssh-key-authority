@@ -37,8 +37,8 @@
 		>
 			<span></span>
 			<div class="spinner"></div>
-			<a href="<?php outurl('/help')?>" class="btn btn-info btn-sm ska-d-none">Explain</a>
-			<button name="sync" value="1" type="submit" class="btn btn-secondary btn-sm ska-invisible">Sync now</button>
+			<a href="<?php outurl('/help')?>" class="btn btn-info btn-sm d-none">Explain</a>
+			<button name="sync" value="1" type="submit" class="btn btn-secondary btn-sm invisible">Sync now</button>
 		</dd>
 	</dl>
 </form>
@@ -185,14 +185,16 @@
 			</div>
 		</form>
 		<?php } ?>
-		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-inline-form">
+		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="row g-3 align-items-end">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Create<?php if($this->get('server')->authorization != 'manual') out(' non-LDAP'); ?> account</h3>
-			<div class="ska-form-group">
+			<div class="col-md-4">
 				<label for="account_name" class="visually-hidden">Account name</label>
 				<input type="text" id="account_name" name="account_name" class="form-control" placeholder="Account name" required pattern=".*[^\s].*">
 			</div>
-			<button type="submit" name="add_account" value="1" class="btn btn-primary">Manage this account with SSH Key Authority</button>
+			<div class="col-md-auto">
+				<button type="submit" name="add_account" value="1" class="btn btn-primary">Manage this account with SSH Key Authority</button>
+			</div>
 		</form>
 	</div>
 	<div class="tab-pane fade" id="admins" role="tabpanel" aria-labelledby="server_admins_tab" aria-hidden="true">
@@ -242,10 +244,10 @@
 		</form>
 		<?php } ?>
 		<?php if($this->get('admin')) { ?>
-		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-inline-form">
+		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="row g-3 align-items-end">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Add leader</h3>
-			<div class="ska-form-group">
+			<div class="col-md-4">
 				<label for="user_name" class="visually-hidden">User or group name</label>
 				<input type="text" id="user_name" name="user_name" class="form-control" placeholder="User or group name" required list="userlist">
 				<datalist id="userlist">
@@ -257,7 +259,9 @@
 					<?php } ?>
 				</datalist>
 			</div>
-			<button type="submit" name="add_admin" value="1" class="btn btn-primary">Add leader to server</button>
+			<div class="col-md-auto">
+				<button type="submit" name="add_admin" value="1" class="btn btn-primary">Add leader to server</button>
+			</div>
 		</form>
 		<?php } ?>
 	</div>
@@ -474,19 +478,19 @@
 				<div class="ska-card-body pre-formatted"><?php out($this->get('output_formatter')->comment_format($note->note), ESC_NONE)?></div>
 				<div class="ska-card-footer">
 					Added <?php out($note->date)?> by <?php out($note->user->name)?>
-					<button name="delete_note" value="<?php out($note->id)?>" class="ska-float-end btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete</button>
+					<button name="delete_note" value="<?php out($note->id)?>" class="float-end btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete</button>
 				</div>
 			</div>
 			<?php } ?>
 		</form>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<div class="ska-mb-3">
+			<div class="mb-3">
 				<label for="note">Note</label>
 				<textarea class="form-control" rows="4" id="note" name="note" required></textarea>
 			</div>
-			<div class="ska-mb-3">
-				<button type="submit" name="add_note" value="1" class="btn btn-primary btn-lg ska-w-100">Add note</button>
+			<div class="mb-3">
+				<button type="submit" name="add_note" value="1" class="btn btn-primary btn-lg w-100">Add note</button>
 			</div>
 		</form>
 	</div>
@@ -494,14 +498,14 @@
 		<h2 class="visually-hidden">Contact</h2>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<div class="ska-mb-3">
+			<div class="mb-3">
 				<label for="anonymous">From</label>
 				<select class="form-control" id="anonymous" name="anonymous">
 					<option value="0"><?php out("{$this->get('active_user')->name} <{$this->get('active_user')->email}>");?></option>
 					<option value="1"><?php out($this->get('email_config')['from_name'])?> &lt;<?php out($this->get('email_config')['from_address'])?>&gt; (Reply-to: <?php out($this->get('email_config')['admin_address']) ?>)</option>
 				</select>
 			</div>
-			<div class="ska-mb-3">
+			<div class="mb-3">
 				<label>Recipients</label>
 				<div class="form-check">
 					<label class="form-check-label">
@@ -522,7 +526,7 @@
 					</label>
 				</div>
 			</div>
-			<div class="ska-mb-3">
+			<div class="mb-3">
 				<div class="form-check">
 					<label class="form-check-label">
 						<input type="checkbox" class="form-check-input" id="hide_recipients" name="hide_recipients">
@@ -530,15 +534,15 @@
 					</label>
 				</div>
 			</div>
-			<div class="ska-mb-3">
+			<div class="mb-3">
 				<label for="subject">Subject</label>
 				<input type="text" class="form-control" id="subject" name="subject" required value="Server <?php out('"'.$this->get('server')->hostname.'"') ?>">
 			</div>
-			<div class="ska-mb-3">
+			<div class="mb-3">
 				<label for="body">Body</label>
 				<textarea class="form-control" rows="20" id="body" name="body" required></textarea>
 			</div>
-			<div class="ska-mb-3"><button type="submit" name="send_mail" value="1" data-confirm="Send mail? Are you sure?" class="btn btn-primary btn-lg ska-w-100">Send mail</button></div>
+			<div class="mb-3"><button type="submit" name="send_mail" value="1" data-confirm="Send mail? Are you sure?" class="btn btn-primary btn-lg w-100">Send mail</button></div>
 		</form>
 	</div>
 	<?php } ?>
@@ -555,8 +559,8 @@
 <form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 	<h4>Request access to account</h4>
-	<div class="ska-row">
-		<div class="ska-col-sm-5">
+	<div class="row">
+		<div class="col-sm-5">
 			<label for="account_name" class="visually-hidden">Account name</label>
 			<div class="input-group">
 				<span class="input-group-text"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span></span>
@@ -569,7 +573,7 @@
 				</datalist>
 			</div>
 		</div>
-		<div class="ska-col-sm-7">
+		<div class="col-sm-7">
 			<button type="submit" name="request_access" value="user" class="btn btn-primary">Request access</button>
 			<a href="<?php outurl('/help#getting_access')?>" class="btn btn-info">Help</a>
 		</div>
@@ -578,15 +582,15 @@
 <form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 	<h4>Request server-to-server access</h4>
-	<div class="ska-row">
-		<div class="ska-col-sm-3 ska-mb-3">
+	<div class="row">
+		<div class="col-sm-3 mb-3">
 			<div class="input-group">
 				<span class="input-group-text">From: </span>
 				<span class="input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account name</span></label></span>
 				<input type="text" id="account_remote" name="account_remote" class="form-control" placeholder="Account name" required pattern=".*[^\s].*">
 			</div>
 		</div>
-		<div class="ska-col-sm-3 ska-mb-3">
+		<div class="col-sm-3 mb-3">
 			<div class="input-group">
 				<span class="input-group-text"><label for="hostname">@</label></span>
 				<input type="text" id="hostname_remote" name="hostname_remote" class="form-control" placeholder="Hostname" list="serverlist" required>
@@ -598,8 +602,8 @@
 			</div>
 		</div>
 	</div>
-	<div class="ska-row">
-		<div class="ska-col-sm-5">
+	<div class="row">
+		<div class="col-sm-5">
 			<label for="account_name_s2s" class="visually-hidden">Account name</label>
 			<div class="input-group">
 				<span class="input-group-text">To: </span>
@@ -608,7 +612,7 @@
 				<span class="input-group-text">@<?php out($this->get('server')->hostname)?></span>
 			</div>
 		</div>
-		<div class="ska-col-sm-3">
+		<div class="col-sm-3">
 			<button type="submit" name="request_access" value="server_account" class="btn btn-primary">Request access</button>
 			<a href="<?php outurl('/help#getting_access')?>" class="btn btn-info">Help</a>
 		</div>
@@ -617,8 +621,8 @@
 <form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 	<h4>Request group access</h4>
-	<div class="ska-row">
-		<div class="ska-col-sm-5 ska-mb-3">
+	<div class="row">
+		<div class="col-sm-5 mb-3">
 			 <div class="input-group">
 				<span class="input-group-text"><label for="account"><span class="ska-icon ska-icon-group" title="Group account"></span><span class="visually-hidden">Group name</span></label></span>
 				<input type="text" id="group_account" name="group_account" class="form-control" placeholder="Group name" list="grouplist" required>
@@ -630,8 +634,8 @@
 			</div>
 		</div>
 	</div>
-	<div class="ska-row">
-		<div class="ska-col-sm-5">
+	<div class="row">
+		<div class="col-sm-5">
 			<label for="account_name_group" class="visually-hidden">Account name</label>
 			<div class="input-group">
 				<span class="input-group-text">To: </span>
@@ -640,7 +644,7 @@
 				<span class="input-group-text">@<?php out($this->get('server')->hostname)?></span>
 			</div>
 		</div>
-		<div class="ska-col-sm-3">
+		<div class="col-sm-3">
 			<button type="submit" name="request_access" value="group" class="btn btn-primary">Request access</button>
 			<a href="<?php outurl('/help#getting_access')?>" class="btn btn-info">Help</a>
 		</div>

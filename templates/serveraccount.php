@@ -185,8 +185,8 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h4>Add user to account</h4>
-			<div class="ska-row">
-				<div class="ska-col-md-9 ska-mb-3">
+			<div class="row">
+				<div class="col-md-9 mb-3">
 					<div class="input-group">
 						<span class="input-group-text"><label for="username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
 						<input type="text" id="username" name="username" class="form-control" placeholder="User name" required list="userlist">
@@ -197,22 +197,22 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 						</datalist>
 					</div>
 				</div>
-				<div class="ska-col-md-3 ska-mb-3">
-					<button type="submit" name="add_access" value="1" class="btn btn-primary ska-w-100">Add user to account</button>
+				<div class="col-md-3 mb-3">
+					<button type="submit" name="add_access" value="1" class="btn btn-primary w-100">Add user to account</button>
 				</div>
 			</div>
 		</form>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h4>Add server-to-server access to account</h4>
-			<div class="ska-row">
-				<div class="ska-col-md-2 ska-mb-3">
+			<div class="row">
+				<div class="col-md-2 mb-3">
 					<div class="input-group">
 						<span class="input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account name</span></label></span>
 						<input type="text" id="account" name="account" class="form-control" placeholder="Account name" required>
 					</div>
 				</div>
-				<div class="ska-col-md-7 ska-mb-3">
+				<div class="col-md-7 mb-3">
 					<div class="input-group">
 						<span class="input-group-text"><label for="hostname">@</label></span>
 						<input type="text" id="hostname" name="hostname" class="form-control" placeholder="Hostname" required list="serverlist">
@@ -223,16 +223,16 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 						</datalist>
 					</div>
 				</div>
-				<div class="ska-col-md-3 ska-mb-3">
-					<button type="submit" name="add_access" value="1" class="btn btn-primary ska-w-100">Add remote account to this account</button>
+				<div class="col-md-3 mb-3">
+					<button type="submit" name="add_access" value="1" class="btn btn-primary w-100">Add remote account to this account</button>
 				</div>
 			</div>
 		</form>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h4>Add group access to account</h4>
-			<div class="ska-row">
-				<div class="ska-col-md-9 ska-mb-3">
+			<div class="row">
+				<div class="col-md-9 mb-3">
 					<div class="input-group">
 						<span class="input-group-text"><label for="group"><span class="ska-icon ska-icon-group" title="Group"></span><span class="visually-hidden">Group name</span></label></span>
 						<input type="text" id="group" name="group" class="form-control" placeholder="Group name" required list="grouplist">
@@ -243,8 +243,8 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 						</datalist>
 					</div>
 				</div>
-				<div class="ska-col-md-3 ska-mb-3">
-					<button type="submit" name="add_access" value="1" class="btn btn-primary ska-w-100">Add group to this account</button>
+				<div class="col-md-3 mb-3">
+					<button type="submit" name="add_access" value="1" class="btn btn-primary w-100">Add group to this account</button>
 				</div>
 			</div>
 		</form>
@@ -396,16 +396,16 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 		<?php } ?>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<div class="ska-mb-3">
+			<div class="mb-3">
 				<label for="add_public_key">Public key</label>
 				<textarea class="form-control" rows="4" id="add_public_key" name="add_public_key" required></textarea>
 			</div>
 			<?php if($this->get('active_user')->admin) { ?>
-			<div class="form-check ska-mb-3">
+			<div class="form-check mb-3">
 				<label class="form-check-label"><input type="checkbox" class="form-check-input" name="force"> <span>Allow weak (&lt; 4096 bits) key</span></label>
 			</div>
 			<?php } ?>
-			<div class="ska-mb-3"><button class="btn btn-primary btn-lg ska-w-100">Add public key to account</button></div>
+			<div class="mb-3"><button class="btn btn-primary btn-lg w-100">Add public key to account</button></div>
 		</form>
 	</div>
 	<div class="tab-pane fade" id="outbound" role="tabpanel" aria-labelledby="serveraccount_outbound_tab" aria-hidden="true">
@@ -555,10 +555,10 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 		</form>
 		<?php } ?>
 		<?php if($this->get('admin') || $this->get('server_admin')) { ?>
-		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-inline-form">
+		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="row g-3 align-items-end">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Add leader</h3>
-			<div class="ska-form-group">
+			<div class="col-md-4">
 				<label for="user_name" class="visually-hidden">Account name</label>
 				<input type="text" id="user_name" name="user_name" class="form-control" placeholder="User name" required list="userlist">
 				<datalist id="userlist">
@@ -567,7 +567,9 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 					<?php } ?>
 				</datalist>
 			</div>
-			<button type="submit" name="add_admin" value="1" class="btn btn-primary">Add leader to account</button>
+			<div class="col-md-auto">
+				<button type="submit" name="add_admin" value="1" class="btn btn-primary">Add leader to account</button>
+			</div>
 		</form>
 		<?php } ?>
 	</div>
