@@ -48,10 +48,10 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 				<form method="post" action="<?php outurl($relative_request_url)?>">
 					<?php out($csrf_field, ESC_NONE) ?>
 					<?php if (in_array('allow', $buttons)) { ?>
-					<button type="submit" name="allow" value="<?php out($key->id) ?>" class="btn btn-secondary btn-sm">Allow</button>
+					<button type="submit" name="allow" value="<?php out($key->id) ?>" class="ska-btn ska-btn-secondary ska-btn-sm">Allow</button>
 					<?php } ?>
 					<?php if (in_array('deny', $buttons)) { ?>
-					<button type="submit" name="deny" value="<?php out($key->id) ?>" class="btn btn-secondary btn-sm">Deny</button>
+					<button type="submit" name="deny" value="<?php out($key->id) ?>" class="ska-btn ska-btn-secondary ska-btn-sm">Deny</button>
 					<?php } ?>
 				</form>
 			</dd>
@@ -71,7 +71,7 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 <div class="ska-tab-content">
 	<div class="ska-tab-pane fade active show" id="managed" role="tabpanel" aria-labelledby="pubkeys_managed_tab" aria-hidden="false">
 		<h2 class="visually-hidden">Managed keys</h2>
-		<p><a href="<?php outurl('/pubkeys.json') ?>" class="btn btn-secondary btn-sm">
+		<p><a href="<?php outurl('/pubkeys.json') ?>" class="ska-btn ska-btn-secondary ska-btn-sm">
 			<span class="ska-icon ska-icon-console"></span> JSON
 		</a></p>
 		<div class="ska-card-stack">
@@ -106,7 +106,7 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 									</div>
 								</div>
 							</div>
-							<button type="submit" class="btn btn-primary">Display results</button>
+							<button type="submit" class="ska-btn ska-btn-primary">Display results</button>
 						</form>
 					</div>
 				</div>

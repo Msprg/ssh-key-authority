@@ -33,10 +33,10 @@
 		<h2 class="visually-hidden">Details</h2>
 		<h3><a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys')?>">Public keys</a></h3>
 		<p>
-			<a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys.txt') ?>" class="btn btn-secondary btn-sm">
+			<a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys.txt') ?>" class="ska-btn ska-btn-secondary ska-btn-sm">
 				<span class="ska-icon ska-icon-console"></span> TXT
 			</a>
-			<a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys.json') ?>" class="btn btn-secondary btn-sm">
+			<a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys.json') ?>" class="ska-btn ska-btn-secondary ska-btn-sm">
 				<span class="ska-icon ska-icon-console"></span> JSON
 			</a>
 		</p>
@@ -81,7 +81,7 @@
 						<td><?php out($key->comment) ?></td>
 						<?php if($this->get('admin')) { ?>
 						<td>
-							<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete public key</button>
+							<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete public key</button>
 						</td>
 						<?php } ?>
 					</tr>
@@ -256,7 +256,7 @@
 					</tbody>
 				</table>
 			</div>
-			<p><button type="button" class="btn btn-secondary" data-reassign="admined_servers">Reassign servers</button></p>
+			<p><button type="button" class="ska-btn ska-btn-secondary" data-reassign="admined_servers">Reassign servers</button></p>
 		</form>
 		<?php } ?>
 		<?php } ?>
@@ -274,7 +274,7 @@
 				</div>
 			</div>
 			<div class="ska-setting-actions">
-					<button type="submit" name="edit_user" value="1" class="btn btn-primary">Change settings</button>
+					<button type="submit" name="edit_user" value="1" class="ska-btn ska-btn-primary">Change settings</button>
 			</div>
 		</form>
 	</div>

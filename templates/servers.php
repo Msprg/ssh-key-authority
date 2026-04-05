@@ -28,7 +28,7 @@
 	<div class="ska-tab-pane fade active show" id="list" role="tabpanel" aria-labelledby="servers_list_tab" aria-hidden="false">
 		<h2 class="visually-hidden">Server list</h2>
 		<div class="ska-card-stack">
-			<p><a href="<?php outurl('/servers.json') ?>" class="btn btn-secondary btn-sm">
+			<p><a href="<?php outurl('/servers.json') ?>" class="ska-btn ska-btn-secondary ska-btn-sm">
 				<span class="ska-icon ska-icon-console"></span> JSON
 			</a></p>
 			<div class="ska-card">
@@ -79,7 +79,7 @@
 								<?php } ?>
 							</div>
 						</div>
-						<button type="submit" class="btn btn-primary">Display results</button>
+						<button type="submit" class="ska-btn ska-btn-primary">Display results</button>
 					</form>
 				</div>
 			</div>
@@ -182,7 +182,7 @@
 				</table>
 			</div>
 			<?php if($this->get('admin')) { ?>
-			<button type="submit" class="btn btn-primary">Perform a Bulk action on selected servers</button>
+			<button type="submit" class="ska-btn ska-btn-primary">Perform a Bulk action on selected servers</button>
 		</form>
 		<?php } ?>
 	</div>
@@ -218,7 +218,7 @@
 					<?php } ?>
 				</datalist>
 			</div>
-			<button type="submit" name="add_server" value="1" class="btn btn-primary">Add server to key management</button>
+			<button type="submit" name="add_server" value="1" class="ska-btn ska-btn-primary">Add server to key management</button>
 		</form>
 	</div>
 	<div class="ska-tab-pane fade" id="add_bulk" role="tabpanel" aria-labelledby="servers_add_bulk_tab" aria-hidden="true">
@@ -245,7 +245,7 @@ host3.example.com,22,,ld_group4;leader2</pre>
 				<label for="import">CSV import data</label>
 				<textarea id="import" name="import" class="ska-form-control" required></textarea>
 			</div>
-			<button type="submit" name="add_bulk" value="1" class="btn btn-primary">Add servers to key management</button>
+			<button type="submit" name="add_bulk" value="1" class="ska-btn ska-btn-primary">Add servers to key management</button>
 		</form>
 	</div>
 </div>

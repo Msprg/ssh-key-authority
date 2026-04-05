@@ -57,7 +57,7 @@
 			<?php } ?>
 		</datalist>
 	</div>
-	<button type="submit" name="add_admin" value="1" class="btn btn-primary">Add leader to selected <?php out($this->data->plural ? 'servers' : 'server') ?></button>
+	<button type="submit" name="add_admin" value="1" class="ska-btn ska-btn-primary">Add leader to selected <?php out($this->data->plural ? 'servers' : 'server') ?></button>
 </form>
 
 <h3>Remove leaders from all selected servers</h3>
@@ -91,7 +91,7 @@
 						<td><?php out($admin->name); if(!$admin->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 						<td><?php out($count_affected) ?></td>
 						<td>
-							<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove leader</button>
+							<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove leader</button>
 						</td>
 					</tr>
 				<?php } elseif(strtolower(get_class($admin)) == "group"){ ?>
@@ -100,7 +100,7 @@
 						<td><?php out($admin->name); if(!$admin->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 						<td><?php out($count_affected) ?></td>
 						<td>
-							<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove leader</button>
+							<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove leader</button>
 						</td>
 					</tr>
 				<?php }} ?>

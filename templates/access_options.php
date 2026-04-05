@@ -80,10 +80,10 @@ switch(get_class($remote_entity)) {
 					<div class="ska-card-body">
 						<p>
 							Presets:
-							<button type="button" class="btn btn-secondary btn-sm" data-preset="default">Default</button>
-							<button type="button" class="btn btn-secondary btn-sm" data-preset="command">Command</button>
-							<button type="button" class="btn btn-secondary btn-sm" data-preset="dbbackup">DB backup</button>
-							<button type="button" class="btn btn-secondary btn-sm" data-preset="checkmk">CheckMK</button>
+							<button type="button" class="ska-btn ska-btn-secondary ska-btn-sm" data-preset="default">Default</button>
+							<button type="button" class="ska-btn ska-btn-secondary ska-btn-sm" data-preset="command">Command</button>
+							<button type="button" class="ska-btn ska-btn-secondary ska-btn-sm" data-preset="dbbackup">DB backup</button>
+							<button type="button" class="ska-btn ska-btn-secondary ska-btn-sm" data-preset="checkmk">CheckMK</button>
 						</p>
 						<div class="ska-form-check">
 							<label class="ska-form-check-label"><input type="checkbox" class="ska-form-check-input" name="access_option[command][enabled]"<?php if(isset($options['command'])) out(' checked'); ?>> <span>Specify command (<code>command=&quot;command&quot;</code>)</span></label>
@@ -115,13 +115,13 @@ switch(get_class($remote_entity)) {
 	<?php } ?>
 	<div class="row">
 		<div class="col-md-8">
-			<button type="submit" name="<?php if($mode == 'create') out('add_access'); else out('update_access')?>" value="2" class="btn btn-primary w-100"><?php if($mode == 'create') out('Confirm'); else out('Modify')?> access</button>
+			<button type="submit" name="<?php if($mode == 'create') out('add_access'); else out('update_access')?>" value="2" class="ska-btn ska-btn-primary w-100"><?php if($mode == 'create') out('Confirm'); else out('Modify')?> access</button>
 		</div>
 		<div class="col-md-4">
 			<?php if(isset($server)) { ?>
-			<a href="<?php outurl('/servers/'.urlencode($server->hostname).'/accounts/'.urlencode($account->name))?>" class="btn btn-secondary w-100">Cancel</a>
+			<a href="<?php outurl('/servers/'.urlencode($server->hostname).'/accounts/'.urlencode($account->name))?>" class="ska-btn ska-btn-secondary w-100">Cancel</a>
 			<?php } elseif(isset($group)) { ?>
-			<a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="btn btn-secondary w-100">Cancel</a>
+			<a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="ska-btn ska-btn-secondary w-100">Cancel</a>
 			<?php } ?>
 		</div>
 	</div>

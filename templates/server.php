@@ -37,8 +37,8 @@
 		>
 			<span></span>
 			<div class="spinner"></div>
-			<a href="<?php outurl('/help')?>" class="btn btn-info btn-sm d-none">Explain</a>
-			<button name="sync" value="1" type="submit" class="btn btn-secondary btn-sm invisible">Sync now</button>
+			<a href="<?php outurl('/help')?>" class="ska-btn ska-btn-info ska-btn-sm d-none">Explain</a>
+			<button name="sync" value="1" type="submit" class="ska-btn ska-btn-secondary ska-btn-sm invisible">Sync now</button>
 		</dd>
 	</dl>
 </form>
@@ -141,9 +141,9 @@
 							</td>
 							<?php } ?>
 							<td rowspan="<?php out(max(1, count($access_list)))?>">
-								<a href="<?php outurl($this->data->relative_request_url.'/accounts/'.urlencode($account->name))?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-cog"></span> Manage account</a>
+								<a href="<?php outurl($this->data->relative_request_url.'/accounts/'.urlencode($account->name))?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-cog"></span> Manage account</a>
 								<?php if(!array_key_exists($account->name, $this->get('default_accounts'))) { ?>
-								<button type="submit" name="delete_account" value="<?php out($account->id) ?>" class="btn btn-secondary btn-sm" data-confirm="Are you sure you want to delete this account?"><span class="ska-icon ska-icon-trash"></span> Delete account</button>
+								<button type="submit" name="delete_account" value="<?php out($account->id) ?>" class="ska-btn ska-btn-secondary ska-btn-sm" data-confirm="Are you sure you want to delete this account?"><span class="ska-icon ska-icon-trash"></span> Delete account</button>
 								<?php } ?>
 							</td>
 							<?php if(empty($access_list)) { ?>
@@ -192,7 +192,7 @@
 				<label for="account_name" class="visually-hidden">Account name</label>
 				<input type="text" id="account_name" name="account_name" class="ska-form-control" placeholder="Account name" required pattern=".*[^\s].*">
 			</div>
-			<button type="submit" name="add_account" value="1" class="btn btn-primary">Manage this account with SSH Key Authority</button>
+			<button type="submit" name="add_account" value="1" class="ska-btn ska-btn-primary">Manage this account with SSH Key Authority</button>
 		</form>
 	</div>
 	<div class="ska-tab-pane fade" id="admins" role="tabpanel" aria-labelledby="server_admins_tab" aria-hidden="true">
@@ -221,7 +221,7 @@
 									<td><?php out($admin->name); if(!$admin->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 									<?php if($this->get('admin')) {?>
 									<td>
-										<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove leader</button>
+										<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove leader</button>
 									</td>
 									<?php } ?>
 								</tr>
@@ -231,7 +231,7 @@
 									<td><?php out($admin->name); if(!$admin->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 									<?php if($this->get('admin')) { ?>
 									<td>
-										<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove leader</button>
+										<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove leader</button>
 									</td>
 									<?php } ?>
 								</tr>
@@ -257,7 +257,7 @@
 					<?php } ?>
 				</datalist>
 			</div>
-			<button type="submit" name="add_admin" value="1" class="btn btn-primary">Add leader to server</button>
+			<button type="submit" name="add_admin" value="1" class="ska-btn ska-btn-primary">Add leader to server</button>
 		</form>
 		<?php } ?>
 	</div>
@@ -282,7 +282,7 @@
 				<label for="host_key" class="ska-setting-label">Host key</label>
 				<div class="ska-setting-control">
 					<input type="text" id="host_key" name="host_key" value="<?php out($this->get('server')->host_key)?>" readonly class="ska-form-control">
-					<button type="button" class="btn btn-secondary" data-clear="host_key">Clear</button>
+					<button type="button" class="ska-btn ska-btn-secondary" data-clear="host_key">Clear</button>
 				</div>
 			</div>
 			<div class="ska-setting-row">
@@ -350,7 +350,7 @@
 					</div>
 				</div>
 				<div class="ska-setting-actions">
-						<button type="submit" name="edit_server" value="1" class="btn btn-primary">Change settings</button>
+						<button type="submit" name="edit_server" value="1" class="ska-btn ska-btn-primary">Change settings</button>
 				</div>
 			<?php } else { ?>
 			<dl>
@@ -428,11 +428,11 @@
 				<label for="host_key" class="ska-setting-label">Host key</label>
 				<div class="ska-setting-control">
 					<input type="text" id="host_key" name="host_key" value="<?php out($this->get('server')->host_key)?>" readonly class="ska-form-control">
-					<button type="button" class="btn btn-secondary" data-clear="host_key">Clear</button>
+					<button type="button" class="ska-btn ska-btn-secondary" data-clear="host_key">Clear</button>
 				</div>
 			</div>
 			<div class="ska-setting-actions">
-					<button type="submit" name="edit_server" value="1" class="btn btn-primary">Change settings</button>
+					<button type="submit" name="edit_server" value="1" class="ska-btn ska-btn-primary">Change settings</button>
 			</div>
 			<?php } ?>
 			<?php } ?>
@@ -474,7 +474,7 @@
 				<div class="ska-card-body pre-formatted"><?php out($this->get('output_formatter')->comment_format($note->note), ESC_NONE)?></div>
 				<div class="ska-card-footer">
 					Added <?php out($note->date)?> by <?php out($note->user->name)?>
-					<button name="delete_note" value="<?php out($note->id)?>" class="float-end btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete</button>
+					<button name="delete_note" value="<?php out($note->id)?>" class="float-end ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete</button>
 				</div>
 			</div>
 			<?php } ?>
@@ -486,7 +486,7 @@
 				<textarea class="ska-form-control" rows="4" id="note" name="note" required></textarea>
 			</div>
 			<div class="mb-3">
-				<button type="submit" name="add_note" value="1" class="btn btn-primary btn-lg w-100">Add note</button>
+				<button type="submit" name="add_note" value="1" class="ska-btn ska-btn-primary ska-btn-lg w-100">Add note</button>
 			</div>
 		</form>
 	</div>
@@ -538,7 +538,7 @@
 				<label for="body">Body</label>
 				<textarea class="ska-form-control" rows="20" id="body" name="body" required></textarea>
 			</div>
-			<div class="mb-3"><button type="submit" name="send_mail" value="1" data-confirm="Send mail? Are you sure?" class="btn btn-primary btn-lg w-100">Send mail</button></div>
+			<div class="mb-3"><button type="submit" name="send_mail" value="1" data-confirm="Send mail? Are you sure?" class="ska-btn ska-btn-primary ska-btn-lg w-100">Send mail</button></div>
 		</form>
 	</div>
 	<?php } ?>
@@ -570,8 +570,8 @@
 			</div>
 		</div>
 		<div class="col-sm-7">
-			<button type="submit" name="request_access" value="user" class="btn btn-primary">Request access</button>
-			<a href="<?php outurl('/help#getting_access')?>" class="btn btn-info">Help</a>
+			<button type="submit" name="request_access" value="user" class="ska-btn ska-btn-primary">Request access</button>
+			<a href="<?php outurl('/help#getting_access')?>" class="ska-btn ska-btn-info">Help</a>
 		</div>
 	</div>
 </form>
@@ -609,8 +609,8 @@
 			</div>
 		</div>
 		<div class="col-sm-3">
-			<button type="submit" name="request_access" value="server_account" class="btn btn-primary">Request access</button>
-			<a href="<?php outurl('/help#getting_access')?>" class="btn btn-info">Help</a>
+			<button type="submit" name="request_access" value="server_account" class="ska-btn ska-btn-primary">Request access</button>
+			<a href="<?php outurl('/help#getting_access')?>" class="ska-btn ska-btn-info">Help</a>
 		</div>
 	</div>
 </form>
@@ -641,8 +641,8 @@
 			</div>
 		</div>
 		<div class="col-sm-3">
-			<button type="submit" name="request_access" value="group" class="btn btn-primary">Request access</button>
-			<a href="<?php outurl('/help#getting_access')?>" class="btn btn-info">Help</a>
+			<button type="submit" name="request_access" value="group" class="ska-btn ska-btn-primary">Request access</button>
+			<a href="<?php outurl('/help#getting_access')?>" class="ska-btn ska-btn-info">Help</a>
 		</div>
 	</div>
 </form>
@@ -688,7 +688,7 @@
 					<?php } ?>
 				</td>
 				<td rowspan="<?php out(max(1, count($access_list)))?>">
-					<a href="<?php outurl($this->data->relative_request_url.'/accounts/'.urlencode($account->name))?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-cog"></span> Manage account</a>
+					<a href="<?php outurl($this->data->relative_request_url.'/accounts/'.urlencode($account->name))?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-cog"></span> Manage account</a>
 				</td>
 				<?php if(empty($access_list)) { ?>
 				<td colspan="3"><em>No-one</em></td>

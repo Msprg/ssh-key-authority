@@ -38,7 +38,7 @@ foreach($this->get('group_members') as $member) {
 <div class="ska-tab-content">
 	<div class="ska-tab-pane fade active show" id="members" role="tabpanel" aria-labelledby="group_members_tab" aria-hidden="false">
 		<h2 class="visually-hidden">Group members</h2>
-		<p><a href="<?php outurl('/groups/'.urlencode($this->get('group')->name).'/members.json') ?>" class="btn btn-secondary btn-sm">
+		<p><a href="<?php outurl('/groups/'.urlencode($this->get('group')->name).'/members.json') ?>" class="ska-btn ska-btn-secondary ska-btn-sm">
 			<span class="ska-icon ska-icon-console"></span> JSON
 		</a></p>
 		<?php if(count($this->get('group_members')) == 0) { ?>
@@ -90,7 +90,7 @@ foreach($this->get('group_members') as $member) {
 							<td>Added on <?php out($member->add_date) ?> by <a href="<?php outurl('/users/'.urlencode($member->added_by->uid))?>" class="user"><?php out($member->added_by->uid) ?></a></td>
 							<?php if(!$this->get('group')->system) { ?>
 							<td>
-								<button type="submit" name="delete_member" value="<?php out($member->entity_id)?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-ban-circle"></span> Remove from group</button>
+								<button type="submit" name="delete_member" value="<?php out($member->entity_id)?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-ban-circle"></span> Remove from group</button>
 							</td>
 							<?php } ?>
 							<?php } ?>
@@ -112,7 +112,7 @@ foreach($this->get('group_members') as $member) {
 					</div>
 				</div>
 				<div class="col-md-3 mb-3">
-					<button type="submit" name="add_member" value="1" class="btn btn-primary w-100">Add user to group</button>
+					<button type="submit" name="add_member" value="1" class="ska-btn ska-btn-primary w-100">Add user to group</button>
 				</div>
 			</div>
 		</form>
@@ -133,7 +133,7 @@ foreach($this->get('group_members') as $member) {
 					</div>
 				</div>
 				<div class="col-md-3 mb-3">
-					<button type="submit" name="add_member" value="1" class="btn btn-primary w-100">Add server account to group</button>
+					<button type="submit" name="add_member" value="1" class="ska-btn ska-btn-primary w-100">Add server account to group</button>
 				</div>
 			</div>
 		</form>
@@ -148,7 +148,7 @@ foreach($this->get('group_members') as $member) {
 			</div>
 			<div class="row">
 				<div class="col-md-3 mb-3">
-					<button type="submit" name="add_members" value="1" class="btn btn-primary w-100">Add server accounts to group</button>
+					<button type="submit" name="add_members" value="1" class="ska-btn ska-btn-primary w-100">Add server accounts to group</button>
 				</div>
 			</div>
 		</form>
@@ -220,8 +220,8 @@ foreach($this->get('group_members') as $member) {
 								<?php } ?>
 							</td>
 							<td>
-								<a href="<?php outurl('/groups/'.urlencode($this->get('group')->name).'/access_rules/'.urlencode($access->id))?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-cog"></span> Configure access</a>
-								<button type="submit" name="delete_access" value="<?php out($access->id)?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-ban-circle"></span> Remove access</button>
+								<a href="<?php outurl('/groups/'.urlencode($this->get('group')->name).'/access_rules/'.urlencode($access->id))?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-cog"></span> Configure access</a>
+								<button type="submit" name="delete_access" value="<?php out($access->id)?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-ban-circle"></span> Remove access</button>
 							</td>
 							<?php } ?>
 						</tr>
@@ -244,7 +244,7 @@ foreach($this->get('group_members') as $member) {
 					</div>
 				</div>
 				<div class="col-md-4 mb-3">
-					<button type="submit" name="add_access" value="1" class="btn btn-primary w-100">Grant user access to group resources</button>
+					<button type="submit" name="add_access" value="1" class="ska-btn ska-btn-primary w-100">Grant user access to group resources</button>
 				</div>
 			</div>
 		</form>
@@ -265,7 +265,7 @@ foreach($this->get('group_members') as $member) {
 					</div>
 				</div>
 				<div class="col-md-4 mb-3">
-					<button type="submit" name="add_access" value="1" class="btn btn-primary w-100">Grant server account access to group resources</button>
+					<button type="submit" name="add_access" value="1" class="ska-btn ska-btn-primary w-100">Grant server account access to group resources</button>
 				</div>
 			</div>
 		</form>
@@ -280,7 +280,7 @@ foreach($this->get('group_members') as $member) {
 					</div>
 				</div>
 				<div class="col-md-4 mb-3">
-					<button type="submit" name="add_access" value="1" class="btn btn-primary w-100">Grant a group access to this group's resources</button>
+					<button type="submit" name="add_access" value="1" class="ska-btn ska-btn-primary w-100">Grant a group access to this group's resources</button>
 				</div>
 			</div>
 		</form>
@@ -359,7 +359,7 @@ foreach($this->get('group_members') as $member) {
 							<td><?php out($admin->name); if(!$admin->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 							<?php if($this->get('admin')) { ?>
 							<td>
-								<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove admin</button>
+								<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove admin</button>
 							</td>
 							<?php } ?>
 						</tr>
@@ -377,7 +377,7 @@ foreach($this->get('group_members') as $member) {
 				<label for="user_name" class="visually-hidden">User name</label>
 				<input type="text" id="user_name" name="user_name" class="ska-form-control" placeholder="User name" required list="userlist">
 			</div>
-			<button type="submit" name="add_admin" value="1" class="btn btn-primary">Add administrator to group</button>
+			<button type="submit" name="add_admin" value="1" class="ska-btn ska-btn-primary">Add administrator to group</button>
 		</form>
 		<?php } ?>
 	</div>
@@ -400,7 +400,7 @@ foreach($this->get('group_members') as $member) {
 				</div>
 			</div>
 			<div class="ska-setting-actions">
-					<button type="submit" name="edit_group" value="1" class="btn btn-primary">Change settings</button>
+					<button type="submit" name="edit_group" value="1" class="ska-btn ska-btn-primary">Change settings</button>
 			</div>
 		</form>
 	</div>

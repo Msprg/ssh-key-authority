@@ -48,7 +48,7 @@ $owner = $this->get('pubkey')->owner;
 <div class="ska-tab-content">
 	<div class="ska-tab-pane fade active show" id="info" role="tabpanel"<?php if($this->get('user_is_owner') || $this->get('admin')) out(' aria-labelledby="pubkey_info_tab"', ESC_NONE) ?> aria-hidden="false">
 		<h2 class="visually-hidden">Information</h2>
-		<p><a href="<?php outurl('/pubkeys/'.$this->get('pubkey')->id.'.json') ?>" class="btn btn-secondary btn-sm">
+		<p><a href="<?php outurl('/pubkeys/'.$this->get('pubkey')->id.'.json') ?>" class="ska-btn ska-btn-secondary ska-btn-sm">
 			<span class="ska-icon ska-icon-console"></span> JSON
 		</a></p>
 		<?php if ($this->get('pubkey')->deletion_date !== null) { ?>
@@ -96,7 +96,7 @@ $owner = $this->get('pubkey')->owner;
 							<td><?php out($sig->fingerprint)?></td>
 							<td><?php out($sig->sign_date)?></td>
 							<td><?php out($sig->upload_date)?></td>
-							<td><button type="submit" name="delete_signature" value="<?php out($sig->id)?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete signature</button></td>
+							<td><button type="submit" name="delete_signature" value="<?php out($sig->id)?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete signature</button></td>
 						</tr>
 						<?php } ?>
 					</tbody>
@@ -112,7 +112,7 @@ $owner = $this->get('pubkey')->owner;
 				</label>
 			</div>
 			<div class="mb-3">
-				<button type="submit" name="add_signature" value="1" class="btn btn-primary">Upload signature</button>
+				<button type="submit" name="add_signature" value="1" class="ska-btn ska-btn-primary">Upload signature</button>
 			</div>
 		</form>
 	</div>
@@ -138,7 +138,7 @@ $owner = $this->get('pubkey')->owner;
 						<tr>
 							<td><?php out($rule->account_name_filter)?></td>
 							<td><?php out($rule->hostname_filter)?></td>
-							<td><button type="submit" name="delete_dest_rule" value="<?php out($rule->id)?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete rule</button></td>
+							<td><button type="submit" name="delete_dest_rule" value="<?php out($rule->id)?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete rule</button></td>
 						</tr>
 						<?php } ?>
 					</tbody>
@@ -159,7 +159,7 @@ $owner = $this->get('pubkey')->owner;
 				<input type="text" id="hostname_filter" name="hostname_filter" class="ska-form-control" value="*" required>
 			</div>
 			<div class="mb-3">
-				<button type="submit" name="add_dest_rule" value="1" class="btn btn-primary w-100">Add rule</button>
+				<button type="submit" name="add_dest_rule" value="1" class="ska-btn ska-btn-primary w-100">Add rule</button>
 			</div>
 		</form>
 	</div>

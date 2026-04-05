@@ -57,7 +57,7 @@
 								<?php } ?>
 							</div>
 						</div>
-						<button type="submit" class="btn btn-primary">Display results</button>
+						<button type="submit" class="ska-btn ska-btn-primary">Display results</button>
 					</form>
 				</div>
 			</div>
@@ -87,7 +87,7 @@
 							<td><?php out($group->admins)?></td>
 							<?php if($this->get('admin')) { ?>
 							<td>
-								<a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-cog"></span> Manage group</a>
+								<a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-cog"></span> Manage group</a>
 							</td>
 							<?php } ?>
 						</tr>
@@ -117,7 +117,7 @@
 					<?php } ?>
 				</datalist>
 			</div>
-			<button type="submit" name="add_group" value="1" class="btn btn-primary">Create group</button>
+			<button type="submit" name="add_group" value="1" class="ska-btn ska-btn-primary">Create group</button>
 		</form>
 		<h3>Connect ldap group</h3>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-inline-form">
@@ -126,7 +126,7 @@
 			<div class="ska-form-group mb-3">
 				<label for="name" class="visually-hidden">Group name</label>
 			</div>
-			<button type="submit" name="add_ldap_group" value="1" class="btn btn-primary">Connect selected groups</button>
+			<button type="submit" name="add_ldap_group" value="1" class="ska-btn ska-btn-primary">Connect selected groups</button>
 		</form>
 	</div>
 	<?php } ?>
