@@ -33,6 +33,9 @@ done
 if [ "$DRY_RUN" -eq 1 ]; then
     smoke_log "Dry-run mode: validating smoke harness scripts"
     bash -n "$SCRIPT_DIR/lib.sh"
+    bash -n "$SCRIPT_DIR/browser-lib.sh"
+    bash -n "$SCRIPT_DIR/browser-capture.sh"
+    bash -n "$SCRIPT_DIR/browser-interactions.sh"
     bash -n "$SCRIPT_DIR/web-workflows.sh"
     bash -n "$SCRIPT_DIR/sync-preview.sh"
     bash -n "$SCRIPT_DIR/run.sh"
@@ -44,6 +47,7 @@ fi
 
 if [ "$MODE" = "all" ] || [ "$MODE" = "web" ]; then
     "$SCRIPT_DIR/web-workflows.sh"
+    bash "$SCRIPT_DIR/browser-interactions.sh"
 fi
 
 if [ "$MODE" = "all" ] || [ "$MODE" = "sync" ]; then

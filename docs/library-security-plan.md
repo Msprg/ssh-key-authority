@@ -31,6 +31,7 @@ PHP dependencies remain small:
 | --- | --- | --- | --- |
 | Historical Bootstrap/Glyphicon references | Low | Older docs and checkpoints can mislead future work after the runtime asset removal | Keep current-state docs updated and trim stale references as cleanup continues |
 | Local frontend runtime in `extra.js` | Medium | Now repo-owned rather than third-party, but still central to tabs, collapses, dropdowns, alerts, and sync polling | Covered by smoke tests plus targeted browser verification on interaction-heavy slices |
+| Browser interaction smoke in `scripts/smoke/browser-interactions.sh` | Low | New repo-owned regression guard that drives real frontend interactions in headless Chromium | Reuses smoke env vars and now runs as part of `make smoke` |
 | Browser-debugging helper `scripts/smoke/browser-capture.sh` | Low | New repo-owned debugging tool that logs into the smoke environment for screenshots | Reuses the existing smoke env vars and is not loaded in application runtime |
 | Dormant vendored frontend assets | Low | Unreferenced assets expand reviewer surface and can hide stale dependencies | Remove once docs/checkpoints and fallback references are gone |
 | `phpseclib` 3.x | Low | Runtime cryptography and SSH dependency still deserves continuous monitoring | `composer audit` in `make ci-check`, lockfile already updated to a non-advised release |

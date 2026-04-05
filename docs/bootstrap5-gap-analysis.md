@@ -44,7 +44,7 @@ Current runtime facts:
 - High-traffic pages now use semantic `ska-icon` helpers and entity-link icons rendered through repo-owned SVG assets in [public_html/icons/](/var/www/ska/public_html/icons/) via [public_html/style.css](/var/www/ska/public_html/style.css), not the Bootstrap font glyphs.
 - Bootstrap 3 `panel-*` markup has been migrated to local `ska-card*` classes in active templates.
 - `public_html/bootstrap5-compat.css` has been retired; its remaining live utility and component aliases were folded into [public_html/style.css](/var/www/ska/public_html/style.css).
-- Headless browser capture is now available through [scripts/smoke/browser-capture.sh](/var/www/ska/scripts/smoke/browser-capture.sh) for authenticated visual regression checks.
+- Headless browser capture is now available through [scripts/smoke/browser-capture.sh](/var/www/ska/scripts/smoke/browser-capture.sh) for authenticated visual regression checks, and [scripts/smoke/browser-interactions.sh](/var/www/ska/scripts/smoke/browser-interactions.sh) exercises one live dropdown, collapse, and tab interaction during smoke runs.
 
 The main remaining blockers are now page-local CSS- and markup-oriented rather than framework/plugin-oriented:
 
