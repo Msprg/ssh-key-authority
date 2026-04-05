@@ -18,14 +18,14 @@
 
 function show_key(ExternalKey $key, array $buttons, string $relative_request_url, string $csrf_field) {
 	?>
-	<div class="ska-card">
-		<dl class="ska-card-body">
+	<div class="card">
+		<dl class="card-body ska-mb-0">
 			<dt>Key data</dt>
 			<dd><pre><?php out($key->type) ?> <?php out($key->keydata) ?></pre></dd>
 			<dt>Occurrences</dt>
 			<dd>
 				<div class="ska-scroll-container">
-					<table class="ska-table">
+					<table class="table table-sm">
 						<thead>
 							<tr>
 								<th>Location</th>
@@ -48,10 +48,10 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 				<form method="post" action="<?php outurl($relative_request_url)?>">
 					<?php out($csrf_field, ESC_NONE) ?>
 					<?php if (in_array('allow', $buttons)) { ?>
-					<button type="submit" name="allow" value="<?php out($key->id) ?>" class="ska-btn ska-btn-secondary ska-btn-sm">Allow</button>
+					<button type="submit" name="allow" value="<?php out($key->id) ?>" class="btn btn-secondary btn-sm">Allow</button>
 					<?php } ?>
 					<?php if (in_array('deny', $buttons)) { ?>
-					<button type="submit" name="deny" value="<?php out($key->id) ?>" class="ska-btn ska-btn-secondary ska-btn-sm">Deny</button>
+					<button type="submit" name="deny" value="<?php out($key->id) ?>" class="btn btn-secondary btn-sm">Deny</button>
 					<?php } ?>
 				</form>
 			</dd>
@@ -62,51 +62,51 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 
 ?>
 <h1>Public keys</h1>
-<ul class="ska-tabs" role="tablist">
-	<li class="ska-tab-item active" role="presentation"><a href="#managed" id="pubkeys_managed_tab" class="ska-tab-link active" role="tab" data-bs-toggle="tab" aria-controls="managed" aria-selected="true">Managed keys</a></li>
-	<li class="ska-tab-item" role="presentation"><a href="#new" id="pubkeys_new_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="new" aria-selected="false" tabindex="-1">New keys</a></li>
-	<li class="ska-tab-item" role="presentation"><a href="#allowed" id="pubkeys_allowed_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="allowed" aria-selected="false" tabindex="-1">Allowed keys</a></li>
-	<li class="ska-tab-item" role="presentation"><a href="#denied" id="pubkeys_denied_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="denied" aria-selected="false" tabindex="-1">Denied keys</a></li>
+<ul class="nav nav-tabs" role="tablist">
+	<li class="nav-item" role="presentation"><a href="#managed" id="pubkeys_managed_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="managed" aria-selected="true">Managed keys</a></li>
+	<li class="nav-item" role="presentation"><a href="#new" id="pubkeys_new_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="new" aria-selected="false" tabindex="-1">New keys</a></li>
+	<li class="nav-item" role="presentation"><a href="#allowed" id="pubkeys_allowed_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="allowed" aria-selected="false" tabindex="-1">Allowed keys</a></li>
+	<li class="nav-item" role="presentation"><a href="#denied" id="pubkeys_denied_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="denied" aria-selected="false" tabindex="-1">Denied keys</a></li>
 </ul>
-<div class="ska-tab-content">
-	<div class="ska-tab-pane fade active show" id="managed" role="tabpanel" aria-labelledby="pubkeys_managed_tab" aria-hidden="false">
+<div class="tab-content">
+	<div class="tab-pane fade active show" id="managed" role="tabpanel" aria-labelledby="pubkeys_managed_tab" aria-hidden="false">
 		<h2 class="visually-hidden">Managed keys</h2>
-		<p><a href="<?php outurl('/pubkeys.json') ?>" class="ska-btn ska-btn-secondary ska-btn-sm">
+		<p><a href="<?php outurl('/pubkeys.json') ?>" class="btn btn-secondary btn-sm">
 			<span class="ska-icon ska-icon-console"></span> JSON
 		</a></p>
 		<div class="ska-card-stack">
-			<div class="ska-card">
-				<div class="ska-card-header">
-					<h3 class="ska-card-title">Filter options</h3>
+			<div class="card">
+				<div class="card-header">
+					<h3 class="h5 ska-mb-0">Filter options</h3>
 				</div>
 				<div id="search_filter">
-					<div class="ska-card-body">
+					<div class="card-body">
 						<form>
 							<div class="ska-row">
 								<div class="ska-col-md-6 ska-mb-3">
 									<label for="fingerprint-search">Fingerprint</label>
-									<input type="text" id="fingerprint-search" name="fingerprint" class="ska-form-control" value="<?php out($this->get('filter')['fingerprint'])?>">
+									<input type="text" id="fingerprint-search" name="fingerprint" class="form-control" value="<?php out($this->get('filter')['fingerprint'])?>">
 								</div>
 								<div class="ska-col-md-2 ska-mb-3">
 									<label for="type-search">Key type</label>
-									<input type="text" id="type-search" name="type" class="ska-form-control" value="<?php out($this->get('filter')['type'])?>">
+									<input type="text" id="type-search" name="type" class="form-control" value="<?php out($this->get('filter')['type'])?>">
 								</div>
 								<div class="ska-col-md-2 ska-mb-3">
 									<label for="keysize-min">Min key size</label>
-									<div class="ska-input-group">
-										<span class="ska-input-group-text">≥</span>
-										<input type="text" id="keysize-min" name="keysize-min" class="ska-form-control" value="<?php out($this->get('filter')['keysize-min'])?>">
+									<div class="input-group">
+										<span class="input-group-text">≥</span>
+										<input type="text" id="keysize-min" name="keysize-min" class="form-control" value="<?php out($this->get('filter')['keysize-min'])?>">
 									</div>
 								</div>
 								<div class="ska-col-md-2 ska-mb-3">
 									<label for="keysize-max">Max key size</label>
-									<div class="ska-input-group">
-										<span class="ska-input-group-text">≤</span>
-										<input type="text" id="keysize-max" name="keysize-max" class="ska-form-control" value="<?php out($this->get('filter')['keysize-max'])?>">
+									<div class="input-group">
+										<span class="input-group-text">≤</span>
+										<input type="text" id="keysize-max" name="keysize-max" class="form-control" value="<?php out($this->get('filter')['keysize-max'])?>">
 									</div>
 								</div>
 							</div>
-							<button type="submit" class="ska-btn ska-btn-primary">Display results</button>
+							<button type="submit" class="btn btn-primary">Display results</button>
 						</form>
 					</div>
 				</div>
@@ -114,7 +114,7 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 		</div>
 		<p><?php $total = count($this->get('pubkeys')); out(number_format($total).' public key'.($total == 1 ? '' : 's').' found'); ?></p>
 		<div class="ska-scroll-container">
-			<table class="ska-table ska-table-striped">
+			<table class="table table-striped">
 				<thead>
 					<tr>
 						<th class="fingerprint">Fingerprint</th>
@@ -188,7 +188,7 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 			</table>
 		</div>
 	</div>
-	<div class="ska-tab-pane fade" id="new" role="tabpanel" aria-labelledby="pubkeys_new_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="new" role="tabpanel" aria-labelledby="pubkeys_new_tab" aria-hidden="true">
 		<h2 class="visually-hidden">New keys</h2>
 		<?php
 		if (empty($this->get('new_keys'))) {
@@ -212,7 +212,7 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 		}
 		?>
 	</div>
-	<div class="ska-tab-pane fade" id="allowed" role="tabpanel" aria-labelledby="pubkeys_allowed_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="allowed" role="tabpanel" aria-labelledby="pubkeys_allowed_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Allowed keys</h2>
 		<?php
 		if (empty($this->get('allowed_keys'))) {
@@ -224,7 +224,7 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 		}
 		?>
 	</div>
-	<div class="ska-tab-pane fade" id="denied" role="tabpanel" aria-labelledby="pubkeys_denied_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="denied" role="tabpanel" aria-labelledby="pubkeys_denied_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Denied keys</h2>
 		<?php
 		if (empty($this->get('denied_keys'))) {

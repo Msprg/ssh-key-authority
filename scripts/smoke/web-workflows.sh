@@ -214,10 +214,13 @@ grep -Eq 'class="[^"]*btn[^"]*btn-primary' "$TMP_DIR/bulk-mail.html" || smoke_di
 
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/pubkeys" -o "$TMP_DIR/pubkeys.html"
 grep -q '>Logout<' "$TMP_DIR/pubkeys.html" || smoke_die "Authenticated session was lost while loading public keys page"
-! grep -Eq "$LEGACY_LAYOUT_RE" "$TMP_DIR/pubkeys.html" || smoke_die "Public keys page still renders Bootstrap-named layout/utility classes"
 ! grep -Eq "$LEGACY_PRESENTATION_RE" "$TMP_DIR/pubkeys.html" || smoke_die "Public keys page still renders Bootstrap-named semantic helper classes"
-! grep -Eq 'class="[^"]*\\bform-control\\b' "$TMP_DIR/pubkeys.html" || smoke_die "Public keys page still renders Bootstrap-named form-control classes"
-grep -Eq 'class="[^"]*ska-form-control' "$TMP_DIR/pubkeys.html" || smoke_die "Public keys page is missing SKA-owned form-control classes"
+! grep -Eq 'class="[^"]*\\bhidden\\b' "$TMP_DIR/pubkeys.html" || smoke_die "Public keys page still renders the legacy hidden helper class"
+! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/pubkeys.html" || smoke_die "Public keys page still renders legacy glyphicon classes"
+grep -Eq 'class="[^"]*nav[^"]*nav-tabs' "$TMP_DIR/pubkeys.html" || smoke_die "Public keys page is missing Bootstrap 5 nav-tab classes"
+grep -Eq 'class="[^"]*tab-content' "$TMP_DIR/pubkeys.html" || smoke_die "Public keys page is missing Bootstrap 5 tab-content classes"
+grep -Eq 'class="[^"]*form-control' "$TMP_DIR/pubkeys.html" || smoke_die "Public keys page is missing Bootstrap 5 form-control classes"
+grep -Eq 'class="[^"]*btn[^"]*btn-primary' "$TMP_DIR/pubkeys.html" || smoke_die "Public keys page is missing Bootstrap 5 primary button classes"
 
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" \
     --data-urlencode "csrf_token=$HOME_CSRF" \
