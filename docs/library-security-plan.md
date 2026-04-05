@@ -87,6 +87,7 @@ Priority work:
 
 - keep Bootstrap 5 CSS pinned to a fixed local asset and validated in smoke
 - continue handing selected class families back from `ska-*` ownership to Bootstrap 5-native classes only after conflict scans stay clean
+- use low-risk secondary pages first for those handoffs so Bootstrap 5-native cards/tables/forms can be validated outside LDAP/access/sync hot paths
 - visually recheck untargeted secondary pages under the repo-local baseline
 - finish removing stale Bootstrap-era helper/content assumptions from mixed templates
 - continue migrating the remaining untargeted secondary templates onto explicit `ska-*` layout/utility aliases where they still use Bootstrap-era class vocabulary

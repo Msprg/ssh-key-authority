@@ -16,8 +16,8 @@
 ##
 ?>
 <h1>Bulk mail</h1>
-<div class="ska-card">
-	<div class="ska-card-body">
+<div class="card">
+	<div class="card-body">
 		<p>Choose recipients:</p>
 		<ul class="ska-link-list">
 			<li><a href="<?php outurl('/bulk_mail/all_users')?>">All users</a></li>

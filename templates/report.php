@@ -36,8 +36,8 @@ function server_list(array $servers, array $suffix = ["", ""]): string {
 ?>
 <h1>Permissions report</h1>
 
-<div class="ska-card">
-	<div class="ska-card-body">
+<div class="card">
+	<div class="card-body">
 		<p>Content</p>
 		<ol class="ska-link-list">
 			<li><a href="#server_leaders">Server leaders</a></li>
@@ -49,11 +49,11 @@ function server_list(array $servers, array $suffix = ["", ""]): string {
 
 <h2 id="server_leaders">Server leaders</h2>
 <?php foreach($this->get('report')->get_leaders_report() as $group) { ?>
-<div class="ska-card">
-	<div class="ska-card-body">
+<div class="card">
+	<div class="card-body">
 		<p><?php out(server_list($group[1], [" has", " have"]), ESC_NONE) ?> the following leaders:</p>
-		<div class="ska-scroll-container">
-			<table class="ska-table ska-table-bordered">
+		<div class="table-responsive">
+			<table class="table table-bordered">
 				<tr>
 					<th colspan="2">Server leaders</th>
 				</tr>
@@ -93,12 +93,12 @@ function server_list(array $servers, array $suffix = ["", ""]): string {
 
 <h2 id="access_rights">Access rights</h2>
 <?php foreach ($this->get('report')->get_access_report() as $access) { ?>
-<div class="ska-card">
-	<div class="ska-card-body">
+<div class="card">
+	<div class="card-body">
 		<p><?php out(server_list($access[1], [" has", " have"]), ESC_NONE) ?> the following access rules:</p>
 		<?php if (!empty($access[0]->access_rights)) { ?>
-		<div class="ska-scroll-container">
-			<table class="ska-table ska-table-bordered">
+		<div class="table-responsive">
+			<table class="table table-bordered">
 				<?php foreach ($access[0]->access_rights as $account_name => $accessors) { ?>
 				<tr>
 					<th><?php out($account_name) ?></th>
@@ -121,12 +121,12 @@ function server_list(array $servers, array $suffix = ["", ""]): string {
 
 <h2 id="server_to_server_accesses">Server-to-Server accesses</h2>
 <?php foreach ($this->get('report')->get_server_to_server_report() as $access) { ?>
-<div class="ska-card">
-	<div class="ska-card-body">
+<div class="card">
+	<div class="card-body">
 		<p><?php out(server_list($access[1]), ESC_NONE) ?> can be accessed by the following other server accounts:</p>
 		<?php if (!empty($access[0]->access_rights)) { ?>
-		<div class="ska-scroll-container">
-			<table class="ska-table ska-table-bordered">
+		<div class="table-responsive">
+			<table class="table table-bordered">
 				<?php foreach ($access[0]->access_rights as $account_name => $accessors) { ?>
 				<tr>
 					<th><?php out($account_name) ?></th>

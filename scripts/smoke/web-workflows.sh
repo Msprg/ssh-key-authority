@@ -121,6 +121,28 @@ grep -Eq 'class="[^"]*ska-form-control' "$TMP_DIR/groups.html" || smoke_die "Gro
 grep -Eq 'class="[^"]*ska-btn' "$TMP_DIR/groups.html" || smoke_die "Groups page is missing SKA-owned button classes"
 grep -Eq 'class="[^"]*ska-form-check' "$TMP_DIR/groups.html" || smoke_die "Groups page is missing SKA-owned form-check classes"
 
+smoke_log "Checking secondary pages for Bootstrap 5 class handoff regressions"
+curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/activity" -o "$TMP_DIR/activity.html"
+grep -q '>Logout<' "$TMP_DIR/activity.html" || smoke_die "Authenticated session was lost while loading activity page"
+grep -Eq 'class="[^"]*table[^"]*table-sm' "$TMP_DIR/activity.html" || smoke_die "Activity page is missing Bootstrap 5 table classes"
+grep -Eq 'class="[^"]*card' "$TMP_DIR/activity.html" || smoke_die "Activity page is missing Bootstrap 5 card classes"
+
+curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/report" -o "$TMP_DIR/report.html"
+grep -q '>Logout<' "$TMP_DIR/report.html" || smoke_die "Authenticated session was lost while loading report page"
+grep -Eq 'class="[^"]*table[^"]*table-bordered' "$TMP_DIR/report.html" || smoke_die "Report page is missing Bootstrap 5 table classes"
+grep -Eq 'class="[^"]*card' "$TMP_DIR/report.html" || smoke_die "Report page is missing Bootstrap 5 card classes"
+
+curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/bulk_mail" -o "$TMP_DIR/bulk-mail.html"
+grep -q '>Logout<' "$TMP_DIR/bulk-mail.html" || smoke_die "Authenticated session was lost while loading bulk mail chooser"
+grep -Eq 'class="[^"]*card' "$TMP_DIR/bulk-mail.html" || smoke_die "Bulk mail chooser is missing Bootstrap 5 card classes"
+
+curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/bulk_mail/all_users" -o "$TMP_DIR/bulk-mail-form.html"
+grep -q '>Logout<' "$TMP_DIR/bulk-mail-form.html" || smoke_die "Authenticated session was lost while loading bulk mail form"
+grep -Eq 'class="[^"]*alert[^"]*alert-warning' "$TMP_DIR/bulk-mail-form.html" || smoke_die "Bulk mail form is missing Bootstrap 5 alert classes"
+grep -Eq 'class="[^"]*form-label' "$TMP_DIR/bulk-mail-form.html" || smoke_die "Bulk mail form is missing Bootstrap 5 form-label classes"
+grep -Eq 'class="[^"]*form-control' "$TMP_DIR/bulk-mail-form.html" || smoke_die "Bulk mail form is missing Bootstrap 5 form-control classes"
+grep -Eq 'class="[^"]*btn[^"]*btn-primary' "$TMP_DIR/bulk-mail-form.html" || smoke_die "Bulk mail form is missing Bootstrap 5 button classes"
+
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/servers" -o "$TMP_DIR/servers.html"
 grep -q '>Logout<' "$TMP_DIR/servers.html" || smoke_die "Authenticated session was lost while loading servers page"
 ! grep -Eq "form-inline|form-horizontal|control-label|col-sm-offset-|help-block|<div class=\"checkbox|<div class=\"radio|\\bsr-only\\b|table-condensed|$LEGACY_FORM_GROUP_RE" "$TMP_DIR/servers.html" || smoke_die "Servers page still renders legacy Bootstrap 3 form helpers"
@@ -179,11 +201,10 @@ grep -Eq 'class="[^"]*ska-btn' "$TMP_DIR/user.html" || smoke_die "Target user pa
 
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/bulk_mail/server_admins" -o "$TMP_DIR/bulk-mail.html"
 grep -q '>Logout<' "$TMP_DIR/bulk-mail.html" || smoke_die "Authenticated session was lost while loading bulk mail page"
-! grep -Eq "$LEGACY_LAYOUT_RE" "$TMP_DIR/bulk-mail.html" || smoke_die "Bulk mail page still renders Bootstrap-named layout/utility classes"
-! grep -Eq "$LEGACY_PRESENTATION_RE" "$TMP_DIR/bulk-mail.html" || smoke_die "Bulk mail page still renders Bootstrap-named semantic helper classes"
-grep -Eq 'class="[^"]*ska-alert[^"]*ska-alert-warning' "$TMP_DIR/bulk-mail.html" || smoke_die "Bulk mail page is missing SKA-owned alert classes"
-grep -Eq 'class="[^"]*ska-form-control' "$TMP_DIR/bulk-mail.html" || smoke_die "Bulk mail page is missing SKA-owned form-control classes"
-grep -Eq 'class="[^"]*ska-btn[^"]*ska-btn-primary' "$TMP_DIR/bulk-mail.html" || smoke_die "Bulk mail page is missing SKA-owned button classes"
+grep -Eq 'class="[^"]*alert[^"]*alert-warning' "$TMP_DIR/bulk-mail.html" || smoke_die "Bulk mail page is missing Bootstrap 5 alert classes"
+grep -Eq 'class="[^"]*form-label' "$TMP_DIR/bulk-mail.html" || smoke_die "Bulk mail page is missing Bootstrap 5 form-label classes"
+grep -Eq 'class="[^"]*form-control' "$TMP_DIR/bulk-mail.html" || smoke_die "Bulk mail page is missing Bootstrap 5 form-control classes"
+grep -Eq 'class="[^"]*btn[^"]*btn-primary' "$TMP_DIR/bulk-mail.html" || smoke_die "Bulk mail page is missing Bootstrap 5 button classes"
 
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/pubkeys" -o "$TMP_DIR/pubkeys.html"
 grep -q '>Logout<' "$TMP_DIR/pubkeys.html" || smoke_die "Authenticated session was lost while loading public keys page"

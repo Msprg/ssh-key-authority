@@ -75,10 +75,10 @@ The main remaining blockers are now page-local CSS- and markup-oriented rather t
 | Access options | `templates/access_options.php` | Mixed | Advanced options collapse is native, wrapped in local SKA card markup, and uses local check controls | Remaining blockers are shell baseline CSS and mixed utility styling |
 | Servers bulk action | `templates/servers_bulk_action.php` | Mixed | Server-list collapse is native, wrapped in local SKA card markup, and the add-leader form now uses SKA-owned form helpers | Remaining blockers are page-local table/content styling |
 | User public keys | `templates/user_pubkeys.php` | Mixed | Simple data/form page now uses local SKA cards and semantic export icons | Bootstrap 3 form styling remains |
-| Activity | `templates/activity.php` | Bootstrap 5-ready | No significant local Bootstrap 3 markers found | Inherits global CSS baseline only |
-| Report | `templates/report.php` | Mixed | Mostly static content on local SKA card markup | Still inherits Bootstrap 3 content styling |
-| Tools | `templates/tools.php` | Bootstrap 5-ready | No significant local Bootstrap 3 markers found | Inherits global CSS baseline only |
-| Bulk mail | `templates/bulk_mail.php` / `templates/bulk_mail_choose.php` | Bootstrap 5-ready | No significant local Bootstrap 3 markers found | Inherits global CSS baseline only |
+| Activity | `templates/activity.php` | Bootstrap 5-ready | Secondary activity table now renders through native Bootstrap 5 `card` and `table` classes | Residual risk is visual-only |
+| Report | `templates/report.php` | Bootstrap 5-ready | Secondary report sections now use native Bootstrap 5 `card`, `table`, and `table-responsive` classes | Residual risk is visual-only |
+| Tools | `templates/tools.php` | Bootstrap 5-ready | Tool list card now uses native Bootstrap 5 card markup | Residual risk is visual-only |
+| Bulk mail | `templates/bulk_mail.php` / `templates/bulk_mail_choose.php` | Bootstrap 5-ready | Chooser and compose form now use native Bootstrap 5 card, alert, form, and button classes | Residual risk is visual-only |
 | Error / not-found pages | `templates/error*.php`, `templates/*_not_found.php`, `templates/not_admin.php` | Bootstrap 5-ready | Little or no page-local Bootstrap 3 usage | Inherit global shell only |
 | JSON/TXT responses | `templates/*json.php`, `templates/*txt.php` | N/A | Not HTML application pages | No Bootstrap dependency |
 
@@ -116,11 +116,11 @@ The next structural work should target those residual page-local assumptions and
 
 ## Recommended Next Slices
 
-1. Continue shell/layout cleanup on untargeted secondary pages:
-   - `templates/groups.php`
-   - `templates/servers.php`
-   - `templates/servers_bulk_action.php`
+1. Continue selective Bootstrap 5 handoff on untargeted secondary pages:
    - `templates/user_pubkeys.php`
+   - `templates/pubkey.php`
+   - `templates/functions.php`
+   - `templates/help.php`
 
 2. Continue shell/content cleanup after structural cleanup:
    - visually recheck untargeted secondary pages under the repo-local baseline

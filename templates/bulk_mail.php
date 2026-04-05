@@ -17,22 +17,22 @@
 ?>
 <h1>Bulk mail <?php out(str_replace('_', ' ', $this->get('recipients')))?></h1>
 <div class="ska-page-stack">
-	<div class="ska-card">
-		<div class="ska-card-body">
-			<div class="ska-alert ska-alert-warning">This form will send a mail to <strong>all</strong> <?php out($this->get('rcpt_desc'))?> the SSH Key Authority system!</div>
+	<div class="card">
+		<div class="card-body">
+			<div class="alert alert-warning">This form will send a mail to <strong>all</strong> <?php out($this->get('rcpt_desc'))?> the SSH Key Authority system!</div>
 			<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 				<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 				<div class="ska-mb-3">
-					<label for="subject" class="ska-form-label">Subject</label>
-					<input type="text" class="ska-form-control" id="subject" name="subject" required value="">
+					<label for="subject" class="form-label">Subject</label>
+					<input type="text" class="form-control" id="subject" name="subject" required value="">
 				</div>
 				<div class="ska-mb-3">
-					<label for="body" class="ska-form-label">Body</label>
-					<textarea class="ska-form-control monospace" rows="20" id="body" name="body" required>You are being sent this mail as a <?php out($this->get('rcpt_role'))?> the SSH Key Authority system.
+					<label for="body" class="form-label">Body</label>
+					<textarea class="form-control monospace" rows="20" id="body" name="body" required>You are being sent this mail as a <?php out($this->get('rcpt_role'))?> the SSH Key Authority system.
 
 </textarea>
 				</div>
-				<div class="ska-mb-3"><button type="submit" data-confirm="Send mail? Are you sure?" class="ska-btn ska-btn-primary ska-btn-lg ska-w-100">Send bulk mail to <?php out(str_replace('_', ' ', $this->get('recipients')))?></button></div>
+				<div class="ska-mb-3"><button type="submit" data-confirm="Send mail? Are you sure?" class="btn btn-primary btn-lg w-100">Send bulk mail to <?php out(str_replace('_', ' ', $this->get('recipients')))?></button></div>
 			</form>
 		</div>
 	</div>

@@ -16,10 +16,10 @@
 ##
 ?>
 <h1>Activity</h1>
-<div class="ska-card">
-	<div class="ska-card-body">
-		<div class="ska-scroll-container">
-			<table class="ska-table">
+<div class="card">
+	<div class="card-body">
+		<div class="table-responsive">
+			<table class="table table-sm">
 				<col></col>
 				<col></col>
 				<col></col>
