@@ -21,7 +21,7 @@ foreach($this->get('group_members') as $member) {
 	$membercounts[get_class($member)]++;
 }
 ?>
-<h1><span class="ska-icon ska-icon-group" title="Group"></span> <?php out($this->get('group')->name)?><?php if($this->get('group')->active == 0) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></h1>
+<h1><span class="ska-icon ska-icon-group" title="Group"></span> <?php out($this->get('group')->name)?><?php if($this->get('group')->active == 0) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></h1>
 <?php if($this->get('admin') || $this->get('group_admin')) { ?>
 <ul class="ska-tabs" role="tablist">
 	<li class="ska-tab-item active" role="presentation"><a href="#members" id="group_members_tab" class="ska-tab-link active" role="tab" data-bs-toggle="tab" aria-controls="members" aria-selected="true">Members</a></li>
@@ -70,13 +70,13 @@ foreach($this->get('group_members') as $member) {
 							case 'User':
 							?>
 							<td><a href="<?php outurl('/users/'.urlencode($member->uid))?>" class="user"><?php out($member->uid)?></a></td>
-							<td><?php out($member->name); if(!$member->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE)?></td>
+							<td><?php out($member->name); if(!$member->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE)?></td>
 							<?php
 								break;
 							case 'ServerAccount':
 							?>
 							<td><a href="<?php outurl('/servers/'.urlencode($member->server->hostname).'/accounts/'.urlencode($member->name))?>" class="serveraccount"><?php out($member->name.'@'.$member->server->hostname)?></a></td>
-							<td><em>Server account</em><?php if($member->server->key_management == 'decommissioned') out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
+							<td><em>Server account</em><?php if($member->server->key_management == 'decommissioned') out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 							<?php
 								break;
 							case 'Group':
@@ -106,8 +106,8 @@ foreach($this->get('group_members') as $member) {
 			<h3>Add user</h3>
 			<div class="row">
 				<div class="col-md-9 mb-3">
-					<div class="input-group">
-						<span class="input-group-text"><label for="username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
+					<div class="ska-input-group">
+						<span class="ska-input-group-text"><label for="username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
 						<input type="text" id="username" name="username" class="form-control" placeholder="User name" required list="userlist">
 					</div>
 				</div>
@@ -121,14 +121,14 @@ foreach($this->get('group_members') as $member) {
 			<h3>Add server account</h3>
 			<div class="row">
 				<div class="col-md-2 mb-3">
-					<div class="input-group">
-						<span class="input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account</span></label></span>
+					<div class="ska-input-group">
+						<span class="ska-input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account</span></label></span>
 						<input type="text" id="account" name="account" class="form-control" placeholder="Account name" required>
 					</div>
 				</div>
 				<div class="col-md-7 mb-3">
-					<div class="input-group">
-						<span class="input-group-text"><label for="hostname">@</label></span>
+					<div class="ska-input-group">
+						<span class="ska-input-group-text"><label for="hostname">@</label></span>
 						<input type="text" id="hostname" name="hostname" class="form-control" placeholder="Hostname" required list="<?php out($this->get('admin') ? 'serverlist' : 'adminedserverlist')?>">
 					</div>
 				</div>
@@ -183,13 +183,13 @@ foreach($this->get('group_members') as $member) {
 							case 'User':
 							?>
 							<td><a href="<?php outurl('/users/'.urlencode($entity->uid))?>" class="user"><?php out($entity->uid)?></a></td>
-							<td><?php out($entity->name); if(!$entity->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE)?></td>
+							<td><?php out($entity->name); if(!$entity->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE)?></td>
 							<?php
 								break;
 							case 'ServerAccount':
 							?>
 							<td><a href="<?php outurl('/servers/'.urlencode($entity->server->hostname).'/accounts/'.urlencode($entity->name))?>" class="serveraccount"><?php out($entity->name.'@'.$entity->server->hostname)?></a></td>
-							<td><em>Server account</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
+							<td><em>Server account</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 							<?php
 								break;
 							case 'Group':
@@ -238,8 +238,8 @@ foreach($this->get('group_members') as $member) {
 			<h3>Grant user access</h3>
 			<div class="row">
 				<div class="col-md-8 mb-3">
-					<div class="input-group">
-						<span class="input-group-text"><label for="access-username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
+					<div class="ska-input-group">
+						<span class="ska-input-group-text"><label for="access-username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
 						<input type="text" id="access-username" name="username" class="form-control" placeholder="User name" required list="userlist">
 					</div>
 				</div>
@@ -253,14 +253,14 @@ foreach($this->get('group_members') as $member) {
 			<h3>Grant server account access</h3>
 			<div class="row">
 				<div class="col-md-2 mb-3">
-					<div class="input-group">
-						<span class="input-group-text"><label for="access-account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account</span></label></span>
+					<div class="ska-input-group">
+						<span class="ska-input-group-text"><label for="access-account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account</span></label></span>
 						<input type="text" id="access-account" name="account" class="form-control" placeholder="Account name" required>
 					</div>
 				</div>
 				<div class="col-md-6 mb-3">
-					<div class="input-group">
-						<span class="input-group-text"><label for="access-hostname">@</label></span>
+					<div class="ska-input-group">
+						<span class="ska-input-group-text"><label for="access-hostname">@</label></span>
 						<input type="text" id="access-hostname" name="hostname" class="form-control" placeholder="Hostname" required list="serverlist">
 					</div>
 				</div>
@@ -274,8 +274,8 @@ foreach($this->get('group_members') as $member) {
 			<h3>Grant group access</h3>
 			<div class="row">
 				<div class="col-md-8 mb-3">
-					<div class="input-group">
-						<span class="input-group-text"><label for="access-group"><span class="ska-icon ska-icon-group" title="Group"></span><span class="visually-hidden">Group name</span></label></span>
+					<div class="ska-input-group">
+						<span class="ska-input-group-text"><label for="access-group"><span class="ska-icon ska-icon-group" title="Group"></span><span class="visually-hidden">Group name</span></label></span>
 						<input type="text" id="access-group" name="group" class="form-control" placeholder="Group name" required list="grouplist">
 					</div>
 				</div>
@@ -309,13 +309,13 @@ foreach($this->get('group_members') as $member) {
 						case 'User':
 						?>
 						<td><a href="<?php outurl('/users/'.urlencode($entity->uid))?>" class="user"><?php out($entity->uid)?></a></td>
-						<td><?php out($entity->name); if(!$entity->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE)?></td>
+						<td><?php out($entity->name); if(!$entity->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE)?></td>
 						<?php
 							break;
 						case 'ServerAccount':
 						?>
 						<td><a href="<?php outurl('/servers/'.urlencode($entity->server->hostname).'/accounts/'.urlencode($entity->name))?>" class="serveraccount"><?php out($entity->name.'@'.$entity->server->hostname)?></a></td>
-						<td><em>Server account</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
+						<td><em>Server account</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 						<?php
 							break;
 						case 'Group':
@@ -356,7 +356,7 @@ foreach($this->get('group_members') as $member) {
 						<?php foreach($this->get('group_admins') as $admin) { ?>
 						<tr>
 							<td><a href="<?php outurl('/users/'.urlencode($admin->uid))?>" class="user"><?php out($admin->uid) ?></a></td>
-							<td><?php out($admin->name); if(!$admin->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
+							<td><?php out($admin->name); if(!$admin->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 							<?php if($this->get('admin')) { ?>
 							<td>
 								<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove admin</button>

@@ -61,7 +61,7 @@
 								foreach($options as $value => $label) {
 									$checked = in_array($value, $this->get('filter')['key_management']) ? ' checked' : '';
 								?>
-								<div class="form-check"><label class="form-check-label"><input type="checkbox" class="form-check-input" name="key_management[]" value="<?php out($value)?>"<?php out($checked) ?>> <span><?php out($label) ?></span></label></div>
+								<div class="ska-form-check"><label class="ska-form-check-label"><input type="checkbox" class="ska-form-check-input" name="key_management[]" value="<?php out($value)?>"<?php out($checked) ?>> <span><?php out($label) ?></span></label></div>
 								<?php } ?>
 							</div>
 							<div class="col-sm-2">
@@ -75,7 +75,7 @@
 								foreach($options as $value => $label) {
 									$checked = in_array($value, $this->get('filter')['sync_status']) ? ' checked' : '';
 								?>
-								<div class="form-check"><label class="form-check-label"><input type="checkbox" class="form-check-input" name="sync_status[]" value="<?php out($value)?>"<?php out($checked) ?>> <span><?php out($label) ?></span></label></div>
+								<div class="ska-form-check"><label class="ska-form-check-label"><input type="checkbox" class="ska-form-check-input" name="sync_status[]" value="<?php out($value)?>"<?php out($checked) ?>> <span><?php out($label) ?></span></label></div>
 								<?php } ?>
 							</div>
 						</div>
@@ -132,9 +132,9 @@
 							<td>
 								<a href="<?php outurl('/servers/'.urlencode($server->hostname)) ?>" class="server"><?php out($server->hostname) ?></a>
 								<?php if($this->get('admin') && $server->pending_requests > 0) { ?>
-								<a href="<?php outurl('/servers/'.urlencode($server->hostname)) ?>"><span class="badge text-bg-secondary" title="Pending requests"><?php out(number_format($server->pending_requests)) ?></span></a>
+								<a href="<?php outurl('/servers/'.urlencode($server->hostname)) ?>"><span class="ska-badge ska-badge-muted" title="Pending requests"><?php out(number_format($server->pending_requests)) ?></span></a>
 								<?php } elseif(!$this->get('admin') && $this->get('active_user')->has_pending_requests_for_server($server)) { ?>
-								<a href="<?php outurl('/servers/'.urlencode($server->hostname)) ?>"><span class="badge text-bg-secondary" title="Request for access pending">Request for access pending</span></a>
+								<a href="<?php outurl('/servers/'.urlencode($server->hostname)) ?>"><span class="ska-badge ska-badge-muted" title="Request for access pending">Request for access pending</span></a>
 								<?php } ?>
 							</td>
 							<td class="nowrap">

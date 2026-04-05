@@ -700,6 +700,7 @@ a.user,
 }
 
 /* ===== FORM ELEMENTS ===== */
+.ska-input-group-text,
 .input-group-text {
 	display: flex;
 	align-items: center;
@@ -717,6 +718,7 @@ a.user,
 	border-radius: 4px;
 }
 
+.ska-input-group,
 .input-group {
 	position: relative;
 	display: flex;
@@ -724,6 +726,9 @@ a.user,
 	width: 100%;
 }
 
+.ska-input-group > .ska-form-control,
+.ska-input-group > .form-control,
+.input-group > .ska-form-control,
 .input-group > .form-control {
 	position: relative;
 	flex: 1 1 auto;
@@ -732,6 +737,12 @@ a.user,
 	margin-bottom: 0;
 }
 
+.ska-input-group > .ska-input-group-text:first-child,
+.ska-input-group > .ska-input-group-text:first-child + .ska-input-group-text,
+.ska-input-group > .input-group-text:first-child,
+.ska-input-group > .input-group-text:first-child + .input-group-text,
+.input-group > .ska-input-group-text:first-child,
+.input-group > .ska-input-group-text:first-child + .ska-input-group-text,
 .input-group > .input-group-text:first-child,
 .input-group > .input-group-text:first-child + .input-group-text {
 	border-right: 0;
@@ -739,33 +750,65 @@ a.user,
 	border-bottom-right-radius: 0;
 }
 
+.ska-input-group > .ska-input-group-text:last-child,
+.ska-input-group > .ska-form-control + .ska-input-group-text,
+.ska-input-group > .form-control + .ska-input-group-text,
+.ska-input-group > .input-group-text:last-child,
+.ska-input-group > .ska-form-control + .input-group-text,
+.ska-input-group > .form-control + .input-group-text,
+.input-group > .ska-input-group-text:last-child,
+.input-group > .ska-form-control + .ska-input-group-text,
+.input-group > .form-control + .ska-input-group-text,
 .input-group > .input-group-text:last-child,
+.input-group > .ska-form-control + .input-group-text,
 .input-group > .form-control + .input-group-text {
 	border-left: 0;
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
 }
 
+.ska-input-group > .ska-input-group-text + .ska-form-control,
+.ska-input-group > .ska-input-group-text + .form-control,
+.ska-input-group > .input-group-text + .ska-form-control,
+.ska-input-group > .input-group-text + .form-control,
+.ska-input-group > .ska-input-group-text + .ska-input-group-text + .ska-form-control,
+.ska-input-group > .ska-input-group-text + .ska-input-group-text + .form-control,
+.ska-input-group > .input-group-text + .input-group-text + .ska-form-control,
+.ska-input-group > .input-group-text + .input-group-text + .form-control,
+.input-group > .ska-input-group-text + .ska-form-control,
+.input-group > .ska-input-group-text + .form-control,
+.input-group > .input-group-text + .ska-form-control,
 .input-group > .input-group-text + .form-control,
+.input-group > .ska-input-group-text + .ska-input-group-text + .ska-form-control,
+.input-group > .ska-input-group-text + .ska-input-group-text + .form-control,
+.input-group > .input-group-text + .input-group-text + .ska-form-control,
 .input-group > .input-group-text + .input-group-text + .form-control {
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
 }
 
+.ska-input-group > .ska-form-control:not(:first-child),
+.ska-input-group > .form-control:not(:first-child),
+.input-group > .ska-form-control:not(:first-child),
 .input-group > .form-control:not(:first-child) {
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
 }
 
+.ska-input-group > .ska-form-control:not(:last-child),
+.ska-input-group > .form-control:not(:last-child),
+.input-group > .ska-form-control:not(:last-child),
 .input-group > .form-control:not(:last-child) {
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
 }
 
+.ska-input-group-text label,
 .input-group-text label {
 	margin: 0;
 }
 
+.ska-form-check,
 .form-check {
 	position: relative;
 	display: block;
@@ -773,6 +816,7 @@ a.user,
 	margin-bottom: 10px;
 }
 
+.ska-form-check-label,
 .form-check-label {
 	display: flex;
 	align-items: flex-start;
@@ -781,6 +825,7 @@ a.user,
 	margin: 0;
 }
 
+.ska-form-check-input,
 .form-check-input {
 	margin-right: 6px;
 	margin-top: 0.25em;
@@ -1102,6 +1147,7 @@ fieldset[disabled] .btn {
 	width: 100% !important;
 }
 
+.ska-badge-muted,
 .text-bg-secondary {
 	color: #fff !important;
 	background-color: #777 !important;

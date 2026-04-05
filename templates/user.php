@@ -16,7 +16,7 @@
 ## limitations under the License.
 ##
 ?>
-<h1><span class="ska-icon ska-icon-user" title="User"></span> <?php out($this->get('user')->name)?> <small>(<?php out($this->get('user')->uid)?>)</small><?php if(!$this->get('user')->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE)?></h1>
+<h1><span class="ska-icon ska-icon-user" title="User"></span> <?php out($this->get('user')->name)?> <small>(<?php out($this->get('user')->uid)?>)</small><?php if(!$this->get('user')->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE)?></h1>
 <dl>
 	<dt>Account type</dt>
 	<dd><?php out($this->get('user')->auth_realm)?></dd>
@@ -231,7 +231,7 @@
 							<td>
 								<a href="<?php outurl('/servers/'.urlencode($server->hostname)) ?>" class="server"><?php out($server->hostname) ?></a>
 								<?php if($server->pending_requests > 0) { ?>
-								<a href="<?php outurl('/servers/'.urlencode($server->hostname).'#requests') ?>"><span class="badge text-bg-secondary" title="Pending requests"><?php out(number_format($server->pending_requests)) ?></span></a>
+								<a href="<?php outurl('/servers/'.urlencode($server->hostname).'#requests') ?>"><span class="ska-badge ska-badge-muted" title="Pending requests"><?php out(number_format($server->pending_requests)) ?></span></a>
 								<?php } ?>
 							</td>
 							<td>

@@ -23,7 +23,7 @@ case 'sync warning':
 default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 }
 ?>
-<h1><span class="ska-icon ska-icon-serveraccount" title="Server account"></span> <?php out($this->get('account')->name)?>@<a href="<?php outurl('/servers/'.urlencode($this->get('server')->hostname))?>"><?php out($this->get('server')->hostname)?></a><?php if($this->get('account')->active == 0) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></h1>
+<h1><span class="ska-icon ska-icon-serveraccount" title="Server account"></span> <?php out($this->get('account')->name)?>@<a href="<?php outurl('/servers/'.urlencode($this->get('server')->hostname))?>"><?php out($this->get('server')->hostname)?></a><?php if($this->get('account')->active == 0) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></h1>
 <?php if($this->get('server')->key_management == 'keys') { ?>
 <?php if($this->get('account')->name != 'root' && $this->get('server')->sync_status == 'sync warning') { ?>
 <div class="alert alert-danger">
@@ -89,7 +89,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 								?>
 							<td>
 								<a href="<?php outurl('/users/'.urlencode($entity->uid))?>" class="user"><?php out($entity->uid) ?></a>
-								<?php if(!$entity->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?>
+								<?php if(!$entity->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?>
 							</td>
 								<?php
 								break;
@@ -97,7 +97,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 								?>
 							<td>
 								<a href="<?php outurl('/servers/'.urlencode($entity->server->hostname).'/accounts/'.urlencode($entity->name))?>" class="serveraccount"><?php out($entity->name.'@'.$entity->server->hostname) ?></a>
-								<?php if($entity->server->key_management == 'decommissioned') out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?>
+								<?php if($entity->server->key_management == 'decommissioned') out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?>
 							</td>
 								<?php
 								break;
@@ -105,7 +105,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 								?>
 							<td>
 								<a href="<?php outurl('/groups/'.urlencode($entity->name))?>" class="group"><?php out($entity->name) ?></a>
-								<?php if(!$entity->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?>
+								<?php if(!$entity->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?>
 							</td>
 								<?php
 								break;
@@ -147,7 +147,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 								?>
 							<td>
 								<a href="<?php outurl('/users/'.urlencode($entity->uid))?>" class="user"><?php out($entity->uid) ?></a>
-								<?php if(!$entity->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?>
+								<?php if(!$entity->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?>
 							</td>
 								<?php
 								break;
@@ -155,7 +155,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 								?>
 							<td>
 								<a href="<?php outurl('/servers/'.urlencode($entity->server->hostname).'/accounts/'.urlencode($entity->name))?>" class="serveraccount"><?php out($entity->name.'@'.$entity->server->hostname) ?></a>
-								<?php if($entity->server->key_management == 'decommissioned') out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?>
+								<?php if($entity->server->key_management == 'decommissioned') out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?>
 							</td>
 								<?php
 								break;
@@ -187,8 +187,8 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<h4>Add user to account</h4>
 			<div class="row">
 				<div class="col-md-9 mb-3">
-					<div class="input-group">
-						<span class="input-group-text"><label for="username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
+					<div class="ska-input-group">
+						<span class="ska-input-group-text"><label for="username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
 						<input type="text" id="username" name="username" class="form-control" placeholder="User name" required list="userlist">
 						<datalist id="userlist">
 							<?php foreach($this->get('all_users') as $user) { ?>
@@ -207,14 +207,14 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<h4>Add server-to-server access to account</h4>
 			<div class="row">
 				<div class="col-md-2 mb-3">
-					<div class="input-group">
-						<span class="input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account name</span></label></span>
+					<div class="ska-input-group">
+						<span class="ska-input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account name</span></label></span>
 						<input type="text" id="account" name="account" class="form-control" placeholder="Account name" required>
 					</div>
 				</div>
 				<div class="col-md-7 mb-3">
-					<div class="input-group">
-						<span class="input-group-text"><label for="hostname">@</label></span>
+					<div class="ska-input-group">
+						<span class="ska-input-group-text"><label for="hostname">@</label></span>
 						<input type="text" id="hostname" name="hostname" class="form-control" placeholder="Hostname" required list="serverlist">
 						<datalist id="serverlist">
 							<?php foreach($this->get('all_servers') as $server) { ?>
@@ -233,8 +233,8 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<h4>Add group access to account</h4>
 			<div class="row">
 				<div class="col-md-9 mb-3">
-					<div class="input-group">
-						<span class="input-group-text"><label for="group"><span class="ska-icon ska-icon-group" title="Group"></span><span class="visually-hidden">Group name</span></label></span>
+					<div class="ska-input-group">
+						<span class="ska-input-group-text"><label for="group"><span class="ska-icon ska-icon-group" title="Group"></span><span class="visually-hidden">Group name</span></label></span>
 						<input type="text" id="group" name="group" class="form-control" placeholder="Group name" required list="grouplist">
 						<datalist id="grouplist">
 							<?php foreach($this->get('all_groups') as $group) { ?>
@@ -287,13 +287,13 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 						case 'User':
 							?>
 						<td><a href="<?php outurl('/users/'.urlencode($entity->uid))?>" class="user"><?php out($entity->uid) ?></a></td>
-						<td><?php out($entity->name); if(!$entity->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
+						<td><?php out($entity->name); if(!$entity->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 							<?php
 							break;
 						case 'ServerAccount':
 							?>
 						<td><a href="<?php outurl('/servers/'.urlencode($entity->server->hostname).'/accounts/'.urlencode($entity->name))?>" class="serveraccount"><?php out($entity->name.'@'.$entity->server->hostname) ?></a></td>
-						<td><em>Server-to-server access</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
+						<td><em>Server-to-server access</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 							<?php
 							break;
 						case 'Group':
@@ -401,8 +401,8 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 				<textarea class="form-control" rows="4" id="add_public_key" name="add_public_key" required></textarea>
 			</div>
 			<?php if($this->get('active_user')->admin) { ?>
-			<div class="form-check mb-3">
-				<label class="form-check-label"><input type="checkbox" class="form-check-input" name="force"> <span>Allow weak (&lt; 4096 bits) key</span></label>
+			<div class="ska-form-check mb-3">
+				<label class="ska-form-check-label"><input type="checkbox" class="ska-form-check-input" name="force"> <span>Allow weak (&lt; 4096 bits) key</span></label>
 			</div>
 			<?php } ?>
 			<div class="mb-3"><button class="btn btn-primary btn-lg w-100">Add public key to account</button></div>
@@ -431,13 +431,13 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 						case 'User':
 							?>
 						<td><a href="<?php outurl('/users/'.urlencode($entity->uid))?>" class="user"><?php out($entity->uid) ?></a></td>
-						<td><?php out($entity->name); if(!$entity->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
+						<td><?php out($entity->name); if(!$entity->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 							<?php
 							break;
 						case 'ServerAccount':
 							?>
 						<td><a href="<?php outurl('/servers/'.urlencode($entity->server->hostname).'/accounts/'.urlencode($entity->name))?>" class="serveraccount"><?php out($entity->name.'@'.$entity->server->hostname) ?></a></td>
-						<td><em>Server-to-server access</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
+						<td><em>Server-to-server access</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 							<?php
 							break;
 						case 'Group':
@@ -492,13 +492,13 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 						case 'User':
 							?>
 						<td><a href="<?php outurl('/users/'.urlencode($entity->uid))?>" class="user"><?php out($entity->uid) ?></a></td>
-						<td><?php out($entity->name); if(!$entity->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
+						<td><?php out($entity->name); if(!$entity->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 							<?php
 							break;
 						case 'ServerAccount':
 							?>
 						<td><a href="<?php outurl('/servers/'.urlencode($entity->server->hostname).'/accounts/'.urlencode($entity->name))?>" class="serveraccount"><?php out($entity->name.'@'.$entity->server->hostname) ?></a></td>
-						<td><em>Server-to-server access</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
+						<td><em>Server-to-server access</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 							<?php
 							break;
 						case 'Group':
@@ -541,7 +541,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 						<?php foreach($this->get('admins') as $admin) { ?>
 						<tr>
 							<td><a href="<?php outurl('/users/'.urlencode($admin->uid))?>" class="user"><?php out($admin->uid) ?></a></td>
-							<td><?php out($admin->name); if(!$admin->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
+							<td><?php out($admin->name); if(!$admin->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 							<?php if($this->get('admin') || $this->get('server_admin')) { ?>
 							<td>
 								<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove leader</button>

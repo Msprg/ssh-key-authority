@@ -93,15 +93,15 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 								</div>
 								<div class="col-md-2 mb-3">
 									<label for="keysize-min">Min key size</label>
-									<div class="input-group">
-										<span class="input-group-text">≥</span>
+									<div class="ska-input-group">
+										<span class="ska-input-group-text">≥</span>
 										<input type="text" id="keysize-min" name="keysize-min" class="form-control" value="<?php out($this->get('filter')['keysize-min'])?>">
 									</div>
 								</div>
 								<div class="col-md-2 mb-3">
 									<label for="keysize-max">Max key size</label>
-									<div class="input-group">
-										<span class="input-group-text">≤</span>
+									<div class="ska-input-group">
+										<span class="ska-input-group-text">≤</span>
 										<input type="text" id="keysize-max" name="keysize-max" class="form-control" value="<?php out($this->get('filter')['keysize-max'])?>">
 									</div>
 								</div>
@@ -163,13 +163,13 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 							case 'User':
 							?>
 							<a href="<?php outurl('/users/'.urlencode($pubkey->owner->uid))?>" class="user"><?php out($pubkey->owner->uid)?></a>
-							<?php if(!$pubkey->owner->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?>
+							<?php if(!$pubkey->owner->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?>
 							<?php
 								break;
 							case 'ServerAccount':
 							?>
 							<a href="<?php outurl('/servers/'.urlencode($pubkey->owner->server->hostname))?>/accounts/<?php out($pubkey->owner->name, ESC_URL)?>" class="serveraccount"><?php out($pubkey->owner->name.'@'.$pubkey->owner->server->hostname)?></a>
-							<?php if($pubkey->owner->server->key_management == 'decommissioned') out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?>
+							<?php if($pubkey->owner->server->key_management == 'decommissioned') out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?>
 							<?php
 								break;
 							}

@@ -16,7 +16,7 @@
 ## limitations under the License.
 ##
 ?>
-<h1><span class="ska-icon ska-icon-server" title="Server"></span> <?php out($this->get('server')->hostname)?><?php if($this->get('server')->key_management == 'decommissioned') out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></h1>
+<h1><span class="ska-icon ska-icon-server" title="Server"></span> <?php out($this->get('server')->hostname)?><?php if($this->get('server')->key_management == 'decommissioned') out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></h1>
 <?php if($this->get('server')->key_management == 'keys') { ?>
 <form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
@@ -80,7 +80,7 @@
 	<li class="ska-tab-item" role="presentation"><a href="#settings" id="server_settings_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="settings" aria-selected="false" tabindex="-1">Settings</a></li>
 	<li class="ska-tab-item" role="presentation"><a href="#log" id="server_log_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="log" aria-selected="false" tabindex="-1">Log</a></li>
 	<?php if($this->get('admin')) { ?>
-	<li class="ska-tab-item" role="presentation"><a href="#notes" id="server_notes_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="notes" aria-selected="false" tabindex="-1">Notes<?php if(count($this->get('server_notes')) > 0) out(' <span class="badge text-bg-secondary">'.count($this->get('server_notes')).'</span>', ESC_NONE)?></a></li>
+	<li class="ska-tab-item" role="presentation"><a href="#notes" id="server_notes_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="notes" aria-selected="false" tabindex="-1">Notes<?php if(count($this->get('server_notes')) > 0) out(' <span class="ska-badge ska-badge-muted">'.count($this->get('server_notes')).'</span>', ESC_NONE)?></a></li>
 	<li class="ska-tab-item" role="presentation"><a href="#contact" id="server_contact_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="contact" aria-selected="false" tabindex="-1">Contact</a></li>
 	<?php } ?>
 </ul>
@@ -128,7 +128,7 @@
 							<th rowspan="<?php out(max(1, count($access_list)))?>">
 								<a href="<?php outurl($this->data->relative_request_url.'/accounts/'.urlencode($account->name))?>" class="serveraccount"><?php out($account->name) ?></a>
 								<?php if($account->pending_requests > 0) { ?>
-									<a href="<?php outurl($this->data->relative_request_url.'/accounts/'.urlencode($account->name))?>"><span class="badge text-bg-secondary" title="Pending requests"><?php out(number_format($account->pending_requests))?></span></a>
+									<a href="<?php outurl($this->data->relative_request_url.'/accounts/'.urlencode($account->name))?>"><span class="ska-badge ska-badge-muted" title="Pending requests"><?php out(number_format($account->pending_requests))?></span></a>
 								<?php } ?>
 							</th>
 							<?php if($this->get('server')->key_management == 'keys') { ?>
@@ -159,19 +159,19 @@
 								case 'User':
 							?>
 							<td><a href="<?php outurl('/users/'.urlencode($entity->uid))?>" class="user"><?php out($entity->uid) ?></a></td>
-							<td><?php out($entity->name); if(!$entity->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE)?></td>
+							<td><?php out($entity->name); if(!$entity->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE)?></td>
 							<?php
 									break;
 								case 'ServerAccount':
 							?>
 							<td><a href="<?php outurl('/servers/'.urlencode($entity->server->hostname).'/accounts/'.urlencode($entity->name))?>" class="serveraccount"><?php out($entity->name.'@'.$entity->server->hostname) ?></a></td>
-							<td><em>Server-to-server access</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
+							<td><em>Server-to-server access</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 							<?php
 									break;
 								case 'Group':
 							?>
 							<td><a href="<?php outurl('/groups/'.urlencode($entity->name))?>" class="group"><?php out($entity->name) ?></a></td>
-							<td><em>Group access</em><?php if(!$entity->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE)?></td>
+							<td><em>Group access</em><?php if(!$entity->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE)?></td>
 							<?php
 									break;
 								}
@@ -218,7 +218,7 @@
 							<?php if(strtolower(get_class($admin)) == "user"){?>
 								<tr>
 									<td><a href="<?php outurl('/users/'.urlencode($admin->uid))?>" class="user"><?php out($admin->uid) ?></a></td>
-									<td><?php out($admin->name); if(!$admin->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
+									<td><?php out($admin->name); if(!$admin->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 									<?php if($this->get('admin')) {?>
 									<td>
 										<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove leader</button>
@@ -228,7 +228,7 @@
 							<?php } elseif(strtolower(get_class($admin)) == "group"){ ?>
 								<tr>
 									<td><a href="<?php outurl('/groups/'.urlencode($admin->name))?>" class="group"><?php out($admin->name) ?></a></td>
-									<td><?php out($admin->name); if(!$admin->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
+									<td><?php out($admin->name); if(!$admin->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 									<?php if($this->get('admin')) { ?>
 									<td>
 										<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove leader</button>
@@ -503,29 +503,29 @@
 			</div>
 			<div class="mb-3">
 				<label>Recipients</label>
-				<div class="form-check">
-					<label class="form-check-label">
-						<input type="radio" class="form-check-input" name="recipients" value="admins" checked>
+				<div class="ska-form-check">
+					<label class="ska-form-check-label">
+						<input type="radio" class="ska-form-check-input" name="recipients" value="admins" checked>
 						<span>Server leaders of <?php out($this->get('server')->hostname) ?></span>
 					</label>
 				</div>
-				<div class="form-check">
-					<label class="form-check-label">
-						<input type="radio" class="form-check-input" name="recipients" value="root_users">
+				<div class="ska-form-check">
+					<label class="ska-form-check-label">
+						<input type="radio" class="ska-form-check-input" name="recipients" value="root_users">
 						<span>All users with access to root@<?php out($this->get('server')->hostname) ?></span>
 					</label>
 				</div>
-				<div class="form-check">
-					<label class="form-check-label">
-						<input type="radio" class="form-check-input" name="recipients" value="users">
+				<div class="ska-form-check">
+					<label class="ska-form-check-label">
+						<input type="radio" class="ska-form-check-input" name="recipients" value="users">
 						<span>All users with access to accounts on <?php out($this->get('server')->hostname) ?></span>
 					</label>
 				</div>
 			</div>
 			<div class="mb-3">
-				<div class="form-check">
-					<label class="form-check-label">
-						<input type="checkbox" class="form-check-input" id="hide_recipients" name="hide_recipients">
+				<div class="ska-form-check">
+					<label class="ska-form-check-label">
+						<input type="checkbox" class="ska-form-check-input" id="hide_recipients" name="hide_recipients">
 						<span>Hide recipient list</span>
 					</label>
 				</div>
@@ -558,10 +558,10 @@
 	<div class="row">
 		<div class="col-sm-5">
 			<label for="account_name" class="visually-hidden">Account name</label>
-			<div class="input-group">
-				<span class="input-group-text"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span></span>
+			<div class="ska-input-group">
+				<span class="ska-input-group-text"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span></span>
 				<input type="text" id="account_name" name="account_name" class="form-control" placeholder="Account name" list="accountlist" required pattern=".*[^\s].*">
-				<span class="input-group-text">@<?php out($this->get('server')->hostname)?></span>
+				<span class="ska-input-group-text">@<?php out($this->get('server')->hostname)?></span>
 				<datalist id="accountlist">
 					<?php foreach($this->get('all_accounts') as $accounts) { ?>
 					<option value="<?php out($accounts->name)?>">
@@ -580,15 +580,15 @@
 	<h4>Request server-to-server access</h4>
 	<div class="row">
 		<div class="col-sm-3 mb-3">
-			<div class="input-group">
-				<span class="input-group-text">From: </span>
-				<span class="input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account name</span></label></span>
+			<div class="ska-input-group">
+				<span class="ska-input-group-text">From: </span>
+				<span class="ska-input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account name</span></label></span>
 				<input type="text" id="account_remote" name="account_remote" class="form-control" placeholder="Account name" required pattern=".*[^\s].*">
 			</div>
 		</div>
 		<div class="col-sm-3 mb-3">
-			<div class="input-group">
-				<span class="input-group-text"><label for="hostname">@</label></span>
+			<div class="ska-input-group">
+				<span class="ska-input-group-text"><label for="hostname">@</label></span>
 				<input type="text" id="hostname_remote" name="hostname_remote" class="form-control" placeholder="Hostname" list="serverlist" required>
 				<datalist id="serverlist">
 					<?php foreach($this->get('all_servers') as $server) { ?>
@@ -601,11 +601,11 @@
 	<div class="row">
 		<div class="col-sm-5">
 			<label for="account_name_s2s" class="visually-hidden">Account name</label>
-			<div class="input-group">
-				<span class="input-group-text">To: </span>
-				<span class="input-group-text"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span></span>
+			<div class="ska-input-group">
+				<span class="ska-input-group-text">To: </span>
+				<span class="ska-input-group-text"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span></span>
 				<input type="text" id="account_name_s2s" name="account_name" class="form-control" placeholder="Account name" list="accountlist" required pattern=".*[^\s].*">
-				<span class="input-group-text">@<?php out($this->get('server')->hostname)?></span>
+				<span class="ska-input-group-text">@<?php out($this->get('server')->hostname)?></span>
 			</div>
 		</div>
 		<div class="col-sm-3">
@@ -619,8 +619,8 @@
 	<h4>Request group access</h4>
 	<div class="row">
 		<div class="col-sm-5 mb-3">
-			 <div class="input-group">
-				<span class="input-group-text"><label for="account"><span class="ska-icon ska-icon-group" title="Group account"></span><span class="visually-hidden">Group name</span></label></span>
+			 <div class="ska-input-group">
+				<span class="ska-input-group-text"><label for="account"><span class="ska-icon ska-icon-group" title="Group account"></span><span class="visually-hidden">Group name</span></label></span>
 				<input type="text" id="group_account" name="group_account" class="form-control" placeholder="Group name" list="grouplist" required>
 				<datalist id="grouplist">
 					<?php foreach($this->get('all_groups') as $group) { ?>
@@ -633,11 +633,11 @@
 	<div class="row">
 		<div class="col-sm-5">
 			<label for="account_name_group" class="visually-hidden">Account name</label>
-			<div class="input-group">
-				<span class="input-group-text">To: </span>
-				<span class="input-group-text"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span></span>
+			<div class="ska-input-group">
+				<span class="ska-input-group-text">To: </span>
+				<span class="ska-input-group-text"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span></span>
 				<input type="text" id="account_name_group" name="account_name" class="form-control" placeholder="Account name" list="accountlist" required pattern=".*[^\s].*">
-				<span class="input-group-text">@<?php out($this->get('server')->hostname)?></span>
+				<span class="ska-input-group-text">@<?php out($this->get('server')->hostname)?></span>
 			</div>
 		</div>
 		<div class="col-sm-3">
@@ -673,7 +673,7 @@
 				<th rowspan="<?php out(max(1, count($access_list)))?>">
 					<a href="<?php outurl($this->data->relative_request_url.'/'.urlencode($account->name))?>" class="serveraccount"><?php out($account->name) ?></a>
 					<?php if($account->pending_requests > 0) { ?>
-					<a href="<?php outurl($this->data->relative_request_url.'/'.urlencode($account->name))?>"><span class="badge text-bg-secondary" title="Pending requests"><?php out(number_format($account->pending_requests))?></span></a>
+					<a href="<?php outurl($this->data->relative_request_url.'/'.urlencode($account->name))?>"><span class="ska-badge ska-badge-muted" title="Pending requests"><?php out(number_format($account->pending_requests))?></span></a>
 					<?php } ?>
 				</th>
 				<td rowspan="<?php out(max(1, count($access_list)))?>">
@@ -703,13 +703,13 @@
 					case 'User':
 				?>
 				<td><a href="<?php outurl('/users/'.urlencode($entity->uid))?>" class="user"><?php out($entity->uid) ?></a></td>
-				<td><?php out($entity->name); if(!$entity->active) out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE)?></td>
+				<td><?php out($entity->name); if(!$entity->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE)?></td>
 				<?php
 						break;
 					case 'ServerAccount':
 				?>
 				<td><a href="<?php outurl('/servers/'.urlencode($entity->server->hostname).'/accounts/'.urlencode($entity->name))?>" class="serveraccount"><?php out($entity->name.'@'.$entity->server->hostname) ?></a></td>
-				<td><em>Server-to-server access</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="badge text-bg-secondary">Inactive</span>', ESC_NONE) ?></td>
+				<td><em>Server-to-server access</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 				<?php
 						break;
 					case 'Group':
