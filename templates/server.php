@@ -37,8 +37,8 @@
 		>
 			<span></span>
 			<div class="spinner"></div>
-			<a href="<?php outurl('/help')?>" class="ska-btn ska-btn-info ska-btn-sm d-none">Explain</a>
-			<button name="sync" value="1" type="submit" class="ska-btn ska-btn-secondary ska-btn-sm invisible">Sync now</button>
+			<a href="<?php outurl('/help')?>" class="ska-btn ska-btn-info ska-btn-sm ska-d-none">Explain</a>
+			<button name="sync" value="1" type="submit" class="ska-btn ska-btn-secondary ska-btn-sm ska-invisible">Sync now</button>
 		</dd>
 	</dl>
 </form>
@@ -308,7 +308,7 @@
 					<label class="ska-choice"><input type="radio" name="key_scan" value="off"<?php if($this->get('server')->key_scan == 'off') out(' checked') ?>> <span>Disabled - Do not scan any keys</span></label>
 				</div>
 			</div>
-			<div class="ska-setting-row<?php if($this->get('server')->key_management != 'keys') out(' hide') ?>" id="authorization">
+			<div class="ska-setting-row<?php if($this->get('server')->key_management != 'keys') out(' ska-hide') ?>" id="authorization">
 				<div class="ska-setting-label">Accounts</div>
 				<div class="ska-setting-control ska-choice-list">
 					<label class="ska-choice"><input type="radio" name="authorization" value="manual"<?php if($this->get('server')->authorization == 'manual') out(' checked') ?>> <span>All accounts on the server are manually created</span></label>
@@ -317,7 +317,7 @@
 				</div>
 			</div>
 				<?php $options = $this->get('ldap_access_options'); ?>
-				<div class="ska-setting-row<?php if($this->get('server')->key_management != 'keys' || $this->get('server')->authorization == 'manual') out(' hide') ?>" id="ldap_access_options">
+				<div class="ska-setting-row<?php if($this->get('server')->key_management != 'keys' || $this->get('server')->authorization == 'manual') out(' ska-hide') ?>" id="ldap_access_options">
 				<div class="ska-setting-label">LDAP access options</div>
 				<div class="ska-setting-control">
 					<label class="ska-choice"><input type="checkbox" name="access_option[command][enabled]"<?php if(isset($options['command'])) out(' checked'); ?>> <span>Specify command (<code>command=&quot;command&quot;</code>)</span></label>
@@ -336,7 +336,7 @@
 				}
 				$history_username_env_format = trim((string)$this->get('server')->history_username_env_format);
 				?>
-				<div class="ska-setting-row<?php if($this->get('server')->key_management != 'keys') out(' hide') ?>" id="history_username_env">
+				<div class="ska-setting-row<?php if($this->get('server')->key_management != 'keys') out(' ska-hide') ?>" id="history_username_env">
 					<label for="history_username_env_format" class="ska-setting-label">History username env</label>
 					<div class="ska-setting-control">
 						<div class="ska-choice-list">
@@ -474,19 +474,19 @@
 				<div class="ska-card-body pre-formatted"><?php out($this->get('output_formatter')->comment_format($note->note), ESC_NONE)?></div>
 				<div class="ska-card-footer">
 					Added <?php out($note->date)?> by <?php out($note->user->name)?>
-					<button name="delete_note" value="<?php out($note->id)?>" class="float-end ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete</button>
+					<button name="delete_note" value="<?php out($note->id)?>" class="ska-float-end ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete</button>
 				</div>
 			</div>
 			<?php } ?>
 		</form>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<div class="mb-3">
+			<div class="ska-mb-3">
 				<label for="note">Note</label>
 				<textarea class="ska-form-control" rows="4" id="note" name="note" required></textarea>
 			</div>
-			<div class="mb-3">
-				<button type="submit" name="add_note" value="1" class="ska-btn ska-btn-primary ska-btn-lg w-100">Add note</button>
+			<div class="ska-mb-3">
+				<button type="submit" name="add_note" value="1" class="ska-btn ska-btn-primary ska-btn-lg ska-w-100">Add note</button>
 			</div>
 		</form>
 	</div>
@@ -494,14 +494,14 @@
 		<h2 class="visually-hidden">Contact</h2>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<div class="mb-3">
+			<div class="ska-mb-3">
 				<label for="anonymous">From</label>
 				<select class="ska-form-control" id="anonymous" name="anonymous">
 					<option value="0"><?php out("{$this->get('active_user')->name} <{$this->get('active_user')->email}>");?></option>
 					<option value="1"><?php out($this->get('email_config')['from_name'])?> &lt;<?php out($this->get('email_config')['from_address'])?>&gt; (Reply-to: <?php out($this->get('email_config')['admin_address']) ?>)</option>
 				</select>
 			</div>
-			<div class="mb-3">
+			<div class="ska-mb-3">
 				<label>Recipients</label>
 				<div class="ska-form-check">
 					<label class="ska-form-check-label">
@@ -522,7 +522,7 @@
 					</label>
 				</div>
 			</div>
-			<div class="mb-3">
+			<div class="ska-mb-3">
 				<div class="ska-form-check">
 					<label class="ska-form-check-label">
 						<input type="checkbox" class="ska-form-check-input" id="hide_recipients" name="hide_recipients">
@@ -530,15 +530,15 @@
 					</label>
 				</div>
 			</div>
-			<div class="mb-3">
+			<div class="ska-mb-3">
 				<label for="subject">Subject</label>
 				<input type="text" class="ska-form-control" id="subject" name="subject" required value="Server <?php out('"'.$this->get('server')->hostname.'"') ?>">
 			</div>
-			<div class="mb-3">
+			<div class="ska-mb-3">
 				<label for="body">Body</label>
 				<textarea class="ska-form-control" rows="20" id="body" name="body" required></textarea>
 			</div>
-			<div class="mb-3"><button type="submit" name="send_mail" value="1" data-confirm="Send mail? Are you sure?" class="ska-btn ska-btn-primary ska-btn-lg w-100">Send mail</button></div>
+			<div class="ska-mb-3"><button type="submit" name="send_mail" value="1" data-confirm="Send mail? Are you sure?" class="ska-btn ska-btn-primary ska-btn-lg ska-w-100">Send mail</button></div>
 		</form>
 	</div>
 	<?php } ?>
@@ -555,8 +555,8 @@
 <form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 	<h4>Request access to account</h4>
-	<div class="row">
-		<div class="col-sm-5">
+	<div class="ska-row">
+		<div class="ska-col-sm-5">
 			<label for="account_name" class="visually-hidden">Account name</label>
 			<div class="ska-input-group">
 				<span class="ska-input-group-text"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span></span>
@@ -569,7 +569,7 @@
 				</datalist>
 			</div>
 		</div>
-		<div class="col-sm-7">
+		<div class="ska-col-sm-7">
 			<button type="submit" name="request_access" value="user" class="ska-btn ska-btn-primary">Request access</button>
 			<a href="<?php outurl('/help#getting_access')?>" class="ska-btn ska-btn-info">Help</a>
 		</div>
@@ -578,15 +578,15 @@
 <form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 	<h4>Request server-to-server access</h4>
-	<div class="row">
-		<div class="col-sm-3 mb-3">
+	<div class="ska-row">
+		<div class="ska-col-sm-3 ska-mb-3">
 			<div class="ska-input-group">
 				<span class="ska-input-group-text">From: </span>
 				<span class="ska-input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account name</span></label></span>
 				<input type="text" id="account_remote" name="account_remote" class="ska-form-control" placeholder="Account name" required pattern=".*[^\s].*">
 			</div>
 		</div>
-		<div class="col-sm-3 mb-3">
+		<div class="ska-col-sm-3 ska-mb-3">
 			<div class="ska-input-group">
 				<span class="ska-input-group-text"><label for="hostname">@</label></span>
 				<input type="text" id="hostname_remote" name="hostname_remote" class="ska-form-control" placeholder="Hostname" list="serverlist" required>
@@ -598,8 +598,8 @@
 			</div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-sm-5">
+	<div class="ska-row">
+		<div class="ska-col-sm-5">
 			<label for="account_name_s2s" class="visually-hidden">Account name</label>
 			<div class="ska-input-group">
 				<span class="ska-input-group-text">To: </span>
@@ -608,7 +608,7 @@
 				<span class="ska-input-group-text">@<?php out($this->get('server')->hostname)?></span>
 			</div>
 		</div>
-		<div class="col-sm-3">
+		<div class="ska-col-sm-3">
 			<button type="submit" name="request_access" value="server_account" class="ska-btn ska-btn-primary">Request access</button>
 			<a href="<?php outurl('/help#getting_access')?>" class="ska-btn ska-btn-info">Help</a>
 		</div>
@@ -617,8 +617,8 @@
 <form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 	<h4>Request group access</h4>
-	<div class="row">
-		<div class="col-sm-5 mb-3">
+	<div class="ska-row">
+		<div class="ska-col-sm-5 ska-mb-3">
 			 <div class="ska-input-group">
 				<span class="ska-input-group-text"><label for="account"><span class="ska-icon ska-icon-group" title="Group account"></span><span class="visually-hidden">Group name</span></label></span>
 				<input type="text" id="group_account" name="group_account" class="ska-form-control" placeholder="Group name" list="grouplist" required>
@@ -630,8 +630,8 @@
 			</div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-sm-5">
+	<div class="ska-row">
+		<div class="ska-col-sm-5">
 			<label for="account_name_group" class="visually-hidden">Account name</label>
 			<div class="ska-input-group">
 				<span class="ska-input-group-text">To: </span>
@@ -640,7 +640,7 @@
 				<span class="ska-input-group-text">@<?php out($this->get('server')->hostname)?></span>
 			</div>
 		</div>
-		<div class="col-sm-3">
+		<div class="ska-col-sm-3">
 			<button type="submit" name="request_access" value="group" class="ska-btn ska-btn-primary">Request access</button>
 			<a href="<?php outurl('/help#getting_access')?>" class="ska-btn ska-btn-info">Help</a>
 		</div>

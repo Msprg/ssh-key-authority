@@ -105,13 +105,13 @@ $owner = $this->get('pubkey')->owner;
 			<?php } ?>
 			<h3>Add signature</h3>
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<div class="mb-3">
+			<div class="ska-mb-3">
 				<label>
 					Signature file
 					<input type="file" name="signature" class="ska-form-control">
 				</label>
 			</div>
-			<div class="mb-3">
+			<div class="ska-mb-3">
 				<button type="submit" name="add_signature" value="1" class="ska-btn ska-btn-primary">Upload signature</button>
 			</div>
 		</form>
@@ -150,16 +150,16 @@ $owner = $this->get('pubkey')->owner;
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Add new rule</h3>
 			<p>You can make use of wildcards (<kbd>*</kbd>) in each field below.</p>
-			<div class="mb-3">
+			<div class="ska-mb-3">
 				<label for="account_name_filter">Account name</label>
 				<input type="text" id="account_name_filter" name="account_name_filter" class="ska-form-control" value="*" required>
 			</div>
-			<div class="mb-3">
+			<div class="ska-mb-3">
 				<label for="hostname_filter">Hostname</label>
 				<input type="text" id="hostname_filter" name="hostname_filter" class="ska-form-control" value="*" required>
 			</div>
-			<div class="mb-3">
-				<button type="submit" name="add_dest_rule" value="1" class="ska-btn ska-btn-primary w-100">Add rule</button>
+			<div class="ska-mb-3">
+				<button type="submit" name="add_dest_rule" value="1" class="ska-btn ska-btn-primary ska-w-100">Add rule</button>
 			</div>
 		</form>
 	</div>

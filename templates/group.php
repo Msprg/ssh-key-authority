@@ -104,36 +104,36 @@ foreach($this->get('group_members') as $member) {
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Add user</h3>
-			<div class="row">
-				<div class="col-md-9 mb-3">
+			<div class="ska-row">
+				<div class="ska-col-md-9 ska-mb-3">
 					<div class="ska-input-group">
 						<span class="ska-input-group-text"><label for="username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
 						<input type="text" id="username" name="username" class="ska-form-control" placeholder="User name" required list="userlist">
 					</div>
 				</div>
-				<div class="col-md-3 mb-3">
-					<button type="submit" name="add_member" value="1" class="ska-btn ska-btn-primary w-100">Add user to group</button>
+				<div class="ska-col-md-3 ska-mb-3">
+					<button type="submit" name="add_member" value="1" class="ska-btn ska-btn-primary ska-w-100">Add user to group</button>
 				</div>
 			</div>
 		</form>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Add server account</h3>
-			<div class="row">
-				<div class="col-md-2 mb-3">
+			<div class="ska-row">
+				<div class="ska-col-md-2 ska-mb-3">
 					<div class="ska-input-group">
 						<span class="ska-input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account</span></label></span>
 						<input type="text" id="account" name="account" class="ska-form-control" placeholder="Account name" required>
 					</div>
 				</div>
-				<div class="col-md-7 mb-3">
+				<div class="ska-col-md-7 ska-mb-3">
 					<div class="ska-input-group">
 						<span class="ska-input-group-text"><label for="hostname">@</label></span>
 						<input type="text" id="hostname" name="hostname" class="ska-form-control" placeholder="Hostname" required list="<?php out($this->get('admin') ? 'serverlist' : 'adminedserverlist')?>">
 					</div>
 				</div>
-				<div class="col-md-3 mb-3">
-					<button type="submit" name="add_member" value="1" class="ska-btn ska-btn-primary w-100">Add server account to group</button>
+				<div class="ska-col-md-3 ska-mb-3">
+					<button type="submit" name="add_member" value="1" class="ska-btn ska-btn-primary ska-w-100">Add server account to group</button>
 				</div>
 			</div>
 		</form>
@@ -141,14 +141,14 @@ foreach($this->get('group_members') as $member) {
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Add multiple server accounts</h3>
 			<p>Enter a list of accounts, one per line, in the form accountname@hostname</p>
-			<div class="row">
-				<div class="col-md-12 mb-3">
+			<div class="ska-row">
+				<div class="ska-col-md-12 ska-mb-3">
 					<textarea name="accounts" class="ska-form-control"></textarea>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-md-3 mb-3">
-					<button type="submit" name="add_members" value="1" class="ska-btn ska-btn-primary w-100">Add server accounts to group</button>
+			<div class="ska-row">
+				<div class="ska-col-md-3 ska-mb-3">
+					<button type="submit" name="add_members" value="1" class="ska-btn ska-btn-primary ska-w-100">Add server accounts to group</button>
 				</div>
 			</div>
 		</form>
@@ -236,51 +236,51 @@ foreach($this->get('group_members') as $member) {
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Grant user access</h3>
-			<div class="row">
-				<div class="col-md-8 mb-3">
+			<div class="ska-row">
+				<div class="ska-col-md-8 ska-mb-3">
 					<div class="ska-input-group">
 						<span class="ska-input-group-text"><label for="access-username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
 						<input type="text" id="access-username" name="username" class="ska-form-control" placeholder="User name" required list="userlist">
 					</div>
 				</div>
-				<div class="col-md-4 mb-3">
-					<button type="submit" name="add_access" value="1" class="ska-btn ska-btn-primary w-100">Grant user access to group resources</button>
+				<div class="ska-col-md-4 ska-mb-3">
+					<button type="submit" name="add_access" value="1" class="ska-btn ska-btn-primary ska-w-100">Grant user access to group resources</button>
 				</div>
 			</div>
 		</form>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Grant server account access</h3>
-			<div class="row">
-				<div class="col-md-2 mb-3">
+			<div class="ska-row">
+				<div class="ska-col-md-2 ska-mb-3">
 					<div class="ska-input-group">
 						<span class="ska-input-group-text"><label for="access-account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account</span></label></span>
 						<input type="text" id="access-account" name="account" class="ska-form-control" placeholder="Account name" required>
 					</div>
 				</div>
-				<div class="col-md-6 mb-3">
+				<div class="ska-col-md-6 ska-mb-3">
 					<div class="ska-input-group">
 						<span class="ska-input-group-text"><label for="access-hostname">@</label></span>
 						<input type="text" id="access-hostname" name="hostname" class="ska-form-control" placeholder="Hostname" required list="serverlist">
 					</div>
 				</div>
-				<div class="col-md-4 mb-3">
-					<button type="submit" name="add_access" value="1" class="ska-btn ska-btn-primary w-100">Grant server account access to group resources</button>
+				<div class="ska-col-md-4 ska-mb-3">
+					<button type="submit" name="add_access" value="1" class="ska-btn ska-btn-primary ska-w-100">Grant server account access to group resources</button>
 				</div>
 			</div>
 		</form>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Grant group access</h3>
-			<div class="row">
-				<div class="col-md-8 mb-3">
+			<div class="ska-row">
+				<div class="ska-col-md-8 ska-mb-3">
 					<div class="ska-input-group">
 						<span class="ska-input-group-text"><label for="access-group"><span class="ska-icon ska-icon-group" title="Group"></span><span class="visually-hidden">Group name</span></label></span>
 						<input type="text" id="access-group" name="group" class="ska-form-control" placeholder="Group name" required list="grouplist">
 					</div>
 				</div>
-				<div class="col-md-4 mb-3">
-					<button type="submit" name="add_access" value="1" class="ska-btn ska-btn-primary w-100">Grant a group access to this group's resources</button>
+				<div class="ska-col-md-4 ska-mb-3">
+					<button type="submit" name="add_access" value="1" class="ska-btn ska-btn-primary ska-w-100">Grant a group access to this group's resources</button>
 				</div>
 			</div>
 		</form>

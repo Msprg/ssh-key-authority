@@ -39,18 +39,18 @@
 				</div>
 					<div class="ska-card-body">
 					<form>
-						<div class="row">
-							<div class="col-sm-4">
-								<div class="mb-3">
+						<div class="ska-row">
+							<div class="ska-col-sm-4">
+								<div class="ska-mb-3">
 									<label for="hostname-search">Hostname (<a href="https://mariadb.com/kb/en/mariadb/regular-expressions-overview/">regexp</a>)</label>
 									<input type="text" id="hostname-search" name="hostname" class="ska-form-control" value="<?php out($this->get('filter')['hostname'])?>" autofocus>
 								</div>
-								<div class="mb-3">
+								<div class="ska-mb-3">
 									<label for="ipaddress-search">IP address</label>
 									<input type="text" id="ipaddress-search" name="ip_address" class="ska-form-control" value="<?php out($this->get('filter')['ip_address'])?>">
 								</div>
 							</div>
-							<div class="col-sm-3">
+							<div class="ska-col-sm-3">
 								<h4>Key management</h4>
 								<?php
 								$options = array();
@@ -64,7 +64,7 @@
 								<div class="ska-form-check"><label class="ska-form-check-label"><input type="checkbox" class="ska-form-check-input" name="key_management[]" value="<?php out($value)?>"<?php out($checked) ?>> <span><?php out($label) ?></span></label></div>
 								<?php } ?>
 							</div>
-							<div class="col-sm-2">
+							<div class="ska-col-sm-2">
 								<h4>Sync status</h4>
 								<?php
 								$options = array();
@@ -193,21 +193,21 @@
 		</div>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<div class="mb-3">
+			<div class="ska-mb-3">
 				<label for="hostname">Server hostname</label>
 				<input type="text" id="hostname" name="hostname" class="ska-form-control" required>
 			</div>
-			<div class="mb-3">
+			<div class="ska-mb-3">
 				<label for="port">SSH port number</label>
 				<input type="number" id="port" name="port" class="ska-form-control" value="22" required>
 			</div>
-			<div class="mb-3">
+			<div class="ska-mb-3">
 				<label for="jumphosts">Jumphosts (<a href="<?php outurl('/help#jumphost_format')?>">format</a>)</label>
 				<input type="text" id="jumphosts" name="jumphosts" pattern="([^@ >]+@[a-zA-Z0-9\-.\u0080-\uffff]+(:[0-9]+)?(,[^@ >]+@[a-zA-Z0-9\-.\u0080-\uffff]+(:[0-9]+)?)*)?( *-> *[a-zA-Z0-9\-.\u0080-\uffff]+)?" class="ska-form-control">
 			</div>
-			<div class="mb-3">
+			<div class="ska-mb-3">
 				<label for="server_admin">Leaders</label>
-				<input type="text" id="server_admins" name="admins" class="ska-form-control d-none" required>
+				<input type="text" id="server_admins" name="admins" class="ska-form-control ska-d-none" required>
 				<input type="text" id="server_admin" name="admin" class="ska-form-control" placeholder="Type user/group name and press 'Enter' key" list="adminlist" required>
 				<datalist id="adminlist">
 					<?php foreach($this->get('all_users') as $user) { ?>
@@ -241,7 +241,7 @@ host2.example.com,2222,,leader1;ld_group4
 host3.example.com,22,,ld_group4;leader2</pre>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<div class="mb-3">
+			<div class="ska-mb-3">
 				<label for="import">CSV import data</label>
 				<textarea id="import" name="import" class="ska-form-control" required></textarea>
 			</div>

@@ -33,7 +33,7 @@
 	<div class="ska-card-body">
 		<form method="post" action="<?php outurl($this->data->relative_request_url) ?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<div class="mb-3">
+			<div class="ska-mb-3">
 				<label for="add_public_key" class="ska-form-label">Public key</label>
 				<textarea class="ska-form-control" rows="4" id="add_public_key" name="add_public_key" required></textarea>
 			</div>

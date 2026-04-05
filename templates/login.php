@@ -20,9 +20,9 @@
 // It provides the login form content
 ?>
 <div class="login-container">
-    <div class="mb-4">
-        <h1 class="mb-1">SSH Key Authority</h1>
-        <p class="text-muted mb-0">Please sign in to continue</p>
+    <div class="ska-mb-4">
+        <h1 class="ska-mb-1">SSH Key Authority</h1>
+        <p class="ska-text-muted ska-mb-0">Please sign in to continue</p>
     </div>
 
     <?php if($this->get('error_message')) { ?>
@@ -38,23 +38,23 @@
     <?php } ?>
     <form method="POST" action="">
         <input type="hidden" name="csrf_token" value="<?php out($this->get('csrf_token')) ?>">
-        <div class="mb-3">
+        <div class="ska-mb-3">
             <label for="username" class="ska-form-label">Username</label>
             <input type="text" class="ska-form-control" id="username" name="username" 
                    value="<?php out($_POST['username'] ?? '')?>" 
                    placeholder="Enter your username" autocomplete="username" required autofocus>
         </div>
         
-        <div class="mb-3">
+        <div class="ska-mb-3">
             <label for="password" class="ska-form-label">Password</label>
             <input type="password" class="ska-form-control" id="password" name="password" 
                    placeholder="Enter your password" autocomplete="current-password" required>
         </div>
         
-        <button type="submit" class="ska-btn ska-btn-login w-100">Login</button>
+        <button type="submit" class="ska-btn ska-btn-login ska-w-100">Login</button>
     </form>
-    <div class="text-center mt-3">
-        <small id="login-help" class="text-muted">
+    <div class="text-center ska-mt-3">
+        <small id="login-help" class="ska-text-muted">
             Authentication is handled via LDAP
         </small>
     </div>

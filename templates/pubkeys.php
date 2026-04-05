@@ -82,23 +82,23 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 				<div id="search_filter">
 					<div class="ska-card-body">
 						<form>
-							<div class="row">
-								<div class="col-md-6 mb-3">
+							<div class="ska-row">
+								<div class="ska-col-md-6 ska-mb-3">
 									<label for="fingerprint-search">Fingerprint</label>
 									<input type="text" id="fingerprint-search" name="fingerprint" class="ska-form-control" value="<?php out($this->get('filter')['fingerprint'])?>">
 								</div>
-								<div class="col-md-2 mb-3">
+								<div class="ska-col-md-2 ska-mb-3">
 									<label for="type-search">Key type</label>
 									<input type="text" id="type-search" name="type" class="ska-form-control" value="<?php out($this->get('filter')['type'])?>">
 								</div>
-								<div class="col-md-2 mb-3">
+								<div class="ska-col-md-2 ska-mb-3">
 									<label for="keysize-min">Min key size</label>
 									<div class="ska-input-group">
 										<span class="ska-input-group-text">≥</span>
 										<input type="text" id="keysize-min" name="keysize-min" class="ska-form-control" value="<?php out($this->get('filter')['keysize-min'])?>">
 									</div>
 								</div>
-								<div class="col-md-2 mb-3">
+								<div class="ska-col-md-2 ska-mb-3">
 									<label for="keysize-max">Max key size</label>
 									<div class="ska-input-group">
 										<span class="ska-input-group-text">≤</span>

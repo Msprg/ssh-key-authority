@@ -62,7 +62,7 @@ Completed work:
 - repo-local table styling in [public_html/style.css](/var/www/ska/public_html/style.css) for the busiest list/detail pages, removing their Bootstrap 3 table-class dependency
 - repo-local button and alert styling in [public_html/style.css](/var/www/ska/public_html/style.css), shrinking reliance on Bootstrap 3 for those shared primitives
 - retirement of runtime `public_html/bootstrap5-compat.css` by folding its live aliases into [public_html/style.css](/var/www/ska/public_html/style.css)
-- repo-local grid/text utility styling in [public_html/style.css](/var/www/ska/public_html/style.css) for the live `container`, `row`, `col-*`, and status text classes used by high-traffic pages
+- repo-local grid/text utility styling in [public_html/style.css](/var/www/ska/public_html/style.css) for the live `container`, `row`, `col-*`, and status text classes used by high-traffic pages, with the shell/login and busiest list/detail templates now rendering `ska-*` layout and spacing helpers directly
 - repo-local form/input-group styling in [public_html/style.css](/var/www/ska/public_html/style.css) for the live `form-group`, `form-control`, and `input-group` classes used by the busiest forms, plus migration of active templates to local `ska-form-group` wrappers
 - repo-local base typography/content, badge, and collapse-state styling in [public_html/style.css](/var/www/ska/public_html/style.css), allowing the app shell to render without Bootstrap CSS
 - retirement of the Bootstrap 3-only `in` state marker from active tabs/collapses in templates and native runtime code
@@ -84,7 +84,7 @@ Priority work:
 
 - visually recheck untargeted secondary pages under the repo-local baseline
 - finish removing stale Bootstrap-era helper/content assumptions from mixed templates
-- continue migrating locally owned Bootstrap-named class families onto explicit `ska-*` aliases, with grid/layout helpers next in line
+- continue migrating the remaining untargeted secondary templates onto explicit `ska-*` layout/utility aliases where they still use Bootstrap-era class vocabulary
 - trim remaining icon-compatibility selectors and stale documentation references
 - remove dormant vendored Bootstrap/Glyphicon assets once no longer needed for historical checkpoints
 

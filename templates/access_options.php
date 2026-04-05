@@ -88,13 +88,13 @@ switch(get_class($remote_entity)) {
 						<div class="ska-form-check">
 							<label class="ska-form-check-label"><input type="checkbox" class="ska-form-check-input" name="access_option[command][enabled]"<?php if(isset($options['command'])) out(' checked'); ?>> <span>Specify command (<code>command=&quot;command&quot;</code>)</span></label>
 						</div>
-						<div class="mb-3">
+						<div class="ska-mb-3">
 							<input type="text" id="command_value" name="access_option[command][value]" value="<?php if(isset($options['command'])) out($options['command']->value); ?>" class="ska-form-control">
 						</div>
 						<div class="ska-form-check">
 							<label class="ska-form-check-label"><input type="checkbox" class="ska-form-check-input" name="access_option[from][enabled]"<?php if(isset($options['from'])) out(' checked'); ?>> <span>Restrict source address (<code>from=&quot;<abbr title="A pattern-list is a comma-separated list of patterns.  Each pattern can be either a hostname or an IP address, with wildcards (* and ?) allowed.">pattern-list</abbr>&quot;</code>)</span></label>
 						</div>
-						<div class="mb-3">
+						<div class="ska-mb-3">
 							<input type="text" id="from_value" name="access_option[from][value]" value="<?php if(isset($options['from'])) out($options['from']->value); ?>" class="ska-form-control">
 						</div>
 						<div class="ska-form-check">
@@ -113,15 +113,15 @@ switch(get_class($remote_entity)) {
 		</div>
 	</div>
 	<?php } ?>
-	<div class="row">
-		<div class="col-md-8">
-			<button type="submit" name="<?php if($mode == 'create') out('add_access'); else out('update_access')?>" value="2" class="ska-btn ska-btn-primary w-100"><?php if($mode == 'create') out('Confirm'); else out('Modify')?> access</button>
+	<div class="ska-row">
+		<div class="ska-col-md-8">
+			<button type="submit" name="<?php if($mode == 'create') out('add_access'); else out('update_access')?>" value="2" class="ska-btn ska-btn-primary ska-w-100"><?php if($mode == 'create') out('Confirm'); else out('Modify')?> access</button>
 		</div>
-		<div class="col-md-4">
+		<div class="ska-col-md-4">
 			<?php if(isset($server)) { ?>
-			<a href="<?php outurl('/servers/'.urlencode($server->hostname).'/accounts/'.urlencode($account->name))?>" class="ska-btn ska-btn-secondary w-100">Cancel</a>
+			<a href="<?php outurl('/servers/'.urlencode($server->hostname).'/accounts/'.urlencode($account->name))?>" class="ska-btn ska-btn-secondary ska-w-100">Cancel</a>
 			<?php } elseif(isset($group)) { ?>
-			<a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="ska-btn ska-btn-secondary w-100">Cancel</a>
+			<a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="ska-btn ska-btn-secondary ska-w-100">Cancel</a>
 			<?php } ?>
 		</div>
 	</div>

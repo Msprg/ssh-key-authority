@@ -29,7 +29,7 @@ $footer=str_replace("%v", "1.5.0", $web_config['footer']);
 <div id="wrap">
 <a href="#content" class="visually-hidden visually-hidden-focusable">Skip to main content</a>
 <div class="ska-shell-nav">
-	<div class="container h-50px">
+	<div class="ska-container h-50px">
 		<div class="ska-navbar">
 			<?php if(!empty($web_config['logo'])) { ?>
 			<a href="/" class="ska-logo">
@@ -70,7 +70,7 @@ $footer=str_replace("%v", "1.5.0", $web_config['footer']);
 		</div>
 	</div>
 </div>
-<div class="container" id="content">
+<div class="ska-container" id="content">
 <?php foreach($this->get('alerts') as $alert) { ?>
 <div class="ska-alert ska-alert-<?php out($alert->class)?> ska-alert-dismissible">
 	<button type="button" class="ska-btn-close" data-bs-dismiss="alert" aria-label="Close">&times;</button>
@@ -81,8 +81,8 @@ $footer=str_replace("%v", "1.5.0", $web_config['footer']);
 </div>
 </div>
 <div id="footer">
-	<div class="container">
-		<p class="text-muted credit"><?php out($footer, ESC_NONE)?></p>
+	<div class="ska-container">
+		<p class="ska-text-muted credit"><?php out($footer, ESC_NONE)?></p>
 		<?php if($this->get('active_user') && $this->get('active_user')->developer) { ?>
 		<?php } ?>
 	</div>

@@ -37,14 +37,14 @@
 				</div>
 					<div class="ska-card-body">
 					<form>
-						<div class="row">
-							<div class="col-sm-4">
-								<div class="mb-3">
+						<div class="ska-row">
+							<div class="ska-col-sm-4">
+								<div class="ska-mb-3">
 									<label for="name-search">Name (<a href="https://mariadb.com/kb/en/mariadb/regular-expressions-overview/">regexp</a>)</label>
 									<input type="text" id="name-search" name="name" class="ska-form-control" value="<?php out($this->get('filter')['name'])?>" autofocus>
 								</div>
 							</div>
-							<div class="col-sm-3">
+							<div class="ska-col-sm-3">
 								<h4>Status</h4>
 								<?php
 								$options = array();
@@ -53,7 +53,7 @@
 								foreach($options as $value => $label) {
 									$checked = in_array($value, $this->get('filter')['active']) ? ' checked' : '';
 								?>
-								<div class="form-check"><label class="form-check-label"><input type="checkbox" class="form-check-input" name="active[]" value="<?php out($value)?>"<?php out($checked) ?>> <span><?php out($label) ?></span></label></div>
+								<div class="ska-form-check"><label class="ska-form-check-label"><input type="checkbox" class="ska-form-check-input" name="active[]" value="<?php out($value)?>"<?php out($checked) ?>> <span><?php out($label) ?></span></label></div>
 								<?php } ?>
 							</div>
 						</div>
@@ -81,8 +81,8 @@
 					</thead>
 					<tbody>
 						<?php foreach($this->get('groups') as $group) { ?>
-						<tr<?php if(!$group->active) out(' class="text-muted"', ESC_NONE) ?>>
-							<td><a href="<?php outurl('/groups/'.urlencode($group->name)) ?>" class="group<?php if(!$group->active) out(' text-muted') ?>"><?php out($group->name) ?></a></td>
+						<tr<?php if(!$group->active) out(' class="ska-text-muted"', ESC_NONE) ?>>
+							<td><a href="<?php outurl('/groups/'.urlencode($group->name)) ?>" class="group<?php if(!$group->active) out(' ska-text-muted') ?>"><?php out($group->name) ?></a></td>
 							<td><?php out(number_format($group->member_count))?></td>
 							<td><?php out($group->admins)?></td>
 							<?php if($this->get('admin')) { ?>
@@ -104,11 +104,11 @@
 		<h3>Create local group</h3>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-inline-form">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<div class="ska-form-group mb-3">
+			<div class="ska-form-group ska-mb-3">
 				<label for="name" class="visually-hidden">Group name</label>
 				<input type="text" id="name" name="name" class="ska-form-control" placeholder="Group name" required>
 			</div>
-			<div class="ska-form-group mb-3">
+			<div class="ska-form-group ska-mb-3">
 				<label for="admin_uid" class="visually-hidden">Administrator</label>
 				<input type="text" size="40" id="admin_uid" name="admin_uid" class="ska-form-control" placeholder="Administrator" required list="userlist">
 				<datalist id="userlist">
@@ -123,7 +123,7 @@
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-inline-form">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ldap-treeview">For the tree-view of ldap groups, javascript is necessary.</div>
-			<div class="ska-form-group mb-3">
+			<div class="ska-form-group ska-mb-3">
 				<label for="name" class="visually-hidden">Group name</label>
 			</div>
 			<button type="submit" name="add_ldap_group" value="1" class="ska-btn ska-btn-primary">Connect selected groups</button>
