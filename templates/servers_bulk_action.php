@@ -62,7 +62,7 @@
 
 <h3>Remove leaders from all selected servers</h3>
 <?php if(count($this->get('server_admins')) == 0) { ?>
-<p class="alert alert-danger">The selected <?php out($this->data->plural ? 'servers do' : 'server does') ?> not have any leaders assigned.</p>
+<p class="ska-alert ska-alert-danger">The selected <?php out($this->data->plural ? 'servers do' : 'server does') ?> not have any leaders assigned.</p>
 <?php } else { ?>
 <form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>

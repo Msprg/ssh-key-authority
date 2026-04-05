@@ -188,8 +188,8 @@
 	</div>
 	<div class="ska-tab-pane fade" id="add" role="tabpanel" aria-labelledby="servers_add_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Add server</h2>
-		<div class="alert alert-info">
-			See <a href="<?php outurl('/help#sync_setup')?>" class="alert-link">the sync setup instructions</a> for how to set up the server for key synchronization.
+		<div class="ska-alert ska-alert-info">
+			See <a href="<?php outurl('/help#sync_setup')?>" class="ska-alert-link">the sync setup instructions</a> for how to set up the server for key synchronization.
 		</div>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
@@ -223,8 +223,8 @@
 	</div>
 	<div class="ska-tab-pane fade" id="add_bulk" role="tabpanel" aria-labelledby="servers_add_bulk_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Add multiple servers</h2>
-		<div class="alert alert-info">
-			See <a href="<?php outurl('/help#sync_setup')?>" class="alert-link">the sync setup instructions</a> for how to set up the server for key synchronization.
+		<div class="ska-alert ska-alert-info">
+			See <a href="<?php outurl('/help#sync_setup')?>" class="ska-alert-link">the sync setup instructions</a> for how to set up the server for key synchronization.
 		</div>
 		<h3>Format</h3>
 		<p>The csv content must consist of 4 columns and not contain a headline.</p>

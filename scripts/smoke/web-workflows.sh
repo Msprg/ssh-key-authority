@@ -84,6 +84,8 @@ grep -q '>Logout<' "$TMP_DIR/help.html" || smoke_die "Authenticated session was 
 ! grep -Eq 'panel-group|panel panel-default|panel-heading|panel-title|panel-body|panel-footer|panel-collapse' "$TMP_DIR/help.html" || smoke_die "Help page still renders legacy panel markup"
 ! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/help.html" || smoke_die "Help page still renders legacy glyphicon classes"
 ! grep -Eq "$LEGACY_IN_CLASS_RE" "$TMP_DIR/help.html" || smoke_die "Help page still renders legacy collapse/tab state classes"
+! grep -Eq 'class="[^"]*\\balert\\b|class="[^"]*\\balert-info\\b|class="[^"]*\\balert-warning\\b|class="[^"]*\\balert-danger\\b|class="[^"]*\\balert-success\\b|class="[^"]*\\balert-link\\b' "$TMP_DIR/help.html" || smoke_die "Help page still renders Bootstrap-named alert classes"
+grep -Eq 'class="[^"]*ska-alert[^"]*ska-alert-info' "$TMP_DIR/help.html" || smoke_die "Help page is missing SKA-owned alert classes"
 
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/groups" -o "$TMP_DIR/groups.html"
 grep -q '>Logout<' "$TMP_DIR/groups.html" || smoke_die "Authenticated session was lost while loading groups page"
@@ -110,9 +112,11 @@ grep -q '>Logout<' "$TMP_DIR/servers.html" || smoke_die "Authenticated session w
 ! grep -Eq 'class="[^"]*\\btext-bg-secondary\\b' "$TMP_DIR/servers.html" || smoke_die "Servers page still renders Bootstrap-named inactive badge classes"
 ! grep -Eq 'class="[^"]*\\bform-control\\b' "$TMP_DIR/servers.html" || smoke_die "Servers page still renders Bootstrap-named form-control classes"
 ! grep -Eq 'class="[^"]*\\bbtn\\b|class="[^"]*\\bbtn-primary\\b|class="[^"]*\\bbtn-secondary\\b|class="[^"]*\\bbtn-success\\b|class="[^"]*\\bbtn-danger\\b|class="[^"]*\\bbtn-info\\b|class="[^"]*\\bbtn-sm\\b|class="[^"]*\\bbtn-lg\\b' "$TMP_DIR/servers.html" || smoke_die "Servers page still renders Bootstrap-named button classes"
+! grep -Eq 'class="[^"]*\\balert\\b|class="[^"]*\\balert-info\\b|class="[^"]*\\balert-warning\\b|class="[^"]*\\balert-danger\\b|class="[^"]*\\balert-success\\b|class="[^"]*\\balert-link\\b' "$TMP_DIR/servers.html" || smoke_die "Servers page still renders Bootstrap-named alert classes"
 grep -Eq 'class="[^"]*ska-form-check' "$TMP_DIR/servers.html" || smoke_die "Servers page is missing SKA-owned form-check classes"
 grep -Eq 'class="[^"]*ska-form-control' "$TMP_DIR/servers.html" || smoke_die "Servers page is missing SKA-owned form-control classes"
 grep -Eq 'class="[^"]*ska-btn' "$TMP_DIR/servers.html" || smoke_die "Servers page is missing SKA-owned button classes"
+grep -Eq 'class="[^"]*ska-alert[^"]*ska-alert-info' "$TMP_DIR/servers.html" || smoke_die "Servers page is missing SKA-owned alert classes"
 
 TARGET_SERVER_PAGE="/servers/${TARGET_SERVER}"
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL$TARGET_SERVER_PAGE" -o "$TMP_DIR/server.html"
@@ -199,13 +203,15 @@ fetch_account_page() {
     ! grep -Eq 'class="[^"]*\\btable\\b|class="[^"]*\\btable-bordered\\b|class="[^"]*\\btable-striped\\b|class="[^"]*\\btable-hover\\b|class="[^"]*\\btable-sm\\b' "$output_file" || smoke_die "Target account page still renders legacy Bootstrap table classes"
     ! grep -Eq 'class="nav nav-tabs"|class="[^"]*\\bnav-item\\b|class="[^"]*\\bnav-link\\b|class="tab-content"|class="[^"]*\\btab-pane\\b' "$output_file" || smoke_die "Target account page still renders legacy Bootstrap tab classes"
     ! grep -Eq "$LEGACY_IN_CLASS_RE" "$output_file" || smoke_die "Target account page still renders legacy collapse/tab state classes"
-    ! grep -Eq 'class="[^"]*\\binput-group\\b|class="[^"]*\\binput-group-text\\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named input-group classes"
+! grep -Eq 'class="[^"]*\\binput-group\\b|class="[^"]*\\binput-group-text\\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named input-group classes"
     ! grep -Eq 'class="[^"]*\\bform-check\\b|class="[^"]*\\bform-check-label\\b|class="[^"]*\\bform-check-input\\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named form-check classes"
     ! grep -Eq 'class="[^"]*\\btext-bg-secondary\\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named inactive badge classes"
     ! grep -Eq 'class="[^"]*\\bform-control\\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named form-control classes"
     ! grep -Eq 'class="[^"]*\\bbtn\\b|class="[^"]*\\bbtn-primary\\b|class="[^"]*\\bbtn-secondary\\b|class="[^"]*\\bbtn-success\\b|class="[^"]*\\bbtn-danger\\b|class="[^"]*\\bbtn-info\\b|class="[^"]*\\bbtn-sm\\b|class="[^"]*\\bbtn-lg\\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named button classes"
+    ! grep -Eq 'class="[^"]*\\balert\\b|class="[^"]*\\balert-info\\b|class="[^"]*\\balert-warning\\b|class="[^"]*\\balert-danger\\b|class="[^"]*\\balert-success\\b|class="[^"]*\\balert-link\\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named alert classes"
     grep -Eq 'class="[^"]*ska-form-control' "$output_file" || smoke_die "Target account page is missing SKA-owned form-control classes"
     grep -Eq 'class="[^"]*ska-btn' "$output_file" || smoke_die "Target account page is missing SKA-owned button classes"
+    grep -Eq 'class="[^"]*ska-alert[^"]*ska-alert-info' "$output_file" || smoke_die "Target account page is missing SKA-owned alert classes"
 }
 
 require_post_status_ok() {

@@ -47,7 +47,7 @@ foreach($this->get('group_members') as $member) {
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<?php if($this->get('group')->system) { ?>
-			<div class="alert alert-info">
+			<div class="ska-alert ska-alert-info">
 				This is a system group. Its membership list cannot be edited.
 			</div>
 			<?php } ?>
@@ -337,7 +337,7 @@ foreach($this->get('group_members') as $member) {
 	<div class="ska-tab-pane fade" id="admins" role="tabpanel" aria-labelledby="group_admins_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Group administrators</h2>
 		<?php if(count($this->get('group_admins')) == 0) { ?>
-		<p class="alert alert-danger">This group does not have any administrators assigned.</p>
+		<p class="ska-alert ska-alert-danger">This group does not have any administrators assigned.</p>
 		<?php } else { ?>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>

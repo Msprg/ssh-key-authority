@@ -74,7 +74,7 @@ $security_config = $this->get('security_config');
 				<p>Begin by browsing the <a href="<?php outurl('/servers')?>">server list</a>.  Click on the server that you need access to.</p>
 				<p>You should see a "request access" form, in which you will need to enter the name of the account on the server that you are requesting access for.  For example, if you need access to the <i>root</i> account, then that is what you should enter in this field.</p>
 				<p>Once you have successfully requested access, the designated server leaders will be sent a mail informing them of your request and you will need to wait for one of them to grant your access.</p>
-				<p class="alert alert-info">You will need to have a public key uploaded for your access to work.  See the <a data-bs-toggle="collapse" data-bs-parent="#help" href="#getting_started" class="alert-link" aria-expanded="false">getting started guide</a>.</p>
+				<p class="ska-alert ska-alert-info">You will need to have a public key uploaded for your access to work.  See the <a data-bs-toggle="collapse" data-bs-parent="#help" href="#getting_started" class="ska-alert-link" aria-expanded="false">getting started guide</a>.</p>
 			</div>
 		</div>
 	</div>

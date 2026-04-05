@@ -26,7 +26,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 <h1><span class="ska-icon ska-icon-serveraccount" title="Server account"></span> <?php out($this->get('account')->name)?>@<a href="<?php outurl('/servers/'.urlencode($this->get('server')->hostname))?>"><?php out($this->get('server')->hostname)?></a><?php if($this->get('account')->active == 0) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></h1>
 <?php if($this->get('server')->key_management == 'keys') { ?>
 <?php if($this->get('account')->name != 'root' && $this->get('server')->sync_status == 'sync warning') { ?>
-<div class="alert alert-danger">
+<div class="ska-alert ska-alert-danger">
 	<p>Non-root accounts are not being synchronized on this server yet.  See <a href="<?php outurl('/help#sync_setup')?>">the help pages</a> for details of what is required to activate syncing for all accounts.</p>
 </div>
 <?php } else { ?>
@@ -44,7 +44,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 <?php } ?>
 <?php } ?>
 <?php if($this->get('account')->sync_status == 'proposed') { ?>
-<div class="alert alert-info">
+<div class="ska-alert ska-alert-info">
 	The account name <i><?php out($this->get('account')->name) ?></i> is a requested account.  If you reject the access request<?php out(count($this->get('access_requests')) == 1 ? '' : 's')?> below then the account will be removed from the keys system.
 </div>
 <?php } ?>
@@ -179,7 +179,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			</div>
 		</form>
 		<?php } ?>
-		<div class="alert alert-info">
+		<div class="ska-alert ska-alert-info">
 			<strong>Note:</strong> Single access permissions (like in the following two rows) tend to be confusing. You might want to consider setting a group permission (like the last row) instead.<br>You could also group servers together and permit users to access the entire server group.
 		</div>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
@@ -343,7 +343,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 				<span class="ska-icon ska-icon-console"></span> JSON
 			</a>
 		</p>
-		<p class="alert alert-info">Keys added here will be used for <strong>outgoing</strong> connections <em>from</em> this account to any account that it has been granted remote access to.</p>
+		<p class="ska-alert ska-alert-info">Keys added here will be used for <strong>outgoing</strong> connections <em>from</em> this account to any account that it has been granted remote access to.</p>
 		<p>Public keys can be added to an account to facilitate server-to-server access from it to other accounts.</p>
 		<?php if(count($this->get('pubkeys')) == 0) { ?>
 		<p>This account does not have any public keys associated with it.</p>

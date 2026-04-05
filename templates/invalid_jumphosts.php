@@ -16,6 +16,6 @@
 ##
 ?>
 <h1>Invalid jumphost list</h1>
-<div class="alert alert-danger">
+<div class="ska-alert ska-alert-danger">
 <p>The list of jumphosts "<?php out($this->get('jumphosts')) ?>" is syntactically incorrect. Please <a href="" class="navigate-back">go back</a> and try again.</p>
 </div>

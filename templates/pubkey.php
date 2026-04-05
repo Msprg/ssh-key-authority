@@ -52,7 +52,7 @@ $owner = $this->get('pubkey')->owner;
 			<span class="ska-icon ska-icon-console"></span> JSON
 		</a></p>
 		<?php if ($this->get('pubkey')->deletion_date !== null) { ?>
-			<div class="alert alert-danger">This key has been deleted</div>
+			<div class="ska-alert ska-alert-danger">This key has been deleted</div>
 		<?php } ?>
 		<dl>
 			<dt>Key data</dt>

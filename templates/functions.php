@@ -130,10 +130,10 @@ function keygen_help($box_position) {
 				<li>Paste the public key that you just copied into the box <?php out($box_position)?> and click the "Add public key" button.
 				<?php } ?>
 			</ol>
-			<div class="alert alert-info">
+			<div class="ska-alert ska-alert-info">
 				<strong>Note:</strong> if you are not using PuTTY to connect, you may need to export your private key into OpenSSH format to use it. You can do this from the Conversions menu.
 			</div>
-			<div class="alert alert-info">
+			<div class="ska-alert ska-alert-info">
 				<strong>Note:</strong> if you are using Cygwin or MSYS bash, the instructions for Linux can be used instead.
 			</div>
 		</div>
@@ -155,7 +155,7 @@ function keygen_help($box_position) {
 				<li>Open a terminal on your machine
 				<li>
 					Run the following command: <code>ssh-keygen -t rsa -b 4096 -C '<var>comment</var>'</code>, replacing '<var>comment</var>' with your own comment - a good idea is to include your user name and the current date in the comment to make the key easier to identify.
-					<div class="alert alert-info">
+					<div class="ska-alert ska-alert-info">
 						Note: if this command fails with a message of "ssh-keygen: command not found", you need to install the openssh-client package: <code>sudo apt-get install openssh-client</code> on Debian-based systems.
 					</div>
 				<li><strong>Make sure that you give the key a passphrase when prompted.</strong>

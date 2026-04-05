@@ -43,31 +43,31 @@
 	</dl>
 </form>
 <?php if($this->get('server')->ip_address && count($this->get('matching_servers_by_ip')) > 1) { ?>
-<div class="alert alert-danger">
+<div class="ska-alert ska-alert-danger">
 	<p>The hostname <?php out($this->get('server')->hostname)?> resolves to the same IP address as the following:</p>
 	<ul>
 		<?php foreach($this->get('matching_servers_by_ip') as $matched_server) { ?>
 		<?php if($matched_server->hostname != $this->get('server')->hostname) { ?>
-		<li><a href="<?php outurl('/servers/'.urlencode($matched_server->hostname))?>" class="server alert-link"><?php out($matched_server->hostname)?></a></li>
+		<li><a href="<?php outurl('/servers/'.urlencode($matched_server->hostname))?>" class="server ska-alert-link"><?php out($matched_server->hostname)?></a></li>
 		<?php } ?>
 		<?php } ?>
 	</ul>
 </div>
 <?php } ?>
 <?php if($this->get('server')->host_key && count($this->get('matching_servers_by_host_key')) > 1) { ?>
-<div class="alert alert-danger">
+<div class="ska-alert ska-alert-danger">
 	<p>The server has the same SSH host key as the following:</p>
 	<ul>
 		<?php foreach($this->get('matching_servers_by_host_key') as $matched_server) { ?>
 		<?php if($matched_server->hostname != $this->get('server')->hostname) { ?>
-		<li><a href="<?php outurl('/servers/'.urlencode($matched_server->hostname))?>" class="server alert-link"><?php out($matched_server->hostname)?></a></li>
+		<li><a href="<?php outurl('/servers/'.urlencode($matched_server->hostname))?>" class="server ska-alert-link"><?php out($matched_server->hostname)?></a></li>
 		<?php } ?>
 		<?php } ?>
 	</ul>
 </div>
 <?php } ?>
 <?php if ($this->get('server')->key_supervision_error !== null) { ?>
-<div class="alert alert-danger">
+<div class="ska-alert ska-alert-danger">
 	<p>Failed to supervise external keys on this server:</p>
 	<pre><?php out($this->get('server')->key_supervision_error) ?></pre>
 </div>
@@ -198,7 +198,7 @@
 	<div class="ska-tab-pane fade" id="admins" role="tabpanel" aria-labelledby="server_admins_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Server leaders</h2>
 		<?php if(count($this->get('server_admins')) == 0) { ?>
-		<p class="alert alert-danger">This server does not have any leaders assigned.</p>
+		<p class="ska-alert ska-alert-danger">This server does not have any leaders assigned.</p>
 		<?php } else { ?>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
