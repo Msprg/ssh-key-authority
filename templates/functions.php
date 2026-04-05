@@ -107,13 +107,13 @@ function show_event_participant($participant) {
 }
 function keygen_help($box_position) {
 	?>
-	<ul class="ska-tabs" role="tablist">
-		<li class="ska-tab-item active" role="presentation"><a href="#windows_instructions" id="windows_instructions_tab" class="ska-tab-link active" role="tab" data-bs-toggle="tab" aria-controls="windows_instructions" aria-selected="true">Windows</a></li>
-		<li class="ska-tab-item" role="presentation"><a href="#mac_instructions" id="mac_instructions_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="mac_instructions" aria-selected="false" tabindex="-1">Mac</a></li>
-		<li class="ska-tab-item" role="presentation"><a href="#linux_instructions" id="linux_instructions_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="linux_instructions" aria-selected="false" tabindex="-1">Linux</a></li>
+	<ul class="nav nav-tabs" role="tablist">
+		<li class="nav-item" role="presentation"><a href="#windows_instructions" id="windows_instructions_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="windows_instructions" aria-selected="true">Windows</a></li>
+		<li class="nav-item" role="presentation"><a href="#mac_instructions" id="mac_instructions_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="mac_instructions" aria-selected="false" tabindex="-1">Mac</a></li>
+		<li class="nav-item" role="presentation"><a href="#linux_instructions" id="linux_instructions_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="linux_instructions" aria-selected="false" tabindex="-1">Linux</a></li>
 	</ul>
-	<div class="ska-tab-content ska-clearfix">
-		<div class="ska-tab-pane fade active show" id="windows_instructions" role="tabpanel" aria-labelledby="windows_instructions_tab" aria-hidden="false">
+	<div class="tab-content ska-clearfix">
+		<div class="tab-pane fade active show" id="windows_instructions" role="tabpanel" aria-labelledby="windows_instructions_tab" aria-hidden="false">
 				<aside class="ska-float-end"><img src="/putty-key-generator.png" class="ska-rounded ska-img-fluid"></aside>
 			<p>On Windows you will typically use the <a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html">PuTTYgen</a> application to generate your key pair.</p>
 			<ol>
@@ -130,14 +130,14 @@ function keygen_help($box_position) {
 				<li>Paste the public key that you just copied into the box <?php out($box_position)?> and click the "Add public key" button.
 				<?php } ?>
 			</ol>
-			<div class="ska-alert ska-alert-info">
+			<div class="alert alert-info">
 				<strong>Note:</strong> if you are not using PuTTY to connect, you may need to export your private key into OpenSSH format to use it. You can do this from the Conversions menu.
 			</div>
-			<div class="ska-alert ska-alert-info">
+			<div class="alert alert-info">
 				<strong>Note:</strong> if you are using Cygwin or MSYS bash, the instructions for Linux can be used instead.
 			</div>
 		</div>
-		<div class="ska-tab-pane fade" id="mac_instructions" role="tabpanel" aria-labelledby="mac_instructions_tab" aria-hidden="true">
+		<div class="tab-pane fade" id="mac_instructions" role="tabpanel" aria-labelledby="mac_instructions_tab" aria-hidden="true">
 			<p>On Mac you can generate a key pair with the ssh-keygen command.</p>
 			<ol>
 				<li>Start the "Terminal" program.
@@ -149,13 +149,13 @@ function keygen_help($box_position) {
 				<?php } ?>
 			</ol>
 		</div>
-		<div class="ska-tab-pane fade" id="linux_instructions" role="tabpanel" aria-labelledby="linux_instructions_tab" aria-hidden="true">
+		<div class="tab-pane fade" id="linux_instructions" role="tabpanel" aria-labelledby="linux_instructions_tab" aria-hidden="true">
 			<p>On Linux you can generate a key pair with the ssh-keygen command.</p>
 			<ol>
 				<li>Open a terminal on your machine
 				<li>
 					Run the following command: <code>ssh-keygen -t rsa -b 4096 -C '<var>comment</var>'</code>, replacing '<var>comment</var>' with your own comment - a good idea is to include your user name and the current date in the comment to make the key easier to identify.
-					<div class="ska-alert ska-alert-info">
+					<div class="alert alert-info">
 						Note: if this command fails with a message of "ssh-keygen: command not found", you need to install the openssh-client package: <code>sudo apt-get install openssh-client</code> on Debian-based systems.
 					</div>
 				<li><strong>Make sure that you give the key a passphrase when prompted.</strong>

@@ -19,18 +19,16 @@ $admin_mail = $this->get('admin_mail');
 $baseurl = $this->get('baseurl');
 $security_config = $this->get('security_config');
 ?>
-<div class="ska-card-stack" id="help">
+<div class="accordion ska-card-stack" id="help">
 	<h1>Help</h1>
-	<div class="ska-card">
-		<div class="ska-card-header">
-			<h2 class="ska-card-title">
-				<a class="w-full" data-bs-toggle="collapse" data-bs-parent="#help" href="#getting_started" aria-expanded="false">
-					Getting started (Generating an SSH keypair)
-				</a>
-			</h2>
-		</div>
-		<div id="getting_started" class="ska-card-collapse collapse" data-bs-parent="#help" aria-hidden="true">
-			<div class="ska-card-body">
+	<div class="accordion-item">
+		<h2 class="accordion-header">
+			<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#getting_started" aria-expanded="false" aria-controls="getting_started">
+				Getting started (Generating an SSH keypair)
+			</button>
+		</h2>
+		<div id="getting_started" class="accordion-collapse collapse" data-bs-parent="#help" aria-hidden="true">
+			<div class="accordion-body">
 				<h3>Generating an SSH keypair</h3>
 				<?php keygen_help(null) ?>
 				<h3>Uploading a public key</h3>
@@ -38,16 +36,14 @@ $security_config = $this->get('security_config');
 			</div>
 		</div>
 	</div>
-	<div class="ska-card">
-		<div class="ska-card-header">
-			<h2 class="ska-card-title">
-				<a class="w-full" data-bs-toggle="collapse" data-bs-parent="#help" href="#concepts" aria-expanded="false">
-					Concepts
-				</a>
-			</h2>
-		</div>
-		<div id="concepts" class="ska-card-collapse collapse" data-bs-parent="#help" aria-hidden="true">
-			<div class="ska-card-body">
+	<div class="accordion-item">
+		<h2 class="accordion-header">
+			<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#concepts" aria-expanded="false" aria-controls="concepts">
+				Concepts
+			</button>
+		</h2>
+		<div id="concepts" class="accordion-collapse collapse" data-bs-parent="#help" aria-hidden="true">
+			<div class="accordion-body">
 				<h3>Iconography</h3>
 				<p>Most objects that are known by SSH Key Authority are represented by icons:</p>
 				<h4><span class="ska-icon ska-icon-server"></span> Servers</h4>
@@ -61,47 +57,41 @@ $security_config = $this->get('security_config');
 			</div>
 		</div>
 	</div>
-	<div class="ska-card">
-		<div class="ska-card-header">
-			<h2 class="ska-card-title">
-				<a class="w-full" data-bs-toggle="collapse" data-bs-parent="#help" href="#getting_access" aria-expanded="false">
-					Getting access to a server
-				</a>
-			</h2>
-		</div>
-		<div id="getting_access" class="ska-card-collapse collapse" data-bs-parent="#help" aria-hidden="true">
-			<div class="ska-card-body">
+	<div class="accordion-item">
+		<h2 class="accordion-header">
+			<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#getting_access" aria-expanded="false" aria-controls="getting_access">
+				Getting access to a server
+			</button>
+		</h2>
+		<div id="getting_access" class="accordion-collapse collapse" data-bs-parent="#help" aria-hidden="true">
+			<div class="accordion-body">
 				<p>Begin by browsing the <a href="<?php outurl('/servers')?>">server list</a>.  Click on the server that you need access to.</p>
 				<p>You should see a "request access" form, in which you will need to enter the name of the account on the server that you are requesting access for.  For example, if you need access to the <i>root</i> account, then that is what you should enter in this field.</p>
 				<p>Once you have successfully requested access, the designated server leaders will be sent a mail informing them of your request and you will need to wait for one of them to grant your access.</p>
-				<p class="ska-alert ska-alert-info">You will need to have a public key uploaded for your access to work.  See the <a data-bs-toggle="collapse" data-bs-parent="#help" href="#getting_started" class="ska-alert-link" aria-expanded="false">getting started guide</a>.</p>
+				<p class="alert alert-info">You will need to have a public key uploaded for your access to work.  See the <a data-bs-toggle="collapse" data-bs-parent="#help" href="#getting_started" class="alert-link" aria-expanded="false">getting started guide</a>.</p>
 			</div>
 		</div>
 	</div>
-	<div class="ska-card">
-		<div class="ska-card-header">
-			<h2 class="ska-card-title">
-				<a class="w-full" data-bs-toggle="collapse" data-bs-parent="#help" href="#add_server" aria-expanded="false">
-					Adding a server to SSH Key Authority
-				</a>
-			</h2>
-		</div>
-		<div id="add_server" class="ska-card-collapse collapse" data-bs-parent="#help" aria-hidden="true">
-			<div class="ska-card-body">
+	<div class="accordion-item">
+		<h2 class="accordion-header">
+			<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#add_server" aria-expanded="false" aria-controls="add_server">
+				Adding a server to SSH Key Authority
+			</button>
+		</h2>
+		<div id="add_server" class="accordion-collapse collapse" data-bs-parent="#help" aria-hidden="true">
+			<div class="accordion-body">
 				<p>Contact <a href="mailto:<?php out($admin_mail)?>"><?php out($admin_mail)?></a> to have your server(s) added to SSH Key Authority.</p>
 			</div>
 		</div>
 	</div>
-	<div class="ska-card">
-		<div class="ska-card-header">
-			<h2 class="ska-card-title">
-				<a class="w-full" data-bs-toggle="collapse" data-bs-parent="#help" href="#jumphost_format" aria-expanded="false">
-					Jumphost list format
-				</a>
-			</h2>
-		</div>
-		<div id="jumphost_format" class="ska-card-collapse collapse" data-bs-parent="#help" aria-hidden="true">
-			<div class="ska-card-body">
+	<div class="accordion-item">
+		<h2 class="accordion-header">
+			<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#jumphost_format" aria-expanded="false" aria-controls="jumphost_format">
+				Jumphost list format
+			</button>
+		</h2>
+		<div id="jumphost_format" class="accordion-collapse collapse" data-bs-parent="#help" aria-hidden="true">
+			<div class="accordion-body">
 				<p>It is possible to connect to target servers via one or more jumphosts. The hosts must be listed as comma-separated chain, in the order from SSH Key Authority to target server.</p>
 				<p>Each entry has the format user@hostname:port (but the ":port" part is optional).</p>
 				<h3>Example</h3>
@@ -124,16 +114,14 @@ $security_config = $this->get('security_config');
 		</div>
 	</div>
 	<h2>Frequently asked questions</h2>
-	<div class="ska-card">
-		<div class="ska-card-header">
-			<h3 class="ska-card-title">
-				<a class="w-full" data-bs-toggle="collapse" data-bs-parent="#help" href="#sync_error" aria-expanded="false">
-					What does this sync error for my server mean?
-				</a>
-			</h3>
-		</div>
-		<div id="sync_error" class="ska-card-collapse collapse" data-bs-parent="#help" aria-hidden="true">
-			<div class="ska-card-body">
+	<div class="accordion-item">
+		<h3 class="accordion-header">
+			<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sync_error" aria-expanded="false" aria-controls="sync_error">
+				What does this sync error for my server mean?
+			</button>
+		</h3>
+		<div id="sync_error" class="accordion-collapse collapse" data-bs-parent="#help" aria-hidden="true">
+			<div class="accordion-body">
 				<dl class="spaced">
 					<dt>SSH connection failed</dt>
 					<dd>SSH key authority was unable to establish an SSH connection to your server.  This could indicate that the server is offline or otherwise unreachable, or that the SSH server is not running.</dd>
@@ -173,16 +161,14 @@ $security_config = $this->get('security_config');
 			</div>
 		</div>
 	</div>
-	<div class="ska-card">
-		<div class="ska-card-header">
-			<h3 class="ska-card-title">
-				<a class="w-full" data-bs-toggle="collapse" data-bs-parent="#help" href="#sync_warning" aria-expanded="false">
-					What does this sync warning for my server mean?
-				</a>
-			</h3>
-		</div>
-		<div id="sync_warning" class="ska-card-collapse collapse" data-bs-parent="#help" aria-hidden="true">
-			<div class="ska-card-body">
+	<div class="accordion-item">
+		<h3 class="accordion-header">
+			<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sync_warning" aria-expanded="false" aria-controls="sync_warning">
+				What does this sync warning for my server mean?
+			</button>
+		</h3>
+		<div id="sync_warning" class="accordion-collapse collapse" data-bs-parent="#help" aria-hidden="true">
+			<div class="accordion-body">
 				<dl class="spaced">
 					<dt>Key directory does not exist</dt>
 					<dd>Your server has not been set up for <a data-bs-toggle="collapse" data-bs-parent="#help" href="#sync_setup" aria-expanded="false">full account syncing</a>. The <i>root</i> account <strong>is</strong> being synced, but other accounts are not.</dd>
@@ -192,16 +178,14 @@ $security_config = $this->get('security_config');
 			</div>
 		</div>
 	</div>
-	<div class="ska-card">
-		<div class="ska-card-header">
-			<h3 class="ska-card-title">
-				<a class="w-full" data-bs-toggle="collapse" data-bs-parent="#help" href="#sync_setup" aria-expanded="false">
-					How do I set up my server to sync access for all accounts?
-				</a>
-			</h3>
-		</div>
-		<div id="sync_setup" class="ska-card-collapse collapse" data-bs-parent="#help" aria-hidden="true">
-			<div class="ska-card-body">
+	<div class="accordion-item">
+		<h3 class="accordion-header">
+			<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sync_setup" aria-expanded="false" aria-controls="sync_setup">
+				How do I set up my server to sync access for all accounts?
+			</button>
+		</h3>
+		<div id="sync_setup" class="accordion-collapse collapse" data-bs-parent="#help" aria-hidden="true">
+			<div class="accordion-body">
 				<p>Use the following instructions to setup a target server for managing keys via SSH Key Authority:</p>
 				<ol>
 					<li>Create keys-sync account: <code>adduser --system --disabled-password --home /var/local/keys-sync --shell /bin/sh keys-sync</code>
@@ -227,16 +211,14 @@ $security_config = $this->get('security_config');
 			</div>
 		</div>
 	</div>
-	<div class="ska-card">
-		<div class="ska-card-header">
-			<h3 class="ska-card-title">
-				<a class="w-full" data-bs-toggle="collapse" data-bs-parent="#help" href="#grant_access" aria-expanded="false">
-					How do I grant access to an account on my server?
-				</a>
-			</h3>
-		</div>
-		<div id="grant_access" class="ska-card-collapse collapse" data-bs-parent="#help" aria-hidden="true">
-			<div class="ska-card-body">
+	<div class="accordion-item">
+		<h3 class="accordion-header">
+			<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#grant_access" aria-expanded="false" aria-controls="grant_access">
+				How do I grant access to an account on my server?
+			</button>
+		</h3>
+		<div id="grant_access" class="accordion-collapse collapse" data-bs-parent="#help" aria-hidden="true">
+			<div class="accordion-body">
 				<p>For access to accounts by employees:</p>
 				<ol>
 					<li>Go to your server's page (ie. <code><?php out($baseurl)?>/servers/&lt;hostname&gt;</code>).</li>

@@ -95,14 +95,14 @@ TARGET_SERVER=$(smoke_urlencode "$SKA_SMOKE_ACCESS_SERVER_HOSTNAME")
 TARGET_ACCOUNT=$(smoke_urlencode "$SKA_SMOKE_ACCESS_ACCOUNT_NAME")
 TARGET_PATH="/servers/${TARGET_SERVER}/accounts/${TARGET_ACCOUNT}"
 
-smoke_log "Checking help and groups pages for card migration regressions"
+smoke_log "Checking help and groups pages for migration regressions"
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/help" -o "$TMP_DIR/help.html"
 grep -q '>Logout<' "$TMP_DIR/help.html" || smoke_die "Authenticated session was lost while loading help page"
 ! grep -Eq 'panel-group|panel panel-default|panel-heading|panel-title|panel-body|panel-footer|panel-collapse' "$TMP_DIR/help.html" || smoke_die "Help page still renders legacy panel markup"
 ! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/help.html" || smoke_die "Help page still renders legacy glyphicon classes"
 ! grep -Eq "$LEGACY_IN_CLASS_RE" "$TMP_DIR/help.html" || smoke_die "Help page still renders legacy collapse/tab state classes"
-! grep -Eq 'class="[^"]*\\balert\\b|class="[^"]*\\balert-info\\b|class="[^"]*\\balert-warning\\b|class="[^"]*\\balert-danger\\b|class="[^"]*\\balert-success\\b|class="[^"]*\\balert-link\\b' "$TMP_DIR/help.html" || smoke_die "Help page still renders Bootstrap-named alert classes"
-grep -Eq 'class="[^"]*ska-alert[^"]*ska-alert-info' "$TMP_DIR/help.html" || smoke_die "Help page is missing SKA-owned alert classes"
+grep -Eq 'class="[^"]*accordion' "$TMP_DIR/help.html" || smoke_die "Help page is missing Bootstrap 5 accordion classes"
+grep -Eq 'class="[^"]*alert[^"]*alert-info' "$TMP_DIR/help.html" || smoke_die "Help page is missing Bootstrap 5 alert classes"
 
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/groups" -o "$TMP_DIR/groups.html"
 grep -q '>Logout<' "$TMP_DIR/groups.html" || smoke_die "Authenticated session was lost while loading groups page"
@@ -142,6 +142,12 @@ grep -Eq 'class="[^"]*alert[^"]*alert-warning' "$TMP_DIR/bulk-mail-form.html" ||
 grep -Eq 'class="[^"]*form-label' "$TMP_DIR/bulk-mail-form.html" || smoke_die "Bulk mail form is missing Bootstrap 5 form-label classes"
 grep -Eq 'class="[^"]*form-control' "$TMP_DIR/bulk-mail-form.html" || smoke_die "Bulk mail form is missing Bootstrap 5 form-control classes"
 grep -Eq 'class="[^"]*btn[^"]*btn-primary' "$TMP_DIR/bulk-mail-form.html" || smoke_die "Bulk mail form is missing Bootstrap 5 button classes"
+
+curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/help#getting_started" -o "$TMP_DIR/functions.html"
+grep -q '>Logout<' "$TMP_DIR/functions.html" || smoke_die "Authenticated session was lost while loading keygen help tabs"
+grep -Eq 'class="[^"]*nav[^"]*nav-tabs' "$TMP_DIR/functions.html" || smoke_die "Keygen help tabs are missing Bootstrap 5 nav-tab classes"
+grep -Eq 'class="[^"]*tab-content' "$TMP_DIR/functions.html" || smoke_die "Keygen help tabs are missing Bootstrap 5 tab-content classes"
+grep -Eq 'class="[^"]*alert[^"]*alert-info' "$TMP_DIR/functions.html" || smoke_die "Keygen help tabs are missing Bootstrap 5 alert classes"
 
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/servers" -o "$TMP_DIR/servers.html"
 grep -q '>Logout<' "$TMP_DIR/servers.html" || smoke_die "Authenticated session was lost while loading servers page"
