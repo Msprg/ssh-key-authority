@@ -312,20 +312,25 @@ fetch_account_page() {
     grep -q 'name="add_access"' "$output_file" || smoke_die "Authenticated user cannot manage access on '${SKA_SMOKE_ACCESS_ACCOUNT_NAME}@${SKA_SMOKE_ACCESS_SERVER_HOSTNAME}' (add_access form missing)"
     ! grep -Eq "$LEGACY_FORM_GROUP_RE" "$output_file" || smoke_die "Target account page still renders legacy form-group markup"
     ! grep -Eq 'glyphicon-[a-z0-9-]+' "$output_file" || smoke_die "Target account page still renders legacy glyphicon classes"
-    ! grep -Eq 'class="[^"]*\\btable\\b|class="[^"]*\\btable-bordered\\b|class="[^"]*\\btable-striped\\b|class="[^"]*\\btable-hover\\b|class="[^"]*\\btable-sm\\b' "$output_file" || smoke_die "Target account page still renders legacy Bootstrap table classes"
-    ! grep -Eq 'class="nav nav-tabs"|class="[^"]*\\bnav-item\\b|class="[^"]*\\bnav-link\\b|class="tab-content"|class="[^"]*\\btab-pane\\b' "$output_file" || smoke_die "Target account page still renders legacy Bootstrap tab classes"
     ! grep -Eq "$LEGACY_IN_CLASS_RE" "$output_file" || smoke_die "Target account page still renders legacy collapse/tab state classes"
     ! grep -Eq "$LEGACY_LAYOUT_RE" "$output_file" || smoke_die "Target account page still renders Bootstrap-named layout/utility classes"
-    ! grep -Eq "$LEGACY_PRESENTATION_RE" "$output_file" || smoke_die "Target account page still renders Bootstrap-named semantic helper classes"
-! grep -Eq 'class="[^"]*\\binput-group\\b|class="[^"]*\\binput-group-text\\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named input-group classes"
-    ! grep -Eq 'class="[^"]*\\bform-check\\b|class="[^"]*\\bform-check-label\\b|class="[^"]*\\bform-check-input\\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named form-check classes"
+    ! grep -Eq 'class="[^"]*\\btext-center\\b|class="[^"]*\\btext-muted\\b|class="[^"]*\\btext-success\\b|class="[^"]*\\btext-warning\\b|class="[^"]*\\btext-danger\\b|class="[^"]*\\btext-info\\b|class="[^"]*\\brounded\\b|class="[^"]*\\bimg-fluid\\b|class="[^"]*\\bclearfix\\b|class="[^"]*\\bd-xl-none\\b|class="[^"]*\\bh-50px\\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named semantic helper classes"
     ! grep -Eq 'class="[^"]*\\btext-bg-secondary\\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named inactive badge classes"
-    ! grep -Eq 'class="[^"]*\\bform-control\\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named form-control classes"
-    ! grep -Eq 'class="[^"]*\\bbtn\\b|class="[^"]*\\bbtn-primary\\b|class="[^"]*\\bbtn-secondary\\b|class="[^"]*\\bbtn-success\\b|class="[^"]*\\bbtn-danger\\b|class="[^"]*\\bbtn-info\\b|class="[^"]*\\bbtn-sm\\b|class="[^"]*\\bbtn-lg\\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named button classes"
-    ! grep -Eq 'class="[^"]*\\balert\\b|class="[^"]*\\balert-info\\b|class="[^"]*\\balert-warning\\b|class="[^"]*\\balert-danger\\b|class="[^"]*\\balert-success\\b|class="[^"]*\\balert-link\\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named alert classes"
-    grep -Eq 'class="[^"]*ska-form-control' "$output_file" || smoke_die "Target account page is missing SKA-owned form-control classes"
-    grep -Eq 'class="[^"]*ska-btn' "$output_file" || smoke_die "Target account page is missing SKA-owned button classes"
-    grep -Eq 'class="[^"]*ska-alert[^"]*ska-alert-info' "$output_file" || smoke_die "Target account page is missing SKA-owned alert classes"
+    grep -Eq 'class="[^"]*nav[^"]*nav-tabs' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 nav-tab classes"
+    grep -Eq 'class="[^"]*tab-content' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 tab-content classes"
+    grep -Eq 'class="[^"]*table' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 table classes"
+    grep -Eq 'class="[^"]*input-group' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 input-group classes"
+    grep -Eq 'class="[^"]*form-control' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 form-control classes"
+    grep -Eq 'class="[^"]*btn[^"]*btn-primary' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 primary button classes"
+    grep -Eq 'class="[^"]*btn[^"]*btn-secondary' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 secondary button classes"
+    grep -Eq 'class="[^"]*alert[^"]*alert-info' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 info alert classes"
+    if grep -Eq 'name="approve_access"|name="reject_access"' "$output_file"; then
+        grep -Eq 'class="[^"]*btn[^"]*btn-success' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 success button classes"
+        grep -Eq 'class="[^"]*btn[^"]*btn-danger' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 danger button classes"
+    fi
+    if grep -Eq 'name="force"' "$output_file"; then
+        grep -Eq 'class="[^"]*form-check' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 form-check classes"
+    fi
 }
 
 require_post_status_ok() {

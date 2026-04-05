@@ -67,8 +67,8 @@ The main remaining blockers are now page-local CSS- and markup-oriented rather t
 | Groups list `/groups` | `templates/groups.php` | Mixed | Tabs, filter card, group-list table, filter checkboxes, add forms, and action buttons now use native Bootstrap 5 component classes while the page keeps SKA grid/layout wrappers | Remaining blockers are the shared SKA grid/layout wrapper classes and residual content styling |
 | Group detail `/groups/:name` | `templates/group.php` | Mixed | Tabs, member/access/admin/log tables, add/grant flows, administrator controls, alerts, and settings inputs/buttons now use native Bootstrap 5 component classes while the page keeps SKA grid/layout helpers | Remaining blockers are the shared SKA grid/layout wrappers, settings choice styling, and residual content styling |
 | Servers list `/servers` | `templates/servers.php` | Mixed | Tabs, filter card, server-list table, add forms, bulk-action trigger, and info alerts now use native Bootstrap 5 component classes while the page keeps SKA grid/layout/visibility wrappers | Remaining blockers are the shared SKA grid/layout/visibility wrapper classes and residual content styling |
-| Server detail `/servers/:hostname` | `templates/server.php` | Mixed | Local tabs, high-traffic tables, shared grid/form/width/visibility utilities, native settings toggles, modernized settings/contact forms, local note cards, and semantic icon markup | Remaining blockers are content/typography defaults and page-local choice styling |
-| Server account `/servers/:hostname/accounts/:name` | `templates/serveraccount.php` | Mixed | Local tabs, high-traffic tables, shared grid/form/width utilities, native sync polling, modernized access/public-key forms, add-leader flow updated, and semantic icon markup | Remaining blockers are content/typography defaults across secondary panes |
+| Server detail `/servers/:hostname` | `templates/server.php` | Mixed | Tabs, account/admin/log tables, access-request forms, settings/contact controls, and high-traffic action buttons now use native Bootstrap 5 component classes while the page keeps SKA grid/layout/choice wrappers and note-card styling | Remaining blockers are the shared SKA grid/layout/visibility wrappers, settings choice styling, and residual content styling |
+| Server account `/servers/:hostname/accounts/:name` | `templates/serveraccount.php` | Mixed | Tabs, access/public-key/outbound/admin/log tables, access-grant forms, public-key form, alerts, and leader controls now use native Bootstrap 5 component classes while the page keeps SKA grid/layout/width wrappers | Remaining blockers are the shared SKA grid/layout/width wrappers and residual content styling across the secondary panes |
 | Public key admin `/pubkeys` | `templates/pubkeys.php` | Mixed | Public-key tabs, filter card, scan-result cards, filter controls, and main tables now use native Bootstrap 5 tab, card, button, form, input-group, and table classes | Remaining blockers are page-local status styling and the shared SKA grid/layout wrapper classes |
 | Public key detail `/pubkeys/:id` | `templates/pubkey.php` | Mixed | Detail tabs, signature/restriction tables, detail forms, and action buttons now use native Bootstrap 5 tab, table, button, and form classes | Remaining blockers are the higher-level public-key list/admin surfaces and residual content styling |
 | Help `/help` | `templates/help.php` | Bootstrap 5-ready | Help topics now use native Bootstrap 5 accordion and alert classes with the existing native collapse behavior, and `keygen_help()` now renders Bootstrap 5 tab markup | Residual risk is visual-only |
@@ -116,11 +116,11 @@ The next structural work should target those residual page-local assumptions and
 
 ## Recommended Next Slices
 
-1. Continue selective Bootstrap 5 handoff on untargeted secondary pages:
-   - `templates/user_pubkeys.php`
-   - `templates/pubkey.php`
-   - `templates/functions.php`
-   - `templates/help.php`
+1. Continue selective Bootstrap 5 handoff on the remaining mixed detail surfaces:
+   - `templates/user.php`
+   - `templates/access_options.php`
+   - `templates/servers_bulk_action.php`
+   - residual SKA layout/choice wrappers on `templates/group.php`, `templates/server.php`, and `templates/serveraccount.php`
 
 2. Continue shell/content cleanup after structural cleanup:
    - visually recheck untargeted secondary pages under the repo-local baseline

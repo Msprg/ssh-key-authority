@@ -26,7 +26,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 <h1><span class="ska-icon ska-icon-serveraccount" title="Server account"></span> <?php out($this->get('account')->name)?>@<a href="<?php outurl('/servers/'.urlencode($this->get('server')->hostname))?>"><?php out($this->get('server')->hostname)?></a><?php if($this->get('account')->active == 0) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></h1>
 <?php if($this->get('server')->key_management == 'keys') { ?>
 <?php if($this->get('account')->name != 'root' && $this->get('server')->sync_status == 'sync warning') { ?>
-<div class="ska-alert ska-alert-danger">
+<div class="alert alert-danger">
 	<p>Non-root accounts are not being synchronized on this server yet.  See <a href="<?php outurl('/help#sync_setup')?>">the help pages</a> for details of what is required to activate syncing for all accounts.</p>
 </div>
 <?php } else { ?>
@@ -44,24 +44,24 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 <?php } ?>
 <?php } ?>
 <?php if($this->get('account')->sync_status == 'proposed') { ?>
-<div class="ska-alert ska-alert-info">
+<div class="alert alert-info">
 	The account name <i><?php out($this->get('account')->name) ?></i> is a requested account.  If you reject the access request<?php out(count($this->get('access_requests')) == 1 ? '' : 's')?> below then the account will be removed from the keys system.
 </div>
 <?php } ?>
-<ul class="ska-tabs" role="tablist">
+<ul class="nav nav-tabs" role="tablist">
 	<?php if($this->get('server')->key_management == 'keys') { ?>
-	<li class="ska-tab-item active" role="presentation"><a href="#access" id="serveraccount_access_tab" class="ska-tab-link active" role="tab" data-bs-toggle="tab" aria-controls="access" aria-selected="true">Access</a></li>
+	<li class="nav-item" role="presentation"><a href="#access" id="serveraccount_access_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="access" aria-selected="true">Access</a></li>
 	<?php } ?>
-	<li class="ska-tab-item<?php if($this->get('server')->key_management != 'keys') out(' active', ESC_NONE) ?>" role="presentation"><a href="#pubkeys" id="serveraccount_pubkeys_tab" class="ska-tab-link<?php if($this->get('server')->key_management != 'keys') out(' active', ESC_NONE) ?>" role="tab" data-bs-toggle="tab" aria-controls="pubkeys" aria-selected="<?php out($this->get('server')->key_management == 'keys' ? 'false' : 'true') ?>"<?php if($this->get('server')->key_management == 'keys') out(' tabindex="-1"', ESC_NONE) ?>>Public keys</a></li>
-	<li class="ska-tab-item" role="presentation"><a href="#outbound" id="serveraccount_outbound_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="outbound" aria-selected="false" tabindex="-1">Outbound access</a></li>
-	<li class="ska-tab-item" role="presentation"><a href="#admins" id="serveraccount_admins_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="admins" aria-selected="false" tabindex="-1">Leaders</a></li>
-	<li class="ska-tab-item" role="presentation"><a href="#log" id="serveraccount_log_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="log" aria-selected="false" tabindex="-1">Log</a></li>
+	<li class="nav-item" role="presentation"><a href="#pubkeys" id="serveraccount_pubkeys_tab" class="nav-link<?php if($this->get('server')->key_management != 'keys') out(' active', ESC_NONE) ?>" role="tab" data-bs-toggle="tab" aria-controls="pubkeys" aria-selected="<?php out($this->get('server')->key_management == 'keys' ? 'false' : 'true') ?>"<?php if($this->get('server')->key_management == 'keys') out(' tabindex="-1"', ESC_NONE) ?>>Public keys</a></li>
+	<li class="nav-item" role="presentation"><a href="#outbound" id="serveraccount_outbound_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="outbound" aria-selected="false" tabindex="-1">Outbound access</a></li>
+	<li class="nav-item" role="presentation"><a href="#admins" id="serveraccount_admins_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="admins" aria-selected="false" tabindex="-1">Leaders</a></li>
+	<li class="nav-item" role="presentation"><a href="#log" id="serveraccount_log_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="log" aria-selected="false" tabindex="-1">Log</a></li>
 </ul>
 
 <!-- Tab panes -->
-<div class="ska-tab-content">
+<div class="tab-content">
 	<?php if($this->get('server')->key_management == 'keys') { ?>
-	<div class="ska-tab-pane fade active show" id="access" role="tabpanel" aria-labelledby="serveraccount_access_tab" aria-hidden="false">
+	<div class="tab-pane fade active show" id="access" role="tabpanel" aria-labelledby="serveraccount_access_tab" aria-hidden="false">
 		<h2 class="visually-hidden">Access</h2>
 		<?php if(count($this->get('access')) == 0 && count($this->get('access_requests')) == 0) { ?>
 		<p>No-one has been granted access to this account.</p>
@@ -69,7 +69,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-scroll-container">
-				<table class="ska-table ska-table-bordered ska-table-hover">
+				<table class="table table-bordered table-hover">
 					<thead>
 						<tr>
 							<th>Access for</th>
@@ -133,8 +133,8 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 								<?php } ?>
 							</td>
 							<td class="nowrap">
-								<a href="<?php outurl('/servers/'.urlencode($this->get('server')->hostname).'/accounts/'.urlencode($this->get('account')->name))?>/access_rules/<?php out($access->id, ESC_URL)?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-cog"></span> Configure access</a>
-								<button type="submit" name="delete_access" value="<?php out($access->id)?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-ban-circle"></span> Remove access</button>
+								<a href="<?php outurl('/servers/'.urlencode($this->get('server')->hostname).'/accounts/'.urlencode($this->get('account')->name))?>/access_rules/<?php out($access->id, ESC_URL)?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-cog"></span> Configure access</a>
+								<button type="submit" name="delete_access" value="<?php out($access->id)?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-ban-circle"></span> Remove access</button>
 							</td>
 						</tr>
 						<?php } ?>
@@ -169,8 +169,8 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 							<td>Access requested on <span class="date"><?php out($access->request_date) ?></span> by <a href="<?php outurl('/users/'.urlencode($access->requested_by->uid))?>" class="user"><?php out($access->requested_by->uid) ?></a></td>
 							<td></td>
 							<td class="nowrap">
-								<button type="submit" name="approve_access" value="<?php out($access->id)?>" class="ska-btn ska-btn-success ska-btn-sm"><span class="ska-icon ska-icon-ok"></span> Approve</button>
-								<button type="submit" name="reject_access" value="<?php out($access->id)?>" class="ska-btn ska-btn-danger ska-btn-sm"><span class="ska-icon ska-icon-remove"></span> Reject</button>
+								<button type="submit" name="approve_access" value="<?php out($access->id)?>" class="btn btn-success btn-sm"><span class="ska-icon ska-icon-ok"></span> Approve</button>
+								<button type="submit" name="reject_access" value="<?php out($access->id)?>" class="btn btn-danger btn-sm"><span class="ska-icon ska-icon-remove"></span> Reject</button>
 							</td>
 						</tr>
 						<?php } ?>
@@ -179,7 +179,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			</div>
 		</form>
 		<?php } ?>
-		<div class="ska-alert ska-alert-info">
+		<div class="alert alert-info">
 			<strong>Note:</strong> Single access permissions (like in the following two rows) tend to be confusing. You might want to consider setting a group permission (like the last row) instead.<br>You could also group servers together and permit users to access the entire server group.
 		</div>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
@@ -187,9 +187,9 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<h4>Add user to account</h4>
 			<div class="ska-row">
 				<div class="ska-col-md-9 ska-mb-3">
-					<div class="ska-input-group">
-						<span class="ska-input-group-text"><label for="username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
-						<input type="text" id="username" name="username" class="ska-form-control" placeholder="User name" required list="userlist">
+					<div class="input-group">
+						<span class="input-group-text"><label for="username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
+						<input type="text" id="username" name="username" class="form-control" placeholder="User name" required list="userlist">
 						<datalist id="userlist">
 							<?php foreach($this->get('all_users') as $user) { ?>
 							<option value="<?php out($user->uid)?>" label="<?php out($user->name)?>">
@@ -198,7 +198,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 					</div>
 				</div>
 				<div class="ska-col-md-3 ska-mb-3">
-					<button type="submit" name="add_access" value="1" class="ska-btn ska-btn-primary ska-w-100">Add user to account</button>
+					<button type="submit" name="add_access" value="1" class="btn btn-primary ska-w-100">Add user to account</button>
 				</div>
 			</div>
 		</form>
@@ -207,15 +207,15 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<h4>Add server-to-server access to account</h4>
 			<div class="ska-row">
 				<div class="ska-col-md-2 ska-mb-3">
-					<div class="ska-input-group">
-						<span class="ska-input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account name</span></label></span>
-						<input type="text" id="account" name="account" class="ska-form-control" placeholder="Account name" required>
+					<div class="input-group">
+						<span class="input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account name</span></label></span>
+						<input type="text" id="account" name="account" class="form-control" placeholder="Account name" required>
 					</div>
 				</div>
 				<div class="ska-col-md-7 ska-mb-3">
-					<div class="ska-input-group">
-						<span class="ska-input-group-text"><label for="hostname">@</label></span>
-						<input type="text" id="hostname" name="hostname" class="ska-form-control" placeholder="Hostname" required list="serverlist">
+					<div class="input-group">
+						<span class="input-group-text"><label for="hostname">@</label></span>
+						<input type="text" id="hostname" name="hostname" class="form-control" placeholder="Hostname" required list="serverlist">
 						<datalist id="serverlist">
 							<?php foreach($this->get('all_servers') as $server) { ?>
 							<option value="<?php out($server->hostname)?>">
@@ -224,7 +224,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 					</div>
 				</div>
 				<div class="ska-col-md-3 ska-mb-3">
-					<button type="submit" name="add_access" value="1" class="ska-btn ska-btn-primary ska-w-100">Add remote account to this account</button>
+					<button type="submit" name="add_access" value="1" class="btn btn-primary ska-w-100">Add remote account to this account</button>
 				</div>
 			</div>
 		</form>
@@ -233,9 +233,9 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<h4>Add group access to account</h4>
 			<div class="ska-row">
 				<div class="ska-col-md-9 ska-mb-3">
-					<div class="ska-input-group">
-						<span class="ska-input-group-text"><label for="group"><span class="ska-icon ska-icon-group" title="Group"></span><span class="visually-hidden">Group name</span></label></span>
-						<input type="text" id="group" name="group" class="ska-form-control" placeholder="Group name" required list="grouplist">
+					<div class="input-group">
+						<span class="input-group-text"><label for="group"><span class="ska-icon ska-icon-group" title="Group"></span><span class="visually-hidden">Group name</span></label></span>
+						<input type="text" id="group" name="group" class="form-control" placeholder="Group name" required list="grouplist">
 						<datalist id="grouplist">
 							<?php foreach($this->get('all_groups') as $group) { ?>
 							<option value="<?php out($group->name)?>">
@@ -244,7 +244,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 					</div>
 				</div>
 				<div class="ska-col-md-3 ska-mb-3">
-					<button type="submit" name="add_access" value="1" class="ska-btn ska-btn-primary ska-w-100">Add group to this account</button>
+					<button type="submit" name="add_access" value="1" class="btn btn-primary ska-w-100">Add group to this account</button>
 				</div>
 			</div>
 		</form>
@@ -269,7 +269,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			?>
 		<h4><a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="group"><?php out($group->name)?></a></h4>
 		<div class="ska-scroll-container">
-			<table class="ska-table ska-table-bordered ska-table-striped">
+			<table class="table table-bordered table-striped">
 				<thead>
 					<tr>
 						<th colspan="2">Access for</th>
@@ -333,17 +333,17 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 		<?php } ?>
 	</div>
 	<?php } ?>
-	<div class="ska-tab-pane fade<?php if($this->get('server')->key_management != 'keys') out(' active show', ESC_NONE) ?>" id="pubkeys" role="tabpanel" aria-labelledby="serveraccount_pubkeys_tab" aria-hidden="<?php out($this->get('server')->key_management == 'keys' ? 'true' : 'false') ?>">
+	<div class="tab-pane fade<?php if($this->get('server')->key_management != 'keys') out(' active show', ESC_NONE) ?>" id="pubkeys" role="tabpanel" aria-labelledby="serveraccount_pubkeys_tab" aria-hidden="<?php out($this->get('server')->key_management == 'keys' ? 'true' : 'false') ?>">
 		<h2 class="visually-hidden">Public keys</h2>
 		<p>
-			<a href="<?php outurl($this->data->relative_request_url.'/pubkeys.txt')?>" class="ska-btn ska-btn-secondary ska-btn-sm">
+			<a href="<?php outurl($this->data->relative_request_url.'/pubkeys.txt')?>" class="btn btn-secondary btn-sm">
 				<span class="ska-icon ska-icon-console"></span> TXT
 			</a>
-			<a href="<?php outurl($this->data->relative_request_url.'/pubkeys.json')?>" class="ska-btn ska-btn-secondary ska-btn-sm">
+			<a href="<?php outurl($this->data->relative_request_url.'/pubkeys.json')?>" class="btn btn-secondary btn-sm">
 				<span class="ska-icon ska-icon-console"></span> JSON
 			</a>
 		</p>
-		<p class="ska-alert ska-alert-info">Keys added here will be used for <strong>outgoing</strong> connections <em>from</em> this account to any account that it has been granted remote access to.</p>
+		<p class="alert alert-info">Keys added here will be used for <strong>outgoing</strong> connections <em>from</em> this account to any account that it has been granted remote access to.</p>
 		<p>Public keys can be added to an account to facilitate server-to-server access from it to other accounts.</p>
 		<?php if(count($this->get('pubkeys')) == 0) { ?>
 		<p>This account does not have any public keys associated with it.</p>
@@ -351,7 +351,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-scroll-container">
-				<table class="ska-table">
+				<table class="table">
 					<thead>
 						<tr>
 							<th>Type</th>
@@ -384,7 +384,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 								<?php if ($key->deletion_date !== null) { ?>
 									<i class="ska-icon ska-icon-remove"></i> Deleted
 								<?php } else { ?>
-									<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete public key</button>
+									<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete public key</button>
 								<?php } ?>
 							</td>
 						</tr>
@@ -398,24 +398,24 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-mb-3">
 				<label for="add_public_key">Public key</label>
-				<textarea class="ska-form-control" rows="4" id="add_public_key" name="add_public_key" required></textarea>
+				<textarea class="form-control" rows="4" id="add_public_key" name="add_public_key" required></textarea>
 			</div>
 			<?php if($this->get('active_user')->admin) { ?>
-			<div class="ska-form-check ska-mb-3">
-				<label class="ska-form-check-label"><input type="checkbox" class="ska-form-check-input" name="force"> <span>Allow weak (&lt; 4096 bits) key</span></label>
+			<div class="form-check ska-mb-3">
+				<label class="form-check-label"><input type="checkbox" class="form-check-input" name="force"> <span>Allow weak (&lt; 4096 bits) key</span></label>
 			</div>
 			<?php } ?>
-			<div class="ska-mb-3"><button class="ska-btn ska-btn-primary ska-btn-lg ska-w-100">Add public key to account</button></div>
+			<div class="ska-mb-3"><button class="btn btn-primary btn-lg ska-w-100">Add public key to account</button></div>
 		</form>
 	</div>
-	<div class="ska-tab-pane fade" id="outbound" role="tabpanel" aria-labelledby="serveraccount_outbound_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="outbound" role="tabpanel" aria-labelledby="serveraccount_outbound_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Outbound access</h2>
 		<?php if(count($this->get('remote_access')) == 0) { ?>
 		<p>This account has not been granted access to any other resources.</p>
 		<?php } else { ?>
 		<p>This account has access to the following resources:</p>
 		<div class="ska-scroll-container">
-			<table class="ska-table ska-table-bordered ska-table-striped">
+			<table class="table table-bordered table-striped">
 				<thead>
 					<tr>
 						<th colspan="2">Access to</th>
@@ -476,7 +476,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			?>
 		<h4><a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="group"><?php out($group->name)?></a></h4>
 		<div class="ska-scroll-container">
-			<table class="ska-table ska-table-bordered ska-table-striped">
+			<table class="table table-bordered table-striped">
 				<thead>
 					<tr>
 						<th colspan="2">Group has access to</th>
@@ -519,7 +519,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 		<?php } ?>
 		<?php } ?>
 	</div>
-	<div class="ska-tab-pane fade" id="admins" role="tabpanel" aria-labelledby="serveraccount_admins_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="admins" role="tabpanel" aria-labelledby="serveraccount_admins_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Account leaders</h2>
 		<?php if(count($this->get('admins')) == 0) { ?>
 		<p>This account does not have any leaders assigned.</p>
@@ -527,7 +527,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-scroll-container">
-				<table class="ska-table ska-table-bordered ska-table-striped">
+				<table class="table table-bordered table-striped">
 					<thead>
 						<tr>
 							<th>User ID</th>
@@ -544,7 +544,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 							<td><?php out($admin->name); if(!$admin->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 							<?php if($this->get('admin') || $this->get('server_admin')) { ?>
 							<td>
-								<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove leader</button>
+								<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove leader</button>
 							</td>
 							<?php } ?>
 						</tr>
@@ -560,21 +560,21 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<h3>Add leader</h3>
 			<div class="ska-form-group">
 				<label for="user_name" class="visually-hidden">Account name</label>
-				<input type="text" id="user_name" name="user_name" class="ska-form-control" placeholder="User name" required list="userlist">
+				<input type="text" id="user_name" name="user_name" class="form-control" placeholder="User name" required list="userlist">
 				<datalist id="userlist">
 					<?php foreach($this->get('all_users') as $user) { ?>
 					<option value="<?php out($user->uid)?>" label="<?php out($user->name)?>">
 					<?php } ?>
 				</datalist>
 			</div>
-			<button type="submit" name="add_admin" value="1" class="ska-btn ska-btn-primary">Add leader to account</button>
+			<button type="submit" name="add_admin" value="1" class="btn btn-primary">Add leader to account</button>
 		</form>
 		<?php } ?>
 	</div>
-	<div class="ska-tab-pane fade" id="log" role="tabpanel" aria-labelledby="serveraccount_log_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="log" role="tabpanel" aria-labelledby="serveraccount_log_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Log</h2>
 		<div class="ska-scroll-container">
-			<table class="ska-table">
+			<table class="table table-sm">
 				<col></col>
 				<col></col>
 				<col></col>
