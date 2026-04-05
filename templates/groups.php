@@ -31,20 +31,20 @@
 		<div class="ska-card-stack">
 			<div class="card">
 				<div class="card-header">
-					<h3 class="h5 ska-mb-0">
+					<h3 class="h5 mb-0">
 						Filter options
 					</h3>
 				</div>
 					<div class="card-body">
 					<form>
-						<div class="ska-row">
-							<div class="ska-col-sm-4">
-								<div class="ska-mb-3">
+						<div class="row">
+							<div class="col-sm-4">
+								<div class="mb-3">
 									<label for="name-search">Name (<a href="https://mariadb.com/kb/en/mariadb/regular-expressions-overview/">regexp</a>)</label>
 										<input type="text" id="name-search" name="name" class="form-control" value="<?php out($this->get('filter')['name'])?>" autofocus>
 								</div>
 							</div>
-							<div class="ska-col-sm-3">
+							<div class="col-sm-3">
 								<h4>Status</h4>
 								<?php
 								$options = array();
@@ -102,13 +102,13 @@
 		<div class="tab-pane fade" id="add" role="tabpanel" aria-labelledby="groups_add_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Add group</h2>
 		<h3>Create local group</h3>
-		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-inline-form">
+		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="row g-3 align-items-end">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<div class="ska-form-group ska-mb-3">
+			<div class="col-md-4">
 				<label for="name" class="visually-hidden">Group name</label>
 				<input type="text" id="name" name="name" class="form-control" placeholder="Group name" required>
 			</div>
-			<div class="ska-form-group ska-mb-3">
+			<div class="col-md-5">
 				<label for="admin_uid" class="visually-hidden">Administrator</label>
 				<input type="text" size="40" id="admin_uid" name="admin_uid" class="form-control" placeholder="Administrator" required list="userlist">
 				<datalist id="userlist">
@@ -117,16 +117,20 @@
 					<?php } ?>
 				</datalist>
 			</div>
-			<button type="submit" name="add_group" value="1" class="btn btn-primary">Create group</button>
+			<div class="col-md-auto">
+				<button type="submit" name="add_group" value="1" class="btn btn-primary">Create group</button>
+			</div>
 		</form>
 		<h3>Connect ldap group</h3>
-		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-inline-form">
+		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="row g-3 align-items-end">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<div class="ldap-treeview">For the tree-view of ldap groups, javascript is necessary.</div>
-			<div class="ska-form-group ska-mb-3">
+			<div class="ldap-treeview col-12">For the tree-view of ldap groups, javascript is necessary.</div>
+			<div class="col-12">
 				<label for="name" class="visually-hidden">Group name</label>
 			</div>
-			<button type="submit" name="add_ldap_group" value="1" class="btn btn-primary">Connect selected groups</button>
+			<div class="col-md-auto">
+				<button type="submit" name="add_ldap_group" value="1" class="btn btn-primary">Connect selected groups</button>
+			</div>
 		</form>
 	</div>
 	<?php } ?>
