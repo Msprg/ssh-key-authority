@@ -395,8 +395,8 @@ foreach($this->get('group_members') as $member) {
 			<div class="ska-setting-row">
 				<div class="ska-setting-label">Group status</div>
 				<div class="ska-setting-control ska-choice-list">
-					<label class="ska-choice text-success"><input type="radio" name="active" value="1"<?php if($this->get('group')->active == 1) out(' checked') ?>> <span>Enabled</span></label>
-					<label class="ska-choice text-danger"><input type="radio" name="active" value="0"<?php if($this->get('group')->active == 0) out(' checked') ?>> <span>Disabled</span></label>
+					<label class="ska-choice ska-text-success"><input type="radio" name="active" value="1"<?php if($this->get('group')->active == 1) out(' checked') ?>> <span>Enabled</span></label>
+					<label class="ska-choice ska-text-danger"><input type="radio" name="active" value="0"<?php if($this->get('group')->active == 0) out(' checked') ?>> <span>Disabled</span></label>
 				</div>
 			</div>
 			<div class="ska-setting-actions">

@@ -270,7 +270,7 @@
 				<div class="ska-setting-label">User status</div>
 				<div class="ska-setting-control ska-choice-list">
 					<label class="ska-choice"><input type="radio" name="force_disable" value="0"<?php if(!$this->get('user')->force_disable) out(' checked') ?>> <span>Use status from LDAP</span></label>
-					<label class="ska-choice text-danger"><input type="radio" name="force_disable" value="1"<?php if($this->get('user')->force_disable) out(' checked') ?>> <span>Disable account (override LDAP)</span></label>
+					<label class="ska-choice ska-text-danger"><input type="radio" name="force_disable" value="1"<?php if($this->get('user')->force_disable) out(' checked') ?>> <span>Disable account (override LDAP)</span></label>
 				</div>
 			</div>
 			<div class="ska-setting-actions">

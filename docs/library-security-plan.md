@@ -66,7 +66,8 @@ Completed work:
 - repo-local form/input-group styling in [public_html/style.css](/var/www/ska/public_html/style.css) for the live `form-group`, `form-control`, and `input-group` classes used by the busiest forms, plus migration of active templates to local `ska-form-group` wrappers
 - repo-local base typography/content, badge, and collapse-state styling in [public_html/style.css](/var/www/ska/public_html/style.css), allowing the app shell to render without Bootstrap CSS
 - retirement of the Bootstrap 3-only `in` state marker from active tabs/collapses in templates and native runtime code
-- Bootstrap handoff prep via repo-local aliases such as `ska-btn*`, `ska-alert*`, `ska-form-label`, `ska-form-control`, `ska-input-group*`, `ska-form-check*`, and `ska-badge*`, reducing future class-family conflicts when real Bootstrap 5 CSS is introduced; the busiest list/detail forms, actions, and alerts now use `ska-form-control`, `ska-btn*`, and `ska-alert*`
+- Bootstrap handoff prep via repo-local aliases such as `ska-btn*`, `ska-alert*`, `ska-form-label`, `ska-form-control`, `ska-input-group*`, `ska-form-check*`, `ska-badge*`, `ska-text-*`, `ska-rounded`, `ska-img-fluid`, and `ska-d-xl-none`, reducing future class-family conflicts when real Bootstrap 5 CSS is introduced
+- runtime-generated DOM in [public_html/extra.js](/var/www/ska/public_html/extra.js) and view-emitted alert links now use the same `ska-*` families, shrinking overlap beyond static templates
 - native replacements for the local jQuery form helpers and sync polling
 - removal of runtime `bootstrap.min.css`, `bootstrap.min.js`, jQuery, and `bootstrap5-compat.js`
 - smoke assertions that authenticated pages do not load those assets

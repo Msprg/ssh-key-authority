@@ -25,6 +25,8 @@ LEGACY_CARET_RE='class="caret([[:space:]]|")|class="[^"]+[[:space:]]caret([[:spa
 LEGACY_IN_CLASS_RE='class="in([[:space:]]|")|class="[^"]+[[:space:]]in([[:space:]]|")'
 LEGACY_LAYOUT_TOKENS='container|row|col-sm-[0-9]+|col-md-[0-9]+|text-muted|w-100|mb-0|mb-1|mb-3|mb-4|mt-3|d-none|float-end|invisible'
 LEGACY_LAYOUT_RE="class=\"(${LEGACY_LAYOUT_TOKENS})([[:space:]]|\")|class=\"[^\"]+[[:space:]](${LEGACY_LAYOUT_TOKENS})([[:space:]]|\")"
+LEGACY_PRESENTATION_TOKENS='text-center|text-muted|text-success|text-warning|text-danger|text-info|rounded|img-fluid|clearfix|d-xl-none|h-50px|alert-link'
+LEGACY_PRESENTATION_RE="class=\"(${LEGACY_PRESENTATION_TOKENS})([[:space:]]|\")|class=\"[^\"]+[[:space:]](${LEGACY_PRESENTATION_TOKENS})([[:space:]]|\")"
 
 cleanup() {
     smoke_cleanup_dir "$TMP_DIR"
@@ -39,6 +41,7 @@ LOGIN_CSRF=$(smoke_extract_csrf "$TMP_DIR/login.html")
 grep -Eq 'class="[^"]*ska-form-control' "$TMP_DIR/login.html" || smoke_die "Login page is missing SKA-owned form-control classes"
 grep -Eq 'class="[^"]*ska-form-label' "$TMP_DIR/login.html" || smoke_die "Login page is missing SKA-owned form-label classes"
 ! grep -Eq "$LEGACY_LAYOUT_RE" "$TMP_DIR/login.html" || smoke_die "Login page still renders Bootstrap-named layout/utility classes"
+! grep -Eq "$LEGACY_PRESENTATION_RE" "$TMP_DIR/login.html" || smoke_die "Login page still renders Bootstrap-named semantic helper classes"
 
 smoke_log "Executing LDAP login flow"
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" \
@@ -57,6 +60,7 @@ grep -q '>Logout<' "$TMP_DIR/post-login.html" || smoke_die "Login failed or did 
 ! grep -Eq '\bsr-only\b|\bhidden-xl\b' "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell still renders Bootstrap 3 visibility helper classes"
 ! grep -Eq "$LEGACY_DROPDOWN_RE" "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell still renders legacy dropdown helper classes"
 grep -q 'data-bs-toggle="dropdown"' "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell is missing Bootstrap 5 dropdown markup"
+! grep -Eq "$LEGACY_PRESENTATION_RE" "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell still renders Bootstrap-named semantic helper classes"
 
 smoke_log "Adding and deleting a public key for logged-in user"
 KEY_COMMENT="ska-smoke-$(date +%s)"
@@ -77,6 +81,7 @@ HOME_CSRF=$(smoke_extract_csrf "$TMP_DIR/home-before-key.html")
 ! grep -Eq 'class="[^"]*\\bhidden\\b' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders the legacy hidden helper class"
 ! grep -Eq 'class="[^"]*\\btable\\b|class="[^"]*\\btable-bordered\\b|class="[^"]*\\btable-striped\\b|class="[^"]*\\btable-hover\\b|class="[^"]*\\btable-sm\\b' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders legacy Bootstrap table classes"
 ! grep -Eq "$LEGACY_LAYOUT_RE" "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders Bootstrap-named layout/utility classes"
+! grep -Eq "$LEGACY_PRESENTATION_RE" "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders Bootstrap-named semantic helper classes"
 ! grep -Eq 'class="[^"]*\\btext-bg-secondary\\b' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders Bootstrap-named inactive badge classes"
 ! grep -Eq 'class="[^"]*\\bform-control\\b' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders Bootstrap-named form-control classes"
 ! grep -Eq 'class="[^"]*\\bbtn\\b|class="[^"]*\\bbtn-primary\\b|class="[^"]*\\bbtn-secondary\\b|class="[^"]*\\bbtn-success\\b|class="[^"]*\\bbtn-danger\\b|class="[^"]*\\bbtn-info\\b|class="[^"]*\\bbtn-sm\\b|class="[^"]*\\bbtn-lg\\b' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders Bootstrap-named button classes"
@@ -105,6 +110,7 @@ grep -q '>Logout<' "$TMP_DIR/groups.html" || smoke_die "Authenticated session wa
 ! grep -Eq 'class="nav nav-tabs"|class="[^"]*\\bnav-item\\b|class="[^"]*\\bnav-link\\b|class="tab-content"|class="[^"]*\\btab-pane\\b' "$TMP_DIR/groups.html" || smoke_die "Groups page still renders legacy Bootstrap tab classes"
 ! grep -Eq "$LEGACY_IN_CLASS_RE" "$TMP_DIR/groups.html" || smoke_die "Groups page still renders legacy collapse/tab state classes"
 ! grep -Eq "$LEGACY_LAYOUT_RE" "$TMP_DIR/groups.html" || smoke_die "Groups page still renders Bootstrap-named layout/utility classes"
+! grep -Eq "$LEGACY_PRESENTATION_RE" "$TMP_DIR/groups.html" || smoke_die "Groups page still renders Bootstrap-named semantic helper classes"
 ! grep -Eq 'class="[^"]*\\bform-control\\b' "$TMP_DIR/groups.html" || smoke_die "Groups page still renders Bootstrap-named form-control classes"
 ! grep -Eq 'class="[^"]*\\bbtn\\b|class="[^"]*\\bbtn-primary\\b|class="[^"]*\\bbtn-secondary\\b|class="[^"]*\\bbtn-success\\b|class="[^"]*\\bbtn-danger\\b|class="[^"]*\\bbtn-info\\b|class="[^"]*\\bbtn-sm\\b|class="[^"]*\\bbtn-lg\\b' "$TMP_DIR/groups.html" || smoke_die "Groups page still renders Bootstrap-named button classes"
 ! grep -Eq 'class="[^"]*\\bform-check\\b|class="[^"]*\\bform-check-label\\b|class="[^"]*\\bform-check-input\\b' "$TMP_DIR/groups.html" || smoke_die "Groups page still renders Bootstrap-named form-check classes"
@@ -121,6 +127,7 @@ grep -q '>Logout<' "$TMP_DIR/servers.html" || smoke_die "Authenticated session w
 ! grep -Eq 'class="nav nav-tabs"|class="[^"]*\\bnav-item\\b|class="[^"]*\\bnav-link\\b|class="tab-content"|class="[^"]*\\btab-pane\\b' "$TMP_DIR/servers.html" || smoke_die "Servers page still renders legacy Bootstrap tab classes"
 ! grep -Eq "$LEGACY_IN_CLASS_RE" "$TMP_DIR/servers.html" || smoke_die "Servers page still renders legacy collapse/tab state classes"
 ! grep -Eq "$LEGACY_LAYOUT_RE" "$TMP_DIR/servers.html" || smoke_die "Servers page still renders Bootstrap-named layout/utility classes"
+! grep -Eq "$LEGACY_PRESENTATION_RE" "$TMP_DIR/servers.html" || smoke_die "Servers page still renders Bootstrap-named semantic helper classes"
 ! grep -Eq 'class="[^"]*\\bform-check\\b|class="[^"]*\\bform-check-label\\b|class="[^"]*\\bform-check-input\\b' "$TMP_DIR/servers.html" || smoke_die "Servers page still renders Bootstrap-named form-check classes"
 ! grep -Eq 'class="[^"]*\\btext-bg-secondary\\b' "$TMP_DIR/servers.html" || smoke_die "Servers page still renders Bootstrap-named inactive badge classes"
 ! grep -Eq 'class="[^"]*\\bform-control\\b' "$TMP_DIR/servers.html" || smoke_die "Servers page still renders Bootstrap-named form-control classes"
@@ -141,6 +148,7 @@ grep -q '>Logout<' "$TMP_DIR/server.html" || smoke_die "Authenticated session wa
 ! grep -Eq 'class="nav nav-tabs"|class="[^"]*\\bnav-item\\b|class="[^"]*\\bnav-link\\b|class="tab-content"|class="[^"]*\\btab-pane\\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders legacy Bootstrap tab classes"
 ! grep -Eq "$LEGACY_IN_CLASS_RE" "$TMP_DIR/server.html" || smoke_die "Target server page still renders legacy collapse/tab state classes"
 ! grep -Eq "$LEGACY_LAYOUT_RE" "$TMP_DIR/server.html" || smoke_die "Target server page still renders Bootstrap-named layout/utility classes"
+! grep -Eq "$LEGACY_PRESENTATION_RE" "$TMP_DIR/server.html" || smoke_die "Target server page still renders Bootstrap-named semantic helper classes"
 ! grep -Eq 'class="[^"]*\\binput-group\\b|class="[^"]*\\binput-group-text\\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders Bootstrap-named input-group classes"
 ! grep -Eq 'class="[^"]*\\bform-check\\b|class="[^"]*\\bform-check-label\\b|class="[^"]*\\bform-check-input\\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders Bootstrap-named form-check classes"
 ! grep -Eq 'class="[^"]*\\btext-bg-secondary\\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders Bootstrap-named inactive badge classes"
@@ -150,6 +158,10 @@ grep -Eq 'class="[^"]*ska-form-control' "$TMP_DIR/server.html" || smoke_die "Tar
 grep -Eq 'class="[^"]*ska-btn' "$TMP_DIR/server.html" || smoke_die "Target server page is missing SKA-owned button classes"
 
 TARGET_USER=$(smoke_urlencode "$SKA_SMOKE_USERNAME")
+curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/users" -o "$TMP_DIR/users.html"
+grep -q '>Logout<' "$TMP_DIR/users.html" || smoke_die "Authenticated session was lost while loading users page"
+! grep -Eq "$LEGACY_PRESENTATION_RE" "$TMP_DIR/users.html" || smoke_die "Users page still renders Bootstrap-named semantic helper classes"
+
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/users/${TARGET_USER}" -o "$TMP_DIR/user.html"
 grep -q '>Logout<' "$TMP_DIR/user.html" || smoke_die "Authenticated session was lost while loading target user page"
 ! grep -Eq "form-inline|form-horizontal|control-label|col-sm-offset-|help-block|<div class=\"checkbox|<div class=\"radio|\\bsr-only\\b|$LEGACY_FORM_GROUP_RE" "$TMP_DIR/user.html" || smoke_die "Target user page still renders legacy Bootstrap 3 form helpers"
@@ -160,10 +172,12 @@ grep -q '>Logout<' "$TMP_DIR/user.html" || smoke_die "Authenticated session was 
 ! grep -Eq 'class="[^"]*\\btext-bg-secondary\\b' "$TMP_DIR/user.html" || smoke_die "Target user page still renders Bootstrap-named inactive badge classes"
 ! grep -Eq 'class="[^"]*\\bbtn\\b|class="[^"]*\\bbtn-primary\\b|class="[^"]*\\bbtn-secondary\\b|class="[^"]*\\bbtn-success\\b|class="[^"]*\\bbtn-danger\\b|class="[^"]*\\bbtn-info\\b|class="[^"]*\\bbtn-sm\\b|class="[^"]*\\bbtn-lg\\b' "$TMP_DIR/user.html" || smoke_die "Target user page still renders Bootstrap-named button classes"
 grep -Eq 'class="[^"]*ska-btn' "$TMP_DIR/user.html" || smoke_die "Target user page is missing SKA-owned button classes"
+! grep -Eq "$LEGACY_PRESENTATION_RE" "$TMP_DIR/user.html" || smoke_die "Target user page still renders Bootstrap-named semantic helper classes"
 
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/bulk_mail/server_admins" -o "$TMP_DIR/bulk-mail.html"
 grep -q '>Logout<' "$TMP_DIR/bulk-mail.html" || smoke_die "Authenticated session was lost while loading bulk mail page"
 ! grep -Eq "$LEGACY_LAYOUT_RE" "$TMP_DIR/bulk-mail.html" || smoke_die "Bulk mail page still renders Bootstrap-named layout/utility classes"
+! grep -Eq "$LEGACY_PRESENTATION_RE" "$TMP_DIR/bulk-mail.html" || smoke_die "Bulk mail page still renders Bootstrap-named semantic helper classes"
 grep -Eq 'class="[^"]*ska-alert[^"]*ska-alert-warning' "$TMP_DIR/bulk-mail.html" || smoke_die "Bulk mail page is missing SKA-owned alert classes"
 grep -Eq 'class="[^"]*ska-form-control' "$TMP_DIR/bulk-mail.html" || smoke_die "Bulk mail page is missing SKA-owned form-control classes"
 grep -Eq 'class="[^"]*ska-btn[^"]*ska-btn-primary' "$TMP_DIR/bulk-mail.html" || smoke_die "Bulk mail page is missing SKA-owned button classes"
@@ -171,6 +185,7 @@ grep -Eq 'class="[^"]*ska-btn[^"]*ska-btn-primary' "$TMP_DIR/bulk-mail.html" || 
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/pubkeys" -o "$TMP_DIR/pubkeys.html"
 grep -q '>Logout<' "$TMP_DIR/pubkeys.html" || smoke_die "Authenticated session was lost while loading public keys page"
 ! grep -Eq "$LEGACY_LAYOUT_RE" "$TMP_DIR/pubkeys.html" || smoke_die "Public keys page still renders Bootstrap-named layout/utility classes"
+! grep -Eq "$LEGACY_PRESENTATION_RE" "$TMP_DIR/pubkeys.html" || smoke_die "Public keys page still renders Bootstrap-named semantic helper classes"
 ! grep -Eq 'class="[^"]*\\bform-control\\b' "$TMP_DIR/pubkeys.html" || smoke_die "Public keys page still renders Bootstrap-named form-control classes"
 grep -Eq 'class="[^"]*ska-form-control' "$TMP_DIR/pubkeys.html" || smoke_die "Public keys page is missing SKA-owned form-control classes"
 
@@ -220,6 +235,7 @@ fetch_account_page() {
     ! grep -Eq 'class="nav nav-tabs"|class="[^"]*\\bnav-item\\b|class="[^"]*\\bnav-link\\b|class="tab-content"|class="[^"]*\\btab-pane\\b' "$output_file" || smoke_die "Target account page still renders legacy Bootstrap tab classes"
     ! grep -Eq "$LEGACY_IN_CLASS_RE" "$output_file" || smoke_die "Target account page still renders legacy collapse/tab state classes"
     ! grep -Eq "$LEGACY_LAYOUT_RE" "$output_file" || smoke_die "Target account page still renders Bootstrap-named layout/utility classes"
+    ! grep -Eq "$LEGACY_PRESENTATION_RE" "$output_file" || smoke_die "Target account page still renders Bootstrap-named semantic helper classes"
 ! grep -Eq 'class="[^"]*\\binput-group\\b|class="[^"]*\\binput-group-text\\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named input-group classes"
     ! grep -Eq 'class="[^"]*\\bform-check\\b|class="[^"]*\\bform-check-label\\b|class="[^"]*\\bform-check-input\\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named form-check classes"
     ! grep -Eq 'class="[^"]*\\btext-bg-secondary\\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named inactive badge classes"
@@ -291,6 +307,7 @@ grep -q '>Logout<' "$TMP_DIR/access-options.html" || smoke_die "Authenticated se
 ! grep -Eq "$LEGACY_FORM_GROUP_RE" "$TMP_DIR/access-options.html" || smoke_die "Access options page still renders legacy form-group markup"
 ! grep -Eq "$LEGACY_CARET_RE" "$TMP_DIR/access-options.html" || smoke_die "Access options page still renders legacy caret markup"
 ! grep -Eq "$LEGACY_LAYOUT_RE" "$TMP_DIR/access-options.html" || smoke_die "Access options page still renders Bootstrap-named layout/utility classes"
+! grep -Eq "$LEGACY_PRESENTATION_RE" "$TMP_DIR/access-options.html" || smoke_die "Access options page still renders Bootstrap-named semantic helper classes"
 ! grep -Eq 'class="[^"]*\\bform-check\\b|class="[^"]*\\bform-check-label\\b|class="[^"]*\\bform-check-input\\b' "$TMP_DIR/access-options.html" || smoke_die "Access options page still renders Bootstrap-named form-check classes"
 ! grep -Eq 'class="[^"]*\\bform-control\\b' "$TMP_DIR/access-options.html" || smoke_die "Access options page still renders Bootstrap-named form-control classes"
 ! grep -Eq 'class="[^"]*\\bbtn\\b|class="[^"]*\\bbtn-primary\\b|class="[^"]*\\bbtn-secondary\\b|class="[^"]*\\bbtn-success\\b|class="[^"]*\\bbtn-danger\\b|class="[^"]*\\bbtn-info\\b|class="[^"]*\\bbtn-sm\\b|class="[^"]*\\bbtn-lg\\b' "$TMP_DIR/access-options.html" || smoke_die "Access options page still renders Bootstrap-named button classes"

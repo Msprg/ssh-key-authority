@@ -294,16 +294,16 @@
 			<div class="ska-setting-row">
 				<div class="ska-setting-label">Key management</div>
 				<div class="ska-setting-control ska-choice-list">
-					<label class="ska-choice text-success"><input type="radio" name="key_management" value="keys"<?php if($this->get('server')->key_management == 'keys') out(' checked') ?>> <span>SSH keys managed and synced by SSH Key Authority</span></label>
-					<label class="ska-choice text-warning"><input type="radio" name="key_management" value="none"<?php if($this->get('server')->key_management == 'none') out(' checked') ?>> <span>Disabled - server has no key management</span></label>
+					<label class="ska-choice ska-text-success"><input type="radio" name="key_management" value="keys"<?php if($this->get('server')->key_management == 'keys') out(' checked') ?>> <span>SSH keys managed and synced by SSH Key Authority</span></label>
+					<label class="ska-choice ska-text-warning"><input type="radio" name="key_management" value="none"<?php if($this->get('server')->key_management == 'none') out(' checked') ?>> <span>Disabled - server has no key management</span></label>
 					<label class="ska-choice"><input type="radio" name="key_management" value="other"<?php if($this->get('server')->key_management == 'other') out(' checked') ?>> <span>Disabled - SSH keys managed by another system</span></label>
-					<label class="ska-choice text-danger"><input type="radio" name="key_management" value="decommissioned"<?php if($this->get('server')->key_management == 'decommissioned') out(' checked') ?>> <span>Disabled - server has been decommissioned (remove all user access keys)</span></label>
+					<label class="ska-choice ska-text-danger"><input type="radio" name="key_management" value="decommissioned"<?php if($this->get('server')->key_management == 'decommissioned') out(' checked') ?>> <span>Disabled - server has been decommissioned (remove all user access keys)</span></label>
 				</div>
 			</div>
 			<div class="ska-setting-row" id="supervision">
 				<div class="ska-setting-label">Key supervision</div>
 				<div class="ska-setting-control ska-choice-list">
-					<label class="ska-choice text-success"><input type="radio" name="key_scan" value="full"<?php if($this->get('server')->key_scan == 'full') out(' checked') ?>> <span>Scan keys of root and all user accounts</span></label>
+					<label class="ska-choice ska-text-success"><input type="radio" name="key_scan" value="full"<?php if($this->get('server')->key_scan == 'full') out(' checked') ?>> <span>Scan keys of root and all user accounts</span></label>
 					<label class="ska-choice"><input type="radio" name="key_scan" value="rootonly"<?php if($this->get('server')->key_scan == 'rootonly') out(' checked') ?>> <span>Scan only keys of the root account, no other user accounts</span></label>
 					<label class="ska-choice"><input type="radio" name="key_scan" value="off"<?php if($this->get('server')->key_scan == 'off') out(' checked') ?>> <span>Disabled - Do not scan any keys</span></label>
 				</div>
@@ -678,13 +678,13 @@
 				</th>
 				<td rowspan="<?php out(max(1, count($access_list)))?>">
 					<?php if($account->sync_is_pending()) { ?>
-					<span class="text-warning">Pending</span>
+					<span class="ska-text-warning">Pending</span>
 					<?php } elseif($this->get('server')->sync_status == 'sync success' || ($account->name == 'root' && $this->get('server')->sync_status == 'sync warning')) { ?>
-					<span class="text-success">Synced</span>
+					<span class="ska-text-success">Synced</span>
 					<?php } elseif($this->get('server')->sync_status == 'sync warning') { ?>
-					<span class="text-warning">Not synced</span>
+					<span class="ska-text-warning">Not synced</span>
 					<?php } elseif($this->get('server')->sync_status == 'sync failure') { ?>
-					<span class="text-danger">Failed</span>
+					<span class="ska-text-danger">Failed</span>
 					<?php } ?>
 				</td>
 				<td rowspan="<?php out(max(1, count($access_list)))?>">

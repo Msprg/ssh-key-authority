@@ -1150,8 +1150,7 @@ fieldset[disabled] .btn {
 	border-color: #ebccd1;
 }
 
-.ska-alert-link,
-.alert-link {
+.ska-alert-link {
 	font-weight: 700;
 }
 
@@ -1160,19 +1159,25 @@ fieldset[disabled] .btn {
 	display: none !important;
 }
 
-.img-fluid {
+.ska-img-fluid {
 	display: block;
 	max-width: 100%;
 	height: auto;
 }
 
-.rounded {
+.ska-rounded {
 	border-radius: 6px;
 }
 
 .ska-w-100,
 .w-100 {
 	width: 100% !important;
+}
+
+.ska-clearfix::after {
+	display: block;
+	clear: both;
+	content: "";
 }
 
 .ska-badge-muted,
@@ -1195,25 +1200,28 @@ fieldset[disabled] .btn {
 	border-radius: 10px;
 }
 
-.text-center {
+.ska-text-center {
 	text-align: center;
 }
 
-.ska-text-muted,
-.text-muted {
+.ska-text-muted {
 	color: #777;
 }
 
-.text-success {
+.ska-text-success {
 	color: #3c763d;
 }
 
-.text-warning {
+.ska-text-warning {
 	color: #8a6d3b;
 }
 
-.text-danger {
+.ska-text-danger {
 	color: #a94442;
+}
+
+.ska-text-info {
+	color: #31708f;
 }
 
 /* ===== UTILITY CLASSES ===== */
@@ -1298,7 +1306,7 @@ code {
 }
 
 /* ===== SKA CUSTOM UI COMPONENTS ===== */
-.h-50px {
+.ska-h-50px {
 	height: 50px;
 }
 
@@ -1744,7 +1752,7 @@ fieldset[disabled] .form-control {
 }
 
 @media (min-width: 1200px) {
-	.d-xl-none {
+	.ska-d-xl-none {
 		display: none !important;
 	}
 }

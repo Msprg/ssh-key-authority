@@ -50,7 +50,7 @@ function show_dynamic_element(element, animate) {
 	}
 
 	clear_dynamic_animation(element);
-	element.classList.remove('hide', 'hidden', 'd-none');
+	element.classList.remove('ska-hide', 'hide', 'hidden', 'ska-d-none', 'd-none');
 	if(!animate) {
 		element.style.display = '';
 		element.style.removeProperty('height');
@@ -83,7 +83,7 @@ function hide_dynamic_element(element, animate) {
 	}
 
 	clear_dynamic_animation(element);
-	element.classList.remove('hide', 'hidden', 'd-none');
+	element.classList.remove('ska-hide', 'hide', 'hidden', 'ska-d-none', 'd-none');
 	if(!animate) {
 		element.style.display = 'none';
 		element.style.removeProperty('height');
@@ -699,14 +699,14 @@ dom_ready(function() {
 		}
 	});
 
-	var helpButtons = addKeyForm.querySelectorAll('[data-action="toggle-help"], button[type="button"].btn-info');
+	var helpButtons = addKeyForm.querySelectorAll('[data-action="toggle-help"]');
 	for(var i = 0; i < helpButtons.length; i++) {
 		helpButtons[i].addEventListener('click', function() {
 			toggle_dynamic_element(help);
 		});
 	}
 
-	var cancelButtons = addKeyForm.querySelectorAll('[data-action="cancel-add-key"], button[type="button"].btn-secondary');
+	var cancelButtons = addKeyForm.querySelectorAll('[data-action="cancel-add-key"]');
 	for(var j = 0; j < cancelButtons.length; j++) {
 		cancelButtons[j].addEventListener('click', function() {
 			hide_dynamic_element(addKeyForm, true);
@@ -920,7 +920,7 @@ dom_ready(function() {
 			var input = document.createElement('input');
 			input.type = 'text';
 			input.name = 'reassign_to';
-			input.className = 'form-control';
+			input.className = 'ska-form-control';
 			label.appendChild(input);
 			reassignWrapper.appendChild(label);
 			parent.appendChild(reassignWrapper);
@@ -930,7 +930,7 @@ dom_ready(function() {
 			var submitButton = document.createElement('button');
 			submitButton.type = 'submit';
 			submitButton.name = 'reassign_servers';
-			submitButton.className = 'btn btn-primary';
+			submitButton.className = 'ska-btn ska-btn-primary';
 			submitButton.textContent = 'Reassign selected servers';
 			submitWrapper.appendChild(submitButton);
 			parent.appendChild(submitWrapper);
@@ -945,8 +945,8 @@ function set_status_text(element, classname, message) {
 		return;
 	}
 
-	element.classList.remove('text-success', 'text-warning', 'text-danger', 'text-info');
-	element.classList.add('text-' + classname);
+	element.classList.remove('ska-text-success', 'ska-text-warning', 'ska-text-danger', 'ska-text-info', 'text-success', 'text-warning', 'text-danger', 'text-info');
+	element.classList.add('ska-text-' + classname);
 	element.textContent = message;
 }
 
@@ -995,9 +995,9 @@ dom_ready(function() {
 		set_status_text(statusSpan, classname, message);
 		if(explainLink) {
 			if(classname === 'success') {
-				explainLink.classList.add('d-none');
+				explainLink.classList.add('ska-d-none');
 			} else {
-				explainLink.classList.remove('d-none');
+				explainLink.classList.remove('ska-d-none');
 				if(classname === 'warning') {
 					explainLink.href = '/help#sync_warning';
 				}
@@ -1011,7 +1011,7 @@ dom_ready(function() {
 			spinner = null;
 		}
 		if(syncButton) {
-			syncButton.classList.remove('invisible');
+			syncButton.classList.remove('ska-invisible');
 		}
 	}
 
@@ -1134,7 +1134,7 @@ dom_ready(function() {
 		}
 
 		serverAdmin.value = '';
-		serverAdmins.classList.remove('d-none');
+		serverAdmins.classList.remove('ska-d-none');
 		serverAdmin.removeAttribute('required');
 	}
 
@@ -1155,13 +1155,13 @@ dom_ready(function() {
 
 	serverAdmins.addEventListener('blur', function() {
 		if(!serverAdmins.value.trim()) {
-			serverAdmins.classList.add('d-none');
+			serverAdmins.classList.add('ska-d-none');
 			serverAdmin.setAttribute('required', '');
 		}
 	});
 
 	if(serverAdmins.value.trim()) {
-		serverAdmins.classList.remove('d-none');
+		serverAdmins.classList.remove('ska-d-none');
 		serverAdmin.removeAttribute('required');
 	}
 });

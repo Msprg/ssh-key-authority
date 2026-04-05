@@ -35,12 +35,12 @@ if(isset($_POST['add_group']) && ($active_user->admin)) {
 				$group_dir->add_group($group);
 				$group->add_admin($new_admin);
 				$alert = new UserAlert;
-				$alert->content = 'Group \'<a href="'.rrurl('/groups/'.urlencode($name)).'" class="alert-link">'.hesc($name).'</a>\' successfully created.';
+				$alert->content = 'Group \'<a href="'.rrurl('/groups/'.urlencode($name)).'" class="ska-alert-link">'.hesc($name).'</a>\' successfully created.';
 				$alert->escaping = ESC_NONE;
 				$active_user->add_alert($alert);
 			} catch(GroupAlreadyExistsException $e) {
 				$alert = new UserAlert;
-				$alert->content = 'Group \'<a href="'.rrurl('/groups/'.urlencode($name)).'" class="alert-link">'.hesc($name).'</a>\' already exists.';
+				$alert->content = 'Group \'<a href="'.rrurl('/groups/'.urlencode($name)).'" class="ska-alert-link">'.hesc($name).'</a>\' already exists.';
 				$alert->escaping = ESC_NONE;
 				$alert->class = 'danger';
 				$active_user->add_alert($alert);
@@ -78,7 +78,7 @@ if(isset($_POST['add_group']) && ($active_user->admin)) {
 	if (!empty($added)) {
 		$success_alert = new UserAlert;
 		$html_added = array_map(function ($name) {
-			return '<a href="'.rrurl('/groups/'.urlencode($name)).'" class="alert-link">'.hesc($name).'</a>';
+			return '<a href="'.rrurl('/groups/'.urlencode($name)).'" class="ska-alert-link">'.hesc($name).'</a>';
 		}, $added);
 		$list = "<ul><li>" . implode("</li><li>", $html_added) . "</li></ul>";
 		if (count($added) == 1) {
@@ -93,7 +93,7 @@ if(isset($_POST['add_group']) && ($active_user->admin)) {
 	$content = "";
 	if (!empty($already_existing)) {
 		$html_existing = array_map(function ($name) {
-			return '<a href="'.rrurl('/groups/'.urlencode($name)).'" class="alert-link">'.hesc($name).'</a>';
+			return '<a href="'.rrurl('/groups/'.urlencode($name)).'" class="ska-alert-link">'.hesc($name).'</a>';
 		}, $already_existing);
 		$list = "<ul><li>" . implode("</li><li>", $html_existing) . "</li></ul>";
 		if (count($already_existing) == 1) {

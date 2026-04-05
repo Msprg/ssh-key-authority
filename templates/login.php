@@ -53,7 +53,7 @@
         
         <button type="submit" class="ska-btn ska-btn-login ska-w-100">Login</button>
     </form>
-    <div class="text-center ska-mt-3">
+    <div class="ska-text-center ska-mt-3">
         <small id="login-help" class="ska-text-muted">
             Authentication is handled via LDAP
         </small>
