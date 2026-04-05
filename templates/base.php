@@ -72,8 +72,8 @@ $footer=str_replace("%v", "1.5.0", $web_config['footer']);
 </div>
 <div class="container" id="content">
 <?php foreach($this->get('alerts') as $alert) { ?>
-<div class="alert alert-<?php out($alert->class)?> alert-dismissible">
-	<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">&times;</button>
+<div class="ska-alert ska-alert-<?php out($alert->class)?> ska-alert-dismissible">
+	<button type="button" class="ska-btn-close" data-bs-dismiss="alert" aria-label="Close">&times;</button>
 	<?php out($alert->content, $alert->escaping)?>
 </div>
 <?php } ?>

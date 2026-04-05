@@ -247,7 +247,7 @@ dom_ready(function() {
 				alertElement = document.querySelector(alertTargetSelector);
 			}
 			if(!alertElement) {
-				alertElement = dismissButton.closest('.alert');
+				alertElement = dismissButton.closest('.ska-alert, .alert');
 			}
 			if(!alertElement) {
 				return;

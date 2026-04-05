@@ -18,10 +18,10 @@
 ?>
 <h1>Public keys for <a href="<?php outurl('/users/'.urlencode($this->get('user')->uid))?>"><?php out($this->get('user')->name)?></a></h1>
 <p class="ska-action-row">
-	<a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys.txt') ?>" class="btn btn-secondary btn-sm">
+	<a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys.txt') ?>" class="ska-btn ska-btn-secondary ska-btn-sm">
 		<span class="ska-icon ska-icon-console"></span> TXT
 	</a>
-	<a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys.json') ?>" class="btn btn-secondary btn-sm">
+	<a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys.json') ?>" class="ska-btn ska-btn-secondary ska-btn-sm">
 		<span class="ska-icon ska-icon-console"></span> JSON
 	</a>
 </p>
@@ -34,11 +34,11 @@
 		<form method="post" action="<?php outurl($this->data->relative_request_url) ?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="mb-3">
-				<label for="add_public_key">Public key</label>
-				<textarea class="form-control" rows="4" id="add_public_key" name="add_public_key" required></textarea>
+				<label for="add_public_key" class="ska-form-label">Public key</label>
+				<textarea class="ska-form-control" rows="4" id="add_public_key" name="add_public_key" required></textarea>
 			</div>
 			<p class="ska-help-text">The key will be added to <?php out($this->get('user')->uid)?>.</p>
-			<button type="submit" class="btn btn-primary">Add public key</button>
+			<button type="submit" class="ska-btn ska-btn-primary">Add public key</button>
 		</form>
 	</div>
 </div>

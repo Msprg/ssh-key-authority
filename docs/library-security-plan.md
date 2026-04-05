@@ -65,6 +65,7 @@ Completed work:
 - repo-local form/input-group styling in [public_html/style.css](/var/www/ska/public_html/style.css) for the live `form-group`, `form-control`, and `input-group` classes used by the busiest forms, plus migration of active templates to local `ska-form-group` wrappers
 - repo-local base typography/content, badge, and collapse-state styling in [public_html/style.css](/var/www/ska/public_html/style.css), allowing the app shell to render without Bootstrap CSS
 - retirement of the Bootstrap 3-only `in` state marker from active tabs/collapses in templates and native runtime code
+- Bootstrap handoff prep via repo-local aliases such as `ska-btn*`, `ska-alert*`, `ska-form-label`, and `ska-form-control`, reducing future class-family conflicts when real Bootstrap 5 CSS is introduced
 - native replacements for the local jQuery form helpers and sync polling
 - removal of runtime `bootstrap.min.css`, `bootstrap.min.js`, jQuery, and `bootstrap5-compat.js`
 - smoke assertions that authenticated pages do not load those assets
@@ -82,6 +83,7 @@ Priority work:
 
 - visually recheck untargeted secondary pages under the repo-local baseline
 - finish removing stale Bootstrap-era helper/content assumptions from mixed templates
+- continue migrating locally owned Bootstrap-named class families onto explicit `ska-*` aliases
 - trim remaining icon-compatibility selectors and stale documentation references
 - remove dormant vendored Bootstrap/Glyphicon assets once no longer needed for historical checkpoints
 

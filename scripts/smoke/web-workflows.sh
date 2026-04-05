@@ -34,6 +34,8 @@ curl -fsS -L -c "$COOKIE_JAR" "$BASE_URL/login" -o "$TMP_DIR/login.html"
 LOGIN_CSRF=$(smoke_extract_csrf "$TMP_DIR/login.html")
 [ -n "$LOGIN_CSRF" ] || smoke_die "Login CSRF token not found"
 ! grep -Eq '<link[^>]+href="[^"]*/bootstrap/css/bootstrap\.min\.css' "$TMP_DIR/login.html" || smoke_die "Login page still loads bootstrap.min.css"
+grep -Eq 'class="[^"]*ska-form-control' "$TMP_DIR/login.html" || smoke_die "Login page is missing SKA-owned form-control classes"
+grep -Eq 'class="[^"]*ska-form-label' "$TMP_DIR/login.html" || smoke_die "Login page is missing SKA-owned form-label classes"
 
 smoke_log "Executing LDAP login flow"
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" \
@@ -119,6 +121,12 @@ grep -q '>Logout<' "$TMP_DIR/user.html" || smoke_die "Authenticated session was 
 ! grep -Eq 'class="[^"]*\\btable\\b|class="[^"]*\\btable-bordered\\b|class="[^"]*\\btable-striped\\b|class="[^"]*\\btable-hover\\b|class="[^"]*\\btable-sm\\b' "$TMP_DIR/user.html" || smoke_die "Target user page still renders legacy Bootstrap table classes"
 ! grep -Eq 'class="nav nav-tabs"|class="[^"]*\\bnav-item\\b|class="[^"]*\\bnav-link\\b|class="tab-content"|class="[^"]*\\btab-pane\\b' "$TMP_DIR/user.html" || smoke_die "Target user page still renders legacy Bootstrap tab classes"
 ! grep -Eq "$LEGACY_IN_CLASS_RE" "$TMP_DIR/user.html" || smoke_die "Target user page still renders legacy collapse/tab state classes"
+
+curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/bulk_mail/server_admins" -o "$TMP_DIR/bulk-mail.html"
+grep -q '>Logout<' "$TMP_DIR/bulk-mail.html" || smoke_die "Authenticated session was lost while loading bulk mail page"
+grep -Eq 'class="[^"]*ska-alert[^"]*ska-alert-warning' "$TMP_DIR/bulk-mail.html" || smoke_die "Bulk mail page is missing SKA-owned alert classes"
+grep -Eq 'class="[^"]*ska-form-control' "$TMP_DIR/bulk-mail.html" || smoke_die "Bulk mail page is missing SKA-owned form-control classes"
+grep -Eq 'class="[^"]*ska-btn[^"]*ska-btn-primary' "$TMP_DIR/bulk-mail.html" || smoke_die "Bulk mail page is missing SKA-owned button classes"
 
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" \
     --data-urlencode "csrf_token=$HOME_CSRF" \
