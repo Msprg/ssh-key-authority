@@ -196,18 +196,30 @@ grep -q '>Logout<' "$TMP_DIR/server.html" || smoke_die "Authenticated session wa
 ! grep -Eq "form-inline|form-horizontal|control-label|col-sm-offset-|help-block|<div class=\"checkbox|<div class=\"radio|\\bsr-only\\b|$LEGACY_FORM_GROUP_RE" "$TMP_DIR/server.html" || smoke_die "Target server page still renders legacy Bootstrap 3 form helpers"
 ! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/server.html" || smoke_die "Target server page still renders legacy glyphicon classes"
 ! grep -Eq 'class="[^"]*\\bhidden\\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders the legacy hidden helper class"
-! grep -Eq 'class="[^"]*\\btable\\b|class="[^"]*\\btable-bordered\\b|class="[^"]*\\btable-striped\\b|class="[^"]*\\btable-hover\\b|class="[^"]*\\btable-sm\\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders legacy Bootstrap table classes"
-! grep -Eq 'class="nav nav-tabs"|class="[^"]*\\bnav-item\\b|class="[^"]*\\bnav-link\\b|class="tab-content"|class="[^"]*\\btab-pane\\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders legacy Bootstrap tab classes"
 ! grep -Eq "$LEGACY_IN_CLASS_RE" "$TMP_DIR/server.html" || smoke_die "Target server page still renders legacy collapse/tab state classes"
 ! grep -Eq "$LEGACY_LAYOUT_RE" "$TMP_DIR/server.html" || smoke_die "Target server page still renders Bootstrap-named layout/utility classes"
-! grep -Eq "$LEGACY_PRESENTATION_RE" "$TMP_DIR/server.html" || smoke_die "Target server page still renders Bootstrap-named semantic helper classes"
-! grep -Eq 'class="[^"]*\\binput-group\\b|class="[^"]*\\binput-group-text\\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders Bootstrap-named input-group classes"
-! grep -Eq 'class="[^"]*\\bform-check\\b|class="[^"]*\\bform-check-label\\b|class="[^"]*\\bform-check-input\\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders Bootstrap-named form-check classes"
+! grep -Eq 'class="[^"]*\\btext-center\\b|class="[^"]*\\btext-muted\\b|class="[^"]*\\btext-success\\b|class="[^"]*\\btext-warning\\b|class="[^"]*\\btext-danger\\b|class="[^"]*\\btext-info\\b|class="[^"]*\\brounded\\b|class="[^"]*\\bimg-fluid\\b|class="[^"]*\\bclearfix\\b|class="[^"]*\\bd-xl-none\\b|class="[^"]*\\bh-50px\\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders Bootstrap-named semantic helper classes"
 ! grep -Eq 'class="[^"]*\\btext-bg-secondary\\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders Bootstrap-named inactive badge classes"
-! grep -Eq 'class="[^"]*\\bform-control\\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders Bootstrap-named form-control classes"
-! grep -Eq 'class="[^"]*\\bbtn\\b|class="[^"]*\\bbtn-primary\\b|class="[^"]*\\bbtn-secondary\\b|class="[^"]*\\bbtn-success\\b|class="[^"]*\\bbtn-danger\\b|class="[^"]*\\bbtn-info\\b|class="[^"]*\\bbtn-sm\\b|class="[^"]*\\bbtn-lg\\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders Bootstrap-named button classes"
-grep -Eq 'class="[^"]*ska-form-control' "$TMP_DIR/server.html" || smoke_die "Target server page is missing SKA-owned form-control classes"
-grep -Eq 'class="[^"]*ska-btn' "$TMP_DIR/server.html" || smoke_die "Target server page is missing SKA-owned button classes"
+if grep -Eq 'id="server_accounts_tab"|id="server_admins_tab"|id="server_settings_tab"' "$TMP_DIR/server.html"; then
+    grep -Eq 'class="[^"]*nav[^"]*nav-tabs' "$TMP_DIR/server.html" || smoke_die "Target server page is missing Bootstrap 5 nav-tab classes"
+    grep -Eq 'class="[^"]*tab-content' "$TMP_DIR/server.html" || smoke_die "Target server page is missing Bootstrap 5 tab-content classes"
+fi
+if grep -Eq '<table[^>]+class="[^"]*' "$TMP_DIR/server.html"; then
+    grep -Eq 'class="[^"]*table' "$TMP_DIR/server.html" || smoke_die "Target server page is missing Bootstrap 5 table classes"
+fi
+if grep -Eq 'name="add_account"|name="add_admin"|name="edit_server"|name="request_access"|name="send_mail"|name="sync"' "$TMP_DIR/server.html"; then
+    grep -Eq 'class="[^"]*form-control' "$TMP_DIR/server.html" || smoke_die "Target server page is missing Bootstrap 5 form-control classes"
+    grep -Eq 'class="[^"]*btn[^"]*btn-primary|class="[^"]*btn[^"]*btn-secondary|class="[^"]*btn[^"]*btn-info' "$TMP_DIR/server.html" || smoke_die "Target server page is missing Bootstrap 5 button classes"
+fi
+if grep -Eq 'name="request_access"' "$TMP_DIR/server.html"; then
+    grep -Eq 'class="[^"]*input-group' "$TMP_DIR/server.html" || smoke_die "Target server page is missing Bootstrap 5 input-group classes"
+fi
+if grep -Eq 'name="key_management"|name="key_scan"|name="authorization"|name="access_option\[' "$TMP_DIR/server.html"; then
+    grep -Eq 'class="[^"]*form-check' "$TMP_DIR/server.html" || smoke_die "Target server page is missing Bootstrap 5 form-check classes"
+fi
+if grep -Eq 'same IP address|same SSH host key|does not have any leaders assigned|Failed to supervise external keys' "$TMP_DIR/server.html"; then
+    grep -Eq 'class="[^"]*alert[^"]*alert-danger' "$TMP_DIR/server.html" || smoke_die "Target server page is missing Bootstrap 5 alert classes"
+fi
 
 TARGET_USER=$(smoke_urlencode "$SKA_SMOKE_USERNAME")
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/users" -o "$TMP_DIR/users.html"

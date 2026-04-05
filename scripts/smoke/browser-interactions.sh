@@ -88,17 +88,17 @@ browser_smoke_wait_for_js '
         trigger.getAttribute("aria-expanded") === "false";
 ' 50 0.1 || smoke_die "Help collapse did not close"
 
-smoke_log "Checking server tab interaction"
-browser_smoke_navigate "${BASE_URL}/servers/${TARGET_SERVER}"
+smoke_log "Checking server list tab interaction"
+browser_smoke_navigate "${BASE_URL}/servers"
 TAB_RESULT=$(browser_smoke_exec '
-    var tab = document.querySelector(".ska-tab-link[data-bs-toggle=\"tab\"]:not(.active)");
+    var tab = document.querySelector(".nav-link[data-bs-toggle=\"tab\"]:not(.active), .ska-tab-link[data-bs-toggle=\"tab\"]:not(.active)");
     if (!tab) {
         return "";
     }
     tab.click();
     return tab.id + "|" + tab.getAttribute("href");
 ')
-[ -n "$TAB_RESULT" ] || smoke_die "No inactive server tab was available to click"
+[ -n "$TAB_RESULT" ] || smoke_die "No inactive server-list tab was available to click"
 TAB_ID=${TAB_RESULT%%|*}
 TAB_TARGET=${TAB_RESULT#*|}
 browser_smoke_wait_for_js '
@@ -112,6 +112,6 @@ browser_smoke_wait_for_js '
         pane.classList.contains("active") &&
         pane.classList.contains("show") &&
         pane.getAttribute("aria-hidden") === "false";
-' 50 0.1 "$TAB_ID" "$TAB_TARGET" || smoke_die "Server tab did not activate"
+' 50 0.1 "$TAB_ID" "$TAB_TARGET" || smoke_die "Server-list tab did not activate"
 
 smoke_log "Browser interaction checks completed successfully"

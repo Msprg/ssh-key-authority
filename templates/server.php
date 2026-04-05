@@ -37,57 +37,57 @@
 		>
 			<span></span>
 			<div class="spinner"></div>
-			<a href="<?php outurl('/help')?>" class="ska-btn ska-btn-info ska-btn-sm ska-d-none">Explain</a>
-			<button name="sync" value="1" type="submit" class="ska-btn ska-btn-secondary ska-btn-sm ska-invisible">Sync now</button>
+			<a href="<?php outurl('/help')?>" class="btn btn-info btn-sm ska-d-none">Explain</a>
+			<button name="sync" value="1" type="submit" class="btn btn-secondary btn-sm ska-invisible">Sync now</button>
 		</dd>
 	</dl>
 </form>
 <?php if($this->get('server')->ip_address && count($this->get('matching_servers_by_ip')) > 1) { ?>
-<div class="ska-alert ska-alert-danger">
+<div class="alert alert-danger">
 	<p>The hostname <?php out($this->get('server')->hostname)?> resolves to the same IP address as the following:</p>
 	<ul>
 		<?php foreach($this->get('matching_servers_by_ip') as $matched_server) { ?>
 		<?php if($matched_server->hostname != $this->get('server')->hostname) { ?>
-		<li><a href="<?php outurl('/servers/'.urlencode($matched_server->hostname))?>" class="server ska-alert-link"><?php out($matched_server->hostname)?></a></li>
+		<li><a href="<?php outurl('/servers/'.urlencode($matched_server->hostname))?>" class="server alert-link"><?php out($matched_server->hostname)?></a></li>
 		<?php } ?>
 		<?php } ?>
 	</ul>
 </div>
 <?php } ?>
 <?php if($this->get('server')->host_key && count($this->get('matching_servers_by_host_key')) > 1) { ?>
-<div class="ska-alert ska-alert-danger">
+<div class="alert alert-danger">
 	<p>The server has the same SSH host key as the following:</p>
 	<ul>
 		<?php foreach($this->get('matching_servers_by_host_key') as $matched_server) { ?>
 		<?php if($matched_server->hostname != $this->get('server')->hostname) { ?>
-		<li><a href="<?php outurl('/servers/'.urlencode($matched_server->hostname))?>" class="server ska-alert-link"><?php out($matched_server->hostname)?></a></li>
+		<li><a href="<?php outurl('/servers/'.urlencode($matched_server->hostname))?>" class="server alert-link"><?php out($matched_server->hostname)?></a></li>
 		<?php } ?>
 		<?php } ?>
 	</ul>
 </div>
 <?php } ?>
 <?php if ($this->get('server')->key_supervision_error !== null) { ?>
-<div class="ska-alert ska-alert-danger">
+<div class="alert alert-danger">
 	<p>Failed to supervise external keys on this server:</p>
 	<pre><?php out($this->get('server')->key_supervision_error) ?></pre>
 </div>
 <?php } ?>
 <?php } ?>
 <?php if($this->get('admin') || $this->get('server_admin')) { ?>
-<ul class="ska-tabs" role="tablist">
-	<li class="ska-tab-item active" role="presentation"><a href="#accounts" id="server_accounts_tab" class="ska-tab-link active" role="tab" data-bs-toggle="tab" aria-controls="accounts" aria-selected="true">Accounts</a></li>
-	<li class="ska-tab-item" role="presentation"><a href="#admins" id="server_admins_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="admins" aria-selected="false" tabindex="-1">Leaders</a></li>
-	<li class="ska-tab-item" role="presentation"><a href="#settings" id="server_settings_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="settings" aria-selected="false" tabindex="-1">Settings</a></li>
-	<li class="ska-tab-item" role="presentation"><a href="#log" id="server_log_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="log" aria-selected="false" tabindex="-1">Log</a></li>
+<ul class="nav nav-tabs" role="tablist">
+	<li class="nav-item" role="presentation"><a href="#accounts" id="server_accounts_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="accounts" aria-selected="true">Accounts</a></li>
+	<li class="nav-item" role="presentation"><a href="#admins" id="server_admins_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="admins" aria-selected="false" tabindex="-1">Leaders</a></li>
+	<li class="nav-item" role="presentation"><a href="#settings" id="server_settings_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="settings" aria-selected="false" tabindex="-1">Settings</a></li>
+	<li class="nav-item" role="presentation"><a href="#log" id="server_log_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="log" aria-selected="false" tabindex="-1">Log</a></li>
 	<?php if($this->get('admin')) { ?>
-	<li class="ska-tab-item" role="presentation"><a href="#notes" id="server_notes_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="notes" aria-selected="false" tabindex="-1">Notes<?php if(count($this->get('server_notes')) > 0) out(' <span class="ska-badge ska-badge-muted">'.count($this->get('server_notes')).'</span>', ESC_NONE)?></a></li>
-	<li class="ska-tab-item" role="presentation"><a href="#contact" id="server_contact_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="contact" aria-selected="false" tabindex="-1">Contact</a></li>
+	<li class="nav-item" role="presentation"><a href="#notes" id="server_notes_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="notes" aria-selected="false" tabindex="-1">Notes<?php if(count($this->get('server_notes')) > 0) out(' <span class="ska-badge ska-badge-muted">'.count($this->get('server_notes')).'</span>', ESC_NONE)?></a></li>
+	<li class="nav-item" role="presentation"><a href="#contact" id="server_contact_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="contact" aria-selected="false" tabindex="-1">Contact</a></li>
 	<?php } ?>
 </ul>
 
 <!-- Tab panes -->
-<div class="ska-tab-content">
-	<div class="ska-tab-pane fade active show" id="accounts" role="tabpanel" aria-labelledby="server_accounts_tab" aria-hidden="false">
+<div class="tab-content">
+	<div class="tab-pane fade active show" id="accounts" role="tabpanel" aria-labelledby="server_accounts_tab" aria-hidden="false">
 		<h2 class="visually-hidden">
 			<?php if($this->get('server')->authorization == 'manual') { ?>
 				Accounts
@@ -101,7 +101,7 @@
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-scroll-container">
-				<table class="ska-table ska-table-bordered">
+				<table class="table table-bordered">
 					<thead>
 						<tr>
 							<th>Account</th>
@@ -141,9 +141,9 @@
 							</td>
 							<?php } ?>
 							<td rowspan="<?php out(max(1, count($access_list)))?>">
-								<a href="<?php outurl($this->data->relative_request_url.'/accounts/'.urlencode($account->name))?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-cog"></span> Manage account</a>
+								<a href="<?php outurl($this->data->relative_request_url.'/accounts/'.urlencode($account->name))?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-cog"></span> Manage account</a>
 								<?php if(!array_key_exists($account->name, $this->get('default_accounts'))) { ?>
-								<button type="submit" name="delete_account" value="<?php out($account->id) ?>" class="ska-btn ska-btn-secondary ska-btn-sm" data-confirm="Are you sure you want to delete this account?"><span class="ska-icon ska-icon-trash"></span> Delete account</button>
+								<button type="submit" name="delete_account" value="<?php out($account->id) ?>" class="btn btn-secondary btn-sm" data-confirm="Are you sure you want to delete this account?"><span class="ska-icon ska-icon-trash"></span> Delete account</button>
 								<?php } ?>
 							</td>
 							<?php if(empty($access_list)) { ?>
@@ -190,20 +190,20 @@
 			<h3>Create<?php if($this->get('server')->authorization != 'manual') out(' non-LDAP'); ?> account</h3>
 			<div class="ska-form-group">
 				<label for="account_name" class="visually-hidden">Account name</label>
-				<input type="text" id="account_name" name="account_name" class="ska-form-control" placeholder="Account name" required pattern=".*[^\s].*">
+				<input type="text" id="account_name" name="account_name" class="form-control" placeholder="Account name" required pattern=".*[^\s].*">
 			</div>
-			<button type="submit" name="add_account" value="1" class="ska-btn ska-btn-primary">Manage this account with SSH Key Authority</button>
+			<button type="submit" name="add_account" value="1" class="btn btn-primary">Manage this account with SSH Key Authority</button>
 		</form>
 	</div>
-	<div class="ska-tab-pane fade" id="admins" role="tabpanel" aria-labelledby="server_admins_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="admins" role="tabpanel" aria-labelledby="server_admins_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Server leaders</h2>
 		<?php if(count($this->get('server_admins')) == 0) { ?>
-		<p class="ska-alert ska-alert-danger">This server does not have any leaders assigned.</p>
+		<p class="alert alert-danger">This server does not have any leaders assigned.</p>
 		<?php } else { ?>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-scroll-container">
-				<table class="ska-table ska-table-bordered ska-table-striped">
+				<table class="table table-bordered table-striped">
 					<thead>
 						<tr>
 							<th>Entity</th>
@@ -221,7 +221,7 @@
 									<td><?php out($admin->name); if(!$admin->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 									<?php if($this->get('admin')) {?>
 									<td>
-										<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove leader</button>
+										<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove leader</button>
 									</td>
 									<?php } ?>
 								</tr>
@@ -231,7 +231,7 @@
 									<td><?php out($admin->name); if(!$admin->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 									<?php if($this->get('admin')) { ?>
 									<td>
-										<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove leader</button>
+										<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove leader</button>
 									</td>
 									<?php } ?>
 								</tr>
@@ -247,7 +247,7 @@
 			<h3>Add leader</h3>
 			<div class="ska-form-group">
 				<label for="user_name" class="visually-hidden">User or group name</label>
-				<input type="text" id="user_name" name="user_name" class="ska-form-control" placeholder="User or group name" required list="userlist">
+				<input type="text" id="user_name" name="user_name" class="form-control" placeholder="User or group name" required list="userlist">
 				<datalist id="userlist">
 					<?php foreach($this->get('all_users') as $user) { ?>
 					<option value="<?php out($user->uid)?>" label="<?php out($user->name)?>">
@@ -257,11 +257,11 @@
 					<?php } ?>
 				</datalist>
 			</div>
-			<button type="submit" name="add_admin" value="1" class="ska-btn ska-btn-primary">Add leader to server</button>
+			<button type="submit" name="add_admin" value="1" class="btn btn-primary">Add leader to server</button>
 		</form>
 		<?php } ?>
 	</div>
-	<div class="ska-tab-pane fade" id="settings" role="tabpanel" aria-labelledby="server_settings_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="server_settings_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Settings</h2>
 		<form id="server_settings" method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-settings-form">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
@@ -269,64 +269,64 @@
 			<div class="ska-setting-row">
 				<label for="hostname" class="ska-setting-label">Hostname</label>
 				<div class="ska-setting-control">
-					<input type="text" id="hostname" name="hostname" value="<?php out($this->get('server')->hostname)?>" required class="ska-form-control">
+					<input type="text" id="hostname" name="hostname" value="<?php out($this->get('server')->hostname)?>" required class="form-control">
 				</div>
 			</div>
 			<div class="ska-setting-row">
 				<label for="port" class="ska-setting-label">SSH port number</label>
 				<div class="ska-setting-control">
-					<input type="number" id="port" name="port" value="<?php out($this->get('server')->port)?>" required class="ska-form-control">
+					<input type="number" id="port" name="port" value="<?php out($this->get('server')->port)?>" required class="form-control">
 				</div>
 			</div>
 			<div class="ska-setting-row">
 				<label for="host_key" class="ska-setting-label">Host key</label>
 				<div class="ska-setting-control">
-					<input type="text" id="host_key" name="host_key" value="<?php out($this->get('server')->host_key)?>" readonly class="ska-form-control">
-					<button type="button" class="ska-btn ska-btn-secondary" data-clear="host_key">Clear</button>
+					<input type="text" id="host_key" name="host_key" value="<?php out($this->get('server')->host_key)?>" readonly class="form-control">
+					<button type="button" class="btn btn-secondary" data-clear="host_key">Clear</button>
 				</div>
 			</div>
 			<div class="ska-setting-row">
 				<label for="host_key" class="ska-setting-label">Jumphosts (<a href="<?php outurl('/help#jumphost_format')?>">format</a>)</label>
 				<div class="ska-setting-control">
-					<input type="text" id="jumphosts" name="jumphosts" value="<?php out($this->get('server')->jumphosts)?>" pattern="([^@ >]+@[a-zA-Z0-9\-.\u0080-\uffff]+(:[0-9]+)?(,[^@ >]+@[a-zA-Z0-9\-.\u0080-\uffff]+(:[0-9]+)?)*)?( *-> *[a-zA-Z0-9\-.\u0080-\uffff]+)?" class="ska-form-control">
+					<input type="text" id="jumphosts" name="jumphosts" value="<?php out($this->get('server')->jumphosts)?>" pattern="([^@ >]+@[a-zA-Z0-9\-.\u0080-\uffff]+(:[0-9]+)?(,[^@ >]+@[a-zA-Z0-9\-.\u0080-\uffff]+(:[0-9]+)?)*)?( *-> *[a-zA-Z0-9\-.\u0080-\uffff]+)?" class="form-control">
 				</div>
 			</div>
 			<div class="ska-setting-row">
 				<div class="ska-setting-label">Key management</div>
 				<div class="ska-setting-control ska-choice-list">
-					<label class="ska-choice ska-text-success"><input type="radio" name="key_management" value="keys"<?php if($this->get('server')->key_management == 'keys') out(' checked') ?>> <span>SSH keys managed and synced by SSH Key Authority</span></label>
-					<label class="ska-choice ska-text-warning"><input type="radio" name="key_management" value="none"<?php if($this->get('server')->key_management == 'none') out(' checked') ?>> <span>Disabled - server has no key management</span></label>
-					<label class="ska-choice"><input type="radio" name="key_management" value="other"<?php if($this->get('server')->key_management == 'other') out(' checked') ?>> <span>Disabled - SSH keys managed by another system</span></label>
-					<label class="ska-choice ska-text-danger"><input type="radio" name="key_management" value="decommissioned"<?php if($this->get('server')->key_management == 'decommissioned') out(' checked') ?>> <span>Disabled - server has been decommissioned (remove all user access keys)</span></label>
+					<label class="form-check ska-choice ska-text-success"><input type="radio" class="form-check-input" name="key_management" value="keys"<?php if($this->get('server')->key_management == 'keys') out(' checked') ?>> <span class="form-check-label">SSH keys managed and synced by SSH Key Authority</span></label>
+					<label class="form-check ska-choice ska-text-warning"><input type="radio" class="form-check-input" name="key_management" value="none"<?php if($this->get('server')->key_management == 'none') out(' checked') ?>> <span class="form-check-label">Disabled - server has no key management</span></label>
+					<label class="form-check ska-choice"><input type="radio" class="form-check-input" name="key_management" value="other"<?php if($this->get('server')->key_management == 'other') out(' checked') ?>> <span class="form-check-label">Disabled - SSH keys managed by another system</span></label>
+					<label class="form-check ska-choice ska-text-danger"><input type="radio" class="form-check-input" name="key_management" value="decommissioned"<?php if($this->get('server')->key_management == 'decommissioned') out(' checked') ?>> <span class="form-check-label">Disabled - server has been decommissioned (remove all user access keys)</span></label>
 				</div>
 			</div>
 			<div class="ska-setting-row" id="supervision">
 				<div class="ska-setting-label">Key supervision</div>
 				<div class="ska-setting-control ska-choice-list">
-					<label class="ska-choice ska-text-success"><input type="radio" name="key_scan" value="full"<?php if($this->get('server')->key_scan == 'full') out(' checked') ?>> <span>Scan keys of root and all user accounts</span></label>
-					<label class="ska-choice"><input type="radio" name="key_scan" value="rootonly"<?php if($this->get('server')->key_scan == 'rootonly') out(' checked') ?>> <span>Scan only keys of the root account, no other user accounts</span></label>
-					<label class="ska-choice"><input type="radio" name="key_scan" value="off"<?php if($this->get('server')->key_scan == 'off') out(' checked') ?>> <span>Disabled - Do not scan any keys</span></label>
+					<label class="form-check ska-choice ska-text-success"><input type="radio" class="form-check-input" name="key_scan" value="full"<?php if($this->get('server')->key_scan == 'full') out(' checked') ?>> <span class="form-check-label">Scan keys of root and all user accounts</span></label>
+					<label class="form-check ska-choice"><input type="radio" class="form-check-input" name="key_scan" value="rootonly"<?php if($this->get('server')->key_scan == 'rootonly') out(' checked') ?>> <span class="form-check-label">Scan only keys of the root account, no other user accounts</span></label>
+					<label class="form-check ska-choice"><input type="radio" class="form-check-input" name="key_scan" value="off"<?php if($this->get('server')->key_scan == 'off') out(' checked') ?>> <span class="form-check-label">Disabled - Do not scan any keys</span></label>
 				</div>
 			</div>
 			<div class="ska-setting-row<?php if($this->get('server')->key_management != 'keys') out(' ska-hide') ?>" id="authorization">
 				<div class="ska-setting-label">Accounts</div>
 				<div class="ska-setting-control ska-choice-list">
-					<label class="ska-choice"><input type="radio" name="authorization" value="manual"<?php if($this->get('server')->authorization == 'manual') out(' checked') ?>> <span>All accounts on the server are manually created</span></label>
-					<label class="ska-choice"><input type="radio" name="authorization" value="automatic LDAP"<?php if($this->get('server')->authorization == 'automatic LDAP') out(' checked') ?>> <span>Accounts will be linked to LDAP and created automatically on the server</span></label>
-					<label class="ska-choice"><input type="radio" name="authorization" value="manual LDAP"<?php if($this->get('server')->authorization == 'manual LDAP') out(' checked') ?>> <span>Accounts will be based on LDAP usernames but created manually on the server</span></label>
+					<label class="form-check ska-choice"><input type="radio" class="form-check-input" name="authorization" value="manual"<?php if($this->get('server')->authorization == 'manual') out(' checked') ?>> <span class="form-check-label">All accounts on the server are manually created</span></label>
+					<label class="form-check ska-choice"><input type="radio" class="form-check-input" name="authorization" value="automatic LDAP"<?php if($this->get('server')->authorization == 'automatic LDAP') out(' checked') ?>> <span class="form-check-label">Accounts will be linked to LDAP and created automatically on the server</span></label>
+					<label class="form-check ska-choice"><input type="radio" class="form-check-input" name="authorization" value="manual LDAP"<?php if($this->get('server')->authorization == 'manual LDAP') out(' checked') ?>> <span class="form-check-label">Accounts will be based on LDAP usernames but created manually on the server</span></label>
 				</div>
 			</div>
 				<?php $options = $this->get('ldap_access_options'); ?>
 				<div class="ska-setting-row<?php if($this->get('server')->key_management != 'keys' || $this->get('server')->authorization == 'manual') out(' ska-hide') ?>" id="ldap_access_options">
 				<div class="ska-setting-label">LDAP access options</div>
 				<div class="ska-setting-control">
-					<label class="ska-choice"><input type="checkbox" name="access_option[command][enabled]"<?php if(isset($options['command'])) out(' checked'); ?>> <span>Specify command (<code>command=&quot;command&quot;</code>)</span></label>
-					<input type="text" id="command_value" name="access_option[command][value]" value="<?php if(isset($options['command'])) out($options['command']->value); ?>" class="ska-form-control">
-					<label class="ska-choice"><input type="checkbox" name="access_option[from][enabled]"<?php if(isset($options['from'])) out(' checked'); ?>> <span>Restrict source address (<code>from=&quot;<abbr title="A pattern-list is a comma-separated list of patterns.  Each pattern can be either a hostname or an IP address, with wildcards (* and ?) allowed.">pattern-list</abbr>&quot;</code>)</span></label>
-					<input type="text" id="from_value" name="access_option[from][value]" value="<?php if(isset($options['from'])) out($options['from']->value); ?>" class="ska-form-control">
-					<label class="ska-choice"><input type="checkbox" name="access_option[no-port-forwarding][enabled]"<?php if(isset($options['no-port-forwarding'])) out(' checked'); ?>> <span>Disallow port forwarding (<code>no-port-forwarding</code>)</span></label>
-					<label class="ska-choice"><input type="checkbox" name="access_option[no-X11-forwarding][enabled]"<?php if(isset($options['no-X11-forwarding'])) out(' checked'); ?>> <span>Disallow X11 forwarding (<code>no-X11-forwarding</code>)</span></label>
-					<label class="ska-choice"><input type="checkbox" name="access_option[no-pty][enabled]"<?php if(isset($options['no-pty'])) out(' checked'); ?>> <span>Disable terminal (<code>no-pty</code>)</span></label>
+					<label class="form-check ska-choice"><input type="checkbox" class="form-check-input" name="access_option[command][enabled]"<?php if(isset($options['command'])) out(' checked'); ?>> <span class="form-check-label">Specify command (<code>command=&quot;command&quot;</code>)</span></label>
+					<input type="text" id="command_value" name="access_option[command][value]" value="<?php if(isset($options['command'])) out($options['command']->value); ?>" class="form-control">
+					<label class="form-check ska-choice"><input type="checkbox" class="form-check-input" name="access_option[from][enabled]"<?php if(isset($options['from'])) out(' checked'); ?>> <span class="form-check-label">Restrict source address (<code>from=&quot;<abbr title="A pattern-list is a comma-separated list of patterns.  Each pattern can be either a hostname or an IP address, with wildcards (* and ?) allowed.">pattern-list</abbr>&quot;</code>)</span></label>
+					<input type="text" id="from_value" name="access_option[from][value]" value="<?php if(isset($options['from'])) out($options['from']->value); ?>" class="form-control">
+					<label class="form-check ska-choice"><input type="checkbox" class="form-check-input" name="access_option[no-port-forwarding][enabled]"<?php if(isset($options['no-port-forwarding'])) out(' checked'); ?>> <span class="form-check-label">Disallow port forwarding (<code>no-port-forwarding</code>)</span></label>
+					<label class="form-check ska-choice"><input type="checkbox" class="form-check-input" name="access_option[no-X11-forwarding][enabled]"<?php if(isset($options['no-X11-forwarding'])) out(' checked'); ?>> <span class="form-check-label">Disallow X11 forwarding (<code>no-X11-forwarding</code>)</span></label>
+					<label class="form-check ska-choice"><input type="checkbox" class="form-check-input" name="access_option[no-pty][enabled]"<?php if(isset($options['no-pty'])) out(' checked'); ?>> <span class="form-check-label">Disable terminal (<code>no-pty</code>)</span></label>
 					</div>
 				</div>
 				<?php
@@ -340,17 +340,17 @@
 					<label for="history_username_env_format" class="ska-setting-label">History username env</label>
 					<div class="ska-setting-control">
 						<div class="ska-choice-list">
-							<label class="ska-choice"><input type="radio" name="history_username_env_mode" value="inherit"<?php if($history_username_env_mode == 'inherit') out(' checked') ?>> <span>Inherit global default</span></label>
-							<label class="ska-choice"><input type="radio" name="history_username_env_mode" value="enabled"<?php if($history_username_env_mode == 'enabled') out(' checked') ?>> <span>Force enabled</span></label>
-							<label class="ska-choice"><input type="radio" name="history_username_env_mode" value="disabled"<?php if($history_username_env_mode == 'disabled') out(' checked') ?>> <span>Force disabled</span></label>
+							<label class="form-check ska-choice"><input type="radio" class="form-check-input" name="history_username_env_mode" value="inherit"<?php if($history_username_env_mode == 'inherit') out(' checked') ?>> <span class="form-check-label">Inherit global default</span></label>
+							<label class="form-check ska-choice"><input type="radio" class="form-check-input" name="history_username_env_mode" value="enabled"<?php if($history_username_env_mode == 'enabled') out(' checked') ?>> <span class="form-check-label">Force enabled</span></label>
+							<label class="form-check ska-choice"><input type="radio" class="form-check-input" name="history_username_env_mode" value="disabled"<?php if($history_username_env_mode == 'disabled') out(' checked') ?>> <span class="form-check-label">Force disabled</span></label>
 						</div>
 						<label for="history_username_env_format">Format override (optional)</label>
-						<input type="text" id="history_username_env_format" name="history_username_env_format" value="<?php out($history_username_env_format); ?>" class="ska-form-control">
+						<input type="text" id="history_username_env_format" name="history_username_env_format" value="<?php out($history_username_env_format); ?>" class="form-control">
 						<p class="ska-help-text">Supported placeholder: <code>{uid}</code>. Format must include both <code>=</code> and <code>{uid}</code>; invalid values fall back to <code>BASH_HISTORY_USERNAME={uid}</code>.</p>
 					</div>
 				</div>
 				<div class="ska-setting-actions">
-						<button type="submit" name="edit_server" value="1" class="ska-btn ska-btn-primary">Change settings</button>
+						<button type="submit" name="edit_server" value="1" class="btn btn-primary">Change settings</button>
 				</div>
 			<?php } else { ?>
 			<dl>
@@ -427,21 +427,21 @@
 			<div class="ska-setting-row">
 				<label for="host_key" class="ska-setting-label">Host key</label>
 				<div class="ska-setting-control">
-					<input type="text" id="host_key" name="host_key" value="<?php out($this->get('server')->host_key)?>" readonly class="ska-form-control">
-					<button type="button" class="ska-btn ska-btn-secondary" data-clear="host_key">Clear</button>
+					<input type="text" id="host_key" name="host_key" value="<?php out($this->get('server')->host_key)?>" readonly class="form-control">
+					<button type="button" class="btn btn-secondary" data-clear="host_key">Clear</button>
 				</div>
 			</div>
 			<div class="ska-setting-actions">
-					<button type="submit" name="edit_server" value="1" class="ska-btn ska-btn-primary">Change settings</button>
+					<button type="submit" name="edit_server" value="1" class="btn btn-primary">Change settings</button>
 			</div>
 			<?php } ?>
 			<?php } ?>
 		</form>
 	</div>
-	<div class="ska-tab-pane fade" id="log" role="tabpanel" aria-labelledby="server_log_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="log" role="tabpanel" aria-labelledby="server_log_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Log</h2>
 		<div class="ska-scroll-container">
-			<table class="ska-table">
+			<table class="table table-sm">
 				<col></col>
 				<col></col>
 				<col></col>
@@ -465,7 +465,7 @@
 		</div>
 	</div>
 	<?php if($this->get('admin')) { ?>
-	<div class="ska-tab-pane fade" id="notes" role="tabpanel" aria-labelledby="server_notes_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="notes" role="tabpanel" aria-labelledby="server_notes_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Notes</h2>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
@@ -474,7 +474,7 @@
 				<div class="ska-card-body pre-formatted"><?php out($this->get('output_formatter')->comment_format($note->note), ESC_NONE)?></div>
 				<div class="ska-card-footer">
 					Added <?php out($note->date)?> by <?php out($note->user->name)?>
-					<button name="delete_note" value="<?php out($note->id)?>" class="ska-float-end ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete</button>
+					<button name="delete_note" value="<?php out($note->id)?>" class="ska-float-end btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete</button>
 				</div>
 			</div>
 			<?php } ?>
@@ -483,62 +483,62 @@
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-mb-3">
 				<label for="note">Note</label>
-				<textarea class="ska-form-control" rows="4" id="note" name="note" required></textarea>
+				<textarea class="form-control" rows="4" id="note" name="note" required></textarea>
 			</div>
 			<div class="ska-mb-3">
-				<button type="submit" name="add_note" value="1" class="ska-btn ska-btn-primary ska-btn-lg ska-w-100">Add note</button>
+				<button type="submit" name="add_note" value="1" class="btn btn-primary btn-lg ska-w-100">Add note</button>
 			</div>
 		</form>
 	</div>
-	<div class="ska-tab-pane fade" id="contact" role="tabpanel" aria-labelledby="server_contact_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="server_contact_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Contact</h2>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-mb-3">
 				<label for="anonymous">From</label>
-				<select class="ska-form-control" id="anonymous" name="anonymous">
+				<select class="form-control" id="anonymous" name="anonymous">
 					<option value="0"><?php out("{$this->get('active_user')->name} <{$this->get('active_user')->email}>");?></option>
 					<option value="1"><?php out($this->get('email_config')['from_name'])?> &lt;<?php out($this->get('email_config')['from_address'])?>&gt; (Reply-to: <?php out($this->get('email_config')['admin_address']) ?>)</option>
 				</select>
 			</div>
 			<div class="ska-mb-3">
 				<label>Recipients</label>
-				<div class="ska-form-check">
-					<label class="ska-form-check-label">
-						<input type="radio" class="ska-form-check-input" name="recipients" value="admins" checked>
+				<div class="form-check">
+					<label class="form-check-label">
+						<input type="radio" class="form-check-input" name="recipients" value="admins" checked>
 						<span>Server leaders of <?php out($this->get('server')->hostname) ?></span>
 					</label>
 				</div>
-				<div class="ska-form-check">
-					<label class="ska-form-check-label">
-						<input type="radio" class="ska-form-check-input" name="recipients" value="root_users">
+				<div class="form-check">
+					<label class="form-check-label">
+						<input type="radio" class="form-check-input" name="recipients" value="root_users">
 						<span>All users with access to root@<?php out($this->get('server')->hostname) ?></span>
 					</label>
 				</div>
-				<div class="ska-form-check">
-					<label class="ska-form-check-label">
-						<input type="radio" class="ska-form-check-input" name="recipients" value="users">
+				<div class="form-check">
+					<label class="form-check-label">
+						<input type="radio" class="form-check-input" name="recipients" value="users">
 						<span>All users with access to accounts on <?php out($this->get('server')->hostname) ?></span>
 					</label>
 				</div>
 			</div>
 			<div class="ska-mb-3">
-				<div class="ska-form-check">
-					<label class="ska-form-check-label">
-						<input type="checkbox" class="ska-form-check-input" id="hide_recipients" name="hide_recipients">
+				<div class="form-check">
+					<label class="form-check-label">
+						<input type="checkbox" class="form-check-input" id="hide_recipients" name="hide_recipients">
 						<span>Hide recipient list</span>
 					</label>
 				</div>
 			</div>
 			<div class="ska-mb-3">
 				<label for="subject">Subject</label>
-				<input type="text" class="ska-form-control" id="subject" name="subject" required value="Server <?php out('"'.$this->get('server')->hostname.'"') ?>">
+				<input type="text" class="form-control" id="subject" name="subject" required value="Server <?php out('"'.$this->get('server')->hostname.'"') ?>">
 			</div>
 			<div class="ska-mb-3">
 				<label for="body">Body</label>
-				<textarea class="ska-form-control" rows="20" id="body" name="body" required></textarea>
+				<textarea class="form-control" rows="20" id="body" name="body" required></textarea>
 			</div>
-			<div class="ska-mb-3"><button type="submit" name="send_mail" value="1" data-confirm="Send mail? Are you sure?" class="ska-btn ska-btn-primary ska-btn-lg ska-w-100">Send mail</button></div>
+			<div class="ska-mb-3"><button type="submit" name="send_mail" value="1" data-confirm="Send mail? Are you sure?" class="btn btn-primary btn-lg ska-w-100">Send mail</button></div>
 		</form>
 	</div>
 	<?php } ?>
@@ -558,10 +558,10 @@
 	<div class="ska-row">
 		<div class="ska-col-sm-5">
 			<label for="account_name" class="visually-hidden">Account name</label>
-			<div class="ska-input-group">
-				<span class="ska-input-group-text"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span></span>
-				<input type="text" id="account_name" name="account_name" class="ska-form-control" placeholder="Account name" list="accountlist" required pattern=".*[^\s].*">
-				<span class="ska-input-group-text">@<?php out($this->get('server')->hostname)?></span>
+			<div class="input-group">
+				<span class="input-group-text"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span></span>
+				<input type="text" id="account_name" name="account_name" class="form-control" placeholder="Account name" list="accountlist" required pattern=".*[^\s].*">
+				<span class="input-group-text">@<?php out($this->get('server')->hostname)?></span>
 				<datalist id="accountlist">
 					<?php foreach($this->get('all_accounts') as $accounts) { ?>
 					<option value="<?php out($accounts->name)?>">
@@ -570,8 +570,8 @@
 			</div>
 		</div>
 		<div class="ska-col-sm-7">
-			<button type="submit" name="request_access" value="user" class="ska-btn ska-btn-primary">Request access</button>
-			<a href="<?php outurl('/help#getting_access')?>" class="ska-btn ska-btn-info">Help</a>
+			<button type="submit" name="request_access" value="user" class="btn btn-primary">Request access</button>
+			<a href="<?php outurl('/help#getting_access')?>" class="btn btn-info">Help</a>
 		</div>
 	</div>
 </form>
@@ -580,16 +580,16 @@
 	<h4>Request server-to-server access</h4>
 	<div class="ska-row">
 		<div class="ska-col-sm-3 ska-mb-3">
-			<div class="ska-input-group">
-				<span class="ska-input-group-text">From: </span>
-				<span class="ska-input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account name</span></label></span>
-				<input type="text" id="account_remote" name="account_remote" class="ska-form-control" placeholder="Account name" required pattern=".*[^\s].*">
+			<div class="input-group">
+				<span class="input-group-text">From: </span>
+				<span class="input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account name</span></label></span>
+				<input type="text" id="account_remote" name="account_remote" class="form-control" placeholder="Account name" required pattern=".*[^\s].*">
 			</div>
 		</div>
 		<div class="ska-col-sm-3 ska-mb-3">
-			<div class="ska-input-group">
-				<span class="ska-input-group-text"><label for="hostname">@</label></span>
-				<input type="text" id="hostname_remote" name="hostname_remote" class="ska-form-control" placeholder="Hostname" list="serverlist" required>
+			<div class="input-group">
+				<span class="input-group-text"><label for="hostname">@</label></span>
+				<input type="text" id="hostname_remote" name="hostname_remote" class="form-control" placeholder="Hostname" list="serverlist" required>
 				<datalist id="serverlist">
 					<?php foreach($this->get('all_servers') as $server) { ?>
 					<option value="<?php out($server->hostname)?>">
@@ -601,16 +601,16 @@
 	<div class="ska-row">
 		<div class="ska-col-sm-5">
 			<label for="account_name_s2s" class="visually-hidden">Account name</label>
-			<div class="ska-input-group">
-				<span class="ska-input-group-text">To: </span>
-				<span class="ska-input-group-text"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span></span>
-				<input type="text" id="account_name_s2s" name="account_name" class="ska-form-control" placeholder="Account name" list="accountlist" required pattern=".*[^\s].*">
-				<span class="ska-input-group-text">@<?php out($this->get('server')->hostname)?></span>
+			<div class="input-group">
+				<span class="input-group-text">To: </span>
+				<span class="input-group-text"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span></span>
+				<input type="text" id="account_name_s2s" name="account_name" class="form-control" placeholder="Account name" list="accountlist" required pattern=".*[^\s].*">
+				<span class="input-group-text">@<?php out($this->get('server')->hostname)?></span>
 			</div>
 		</div>
 		<div class="ska-col-sm-3">
-			<button type="submit" name="request_access" value="server_account" class="ska-btn ska-btn-primary">Request access</button>
-			<a href="<?php outurl('/help#getting_access')?>" class="ska-btn ska-btn-info">Help</a>
+			<button type="submit" name="request_access" value="server_account" class="btn btn-primary">Request access</button>
+			<a href="<?php outurl('/help#getting_access')?>" class="btn btn-info">Help</a>
 		</div>
 	</div>
 </form>
@@ -619,9 +619,9 @@
 	<h4>Request group access</h4>
 	<div class="ska-row">
 		<div class="ska-col-sm-5 ska-mb-3">
-			 <div class="ska-input-group">
-				<span class="ska-input-group-text"><label for="account"><span class="ska-icon ska-icon-group" title="Group account"></span><span class="visually-hidden">Group name</span></label></span>
-				<input type="text" id="group_account" name="group_account" class="ska-form-control" placeholder="Group name" list="grouplist" required>
+			 <div class="input-group">
+				<span class="input-group-text"><label for="account"><span class="ska-icon ska-icon-group" title="Group account"></span><span class="visually-hidden">Group name</span></label></span>
+				<input type="text" id="group_account" name="group_account" class="form-control" placeholder="Group name" list="grouplist" required>
 				<datalist id="grouplist">
 					<?php foreach($this->get('all_groups') as $group) { ?>
 					<option value="<?php out($group->name)?>">
@@ -633,16 +633,16 @@
 	<div class="ska-row">
 		<div class="ska-col-sm-5">
 			<label for="account_name_group" class="visually-hidden">Account name</label>
-			<div class="ska-input-group">
-				<span class="ska-input-group-text">To: </span>
-				<span class="ska-input-group-text"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span></span>
-				<input type="text" id="account_name_group" name="account_name" class="ska-form-control" placeholder="Account name" list="accountlist" required pattern=".*[^\s].*">
-				<span class="ska-input-group-text">@<?php out($this->get('server')->hostname)?></span>
+			<div class="input-group">
+				<span class="input-group-text">To: </span>
+				<span class="input-group-text"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span></span>
+				<input type="text" id="account_name_group" name="account_name" class="form-control" placeholder="Account name" list="accountlist" required pattern=".*[^\s].*">
+				<span class="input-group-text">@<?php out($this->get('server')->hostname)?></span>
 			</div>
 		</div>
 		<div class="ska-col-sm-3">
-			<button type="submit" name="request_access" value="group" class="ska-btn ska-btn-primary">Request access</button>
-			<a href="<?php outurl('/help#getting_access')?>" class="ska-btn ska-btn-info">Help</a>
+			<button type="submit" name="request_access" value="group" class="btn btn-primary">Request access</button>
+			<a href="<?php outurl('/help#getting_access')?>" class="btn btn-info">Help</a>
 		</div>
 	</div>
 </form>
@@ -655,7 +655,7 @@
 <h2>Managed accounts</h2>
 <p>You are a leader for the following accounts on this server:</p>
 <div class="ska-scroll-container">
-	<table class="ska-table ska-table-bordered ska-table-striped">
+	<table class="table table-bordered table-striped">
 		<thead>
 			<tr>
 				<th>Account</th>
@@ -688,7 +688,7 @@
 					<?php } ?>
 				</td>
 				<td rowspan="<?php out(max(1, count($access_list)))?>">
-					<a href="<?php outurl($this->data->relative_request_url.'/accounts/'.urlencode($account->name))?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-cog"></span> Manage account</a>
+					<a href="<?php outurl($this->data->relative_request_url.'/accounts/'.urlencode($account->name))?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-cog"></span> Manage account</a>
 				</td>
 				<?php if(empty($access_list)) { ?>
 				<td colspan="3"><em>No-one</em></td>
