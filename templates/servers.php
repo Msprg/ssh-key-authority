@@ -17,37 +17,37 @@
 ##
 ?>
 <h1>Servers</h1>
-<ul class="ska-tabs" role="tablist">
-	<li class="ska-tab-item active" role="presentation"><a href="#list" id="servers_list_tab" class="ska-tab-link active" role="tab" data-bs-toggle="tab" aria-controls="list" aria-selected="true">Server list</a></li>
-	<li class="ska-tab-item" role="presentation"><a href="#add" id="servers_add_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="add" aria-selected="false" tabindex="-1">Add server</a></li>
-	<li class="ska-tab-item" role="presentation"><a href="#add_bulk" id="servers_add_bulk_tab" class="ska-tab-link" role="tab" data-bs-toggle="tab" aria-controls="add_bulk" aria-selected="false" tabindex="-1">Add multiple servers</a></li>
+<ul class="nav nav-tabs" role="tablist">
+	<li class="nav-item" role="presentation"><a href="#list" id="servers_list_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="list" aria-selected="true">Server list</a></li>
+	<li class="nav-item" role="presentation"><a href="#add" id="servers_add_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="add" aria-selected="false" tabindex="-1">Add server</a></li>
+	<li class="nav-item" role="presentation"><a href="#add_bulk" id="servers_add_bulk_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="add_bulk" aria-selected="false" tabindex="-1">Add multiple servers</a></li>
 </ul>
 
 <!-- Tab panes -->
-<div class="ska-tab-content">
-	<div class="ska-tab-pane fade active show" id="list" role="tabpanel" aria-labelledby="servers_list_tab" aria-hidden="false">
+<div class="tab-content">
+	<div class="tab-pane fade active show" id="list" role="tabpanel" aria-labelledby="servers_list_tab" aria-hidden="false">
 		<h2 class="visually-hidden">Server list</h2>
 		<div class="ska-card-stack">
-			<p><a href="<?php outurl('/servers.json') ?>" class="ska-btn ska-btn-secondary ska-btn-sm">
+			<p><a href="<?php outurl('/servers.json') ?>" class="btn btn-secondary btn-sm">
 				<span class="ska-icon ska-icon-console"></span> JSON
 			</a></p>
-			<div class="ska-card">
-				<div class="ska-card-header">
-					<h3 class="ska-card-title">
+			<div class="card">
+				<div class="card-header">
+					<h3 class="h5 ska-mb-0">
 						Filter options
 					</h3>
 				</div>
-					<div class="ska-card-body">
+					<div class="card-body">
 					<form>
 						<div class="ska-row">
 							<div class="ska-col-sm-4">
 								<div class="ska-mb-3">
 									<label for="hostname-search">Hostname (<a href="https://mariadb.com/kb/en/mariadb/regular-expressions-overview/">regexp</a>)</label>
-									<input type="text" id="hostname-search" name="hostname" class="ska-form-control" value="<?php out($this->get('filter')['hostname'])?>" autofocus>
+									<input type="text" id="hostname-search" name="hostname" class="form-control" value="<?php out($this->get('filter')['hostname'])?>" autofocus>
 								</div>
 								<div class="ska-mb-3">
 									<label for="ipaddress-search">IP address</label>
-									<input type="text" id="ipaddress-search" name="ip_address" class="ska-form-control" value="<?php out($this->get('filter')['ip_address'])?>">
+									<input type="text" id="ipaddress-search" name="ip_address" class="form-control" value="<?php out($this->get('filter')['ip_address'])?>">
 								</div>
 							</div>
 							<div class="ska-col-sm-3">
@@ -61,7 +61,7 @@
 								foreach($options as $value => $label) {
 									$checked = in_array($value, $this->get('filter')['key_management']) ? ' checked' : '';
 								?>
-								<div class="ska-form-check"><label class="ska-form-check-label"><input type="checkbox" class="ska-form-check-input" name="key_management[]" value="<?php out($value)?>"<?php out($checked) ?>> <span><?php out($label) ?></span></label></div>
+								<div class="form-check"><label class="form-check-label"><input type="checkbox" class="form-check-input" name="key_management[]" value="<?php out($value)?>"<?php out($checked) ?>> <span><?php out($label) ?></span></label></div>
 								<?php } ?>
 							</div>
 							<div class="ska-col-sm-2">
@@ -75,11 +75,11 @@
 								foreach($options as $value => $label) {
 									$checked = in_array($value, $this->get('filter')['sync_status']) ? ' checked' : '';
 								?>
-								<div class="ska-form-check"><label class="ska-form-check-label"><input type="checkbox" class="ska-form-check-input" name="sync_status[]" value="<?php out($value)?>"<?php out($checked) ?>> <span><?php out($label) ?></span></label></div>
+								<div class="form-check"><label class="form-check-label"><input type="checkbox" class="form-check-input" name="sync_status[]" value="<?php out($value)?>"<?php out($checked) ?>> <span><?php out($label) ?></span></label></div>
 								<?php } ?>
 							</div>
 						</div>
-						<button type="submit" class="ska-btn ska-btn-primary">Display results</button>
+						<button type="submit" class="btn btn-primary">Display results</button>
 					</form>
 				</div>
 			</div>
@@ -90,7 +90,7 @@
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<p><?php $total = count($this->get('servers')); out(number_format($total).' server'.($total == 1 ? '' : 's').' found')?></p>
 			<div class="ska-scroll-container">
-				<table class="ska-table ska-table-hover ska-table-sm">
+				<table class="table table-hover table-sm">
 					<thead>
 						<tr>
 							<?php if($this->get('admin')) { ?>
@@ -182,33 +182,33 @@
 				</table>
 			</div>
 			<?php if($this->get('admin')) { ?>
-			<button type="submit" class="ska-btn ska-btn-primary">Perform a Bulk action on selected servers</button>
+			<button type="submit" class="btn btn-primary">Perform a Bulk action on selected servers</button>
 		</form>
 		<?php } ?>
 	</div>
-	<div class="ska-tab-pane fade" id="add" role="tabpanel" aria-labelledby="servers_add_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="add" role="tabpanel" aria-labelledby="servers_add_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Add server</h2>
-		<div class="ska-alert ska-alert-info">
-			See <a href="<?php outurl('/help#sync_setup')?>" class="ska-alert-link">the sync setup instructions</a> for how to set up the server for key synchronization.
+		<div class="alert alert-info">
+			See <a href="<?php outurl('/help#sync_setup')?>" class="alert-link">the sync setup instructions</a> for how to set up the server for key synchronization.
 		</div>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-mb-3">
 				<label for="hostname">Server hostname</label>
-				<input type="text" id="hostname" name="hostname" class="ska-form-control" required>
+				<input type="text" id="hostname" name="hostname" class="form-control" required>
 			</div>
 			<div class="ska-mb-3">
 				<label for="port">SSH port number</label>
-				<input type="number" id="port" name="port" class="ska-form-control" value="22" required>
+				<input type="number" id="port" name="port" class="form-control" value="22" required>
 			</div>
 			<div class="ska-mb-3">
 				<label for="jumphosts">Jumphosts (<a href="<?php outurl('/help#jumphost_format')?>">format</a>)</label>
-				<input type="text" id="jumphosts" name="jumphosts" pattern="([^@ >]+@[a-zA-Z0-9\-.\u0080-\uffff]+(:[0-9]+)?(,[^@ >]+@[a-zA-Z0-9\-.\u0080-\uffff]+(:[0-9]+)?)*)?( *-> *[a-zA-Z0-9\-.\u0080-\uffff]+)?" class="ska-form-control">
+				<input type="text" id="jumphosts" name="jumphosts" pattern="([^@ >]+@[a-zA-Z0-9\-.\u0080-\uffff]+(:[0-9]+)?(,[^@ >]+@[a-zA-Z0-9\-.\u0080-\uffff]+(:[0-9]+)?)*)?( *-> *[a-zA-Z0-9\-.\u0080-\uffff]+)?" class="form-control">
 			</div>
 			<div class="ska-mb-3">
 				<label for="server_admin">Leaders</label>
-				<input type="text" id="server_admins" name="admins" class="ska-form-control ska-d-none" required>
-				<input type="text" id="server_admin" name="admin" class="ska-form-control" placeholder="Type user/group name and press 'Enter' key" list="adminlist" required>
+				<input type="text" id="server_admins" name="admins" class="form-control ska-d-none" required>
+				<input type="text" id="server_admin" name="admin" class="form-control" placeholder="Type user/group name and press 'Enter' key" list="adminlist" required>
 				<datalist id="adminlist">
 					<?php foreach($this->get('all_users') as $user) { ?>
 					<option value="<?php out($user->uid)?>" label="<?php out($user->name)?>">
@@ -218,13 +218,13 @@
 					<?php } ?>
 				</datalist>
 			</div>
-			<button type="submit" name="add_server" value="1" class="ska-btn ska-btn-primary">Add server to key management</button>
+			<button type="submit" name="add_server" value="1" class="btn btn-primary">Add server to key management</button>
 		</form>
 	</div>
-	<div class="ska-tab-pane fade" id="add_bulk" role="tabpanel" aria-labelledby="servers_add_bulk_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="add_bulk" role="tabpanel" aria-labelledby="servers_add_bulk_tab" aria-hidden="true">
 		<h2 class="visually-hidden">Add multiple servers</h2>
-		<div class="ska-alert ska-alert-info">
-			See <a href="<?php outurl('/help#sync_setup')?>" class="ska-alert-link">the sync setup instructions</a> for how to set up the server for key synchronization.
+		<div class="alert alert-info">
+			See <a href="<?php outurl('/help#sync_setup')?>" class="alert-link">the sync setup instructions</a> for how to set up the server for key synchronization.
 		</div>
 		<h3>Format</h3>
 		<p>The csv content must consist of 4 columns and not contain a headline.</p>
@@ -243,9 +243,9 @@ host3.example.com,22,,ld_group4;leader2</pre>
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-mb-3">
 				<label for="import">CSV import data</label>
-				<textarea id="import" name="import" class="ska-form-control" required></textarea>
+				<textarea id="import" name="import" class="form-control" required></textarea>
 			</div>
-			<button type="submit" name="add_bulk" value="1" class="ska-btn ska-btn-primary">Add servers to key management</button>
+			<button type="submit" name="add_bulk" value="1" class="btn btn-primary">Add servers to key management</button>
 		</form>
 	</div>
 </div>
