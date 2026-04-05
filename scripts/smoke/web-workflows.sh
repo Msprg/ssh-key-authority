@@ -129,11 +129,12 @@ grep -q '>Logout<' "$TMP_DIR/group-detail.html" || smoke_die "Authenticated sess
 ! grep -Eq 'panel-group|panel panel-default|panel-heading|panel-title|panel-body|panel-footer|panel-collapse' "$TMP_DIR/group-detail.html" || smoke_die "Target group page still renders legacy panel markup"
 ! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/group-detail.html" || smoke_die "Target group page still renders legacy glyphicon classes"
 ! grep -Eq "$LEGACY_IN_CLASS_RE" "$TMP_DIR/group-detail.html" || smoke_die "Target group page still renders legacy collapse/tab state classes"
-! grep -Eq "$LEGACY_LAYOUT_RE" "$TMP_DIR/group-detail.html" || smoke_die "Target group page still renders Bootstrap-named layout/utility classes"
 ! grep -Eq 'class="[^"]*\\btext-center\\b|class="[^"]*\\btext-muted\\b|class="[^"]*\\btext-success\\b|class="[^"]*\\btext-warning\\b|class="[^"]*\\btext-danger\\b|class="[^"]*\\btext-info\\b|class="[^"]*\\brounded\\b|class="[^"]*\\bimg-fluid\\b|class="[^"]*\\bclearfix\\b|class="[^"]*\\bd-xl-none\\b|class="[^"]*\\bh-50px\\b' "$TMP_DIR/group-detail.html" || smoke_die "Target group page still renders Bootstrap-named semantic helper classes"
 ! grep -Eq 'class="[^"]*\\btext-bg-secondary\\b' "$TMP_DIR/group-detail.html" || smoke_die "Target group page still renders Bootstrap-named inactive badge classes"
 grep -Eq 'class="[^"]*nav[^"]*nav-tabs' "$TMP_DIR/group-detail.html" || smoke_die "Target group page is missing Bootstrap 5 nav-tab classes"
 grep -Eq 'class="[^"]*tab-content' "$TMP_DIR/group-detail.html" || smoke_die "Target group page is missing Bootstrap 5 tab-content classes"
+grep -Eq 'class="[^"]*row' "$TMP_DIR/group-detail.html" || smoke_die "Target group page is missing Bootstrap 5 row classes"
+grep -Eq 'class="[^"]*col-md-[0-9]+' "$TMP_DIR/group-detail.html" || smoke_die "Target group page is missing Bootstrap 5 column classes"
 grep -Eq 'class="[^"]*table' "$TMP_DIR/group-detail.html" || smoke_die "Target group page is missing Bootstrap 5 table classes"
 grep -Eq 'class="[^"]*btn[^"]*btn-secondary' "$TMP_DIR/group-detail.html" || smoke_die "Target group page is missing Bootstrap 5 secondary button classes"
 if grep -Eq 'name="add_member"|name="add_members"|name="add_access"|name="add_admin"|name="edit_group"' "$TMP_DIR/group-detail.html"; then
@@ -142,6 +143,9 @@ if grep -Eq 'name="add_member"|name="add_members"|name="add_access"|name="add_ad
 fi
 if grep -Eq 'name="add_member"|name="add_members"|name="add_access"' "$TMP_DIR/group-detail.html"; then
     grep -Eq 'class="[^"]*input-group' "$TMP_DIR/group-detail.html" || smoke_die "Target group page is missing Bootstrap 5 input-group classes"
+fi
+if grep -Eq 'name="edit_group"' "$TMP_DIR/group-detail.html"; then
+    grep -Eq 'class="[^"]*form-check' "$TMP_DIR/group-detail.html" || smoke_die "Target group page is missing Bootstrap 5 form-check classes"
 fi
 
 smoke_log "Checking secondary pages for Bootstrap 5 class handoff regressions"

@@ -104,14 +104,14 @@ foreach($this->get('group_members') as $member) {
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Add user</h3>
-			<div class="ska-row">
-				<div class="ska-col-md-9 ska-mb-3">
-					<div class="ska-input-group">
-						<span class="ska-input-group-text"><label for="username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
+			<div class="row">
+				<div class="col-md-9 mb-3">
+					<div class="input-group">
+						<span class="input-group-text"><label for="username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
 						<input type="text" id="username" name="username" class="form-control" placeholder="User name" required list="userlist">
 					</div>
 				</div>
-				<div class="ska-col-md-3 ska-mb-3">
+				<div class="col-md-3 mb-3">
 					<button type="submit" name="add_member" value="1" class="btn btn-primary w-100">Add user to group</button>
 				</div>
 			</div>
@@ -119,20 +119,20 @@ foreach($this->get('group_members') as $member) {
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Add server account</h3>
-			<div class="ska-row">
-				<div class="ska-col-md-2 ska-mb-3">
+			<div class="row">
+				<div class="col-md-2 mb-3">
 					<div class="input-group">
 						<span class="input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account</span></label></span>
 						<input type="text" id="account" name="account" class="form-control" placeholder="Account name" required>
 					</div>
 				</div>
-				<div class="ska-col-md-7 ska-mb-3">
+				<div class="col-md-7 mb-3">
 					<div class="input-group">
 						<span class="input-group-text"><label for="hostname">@</label></span>
 						<input type="text" id="hostname" name="hostname" class="form-control" placeholder="Hostname" required list="<?php out($this->get('admin') ? 'serverlist' : 'adminedserverlist')?>">
 					</div>
 				</div>
-				<div class="ska-col-md-3 ska-mb-3">
+				<div class="col-md-3 mb-3">
 					<button type="submit" name="add_member" value="1" class="btn btn-primary w-100">Add server account to group</button>
 				</div>
 			</div>
@@ -141,13 +141,13 @@ foreach($this->get('group_members') as $member) {
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Add multiple server accounts</h3>
 			<p>Enter a list of accounts, one per line, in the form accountname@hostname</p>
-			<div class="ska-row">
-				<div class="ska-col-md-12 ska-mb-3">
+			<div class="row">
+				<div class="col-md-12 mb-3">
 					<textarea name="accounts" class="form-control"></textarea>
 				</div>
 			</div>
-			<div class="ska-row">
-				<div class="ska-col-md-3 ska-mb-3">
+			<div class="row">
+				<div class="col-md-3 mb-3">
 					<button type="submit" name="add_members" value="1" class="btn btn-primary w-100">Add server accounts to group</button>
 				</div>
 			</div>
@@ -236,14 +236,14 @@ foreach($this->get('group_members') as $member) {
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Grant user access</h3>
-			<div class="ska-row">
-				<div class="ska-col-md-8 ska-mb-3">
+			<div class="row">
+				<div class="col-md-8 mb-3">
 					<div class="input-group">
 						<span class="input-group-text"><label for="access-username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
 						<input type="text" id="access-username" name="username" class="form-control" placeholder="User name" required list="userlist">
 					</div>
 				</div>
-				<div class="ska-col-md-4 ska-mb-3">
+				<div class="col-md-4 mb-3">
 					<button type="submit" name="add_access" value="1" class="btn btn-primary w-100">Grant user access to group resources</button>
 				</div>
 			</div>
@@ -251,20 +251,20 @@ foreach($this->get('group_members') as $member) {
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Grant server account access</h3>
-			<div class="ska-row">
-				<div class="ska-col-md-2 ska-mb-3">
+			<div class="row">
+				<div class="col-md-2 mb-3">
 					<div class="input-group">
 						<span class="input-group-text"><label for="access-account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account</span></label></span>
 						<input type="text" id="access-account" name="account" class="form-control" placeholder="Account name" required>
 					</div>
 				</div>
-				<div class="ska-col-md-6 ska-mb-3">
+				<div class="col-md-6 mb-3">
 					<div class="input-group">
 						<span class="input-group-text"><label for="access-hostname">@</label></span>
 						<input type="text" id="access-hostname" name="hostname" class="form-control" placeholder="Hostname" required list="serverlist">
 					</div>
 				</div>
-				<div class="ska-col-md-4 ska-mb-3">
+				<div class="col-md-4 mb-3">
 					<button type="submit" name="add_access" value="1" class="btn btn-primary w-100">Grant server account access to group resources</button>
 				</div>
 			</div>
@@ -272,14 +272,14 @@ foreach($this->get('group_members') as $member) {
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Grant group access</h3>
-			<div class="ska-row">
-				<div class="ska-col-md-8 ska-mb-3">
+			<div class="row">
+				<div class="col-md-8 mb-3">
 					<div class="input-group">
 						<span class="input-group-text"><label for="access-group"><span class="ska-icon ska-icon-group" title="Group"></span><span class="visually-hidden">Group name</span></label></span>
 						<input type="text" id="access-group" name="group" class="form-control" placeholder="Group name" required list="grouplist">
 					</div>
 				</div>
-				<div class="ska-col-md-4 ska-mb-3">
+				<div class="col-md-4 mb-3">
 					<button type="submit" name="add_access" value="1" class="btn btn-primary w-100">Grant a group access to this group's resources</button>
 				</div>
 			</div>
@@ -370,14 +370,16 @@ foreach($this->get('group_members') as $member) {
 		</form>
 		<?php } ?>
 		<?php if($this->get('admin')) { ?>
-		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-inline-form">
+		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="row g-3 align-items-end">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Add administrator</h3>
-			<div class="ska-form-group">
+			<div class="col-md-4">
 				<label for="user_name" class="visually-hidden">User name</label>
 				<input type="text" id="user_name" name="user_name" class="form-control" placeholder="User name" required list="userlist">
 			</div>
-			<button type="submit" name="add_admin" value="1" class="btn btn-primary">Add administrator to group</button>
+			<div class="col-md-auto">
+				<button type="submit" name="add_admin" value="1" class="btn btn-primary">Add administrator to group</button>
+			</div>
 		</form>
 		<?php } ?>
 	</div>
@@ -395,8 +397,8 @@ foreach($this->get('group_members') as $member) {
 			<div class="ska-setting-row">
 				<div class="ska-setting-label">Group status</div>
 				<div class="ska-setting-control ska-choice-list">
-					<label class="ska-choice ska-text-success"><input type="radio" name="active" value="1"<?php if($this->get('group')->active == 1) out(' checked') ?>> <span>Enabled</span></label>
-					<label class="ska-choice ska-text-danger"><input type="radio" name="active" value="0"<?php if($this->get('group')->active == 0) out(' checked') ?>> <span>Disabled</span></label>
+					<div class="form-check ska-text-success"><label class="form-check-label"><input type="radio" class="form-check-input" name="active" value="1"<?php if($this->get('group')->active == 1) out(' checked') ?>> <span>Enabled</span></label></div>
+					<div class="form-check ska-text-danger"><label class="form-check-label"><input type="radio" class="form-check-input" name="active" value="0"<?php if($this->get('group')->active == 0) out(' checked') ?>> <span>Disabled</span></label></div>
 				</div>
 			</div>
 			<div class="ska-setting-actions">
