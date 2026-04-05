@@ -1,6 +1,6 @@
 # Library Security Plan
 
-Date: 2026-04-04
+Date: 2026-04-05
 Branch: `bootstrap5-upgrade-part1`
 
 ## Runtime Library Inventory
@@ -9,6 +9,7 @@ The UI now loads these frontend assets from [templates/base.php](/var/www/ska/te
 
 | Asset | Runtime status | Notes |
 | --- | --- | --- |
+| `public_html/vendor/bootstrap5/bootstrap-5.3.8.min.css` | Loaded globally | Local vendored Bootstrap 5 CSS baseline; JS plugins are still not loaded |
 | `public_html/header.js` | Loaded globally | Pre-paint fingerprint visibility logic |
 | `public_html/extra.js` | Loaded globally | Shared page behaviors, now native DOM/fetch based |
 | `public_html/icons/*.svg` | Loaded on demand | Repo-owned icon assets used by semantic `ska-icon` markup and entity-link icons |
@@ -29,7 +30,8 @@ PHP dependencies remain small:
 
 | Library / asset family | Risk | Why it matters | Current mitigation |
 | --- | --- | --- | --- |
-| Historical Bootstrap/Glyphicon references | Low | Older docs and checkpoints can mislead future work after the runtime asset removal | Keep current-state docs updated and trim stale references as cleanup continues |
+| Historical Bootstrap/Glyphicon references | Low | Older docs and checkpoints can mislead future work after the runtime asset swap | Keep current-state docs updated and trim stale references as cleanup continues |
+| Vendored Bootstrap 5 CSS | Low | Third-party CSS is back in the runtime, but now pinned to a fixed local version and loaded without the old JS/plugin surface | Keep the version explicit, load SKA styles after it, and extend smoke/browser checks before handing more families back |
 | Local frontend runtime in `extra.js` | Medium | Now repo-owned rather than third-party, but still central to tabs, collapses, dropdowns, alerts, and sync polling | Covered by smoke tests plus targeted browser verification on interaction-heavy slices |
 | Browser interaction smoke in `scripts/smoke/browser-interactions.sh` | Low | New repo-owned regression guard that drives real frontend interactions in headless Chromium | Reuses smoke env vars and now runs as part of `make smoke` |
 | Browser-debugging helper `scripts/smoke/browser-capture.sh` | Low | New repo-owned debugging tool that logs into the smoke environment for screenshots | Reuses the existing smoke env vars and is not loaded in application runtime |
@@ -43,11 +45,11 @@ Important distinction on the current branch:
 - No third-party frontend JavaScript is loaded at runtime.
 - No jQuery global is present in the browser.
 - No Bootstrap JS plugins are executed.
-- No third-party frontend CSS framework is loaded at runtime.
+- Bootstrap 5.3.8 CSS is now loaded at runtime from a fixed local vendored asset, but no third-party frontend JS framework is loaded.
 - Live icon rendering in templates/runtime JS no longer depends on the Bootstrap glyphicon font or markup.
 - No additional legacy browser libraries such as `moment.js`, `select2`, `datepicker`, or old jQuery plugins were found in the runtime asset scan.
 
-That shifts the frontend risk profile substantially: the main remaining exposure is page-local rendering regressions and stale historical references, not an active legacy library in the browser runtime.
+That shifts the frontend risk profile substantially: the main remaining exposure is now controlled Bootstrap 5 CSS interaction with the repo-local `ska-*` layer, plus page-local rendering regressions and stale historical references.
 
 ## Upgrade / Deprecation Plan
 
@@ -77,22 +79,25 @@ Temporary mitigation still in effect:
 - keep repo-local utility/component styling in [public_html/style.css](/var/www/ska/public_html/style.css) while templates remain mixed
 - preserve Bootstrap-style custom events from native handlers where existing code may still observe them
 
-### Phase 2: Current focus, clean up after Bootstrap CSS removal
+### Phase 2: Current focus, controlled Bootstrap 5 CSS handoff
 
-Objective: remove dormant vendor residue and finish page-local cleanup now that the legacy CSS bundle is out of the runtime.
+Objective: reintroduce Bootstrap 5 CSS in a controlled way while preserving the SKA-owned families already migrated.
 
 Priority work:
 
+- keep Bootstrap 5 CSS pinned to a fixed local asset and validated in smoke
+- continue handing selected class families back from `ska-*` ownership to Bootstrap 5-native classes only after conflict scans stay clean
 - visually recheck untargeted secondary pages under the repo-local baseline
 - finish removing stale Bootstrap-era helper/content assumptions from mixed templates
 - continue migrating the remaining untargeted secondary templates onto explicit `ska-*` layout/utility aliases where they still use Bootstrap-era class vocabulary
 - trim remaining icon-compatibility selectors and stale documentation references
-- remove dormant vendored Bootstrap/Glyphicon assets once no longer needed for historical checkpoints
+- keep Bootstrap 3/Glyphicon assets absent from the runtime path and remove any stale references that imply otherwise
 
 Exit criteria:
 
 - no Bootstrap-era helper/content assumptions remain on active templates
-- glyphicon font files and dormant Bootstrap CSS assets are no longer needed anywhere in the repo runtime path
+- Bootstrap 5 CSS is the only third-party frontend stylesheet in the runtime path
+- glyphicon font files and dormant Bootstrap 3 CSS assets are no longer needed anywhere in the repo runtime path
 - smoke/browser capture confirms the cleaned high-traffic and secondary pages still render acceptably under the repo-local baseline
 
 ### Phase 3: Remove stale vendored artifacts
@@ -112,10 +117,10 @@ This phase can now proceed incrementally because runtime references are already 
 
 | Timeline | Target |
 | --- | --- |
-| Now | Recheck untargeted secondary pages and remove dead Bootstrap/Glyphicon residue |
-| Next 1-2 PRs | Finish page-local cleanup and trim stale migration references |
+| Now | Validate the pinned Bootstrap 5 CSS baseline and continue shrinking class-family conflicts |
+| Next 1-2 PRs | Finish page-local cleanup, begin selective handoff back to Bootstrap 5-native classes, and trim stale migration references |
 | Before final Bootstrap cleanup | Remove stale docs/checkpoints and any remaining fallback references |
-| Final cleanup | Delete remaining dormant Bootstrap 3 artifacts and glyphicons |
+| Final cleanup | Delete remaining dormant Bootstrap 3-era references and any SKA-only aliases that are no longer needed |
 
 ## Repository Policy For Remaining Mixed Pages
 

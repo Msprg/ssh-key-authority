@@ -37,6 +37,7 @@ smoke_log "Checking login page"
 curl -fsS -L -c "$COOKIE_JAR" "$BASE_URL/login" -o "$TMP_DIR/login.html"
 LOGIN_CSRF=$(smoke_extract_csrf "$TMP_DIR/login.html")
 [ -n "$LOGIN_CSRF" ] || smoke_die "Login CSRF token not found"
+grep -Eq '<link[^>]+href="[^"]*/vendor/bootstrap5/bootstrap-5\.3\.8\.min\.css' "$TMP_DIR/login.html" || smoke_die "Login page is missing the vendored Bootstrap 5 CSS"
 ! grep -Eq '<link[^>]+href="[^"]*/bootstrap/css/bootstrap\.min\.css' "$TMP_DIR/login.html" || smoke_die "Login page still loads bootstrap.min.css"
 grep -Eq 'class="[^"]*ska-form-control' "$TMP_DIR/login.html" || smoke_die "Login page is missing SKA-owned form-control classes"
 grep -Eq 'class="[^"]*ska-form-label' "$TMP_DIR/login.html" || smoke_die "Login page is missing SKA-owned form-label classes"
@@ -51,6 +52,7 @@ curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" \
     "$BASE_URL/login" -o "$TMP_DIR/post-login.html"
 
 grep -q '>Logout<' "$TMP_DIR/post-login.html" || smoke_die "Login failed or did not reach authenticated UI"
+grep -Eq '<link[^>]+href="[^"]*/vendor/bootstrap5/bootstrap-5\.3\.8\.min\.css' "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell is missing the vendored Bootstrap 5 CSS"
 ! grep -Eq '<link[^>]+href="[^"]*/bootstrap/css/bootstrap\.min\.css' "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell still loads bootstrap.min.css"
 ! grep -q '/bootstrap/js/bootstrap.min.js' "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell still loads bootstrap.min.js"
 ! grep -Eq '<script[^>]+src="[^"]*/jquery/jquery-3\.7\.1\.min\.js' "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell still loads jquery"
@@ -71,6 +73,7 @@ PUBLIC_KEY=$(cat "$KEY_PATH.pub")
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/" -o "$TMP_DIR/home-before-key.html"
 HOME_CSRF=$(smoke_extract_csrf "$TMP_DIR/home-before-key.html")
 [ -n "$HOME_CSRF" ] || smoke_die "Home page CSRF token not found before key add"
+grep -Eq '<link[^>]+href="[^"]*/vendor/bootstrap5/bootstrap-5\.3\.8\.min\.css' "$TMP_DIR/home-before-key.html" || smoke_die "Home page is missing the vendored Bootstrap 5 CSS"
 ! grep -Eq '<link[^>]+href="[^"]*/bootstrap/css/bootstrap\.min\.css' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still loads bootstrap.min.css"
 ! grep -q '/bootstrap/js/bootstrap.min.js' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still loads bootstrap.min.js"
 ! grep -Eq '<script[^>]+src="[^"]*/jquery/jquery-3\.7\.1\.min\.js' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still loads jquery"
