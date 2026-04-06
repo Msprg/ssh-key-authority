@@ -112,26 +112,27 @@ function keygen_help($box_position) {
 		<li class="nav-item" role="presentation"><a href="#mac_instructions" id="mac_instructions_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="mac_instructions" aria-selected="false" tabindex="-1">Mac</a></li>
 		<li class="nav-item" role="presentation"><a href="#linux_instructions" id="linux_instructions_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="linux_instructions" aria-selected="false" tabindex="-1">Linux</a></li>
 	</ul>
-	<div class="tab-content">
-		<div class="tab-pane fade active show" id="windows_instructions" role="tabpanel" aria-labelledby="windows_instructions_tab" aria-hidden="false">
-				<aside class="float-md-end ms-md-4 mb-3"><img src="/putty-key-generator.png" class="rounded img-fluid d-block" alt="PuTTY key generator"></aside>
-			<p>On Windows you will typically use the <a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html">PuTTYgen</a> application to generate your key pair.</p>
+	<div class="tab-content clearfix">
+		<div class="tab-pane fade" id="windows_instructions">
+				<aside class="pull-right"><img src="/windows-key-generator.gif" class="img-rounded img-responsive"></aside>
+			<p>On Windows you will typically use the <a href="https://mobaxterm.mobatek.net/download-home-edition.html">MobaXterm MobaKeyGen</a> application to generate your key pair.</p>
 			<ol>
-				<li>Download and run the latest Windows installer from the <a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html">PuTTY download page</a>.
-				<li>Start PuTTYgen.
-				<li>Select the type of key to generate. RSA, ECDSA or ED25519 are good choices.
-				<li>For RSA, enter "4096" as the number of bits in the generated key. For ECDSA, use either the nistp384 or nistp521 curve.
-				<li>Click the Generate button.
+				<li>Download and run the latest Windows installer from the <a href="https://mobaxterm.mobatek.net/download-home-edition.html">MobaXterm download page</a>.
+				<li>Start MobaXterm.
+				<li>In the MobaXterm window open key generator by opening Tools -> MobaKeyGen (SSH Key Generator).
+				<li>Select the type of key to generate. EdDSA (ED25519) is preferred, ECDSA is also accepted. Less preffered is RSA (4096 bit). <strong>Weaker keys are not acceptable !</strong>
+				<li>For EdDSA, use variant ED25519. For ECDSA, use either the nistp384 or nistp521 curve. For RSA, enter "4096" as the number of bits in the generated key.
+				<li>Click the Generate button. Do not forget to generate required randomnes by moving your cursor over the blank area.
 				<li>Provide a comment for the key: it is a very good idea to include your user name and the current date in the comment to make the key easier to identify.
-				<li><strong>Provide a key passphrase.</strong>
+				<li><strong>Provide a key passphrase.</strong> You will need this every time you'll be loading the key into the ssh agent.
 				<li>Save the private key to your local machine.
-				<li>Select and copy the contents of the "Public key for pasting into OpenSSH authorized_keys file" section at the top of the window (scrollable, make sure to select all).
+				<li>Select and copy the contents of the "Public key for pasting into OpenSSH server" section at the top of the window (scrollable, make sure to select all).
 				<?php if(!is_null($box_position)) { ?>
 				<li>Paste the public key that you just copied into the box <?php out($box_position)?> and click the "Add public key" button.
 				<?php } ?>
 			</ol>
 			<div class="alert alert-info">
-				<strong>Note:</strong> if you are not using PuTTY to connect, you may need to export your private key into OpenSSH format to use it. You can do this from the Conversions menu.
+				<strong>Note:</strong> if you are not using MobaXterm to connect, you may need to export your private key into OpenSSH format to use it. You can do this from the Conversions menu.
 			</div>
 			<div class="alert alert-info">
 				<strong>Note:</strong> if you are using Cygwin or MSYS bash, the instructions for Linux can be used instead.
@@ -141,9 +142,9 @@ function keygen_help($box_position) {
 			<p>On Mac you can generate a key pair with the ssh-keygen command.</p>
 			<ol>
 				<li>Start the "Terminal" program.
-				<li>Run the following command: <code>ssh-keygen -t rsa -b 4096 -C '<var>comment</var>'</code>, replacing '<var>comment</var>' with your own comment - a good idea is to include your user name and the current date in the comment to make the key easier to identify.
+				<li>Run the following command: <code>ssh-keygen -t ed25519 -C '<var>comment</var>'</code>, replacing '<var>comment</var>' with your own comment - a good idea is to include your user name and the current date in the comment to make the key easier to identify.
 				<li><strong>Make sure that you give the key a passphrase when prompted.</strong>
-				<li>A new text file will have been created in a <code>.ssh</code> directory called <code>id_rsa.pub</code>.  Copy the contents of that file into your clipboard.
+				<li>Run <code>cat ~/.ssh/id_ed25519.pub</code>.  The output is your public key.  Copy it into your clipboard.
 				<?php if(!is_null($box_position)) { ?>
 				<li>Paste the public key that you just copied into the box <?php out($box_position)?> and click the "Add public key" button.
 				<?php } ?>
@@ -154,12 +155,12 @@ function keygen_help($box_position) {
 			<ol>
 				<li>Open a terminal on your machine
 				<li>
-					Run the following command: <code>ssh-keygen -t rsa -b 4096 -C '<var>comment</var>'</code>, replacing '<var>comment</var>' with your own comment - a good idea is to include your user name and the current date in the comment to make the key easier to identify.
+					Run the following command: <code>ssh-keygen -t ed25519 -C '<var>comment</var>'</code>, replacing '<var>comment</var>' with your own comment - a good idea is to include your user name and the current date in the comment to make the key easier to identify.
 					<div class="alert alert-info">
 						Note: if this command fails with a message of "ssh-keygen: command not found", you need to install the openssh-client package: <code>sudo apt-get install openssh-client</code> on Debian-based systems.
 					</div>
 				<li><strong>Make sure that you give the key a passphrase when prompted.</strong>
-				<li>Run <code>cat ~/.ssh/id_rsa.pub</code>.  The output is your public key.  Copy it into your clipboard.
+				<li>Run <code>cat ~/.ssh/id_ed25519.pub</code>.  The output is your public key.  Copy it into your clipboard.
 				<?php if(!is_null($box_position)) { ?>
 				<li>Paste the public key that you just copied into the box <?php out($box_position)?> and click the "Add public key" button.
 				<?php } ?>

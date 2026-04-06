@@ -16,7 +16,9 @@
 ## limitations under the License.
 ##
 $web_config = $this->get('web_config');
-$footer=str_replace("%v", "1.5.0", $web_config['footer']);
+header('X-Frame-Options: DENY');
+header("Content-Security-Policy: default-src 'self'");
+$footer=str_replace("%v", "1.5.2", $web_config['footer']);
 ?>
 <!DOCTYPE html>
 <meta charset="utf-8"/>
