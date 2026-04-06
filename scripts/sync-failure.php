@@ -185,12 +185,4 @@ class SyncFailureReporter {
 		return $text;
 	}
 
-	/**
-	 * @deprecated Use normalize_reason_full() or normalize_reason_for_storage() instead
-	 * @param string|null $reason
-	 * @return string
-	 */
-	private static function normalize_reason($reason) {
-		return self::normalize_reason_for_storage($reason);
-	}
 }

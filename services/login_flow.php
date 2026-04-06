@@ -13,16 +13,22 @@ class LoginFlowService {
 		$success_message = '';
 
 		if($request_method === 'POST') {
-			if(!isset($post_data['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $post_data['csrf_token'])) {
+			$session_csrf_token = $_SESSION['csrf_token'] ?? null;
+			$submitted_csrf_token = $post_data['csrf_token'] ?? null;
+			if(
+				!is_string($session_csrf_token) ||
+				!is_string($submitted_csrf_token) ||
+				!hash_equals($session_csrf_token, $submitted_csrf_token)
+			) {
 				$error_message = 'Invalid request token. Please refresh the page and try again.';
 			} else {
-				$username = trim($post_data['username'] ?? '');
-				$password = $post_data['password'] ?? '';
+				$username = isset($post_data['username']) && is_string($post_data['username']) ? trim($post_data['username']) : '';
+				$password = isset($post_data['password']) && is_string($post_data['password']) ? $post_data['password'] : '';
 
-				if(!preg_match('/^[a-zA-Z0-9._-]+$/', $username)) {
-					$error_message = 'Invalid username format. Username can only contain letters, numbers, dots, hyphens, and underscores.';
-				} elseif($username === '' || $password === '') {
+				if($username === '' || $password === '') {
 					$error_message = 'Please enter both username and password.';
+				} elseif(!preg_match('/^[a-zA-Z0-9._-]+$/', $username)) {
+					$error_message = 'Invalid username format. Username can only contain letters, numbers, dots, hyphens, and underscores.';
 				} else {
 					$current_time = time();
 					$user_attempts = $_SESSION['login_attempts'][$username] ?? null;
