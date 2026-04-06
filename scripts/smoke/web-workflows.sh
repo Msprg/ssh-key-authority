@@ -23,10 +23,14 @@ LEGACY_FORM_GROUP_RE='class="form-group([[:space:]]|")|class="[^"]+[[:space:]]fo
 LEGACY_DROPDOWN_RE='class="dropdown([[:space:]]|")|class="[^"]+[[:space:]]dropdown([[:space:]]|")|class="dropdown-toggle([[:space:]]|")|class="[^"]+[[:space:]]dropdown-toggle([[:space:]]|")'
 LEGACY_CARET_RE='class="caret([[:space:]]|")|class="[^"]+[[:space:]]caret([[:space:]]|")'
 LEGACY_IN_CLASS_RE='class="in([[:space:]]|")|class="[^"]+[[:space:]]in([[:space:]]|")'
+LEGACY_HIDDEN_CLASS_RE='class="hidden([[:space:]]|")|class="[^"]+[[:space:]]hidden([[:space:]]|")'
 LEGACY_LAYOUT_TOKENS='container|row|col-sm-[0-9]+|col-md-[0-9]+|text-muted|w-100|mb-0|mb-1|mb-3|mb-4|mt-3|d-none|float-end|invisible'
 LEGACY_LAYOUT_RE="class=\"(${LEGACY_LAYOUT_TOKENS})([[:space:]]|\")|class=\"[^\"]+[[:space:]](${LEGACY_LAYOUT_TOKENS})([[:space:]]|\")"
 LEGACY_PRESENTATION_TOKENS='text-muted|text-success|text-warning|text-danger|text-info|d-xl-none|h-50px'
 LEGACY_PRESENTATION_RE="class=\"(${LEGACY_PRESENTATION_TOKENS})([[:space:]]|\")|class=\"[^\"]+[[:space:]](${LEGACY_PRESENTATION_TOKENS})([[:space:]]|\")"
+LEGACY_SEMANTIC_TOKENS='text-center|text-muted|text-success|text-warning|text-danger|text-info|rounded|img-fluid|clearfix|d-xl-none|h-50px'
+LEGACY_SEMANTIC_RE="class=\"(${LEGACY_SEMANTIC_TOKENS})([[:space:]]|\")|class=\"[^\"]+[[:space:]](${LEGACY_SEMANTIC_TOKENS})([[:space:]]|\")"
+LEGACY_INACTIVE_BADGE_RE='class="text-bg-secondary([[:space:]]|")|class="[^"]+[[:space:]]text-bg-secondary([[:space:]]|")'
 RETIRED_SKA_GENERIC_RE='ska-(form-control|form-label|btn|tabs|tab-content|tab-pane|row|col-(sm|md)-[0-9]+|d-none|w-100|form-check|table)'
 
 cleanup() {
@@ -85,10 +89,10 @@ grep -Eq '<script[^>]+src="[^"]*/vendor/bootstrap5/bootstrap-5\.3\.8\.bundle\.mi
 ! grep -Eq '<script[^>]+src="[^"]*/bootstrap5-compat\.js' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still loads bootstrap5-compat.js"
 ! grep -q 'data-ska-skip-legacy' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders migration-only data-ska-skip-legacy markup"
 ! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders legacy glyphicon classes"
-! grep -Eq 'class="[^"]*\bhidden\b' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders the legacy hidden helper class"
+! grep -Eq "$LEGACY_HIDDEN_CLASS_RE" "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders the legacy hidden helper class"
 ! grep -Eq "$RETIRED_SKA_GENERIC_RE" "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders retired SKA generic classes"
 ! grep -Eq "$LEGACY_PRESENTATION_RE" "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders Bootstrap-named semantic helper classes"
-! grep -Eq 'class="[^"]*\btext-bg-secondary\b' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders Bootstrap-named inactive badge classes"
+! grep -Eq "$LEGACY_INACTIVE_BADGE_RE" "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders Bootstrap-named inactive badge classes"
 grep -Eq 'class="[^"]*table[^"]*table-striped' "$TMP_DIR/home-before-key.html" || smoke_die "Home page is missing Bootstrap 5 table classes"
 grep -Eq 'class="[^"]*form-control' "$TMP_DIR/home-before-key.html" || smoke_die "Home page is missing Bootstrap 5 form-control classes"
 grep -Eq 'class="[^"]*btn[^"]*btn-primary' "$TMP_DIR/home-before-key.html" || smoke_die "Home page is missing Bootstrap 5 primary button classes"
@@ -132,8 +136,8 @@ grep -q '>Logout<' "$TMP_DIR/group-detail.html" || smoke_die "Authenticated sess
 ! grep -Eq 'panel-group|panel panel-default|panel-heading|panel-title|panel-body|panel-footer|panel-collapse' "$TMP_DIR/group-detail.html" || smoke_die "Target group page still renders legacy panel markup"
 ! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/group-detail.html" || smoke_die "Target group page still renders legacy glyphicon classes"
 ! grep -Eq "$LEGACY_IN_CLASS_RE" "$TMP_DIR/group-detail.html" || smoke_die "Target group page still renders legacy collapse/tab state classes"
-! grep -Eq 'class="[^"]*\btext-center\b|class="[^"]*\btext-muted\b|class="[^"]*\btext-success\b|class="[^"]*\btext-warning\b|class="[^"]*\btext-danger\b|class="[^"]*\btext-info\b|class="[^"]*\brounded\b|class="[^"]*\bimg-fluid\b|class="[^"]*\bclearfix\b|class="[^"]*\bd-xl-none\b|class="[^"]*\bh-50px\b' "$TMP_DIR/group-detail.html" || smoke_die "Target group page still renders Bootstrap-named semantic helper classes"
-! grep -Eq 'class="[^"]*\btext-bg-secondary\b' "$TMP_DIR/group-detail.html" || smoke_die "Target group page still renders Bootstrap-named inactive badge classes"
+! grep -Eq "$LEGACY_SEMANTIC_RE" "$TMP_DIR/group-detail.html" || smoke_die "Target group page still renders Bootstrap-named semantic helper classes"
+! grep -Eq "$LEGACY_INACTIVE_BADGE_RE" "$TMP_DIR/group-detail.html" || smoke_die "Target group page still renders Bootstrap-named inactive badge classes"
 grep -Eq 'class="[^"]*nav[^"]*nav-tabs' "$TMP_DIR/group-detail.html" || smoke_die "Target group page is missing Bootstrap 5 nav-tab classes"
 grep -Eq 'class="[^"]*tab-content' "$TMP_DIR/group-detail.html" || smoke_die "Target group page is missing Bootstrap 5 tab-content classes"
 grep -Eq 'class="[^"]*row' "$TMP_DIR/group-detail.html" || smoke_die "Target group page is missing Bootstrap 5 row classes"
@@ -183,10 +187,10 @@ curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/servers" -o "$TMP_DIR/
 grep -q '>Logout<' "$TMP_DIR/servers.html" || smoke_die "Authenticated session was lost while loading servers page"
 ! grep -Eq "form-inline|form-horizontal|control-label|col-sm-offset-|help-block|<div class=\"checkbox|<div class=\"radio|\\bsr-only\\b|table-condensed|$LEGACY_FORM_GROUP_RE" "$TMP_DIR/servers.html" || smoke_die "Servers page still renders legacy Bootstrap 3 form helpers"
 ! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/servers.html" || smoke_die "Servers page still renders legacy glyphicon classes"
-! grep -Eq 'class="[^"]*\bhidden\b' "$TMP_DIR/servers.html" || smoke_die "Servers page still renders the legacy hidden helper class"
+! grep -Eq "$LEGACY_HIDDEN_CLASS_RE" "$TMP_DIR/servers.html" || smoke_die "Servers page still renders the legacy hidden helper class"
 ! grep -Eq "$LEGACY_IN_CLASS_RE" "$TMP_DIR/servers.html" || smoke_die "Servers page still renders legacy collapse/tab state classes"
-! grep -Eq 'class="[^"]*\btext-center\b|class="[^"]*\btext-muted\b|class="[^"]*\btext-success\b|class="[^"]*\btext-warning\b|class="[^"]*\btext-danger\b|class="[^"]*\btext-info\b|class="[^"]*\brounded\b|class="[^"]*\bimg-fluid\b|class="[^"]*\bclearfix\b|class="[^"]*\bd-xl-none\b|class="[^"]*\bh-50px\b' "$TMP_DIR/servers.html" || smoke_die "Servers page still renders Bootstrap-named semantic helper classes"
-! grep -Eq 'class="[^"]*\btext-bg-secondary\b' "$TMP_DIR/servers.html" || smoke_die "Servers page still renders Bootstrap-named inactive badge classes"
+! grep -Eq "$LEGACY_SEMANTIC_RE" "$TMP_DIR/servers.html" || smoke_die "Servers page still renders Bootstrap-named semantic helper classes"
+! grep -Eq "$LEGACY_INACTIVE_BADGE_RE" "$TMP_DIR/servers.html" || smoke_die "Servers page still renders Bootstrap-named inactive badge classes"
 grep -Eq 'class="[^"]*nav[^"]*nav-tabs' "$TMP_DIR/servers.html" || smoke_die "Servers page is missing Bootstrap 5 nav-tab classes"
 grep -Eq 'class="[^"]*tab-content' "$TMP_DIR/servers.html" || smoke_die "Servers page is missing Bootstrap 5 tab-content classes"
 grep -Eq 'class="[^"]*card' "$TMP_DIR/servers.html" || smoke_die "Servers page is missing Bootstrap 5 card classes"
@@ -204,10 +208,10 @@ curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL$TARGET_SERVER_PAGE" -o
 grep -q '>Logout<' "$TMP_DIR/server.html" || smoke_die "Authenticated session was lost while loading target server page"
 ! grep -Eq "form-inline|form-horizontal|control-label|col-sm-offset-|help-block|<div class=\"checkbox|<div class=\"radio|\\bsr-only\\b|$LEGACY_FORM_GROUP_RE" "$TMP_DIR/server.html" || smoke_die "Target server page still renders legacy Bootstrap 3 form helpers"
 ! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/server.html" || smoke_die "Target server page still renders legacy glyphicon classes"
-! grep -Eq 'class="[^"]*\bhidden\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders the legacy hidden helper class"
+! grep -Eq "$LEGACY_HIDDEN_CLASS_RE" "$TMP_DIR/server.html" || smoke_die "Target server page still renders the legacy hidden helper class"
 ! grep -Eq "$LEGACY_IN_CLASS_RE" "$TMP_DIR/server.html" || smoke_die "Target server page still renders legacy collapse/tab state classes"
-! grep -Eq 'class="[^"]*\btext-center\b|class="[^"]*\btext-muted\b|class="[^"]*\btext-success\b|class="[^"]*\btext-warning\b|class="[^"]*\btext-danger\b|class="[^"]*\btext-info\b|class="[^"]*\brounded\b|class="[^"]*\bimg-fluid\b|class="[^"]*\bclearfix\b|class="[^"]*\bd-xl-none\b|class="[^"]*\bh-50px\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders Bootstrap-named semantic helper classes"
-! grep -Eq 'class="[^"]*\btext-bg-secondary\b' "$TMP_DIR/server.html" || smoke_die "Target server page still renders Bootstrap-named inactive badge classes"
+! grep -Eq "$LEGACY_SEMANTIC_RE" "$TMP_DIR/server.html" || smoke_die "Target server page still renders Bootstrap-named semantic helper classes"
+! grep -Eq "$LEGACY_INACTIVE_BADGE_RE" "$TMP_DIR/server.html" || smoke_die "Target server page still renders Bootstrap-named inactive badge classes"
 if grep -Eq 'id="server_accounts_tab"|id="server_admins_tab"|id="server_settings_tab"' "$TMP_DIR/server.html"; then
     grep -Eq 'class="[^"]*nav[^"]*nav-tabs' "$TMP_DIR/server.html" || smoke_die "Target server page is missing Bootstrap 5 nav-tab classes"
     grep -Eq 'class="[^"]*tab-content' "$TMP_DIR/server.html" || smoke_die "Target server page is missing Bootstrap 5 tab-content classes"
@@ -245,7 +249,7 @@ grep -q '>Logout<' "$TMP_DIR/user.html" || smoke_die "Authenticated session was 
 ! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/user.html" || smoke_die "Target user page still renders legacy glyphicon classes"
 ! grep -Eq "$RETIRED_SKA_GENERIC_RE" "$TMP_DIR/user.html" || smoke_die "Target user page still renders retired SKA generic classes"
 ! grep -Eq "$LEGACY_IN_CLASS_RE" "$TMP_DIR/user.html" || smoke_die "Target user page still renders legacy collapse/tab state classes"
-! grep -Eq 'class="[^"]*\btext-bg-secondary\b' "$TMP_DIR/user.html" || smoke_die "Target user page still renders Bootstrap-named inactive badge classes"
+! grep -Eq "$LEGACY_INACTIVE_BADGE_RE" "$TMP_DIR/user.html" || smoke_die "Target user page still renders Bootstrap-named inactive badge classes"
 ! grep -Eq "$LEGACY_PRESENTATION_RE" "$TMP_DIR/user.html" || smoke_die "Target user page still renders Bootstrap-named semantic helper classes"
 grep -Eq 'class="[^"]*nav[^"]*nav-tabs' "$TMP_DIR/user.html" || smoke_die "Target user page is missing Bootstrap 5 nav-tab classes"
 grep -Eq 'class="[^"]*tab-content' "$TMP_DIR/user.html" || smoke_die "Target user page is missing Bootstrap 5 tab-content classes"
@@ -266,7 +270,7 @@ grep -Eq 'class="[^"]*btn[^"]*btn-primary' "$TMP_DIR/bulk-mail.html" || smoke_di
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/pubkeys" -o "$TMP_DIR/pubkeys.html"
 grep -q '>Logout<' "$TMP_DIR/pubkeys.html" || smoke_die "Authenticated session was lost while loading public keys page"
 ! grep -Eq "$LEGACY_PRESENTATION_RE" "$TMP_DIR/pubkeys.html" || smoke_die "Public keys page still renders Bootstrap-named semantic helper classes"
-! grep -Eq 'class="[^"]*\bhidden\b' "$TMP_DIR/pubkeys.html" || smoke_die "Public keys page still renders the legacy hidden helper class"
+! grep -Eq "$LEGACY_HIDDEN_CLASS_RE" "$TMP_DIR/pubkeys.html" || smoke_die "Public keys page still renders the legacy hidden helper class"
 ! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/pubkeys.html" || smoke_die "Public keys page still renders legacy glyphicon classes"
 grep -Eq 'class="[^"]*nav[^"]*nav-tabs' "$TMP_DIR/pubkeys.html" || smoke_die "Public keys page is missing Bootstrap 5 nav-tab classes"
 grep -Eq 'class="[^"]*tab-content' "$TMP_DIR/pubkeys.html" || smoke_die "Public keys page is missing Bootstrap 5 tab-content classes"
@@ -331,8 +335,8 @@ fetch_account_page() {
     ! grep -Eq "$LEGACY_FORM_GROUP_RE" "$output_file" || smoke_die "Target account page still renders legacy form-group markup"
     ! grep -Eq 'glyphicon-[a-z0-9-]+' "$output_file" || smoke_die "Target account page still renders legacy glyphicon classes"
     ! grep -Eq "$LEGACY_IN_CLASS_RE" "$output_file" || smoke_die "Target account page still renders legacy collapse/tab state classes"
-    ! grep -Eq 'class="[^"]*\btext-center\b|class="[^"]*\btext-muted\b|class="[^"]*\btext-success\b|class="[^"]*\btext-warning\b|class="[^"]*\btext-danger\b|class="[^"]*\btext-info\b|class="[^"]*\brounded\b|class="[^"]*\bimg-fluid\b|class="[^"]*\bclearfix\b|class="[^"]*\bd-xl-none\b|class="[^"]*\bh-50px\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named semantic helper classes"
-    ! grep -Eq 'class="[^"]*\btext-bg-secondary\b' "$output_file" || smoke_die "Target account page still renders Bootstrap-named inactive badge classes"
+    ! grep -Eq "$LEGACY_SEMANTIC_RE" "$output_file" || smoke_die "Target account page still renders Bootstrap-named semantic helper classes"
+    ! grep -Eq "$LEGACY_INACTIVE_BADGE_RE" "$output_file" || smoke_die "Target account page still renders Bootstrap-named inactive badge classes"
     grep -Eq 'class="[^"]*nav[^"]*nav-tabs' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 nav-tab classes"
     grep -Eq 'class="[^"]*tab-content' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 tab-content classes"
     grep -Eq 'class="[^"]*table' "$output_file" || smoke_die "Target account page is missing Bootstrap 5 table classes"
