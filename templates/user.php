@@ -73,8 +73,8 @@
 							</a>
 						</td>
 						<td>
-							<?php if(count($key->list_signatures()) > 0) { ?><a href="<?php outurl('/pubkeys/'.urlencode($key->id).'#sig')?>"><span class="ska-icon ska-icon-pencil" title="Signed key"></span></a><?php } ?>
-							<?php if(count($key->list_destination_rules()) > 0) { ?><a href="<?php outurl('/pubkeys/'.urlencode($key->id).'#dest')?>"><span class="ska-icon ska-icon-pushpin" title="Destination-restricted"></span></a><?php } ?>
+							<?php if(count($key->list_signatures()) > 0) { ?><a href="<?php outurl('/pubkeys/'.urlencode($key->id).'#sig')?>" aria-label="View key signatures"><span class="ska-icon ska-icon-pencil" aria-hidden="true"></span></a><?php } ?>
+							<?php if(count($key->list_destination_rules()) > 0) { ?><a href="<?php outurl('/pubkeys/'.urlencode($key->id).'#dest')?>" aria-label="View destination restrictions"><span class="ska-icon ska-icon-pushpin" aria-hidden="true"></span></a><?php } ?>
 						</td>
 						<td><?php out($key->format_creation_date()) ?></td>
 						<td><?php out($key->keysize) ?></td>
