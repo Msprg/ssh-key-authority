@@ -1,6 +1,6 @@
 # Phase 7 Checkpoint: Bootstrap 5 Compatibility Layer
 
-Note from current branch state on 2026-04-05: this document is historical. The compatibility assets described here have since been retired, and SKA now runs without Bootstrap JS, jQuery, Bootstrap CSS, or the Bootstrap 5 compatibility layer in runtime.
+Note from current branch state on 2026-04-05: this document is historical. The compatibility assets described here have since been retired, and SKA now runs without Bootstrap 3 JS, Bootstrap 3 CSS, jQuery, or the Bootstrap 5 compatibility layer in runtime.
 
 Date: 2026-02-09
 Branch: `bootstrap5-upgrade`
