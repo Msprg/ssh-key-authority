@@ -42,7 +42,9 @@ function send_mail_key_allowed(ExternalKey $key) {
 	$email->body .= "This means, the key will stay untouched in ~/.ssh/authorized_keys files on target machines, if it appears.\n";
 	$email->body .= "You can see the full list of allowed keys at $allowed_keys_url";
 
-	$email->send();
+	if($report_address !== '') {
+		$email->send();
+	}
 }
 
 $defaults = array();

@@ -23,7 +23,15 @@
  */
 function send_bulk_add_mail(Entity $entity, array $affected_servers) {
 	$active_user = RuntimeState::get('active_user');
-	$config = RuntimeState::get('config', array());
+	$config = RuntimeState::get('config');
+	if(
+		!is_array($config) ||
+		!isset($config['email']['report_address']) ||
+		trim((string)$config['email']['report_address']) === '' ||
+		!isset($config['email']['report_name'])
+	) {
+		throw new RuntimeException('Bulk leader mail configuration is missing email report settings.');
+	}
 
 	$servers_desc = count($affected_servers) == 1 ? "1 server" : count($affected_servers) . " servers";
 

@@ -70,18 +70,64 @@ class SyncRuntime {
 		if(isset($config['general']['timeout_binary'])) {
 			$configured = trim((string)$config['general']['timeout_binary']);
 			if($configured !== '') {
-				return $configured;
+				$validated = self::validate_timeout_binary($configured);
+				if($validated !== null) {
+					return $validated;
+				}
 			}
 		}
 
-		if(is_executable('/usr/bin/timeout')) {
-			return '/usr/bin/timeout';
+		$validated = self::validate_timeout_binary('/usr/bin/timeout');
+		if($validated !== null) {
+			return $validated;
 		}
 
-		if(is_executable('/bin/timeout')) {
-			return '/bin/timeout';
+		$validated = self::validate_timeout_binary('/bin/timeout');
+		if($validated !== null) {
+			return $validated;
+		}
+
+		$validated = self::validate_timeout_binary('timeout');
+		if($validated !== null) {
+			return $validated;
 		}
 
 		return 'timeout';
+	}
+
+	/**
+	 * @param string $candidate
+	 * @return string|null
+	 */
+	private static function validate_timeout_binary($candidate) {
+		if($candidate === '') {
+			return null;
+		}
+		if(strpos($candidate, '/') !== false) {
+			return (is_file($candidate) && is_executable($candidate)) ? $candidate : null;
+		}
+		$resolved = self::resolve_binary_from_path($candidate);
+		return $resolved !== '' ? $resolved : null;
+	}
+
+	/**
+	 * @param string $binary_name
+	 * @return string
+	 */
+	private static function resolve_binary_from_path($binary_name) {
+		if(!preg_match('/^[A-Za-z0-9._-]+$/', $binary_name)) {
+			return '';
+		}
+		$output = array();
+		$return_code = 1;
+		exec('command -v '.escapeshellarg($binary_name).' 2>/dev/null', $output, $return_code);
+		if($return_code !== 0 || empty($output[0])) {
+			return '';
+		}
+		$resolved = trim((string)$output[0]);
+		if($resolved === '' || !is_executable($resolved)) {
+			return '';
+		}
+		return $resolved;
 	}
 }

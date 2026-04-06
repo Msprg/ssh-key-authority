@@ -6,7 +6,7 @@ class KeyLifecycleService {
 	 * @param User $user
 	 * @param string $raw_public_key
 	 */
-	public function add_user_public_key(User $user, $raw_public_key) {
+	public function add_user_public_key(User $user, string $raw_public_key): void {
 		$public_key = new PublicKey;
 		$public_key->import($raw_public_key, $user->uid);
 		$user->add_public_key($public_key);
@@ -16,9 +16,13 @@ class KeyLifecycleService {
 	 * Import and attach a public key for a server account entity.
 	 * @param ServerAccount $account
 	 * @param string $raw_public_key
+	 * @param User $active_user
 	 * @param bool $allow_weak_key force key import for admins
 	 */
-	public function add_server_account_public_key(ServerAccount $account, $raw_public_key, $allow_weak_key = false) {
+	public function add_server_account_public_key(ServerAccount $account, string $raw_public_key, User $active_user, bool $allow_weak_key = false): void {
+		if($allow_weak_key && !$active_user->admin) {
+			throw new InvalidArgumentException('Only administrators can force weak public key imports.');
+		}
 		$public_key = new PublicKey;
 		$public_key->import($raw_public_key, null, $allow_weak_key);
 		$account->add_public_key($public_key);
@@ -46,6 +50,14 @@ class KeyLifecycleService {
 	 * @return PublicKey|null
 	 */
 	public function find_public_key_by_id(array $existing_public_keys, $public_key_id): ?PublicKey {
+		if(
+			!(
+				is_int($public_key_id) ||
+				(is_string($public_key_id) && preg_match('/^[0-9]+$/', $public_key_id))
+			)
+		) {
+			return null;
+		}
 		$target_id = (int)$public_key_id;
 		foreach($existing_public_keys as $public_key) {
 			if($public_key instanceof PublicKey && (int)$public_key->id === $target_id) {

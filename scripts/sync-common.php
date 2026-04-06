@@ -99,6 +99,7 @@ class SyncProcess {
 			$this->finished = true;
 			$this->errors = "Failed to start sync worker process";
 			$this->exit_status = 1;
+			$this->handle = null;
 			$this->pipes = array();
 			return;
 		}

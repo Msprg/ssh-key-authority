@@ -58,6 +58,12 @@ Scope: behavior-preserving modernization of architecture, dependencies, frontend
   - legacy hardening header (`X-XSS-Protection`) still used.
   - `scripts/ssh.php` enables strict host key checking for jumphost chain commands by default (via `build_jumphost_security_options`, which sets `$strict_checking = true`), yielding `StrictHostKeyChecking=yes` unless operators explicitly set `config['security']['jumphost_strict_host_key_checking']` to 0.
   - inconsistent auth/session logic split between request handler, login view, and `AuthService`.
+  - auto-running migrations during bootstrap via `MigrationDirectory::LAST_MIGRATION` is an operational risk in production; automatic startup migrations can trigger unexpected downtime, schema/data incompatibilities, or failed rollbacks while the app is coming up.
+  - mitigation for bootstrap-triggered migrations should require controlled execution instead of implicit startup mutation:
+    - manual migration step in deployment workflow
+    - maintenance-window execution for schema changes
+    - backup and rollback procedures before apply
+    - opt-in or feature-flagged migration execution when automation is required
 
 ### Data/model and domain
 - Domain logic heavily embedded in model classes and views.
@@ -106,6 +112,7 @@ Scope: behavior-preserving modernization of architecture, dependencies, frontend
 - Create repository layer for high-risk entities first (User, PublicKey, Access, Server, SyncRequest).
 - Preserve current SQL behavior and ordering semantics via compatibility tests before rewrites.
 - Keep migrations additive and reversible where possible.
+- Refactor high-risk table locking patterns. Owner: backend/data. Acceptance: repo-wide `LOCK TABLES` usage is inventoried; high-risk paths are replaced with row-level locking or transactional approaches where possible; any unavoidable locks have mitigation notes and operational runbooks covering timing, impact, and rollback.
 
 ### C. Frontend
 - Progressive migration:
@@ -130,8 +137,11 @@ A roadmap phase is complete only if all pass (or failures are explicitly documen
 - `composer validate --strict`
 - `composer audit`
 - `composer check-platform-reqs`
+- static analysis pass (for example `phpstan` or `psalm`)
+- linting pass (for example `phpcs`)
 - `docker compose config -q`
 - smoke checklist status for impacted workflows
+- automated smoke/integration test suite pass for impacted workflows
 
 ## 6. Definition Of Done For Modernization PRs
 - No compatibility-contract regressions.

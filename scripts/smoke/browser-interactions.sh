@@ -96,12 +96,17 @@ TAB_RESULT=$(browser_smoke_exec '
     if (!tab) {
         return "";
     }
+    if (!tab.id) {
+        return "";
+    }
     tab.click();
     return tab.id + "|" + tab.getAttribute("href");
 ')
 [ -n "$TAB_RESULT" ] || smoke_die "No inactive server-list tab was available to click"
 TAB_ID=${TAB_RESULT%%|*}
 TAB_TARGET=${TAB_RESULT#*|}
+[ -n "$TAB_ID" ] || smoke_die "No inactive server-list tab with an id was available to click"
+[ -n "$TAB_TARGET" ] || smoke_die "No inactive server-list tab target was available to click"
 browser_smoke_wait_for_js '
     var tabId = arguments[0];
     var target = arguments[1];

@@ -34,7 +34,8 @@ class RequestAuthGuard {
 	private function is_public_route($request_path) {
 		foreach($this->public_routes as $route => $is_public) {
 			if($is_public) {
-				$pattern = preg_replace('/\{[^}]+\}/', '[^/]+', $route);
+				$pattern = preg_quote($route, '|');
+				$pattern = preg_replace('/\\\\\{[^}]+\\\\\}/', '[^/]+', $pattern);
 				if(preg_match('|^'.$pattern.'$|', $request_path)) {
 					return true;
 				}

@@ -144,14 +144,20 @@ browser_smoke_login() {
 
     smoke_log "Logging into ${base_url}"
     browser_smoke_navigate "${base_url}/login"
-    browser_smoke_exec '
-        document.querySelector("input[name=username]").value = arguments[0];
-        document.querySelector("input[name=password]").value = arguments[1];
+	[ "$(browser_smoke_exec '
+		var usernameField = document.querySelector("input[name=username]");
+		var passwordField = document.querySelector("input[name=password]");
+		var form = document.querySelector("form");
+		if (!usernameField || !passwordField || !form) {
+			return false;
+		}
+		usernameField.value = arguments[0];
+		passwordField.value = arguments[1];
         window.setTimeout(function () {
-            document.querySelector("form").submit();
+			form.submit();
         }, 0);
         return true;
-    ' "$username" "$password" >/dev/null
+	' "$username" "$password")" = "true" ] || smoke_die "Login form fields or form element were not found"
 
     browser_smoke_wait_for_js 'return !!document.querySelector("a[href=\"/logout\"]");' 80 0.25 \
         || smoke_die "Login did not reach authenticated shell"

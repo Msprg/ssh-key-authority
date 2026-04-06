@@ -8,7 +8,7 @@ class RequestPolicyGuard {
 		}
 	}
 
-	public function enforce_active_user_status($active_user, $relative_request_url, $absolute_request_url) {
+	public function enforce_active_user_status($active_user) {
 		if($active_user && (!$active_user->active || $active_user->force_disable)) {
 			require('views/error403.php');
 			die;
@@ -16,6 +16,6 @@ class RequestPolicyGuard {
 	}
 
 	public function can_render_view($is_public, $active_user) {
-		return $is_public || ($active_user && $active_user->auth_realm == 'LDAP');
+		return $is_public || ($active_user && $active_user->auth_realm === 'LDAP');
 	}
 }

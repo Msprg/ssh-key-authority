@@ -15,6 +15,7 @@ Status legend:
 
 - `Bootstrap 5-ready`: generic layout/components now use Bootstrap 5 directly; only app-specific SKA wrappers remain.
 - `Mixed`: page works on the Bootstrap 5 runtime, but still has heavier SKA-local layout/status wrappers that could be simplified later.
+- `N/A`: not applicable; responses or pages are JSON/TXT or otherwise have no Bootstrap layout.
 
 ## Runtime Baseline
 

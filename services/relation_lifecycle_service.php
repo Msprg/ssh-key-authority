@@ -93,8 +93,9 @@ class RelationLifecycleService {
 	 * @param array $selected_server_hostnames list of hostname strings
 	 * @param Entity $from_admin
 	 * @param Entity $to_admin
+	 * @return array list of error messages keyed by server hostname
 	 */
-	public function reassign_server_admins_by_hostname(array $servers, array $selected_server_hostnames, Entity $from_admin, Entity $to_admin): void {
+	public function reassign_server_admins_by_hostname(array $servers, array $selected_server_hostnames, Entity $from_admin, Entity $to_admin): array {
 		$errors = array();
 		foreach($servers as $server) {
 			if(!($server instanceof Server)) {
@@ -102,16 +103,27 @@ class RelationLifecycleService {
 			}
 			if(in_array($server->hostname, $selected_server_hostnames, true)) {
 				try {
-					$this->add_server_admin($server, $to_admin);
-					$this->delete_server_admin($server, $from_admin);
+					$added_new_admin = $this->add_server_admin($server, $to_admin) === true;
+					if(!$this->delete_server_admin($server, $from_admin)) {
+						if($added_new_admin) {
+							try {
+								$this->delete_server_admin($server, $to_admin);
+							} catch(Throwable $rollback_error) {
+								error_log('reassign_server_admins_by_hostname rollback failed for '.$server->hostname.': '.$rollback_error->getMessage());
+							}
+						}
+						$message = "Server {$server->hostname}: failed to remove previous leader after reassignment";
+						error_log('reassign_server_admins_by_hostname: '.$message);
+						$errors[$server->hostname] = $message;
+					}
 				} catch(Throwable $error) {
-					$errors[] = "Server {$server->hostname}: {$error->getMessage()}";
+					$message = "Server {$server->hostname}: {$error->getMessage()}";
+					error_log('reassign_server_admins_by_hostname: '.$message);
+					$errors[$server->hostname] = $message;
 				}
 			}
 		}
-		foreach($errors as $error) {
-			error_log('reassign_server_admins_by_hostname: '.$error);
-		}
+		return $errors;
 	}
 
 	/**

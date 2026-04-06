@@ -260,7 +260,7 @@ foreach($this->get('group_members') as $member) {
 				</div>
 				<div class="col-md-6 mb-3">
 					<div class="input-group">
-						<span class="input-group-text"><label for="access-hostname">@</label></span>
+						<span class="input-group-text"><label for="access-hostname">@<span class="visually-hidden">Hostname</span></label></span>
 						<input type="text" id="access-hostname" name="hostname" class="form-control" placeholder="Hostname" required list="serverlist">
 					</div>
 				</div>

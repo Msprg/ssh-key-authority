@@ -115,10 +115,85 @@ class ResponseSecurityHeaders {
 		}
 		if(isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
 			$proto = strtolower(trim((string)$_SERVER['HTTP_X_FORWARDED_PROTO']));
-			if($proto === 'https') {
+			if($proto === 'https' && self::is_request_from_trusted_proxy(self::get_runtime_config())) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	private static function get_runtime_config() {
+		if(array_key_exists('config', $GLOBALS)) {
+			return $GLOBALS['config'];
+		}
+		if(class_exists('RuntimeState', false)) {
+			return RuntimeState::get('config');
+		}
+		return null;
+	}
+
+	private static function is_request_from_trusted_proxy($config) {
+		$remote_addr = $_SERVER['REMOTE_ADDR'] ?? '';
+		if($remote_addr === '') {
+			return false;
+		}
+		foreach(self::trusted_proxy_rules($config) as $rule) {
+			if(self::ip_matches_rule($remote_addr, $rule)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static function trusted_proxy_rules($config) {
+		if(!is_array($config)) {
+			return array();
+		}
+		$raw_rules = $config['security']['trusted_proxies'] ?? array();
+		if(!is_array($raw_rules)) {
+			$raw_rules = explode(',', (string)$raw_rules);
+		}
+		$rules = array();
+		foreach($raw_rules as $rule) {
+			$rule = trim((string)$rule);
+			if($rule !== '') {
+				$rules[] = $rule;
+			}
+		}
+		return $rules;
+	}
+
+	private static function ip_matches_rule($ip, $rule) {
+		if(strpos($rule, '/') === false) {
+			return $ip === $rule;
+		}
+		return self::ip_in_cidr($ip, $rule);
+	}
+
+	private static function ip_in_cidr($ip, $cidr) {
+		$parts = explode('/', $cidr, 2);
+		if(count($parts) !== 2 || $parts[1] === '') {
+			return false;
+		}
+		$network = inet_pton($parts[0]);
+		$packed_ip = inet_pton($ip);
+		if($network === false || $packed_ip === false || strlen($network) !== strlen($packed_ip)) {
+			return false;
+		}
+		$prefix = (int)$parts[1];
+		$max_prefix = strlen($network) * 8;
+		if($prefix < 0 || $prefix > $max_prefix) {
+			return false;
+		}
+		$full_bytes = intdiv($prefix, 8);
+		$remaining_bits = $prefix % 8;
+		if($full_bytes > 0 && substr($packed_ip, 0, $full_bytes) !== substr($network, 0, $full_bytes)) {
+			return false;
+		}
+		if($remaining_bits === 0) {
+			return true;
+		}
+		$mask = (0xFF << (8 - $remaining_bits)) & 0xFF;
+		return (ord($packed_ip[$full_bytes]) & $mask) === (ord($network[$full_bytes]) & $mask);
 	}
 }

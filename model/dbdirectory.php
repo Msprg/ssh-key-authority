@@ -32,6 +32,20 @@ abstract class DBDirectory {
 		} else {
 			$this->database = null;
 		}
+		$this->requireDatabase();
+	}
+
+	/**
+	 * Fail fast when runtime database state is missing.
+	 *
+	 * @return mixed
+	 */
+	protected function requireDatabase() {
+		if($this->database === null) {
+			throw new RuntimeException('Database service is unavailable for '.get_class($this).'.');
+		}
+
+		return $this->database;
 	}
 
 }

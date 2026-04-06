@@ -116,7 +116,10 @@ if(isset($_POST['add_access']) && ($server_admin || $account_admin || $active_us
 	}
 } elseif(isset($_POST['add_public_key']) && ($server_admin || $account_admin || $active_user->admin)) {
 	try {
-		$key_lifecycle_service->add_server_account_public_key($account, $_POST['add_public_key'], isset($_POST['force']) && $active_user->admin);
+		if(!($active_user instanceof User)) {
+			throw new RuntimeException('Authenticated user context is unavailable for public key import.');
+		}
+		$key_lifecycle_service->add_server_account_public_key($account, $_POST['add_public_key'], $active_user, isset($_POST['force']) && $active_user->admin);
 		redirect('#pubkeys');
 	} catch(InvalidArgumentException $e) {
 		$content = new PageSection('key_upload_fail');

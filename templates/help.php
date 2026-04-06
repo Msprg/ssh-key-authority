@@ -136,7 +136,7 @@ $security_config = $this->get('security_config');
 					<dt>The tunnel connection via jumphost(s) failed</dt>
 					<dd>Somewhere on the tunnel over the configured jumphost(s) there was an error, so SKA was not able to connect to the target server.</dd>
 					<dt>SSH authentication failed</dt>
-					<dd>Although SSH key authority was able to connect to your server via SSH, it failed to log in.  See the guides for setting up <a data-bs-toggle="collapse" data-bs-parent="#help" href="#sync_setup" aria-expanded="false">full account syncing</a> or <a data-bs-toggle="collapse" data-bs-parent="#help" href="#legacy_sync_setup" aria-expanded="false">legacy root account syncing</a>.</dd>
+					<dd>Although SSH key authority was able to connect to your server via SSH, it failed to log in.  See the guide for setting up <a data-bs-toggle="collapse" data-bs-parent="#help" href="#sync_setup" aria-expanded="false" aria-controls="sync_setup">full account syncing</a>.</dd>
 					<dt>SFTP subsystem failed</dt>
 					<dd>SSH key authority currently relies on SFTP in order to determine if an account's key file needs updating or not.  We are hoping to remove this dependency at some point, but for now your server needs to support SFTP (which openssh does by default) for key synchronization to work.</dd>
 					<dt><em>x</em> account(s) failed to sync</dt>

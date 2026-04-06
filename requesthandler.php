@@ -64,7 +64,7 @@ if($active_user instanceof User) {
 }
 
 $policy_guard->enforce_web_enabled($config);
-$policy_guard->enforce_active_user_status($active_user, $relative_request_url, $absolute_request_url);
+$policy_guard->enforce_active_user_status($active_user);
 
 $csrf_guard->validate($active_user, $request_context, $_POST);
 

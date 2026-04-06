@@ -27,7 +27,7 @@
 			</a>
 		</h3>
 	</div>
-	<div id="server_list" class="collapse" aria-hidden="true">
+	<div id="server_list" class="collapse">
 		<div class="card-body">
 			<ul>
 			<?php foreach ($this->data->server_names as $server_name) { ?>
@@ -44,7 +44,9 @@
 		<input type="hidden" name="selected_servers[]" value="<?php out($server_name) ?>">
 	<?php } ?>
 
-	<h3>Add a new leader to all selected servers</h3>
+	<div class="col-12">
+		<h3>Add a new leader to all selected servers</h3>
+	</div>
 	<div class="col-lg-8">
 		<label for="user_name" class="form-label">User or group name</label>
 		<input type="text" id="user_name" name="user_name" class="form-control" placeholder="User or group name" required list="userlist">

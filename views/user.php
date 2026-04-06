@@ -43,7 +43,15 @@ if(isset($_POST['reassign_servers']) && is_array($_POST['servers']) && $active_u
 		}
 	}
 	if(isset($new_admin)) {
-		$relation_lifecycle_service->reassign_server_admins_by_hostname($admined_servers, $_POST['servers'], $user, $new_admin);
+		$errors = $relation_lifecycle_service->reassign_server_admins_by_hostname($admined_servers, $_POST['servers'], $user, $new_admin);
+		if(!empty($errors)) {
+			$alert = new UserAlert;
+			$alert->class = 'danger';
+			$alert->content = implode(' | ', $errors);
+			if($active_user instanceof User) {
+				$active_user->add_alert($alert);
+			}
+		}
 		redirect('#details');
 	}
 } elseif(isset($_POST['delete_public_key']) && $active_user && $active_user->admin) {

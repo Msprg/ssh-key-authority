@@ -58,30 +58,21 @@ abstract class Record {
 	 * @return mixed
 	 */
 	protected static function resolve_runtime($key, $default = null) {
-		if(class_exists('RuntimeState', false)) {
-			return RuntimeState::get($key, array_key_exists($key, $GLOBALS) ? $GLOBALS[$key] : $default);
+		if(array_key_exists($key, $GLOBALS)) {
+			return $GLOBALS[$key];
 		}
-		return array_key_exists($key, $GLOBALS) ? $GLOBALS[$key] : $default;
+		if(class_exists('RuntimeState', false)) {
+			return RuntimeState::get($key, $default);
+		}
+		return $default;
 	}
 
 	public function __construct($id = null, $preload_data = array()) {
-		if(array_key_exists('database', $GLOBALS)) {
-			$this->database = $GLOBALS['database'];
-		} elseif(class_exists('RuntimeState', false)) {
-			$this->database = RuntimeState::get('database');
-		} else {
-			$this->database = null;
-		}
+		$this->database = self::resolve_runtime('database');
 		if($this->database === null) {
 			throw new RuntimeException('Database service is unavailable for Record initialization.');
 		}
-		if(array_key_exists('active_user', $GLOBALS)) {
-			$this->active_user = $GLOBALS['active_user'];
-		} elseif(class_exists('RuntimeState', false)) {
-			$this->active_user = RuntimeState::get('active_user');
-		} else {
-			$this->active_user = null;
-		}
+		$this->active_user = self::resolve_runtime('active_user');
 		$this->id = $id;
 		$this->data = array();
 		foreach($preload_data as $field => $value) {

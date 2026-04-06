@@ -179,8 +179,8 @@ class SyncFailureReporter {
 		if($text === '') {
 			return '';
 		}
-		if(strlen($text) > 240) {
-			return substr($text, 0, 240).'...';
+		if(mb_strlen($text, 'UTF-8') > 240) {
+			return mb_substr($text, 0, 240, 'UTF-8').'...';
 		}
 		return $text;
 	}

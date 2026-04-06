@@ -32,6 +32,10 @@ class LoginFlowService {
 				} else {
 					$current_time = time();
 					$user_attempts = $_SESSION['login_attempts'][$username] ?? null;
+					if(is_array($user_attempts) && isset($user_attempts['time']) && ($current_time - $user_attempts['time']) >= 900) {
+						$_SESSION['login_attempts'][$username] = array('count' => 0, 'time' => $current_time);
+						$user_attempts = $_SESSION['login_attempts'][$username];
+					}
 
 					if($this->is_rate_limited($user_attempts, $current_time)) {
 						$remaining_time = 900 - ($current_time - $user_attempts['time']);
@@ -119,6 +123,7 @@ class LoginFlowService {
 	private function audit_log($event_type, $username, $details) {
 		$timestamp = date('Y-m-d H:i:s');
 		$safe_username = preg_replace('/[^a-zA-Z0-9._-]/', '', $username);
+		$details = $this->sanitize_log_details($details);
 		$log_message = sprintf(
 			'[LoginFlowService::handle_request] %s - Event: %s, Username: %s, Details: %s',
 			$timestamp,
@@ -127,5 +132,15 @@ class LoginFlowService {
 			$details
 		);
 		error_log($log_message);
+	}
+
+	private function sanitize_log_details($details) {
+		$details = preg_replace('/[\x00-\x1F\x7F]+/u', ' ', (string)$details);
+		$details = trim((string)preg_replace('/\s+/u', ' ', $details));
+		$details = str_replace('%', '%%', $details);
+		if(strlen($details) > 500) {
+			$details = substr($details, 0, 500).'...';
+		}
+		return $details;
 	}
 }

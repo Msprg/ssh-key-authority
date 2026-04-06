@@ -85,7 +85,7 @@ Strengthen sync execution safety, diagnostics, and operational clarity while pre
 ## Rollback strategy (Phase 5)
 
 - Revert Phase 5 commits in reverse order if needed:
-  - spawn failure handling
+  - spawn failure handling - `48c06e2`
   - non-fatal status-file classification
   - failure classification helper
   - jumphost diagnostics/trust options

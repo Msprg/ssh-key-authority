@@ -187,7 +187,9 @@
 		<?php } ?>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="row g-3 align-items-end">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<h3>Create<?php if($this->get('server')->authorization != 'manual') out(' non-LDAP'); ?> account</h3>
+			<div class="col-12">
+				<h3>Create<?php if($this->get('server')->authorization != 'manual') out(' non-LDAP'); ?> account</h3>
+			</div>
 			<div class="col-md-4">
 				<label for="account_name" class="visually-hidden">Account name</label>
 				<input type="text" id="account_name" name="account_name" class="form-control" placeholder="Account name" required pattern=".*[^\s].*">
