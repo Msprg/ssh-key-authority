@@ -114,25 +114,33 @@ if(isset($_POST['add_access']) && ($server_admin || $account_admin || $active_us
 			redirect('/servers/'.urlencode($server->hostname).'#accounts');
 		}
 	}
-} elseif(isset($_POST['add_public_key']) && ($server_admin || $account_admin || $active_user->admin)) {
-	try {
-		if(!($active_user instanceof User)) {
-			throw new RuntimeException('Authenticated user context is unavailable for public key import.');
+	} elseif(isset($_POST['add_public_key']) && ($server_admin || $account_admin || $active_user->admin)) {
+		try {
+			if(!($active_user instanceof User)) {
+				throw new RuntimeException('Authenticated user context is unavailable for public key import.');
+			}
+			$key_lifecycle_service->add_server_account_public_key($account, $_POST['add_public_key'], $active_user, isset($_POST['force']) && $active_user->admin);
+			redirect('#pubkeys');
+		} catch(InvalidArgumentException $e) {
+			$content = new PageSection('key_upload_fail');
+			$error_message = $e->getMessage();
+			if(preg_match('/^Insufficient bits in public key: (\d+) < (\d+)$/', $error_message, $matches)) {
+				$actual_bits = $matches[1];
+				$required_bits = $matches[2];
+				$content->set('message', "The public key you submitted is of insufficient strength; it has {$actual_bits} bits but must be at least {$required_bits} bits.");
+			} else {
+				$content->set('message', "The public key you submitted doesn't look valid.");
+			}
+		} catch(RuntimeException $e) {
+			error_log('Server account public key import failed for '.$account->name.'@'.$server->hostname.': '.$e->getMessage()."\n".$e);
+			$content = new PageSection('key_upload_fail');
+			$content->set('message', 'Could not import the submitted public key.');
+		} catch(Exception $e) {
+			error_log('Unexpected server account public key import failure for '.$account->name.'@'.$server->hostname.': '.$e->getMessage()."\n".$e);
+			$content = new PageSection('key_upload_fail');
+			$content->set('message', 'Could not import the submitted public key.');
 		}
-		$key_lifecycle_service->add_server_account_public_key($account, $_POST['add_public_key'], $active_user, isset($_POST['force']) && $active_user->admin);
-		redirect('#pubkeys');
-	} catch(InvalidArgumentException $e) {
-		$content = new PageSection('key_upload_fail');
-		$error_message = $e->getMessage();
-		if(preg_match('/^Insufficient bits in public key: (\d+) < (\d+)$/', $error_message, $matches)) {
-			$actual_bits = $matches[1];
-			$required_bits = $matches[2];
-			$content->set('message', "The public key you submitted is of insufficient strength; it has {$actual_bits} bits but must be at least {$required_bits} bits.");
-		} else {
-			$content->set('message', "The public key you submitted doesn't look valid.");
-		}
-	}
-} elseif(isset($_POST['delete_public_key']) && ($server_admin || $account_admin || $active_user->admin)) {
+	} elseif(isset($_POST['delete_public_key']) && ($server_admin || $account_admin || $active_user->admin)) {
 	$key_lifecycle_service->delete_entity_public_key($account, $pubkeys, $_POST['delete_public_key']);
 	redirect('#pubkeys');
 } elseif(isset($_POST['add_admin']) && ($server_admin || $active_user->admin)) {

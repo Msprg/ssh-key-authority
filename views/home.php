@@ -34,19 +34,20 @@ if(isset($_POST['add_public_key'])) {
 			$content->set('message', "The public key you submitted doesn't look valid.");
 		}
 	}
-} elseif(isset($_POST['delete_public_key'])) {
-	try {
-		$deleted = $key_lifecycle_service->delete_entity_public_key($active_user, $public_keys, $_POST['delete_public_key']);
-		if($deleted) {
-			redirect();
+	} elseif(isset($_POST['delete_public_key'])) {
+		try {
+			$deleted = $key_lifecycle_service->delete_entity_public_key($active_user, $public_keys, $_POST['delete_public_key']);
+			if($deleted) {
+				redirect();
+			}
+			$content = new PageSection('key_upload_fail');
+			$content->set('message', 'The selected public key could not be found.');
+		} catch(Exception $e) {
+			error_log('Home public key delete failed: '.$e->getMessage()."\n".$e);
+			$content = new PageSection('key_upload_fail');
+			$content->set('message', 'Could not delete the selected public key.');
 		}
-		$content = new PageSection('key_upload_fail');
-		$content->set('message', 'The selected public key could not be found.');
-	} catch(Exception $e) {
-		$content = new PageSection('key_upload_fail');
-		$content->set('message', 'Could not delete the selected public key.');
-	}
-} else {
+	} else {
 	$content = new PageSection('home');
 	$content->set('user_keys', $public_keys);
 	$content->set('admined_servers', $admined_servers);

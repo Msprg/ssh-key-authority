@@ -93,8 +93,8 @@ foreach($this->get('group_members') as $member) {
 								<button type="submit" name="delete_member" value="<?php out($member->entity_id)?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-ban-circle"></span> Remove from group</button>
 							</td>
 							<?php } ?>
-							<?php } ?>
 						</tr>
+						<?php } ?>
 					</tbody>
 				</table>
 			</div>
@@ -219,12 +219,12 @@ foreach($this->get('group_members') as $member) {
 								</ul>
 								<?php } ?>
 							</td>
-							<td>
-								<a href="<?php outurl('/groups/'.urlencode($this->get('group')->name).'/access_rules/'.urlencode($access->id))?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-cog"></span> Configure access</a>
-								<button type="submit" name="delete_access" value="<?php out($access->id)?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-ban-circle"></span> Remove access</button>
-							</td>
+								<td>
+									<a href="<?php outurl('/groups/'.urlencode($this->get('group')->name).'/access_rules/'.urlencode($access->id))?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-cog"></span> Configure access</a>
+									<button type="submit" name="delete_access" value="<?php out($access->id)?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-ban-circle"></span> Remove access</button>
+								</td>
+							</tr>
 							<?php } ?>
-						</tr>
 					</tbody>
 				</table>
 			</div>
