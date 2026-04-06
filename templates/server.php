@@ -87,7 +87,7 @@
 
 <!-- Tab panes -->
 <div class="tab-content">
-	<div class="tab-pane fade active show" id="accounts" role="tabpanel" aria-labelledby="server_accounts_tab" aria-hidden="false">
+	<div class="tab-pane fade active show" id="accounts" role="tabpanel" aria-labelledby="server_accounts_tab">
 		<h2 class="visually-hidden">
 			<?php if($this->get('server')->authorization == 'manual') { ?>
 				Accounts
@@ -197,7 +197,7 @@
 			</div>
 		</form>
 	</div>
-	<div class="tab-pane fade" id="admins" role="tabpanel" aria-labelledby="server_admins_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="admins" role="tabpanel" aria-labelledby="server_admins_tab" >
 		<h2 class="visually-hidden">Server leaders</h2>
 		<?php if(count($this->get('server_admins')) == 0) { ?>
 		<p class="alert alert-danger">This server does not have any leaders assigned.</p>
@@ -265,7 +265,7 @@
 		</form>
 		<?php } ?>
 	</div>
-	<div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="server_settings_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="server_settings_tab" >
 		<h2 class="visually-hidden">Settings</h2>
 		<form id="server_settings" method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-settings-form">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
@@ -442,7 +442,7 @@
 			<?php } ?>
 		</form>
 	</div>
-	<div class="tab-pane fade" id="log" role="tabpanel" aria-labelledby="server_log_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="log" role="tabpanel" aria-labelledby="server_log_tab" >
 		<h2 class="visually-hidden">Log</h2>
 		<div class="ska-scroll-container">
 			<table class="table table-sm">
@@ -469,7 +469,7 @@
 		</div>
 	</div>
 	<?php if($this->get('admin')) { ?>
-	<div class="tab-pane fade" id="notes" role="tabpanel" aria-labelledby="server_notes_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="notes" role="tabpanel" aria-labelledby="server_notes_tab" >
 		<h2 class="visually-hidden">Notes</h2>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
@@ -494,7 +494,7 @@
 			</div>
 		</form>
 	</div>
-	<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="server_contact_tab" aria-hidden="true">
+	<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="server_contact_tab" >
 		<h2 class="visually-hidden">Contact</h2>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>

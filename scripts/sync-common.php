@@ -108,7 +108,7 @@ class SyncProcess {
 
 	/**
 	* Get data from the child process
-	* @return string output from the child process
+	* @return array output from the child process
 	*/
 	public function get_data() {
 		if($this->spawn_failed) {
@@ -136,6 +136,7 @@ class SyncProcess {
 			}
 			return array('done' => true, 'output' => $this->output);
 		}
+		return array('done' => false, 'output' => '');
 	}
 
 	/**

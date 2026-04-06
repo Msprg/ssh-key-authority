@@ -791,7 +791,7 @@ dom_ready(function() {
 	}
 
 	serverAdmin.addEventListener('keydown', function(event) {
-		if((event.key === 'Enter' || event.key === ' ' || event.key === ',') && serverAdmin.value.trim() !== '') {
+		if((event.key === 'Enter' || event.key === ',') && serverAdmin.value.trim() !== '') {
 			event.preventDefault();
 			append_admin();
 			serverAdmin.blur();

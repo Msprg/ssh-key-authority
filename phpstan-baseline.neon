@@ -26,11 +26,6 @@ parameters:
 			path: model/user.php
 
 		-
-			message: "#^Method SyncProcess\\:\\:get_data\\(\\) should return string but return statement is missing\\.$#"
-			count: 1
-			path: scripts/sync-common.php
-
-		-
 			message: "#^Function history_username_env_format_is_valid not found\\.$#"
 			count: 1
 			path: scripts/sync.php

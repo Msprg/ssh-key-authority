@@ -19,7 +19,7 @@ class RequestContext {
 		}
 		$context->absolute_request_url = $scheme.'://'.$_SERVER['HTTP_HOST'].$context->request_url;
 		$context->request_method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-		$context->bypass_csrf_protection = isset($_SERVER['HTTP_X_BYPASS_CSRF_PROTECTION']) && $_SERVER['HTTP_X_BYPASS_CSRF_PROTECTION'] == 1;
+		$context->bypass_csrf_protection = self::should_bypass_csrf_protection();
 		return $context;
 	}
 
@@ -38,6 +38,16 @@ class RequestContext {
 			if($proto === 'https') {
 				return true;
 			}
+		}
+		return false;
+	}
+
+	private static function should_bypass_csrf_protection() {
+		if(!isset($_SERVER['HTTP_X_BYPASS_CSRF_PROTECTION']) || $_SERVER['HTTP_X_BYPASS_CSRF_PROTECTION'] != 1) {
+			return false;
+		}
+		if(defined('APP_ENV') && (APP_ENV === 'development' || APP_ENV === 'test')) {
+			return true;
 		}
 		return false;
 	}

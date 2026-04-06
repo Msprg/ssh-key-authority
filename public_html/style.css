@@ -255,6 +255,27 @@ kbd {
 	opacity: 1;
 }
 
+/* Legacy visibility utilities for compatibility */
+.d-none {
+	display: none !important;
+}
+
+.d-block {
+	display: block !important;
+}
+
+.d-inline {
+	display: inline !important;
+}
+
+.invisible {
+	visibility: hidden !important;
+}
+
+.visible {
+	visibility: visible !important;
+}
+
 /* ===== NAVIGATION ===== */
 .ska-shell-nav {
 	position: fixed;

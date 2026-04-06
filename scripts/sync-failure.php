@@ -137,15 +137,23 @@ class SyncFailureReporter {
 	 */
 	private static function compose_message($summary, $reason, $code, $reschedule) {
 		$parts = array();
-		$parts[] = trim((string)$summary);
+		$parts[] = self::escape_semicolons(trim((string)$summary));
 		if(self::normalize_reason($reason) !== '') {
-			$parts[] = 'reason='.self::normalize_reason($reason);
+			$parts[] = 'reason='.self::escape_semicolons(self::normalize_reason($reason));
 		}
 		$parts[] = 'code='.$code;
 		if($reschedule) {
 			$parts[] = 'retry='.self::RESCHEDULE_DELAY_MINUTES.'m';
 		}
 		return implode('; ', $parts);
+	}
+
+	/**
+	 * @param string $text
+	 * @return string
+	 */
+	private static function escape_semicolons($text) {
+		return str_replace(';', '\;', $text);
 	}
 
 	/**

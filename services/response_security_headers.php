@@ -25,6 +25,9 @@ class ResponseSecurityHeaders {
 			return;
 		}
 
+		header_remove('Content-Security-Policy');
+		header_remove('Content-Security-Policy-Report-Only');
+
 		if($this->is_csp_report_only($config)) {
 			header('Content-Security-Policy-Report-Only: '.$csp);
 		} else {

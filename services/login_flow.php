@@ -30,19 +30,23 @@ class LoginFlowService {
 					if($this->is_rate_limited($user_attempts, $current_time)) {
 						$remaining_time = 900 - ($current_time - $user_attempts['time']);
 						$error_message = 'Too many login attempts. Please try again in '.ceil($remaining_time / 60).' minutes.';
+						$this->audit_log('rate_limited', $username, 'Rate limit exceeded');
 					} else {
 						try {
 							$user = $this->auth_service->authenticate($username, $password);
 							if($user) {
 								unset($_SESSION['login_attempts'][$username]);
+								$this->audit_log('success', $username, 'Authentication successful');
 								$redirect_url = $this->sanitize_redirect_path($_SESSION['redirect_after_login'] ?? '/');
 								unset($_SESSION['redirect_after_login']);
 								redirect($redirect_url);
 							} else {
 								$this->record_failed_attempt($username, $current_time);
+								$this->audit_log('failure', $username, 'Invalid credentials');
 								$error_message = 'Invalid username or password.';
 							}
 						} catch(Exception $e) {
+							$this->audit_log('failure', $username, 'Authentication error: '.$e->getMessage());
 							$error_message = 'Authentication error. Please try again.';
 						}
 					}
@@ -104,5 +108,18 @@ class LoginFlowService {
 		$query = isset($parts['query']) ? '?'.$parts['query'] : '';
 		$fragment = isset($parts['fragment']) ? '#'.$parts['fragment'] : '';
 		return $path.$query.$fragment;
+	}
+
+	private function audit_log($event_type, $username, $details) {
+		$timestamp = date('Y-m-d H:i:s');
+		$safe_username = preg_replace('/[^a-zA-Z0-9._-]/', '', $username);
+		$log_message = sprintf(
+			'[LoginFlowService::handle_request] %s - Event: %s, Username: %s, Details: %s',
+			$timestamp,
+			$event_type,
+			$safe_username,
+			$details
+		);
+		error_log($log_message);
 	}
 }

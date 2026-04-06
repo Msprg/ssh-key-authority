@@ -214,7 +214,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 				</div>
 				<div class="col-md-7 mb-3">
 					<div class="input-group">
-						<span class="input-group-text"><label for="hostname">@</label></span>
+						<span class="input-group-text"><label for="hostname">@<span class="visually-hidden">Hostname</span></label></span>
 						<input type="text" id="hostname" name="hostname" class="form-control" placeholder="Hostname" required list="serverlist">
 						<datalist id="serverlist">
 							<?php foreach($this->get('all_servers') as $server) { ?>

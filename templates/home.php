@@ -84,8 +84,8 @@
 <form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="d-none" id="add_key_form">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 	<div class="mb-3">
-		<label for="add_public_key" class="form-label">Public key</label>
-		<textarea class="form-control" rows="4" id="add_public_key" name="add_public_key" required></textarea>
+		<label for="add_public_key_2" class="form-label">Public key</label>
+		<textarea class="form-control" rows="4" id="add_public_key_2" name="add_public_key" required></textarea>
 	</div>
 	<div class="row g-3">
 		<div class="col-md-8 d-grid">

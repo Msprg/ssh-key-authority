@@ -125,9 +125,6 @@
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="row g-3 align-items-end">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ldap-treeview col-12">For the tree-view of ldap groups, javascript is necessary.</div>
-			<div class="col-12">
-				<label for="name" class="visually-hidden">Group name</label>
-			</div>
 			<div class="col-md-auto">
 				<button type="submit" name="add_ldap_group" value="1" class="btn btn-primary">Connect selected groups</button>
 			</div>
