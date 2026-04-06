@@ -5,6 +5,7 @@ browser_smoke_require_prereqs() {
     smoke_require_cmd php
     smoke_require_cmd chromedriver
     smoke_require_cmd chromium
+    BROWSER_SMOKE_CHROMIUM_BINARY=$(command -v chromium)
 }
 
 browser_smoke_init() {
@@ -86,7 +87,7 @@ browser_smoke_start() {
 
     local session_payload
     session_payload=$(cat <<EOF
-{"capabilities":{"alwaysMatch":{"browserName":"chrome","goog:chromeOptions":{"binary":"/usr/bin/chromium","args":["--headless=new","--no-sandbox","--disable-dev-shm-usage","--window-size=${BROWSER_SMOKE_WINDOW_WIDTH},${BROWSER_SMOKE_WINDOW_HEIGHT}"]}}}}
+{"capabilities":{"alwaysMatch":{"browserName":"chrome","goog:chromeOptions":{"binary":"${BROWSER_SMOKE_CHROMIUM_BINARY}","args":["--headless=new","--no-sandbox","--disable-dev-shm-usage","--window-size=${BROWSER_SMOKE_WINDOW_WIDTH},${BROWSER_SMOKE_WINDOW_HEIGHT}"]}}}}
 EOF
 )
     BROWSER_SMOKE_SESSION_ID=$(browser_smoke_webdriver_post "/session" "$session_payload" | php -r '

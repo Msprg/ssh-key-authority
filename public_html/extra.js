@@ -686,7 +686,8 @@ dom_ready(function() {
 					setTimeout(poll_server_sync_status, timeout);
 				} else {
 					var mappedServerStatus = map_sync_status(status.sync_status);
-					update_server_sync_status(mappedServerStatus.classname, status.last_sync.details);
+					var details = (status.last_sync != null) ? status.last_sync.details : '';
+					update_server_sync_status(mappedServerStatus.classname, details);
 				}
 
 				for(var i = 0; i < status.accounts.length; i++) {

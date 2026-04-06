@@ -18,7 +18,7 @@ Status legend:
 
 ## Runtime Baseline
 
-Current pages load the frontend shell from [templates/base.php](/var/www/ska/templates/base.php) with:
+Current pages load the frontend shell from `templates/base.php` with:
 
 - `public_html/vendor/bootstrap5/bootstrap-5.3.8.min.css`
 - `public_html/vendor/bootstrap5/bootstrap-5.3.8.bundle.min.js`
@@ -28,19 +28,19 @@ Current pages load the frontend shell from [templates/base.php](/var/www/ska/tem
 
 Current runtime facts:
 
-- Bootstrap 5.3.8 CSS is now loaded globally from the local vendored asset in [public_html/vendor/bootstrap5/bootstrap-5.3.8.min.css](/var/www/ska/public_html/vendor/bootstrap5/bootstrap-5.3.8.min.css).
-- Bootstrap 5.3.8 JS is now loaded globally from the local vendored asset in [public_html/vendor/bootstrap5/bootstrap-5.3.8.bundle.min.js](/var/www/ska/public_html/vendor/bootstrap5/bootstrap-5.3.8.bundle.min.js).
+- Bootstrap 5.3.8 CSS is now loaded globally from the local vendored asset in `public_html/vendor/bootstrap5/bootstrap-5.3.8.min.css`.
+- Bootstrap 5.3.8 JS is now loaded globally from the local vendored asset in `public_html/vendor/bootstrap5/bootstrap-5.3.8.bundle.min.js`.
 - Bootstrap 3 CSS is no longer loaded.
 - Bootstrap 3 JS is no longer loaded.
 - jQuery is no longer loaded.
 - `public_html/bootstrap5-compat.js` has been retired.
-- Tabs, collapses, dropdowns, and alert dismissal now run through the Bootstrap 5 bundle; [public_html/extra.js](/var/www/ska/public_html/extra.js) only keeps app-specific behaviors plus hash/ARIA glue for tabs/collapses and sync/form helpers.
+- Tabs, collapses, dropdowns, and alert dismissal now run through the Bootstrap 5 bundle; `public_html/extra.js` only keeps app-specific behaviors plus hash/ARIA glue for tabs/collapses and sync/form helpers.
 - Active templates now use Bootstrap 5 classes for generic grid, forms, buttons, alerts, tables, tabs, spacing, responsive helpers, and dropdown markup.
 - The remaining `ska-*` runtime surface is app-specific: shell layout, navigation treatment, icon system, badge/status treatment, settings-shell wrappers, card-stack wrappers, and a small number of special admin layouts.
-- High-traffic pages now use semantic `ska-icon` helpers and entity-link icons rendered through repo-owned SVG assets in [public_html/icons/](/var/www/ska/public_html/icons/) via [public_html/style.css](/var/www/ska/public_html/style.css), not the Bootstrap font glyphs.
+- High-traffic pages now use semantic `ska-icon` helpers and entity-link icons rendered through repo-owned SVG assets in `public_html/icons/` via `public_html/style.css`, not the Bootstrap font glyphs.
 - Bootstrap 3 `panel-*` markup has been migrated either to Bootstrap 5 `card`/`accordion` markup or to a small number of app-specific `ska-card*` wrappers where the layout is domain-specific.
-- `public_html/bootstrap5-compat.css` has been retired; its remaining live utility and component aliases were folded into [public_html/style.css](/var/www/ska/public_html/style.css).
-- Headless browser capture is now available through [scripts/smoke/browser-capture.sh](/var/www/ska/scripts/smoke/browser-capture.sh) for authenticated visual regression checks, and [scripts/smoke/browser-interactions.sh](/var/www/ska/scripts/smoke/browser-interactions.sh) exercises one live dropdown, collapse, and tab interaction during smoke runs.
+- `public_html/bootstrap5-compat.css` has been retired; its remaining live utility and component aliases were folded into `public_html/style.css`.
+- Headless browser capture is now available through `scripts/smoke/browser-capture.sh` for authenticated visual regression checks, and `scripts/smoke/browser-interactions.sh` exercises one live dropdown, collapse, and tab interaction during smoke runs.
 
 The major migration goal is now achieved. Remaining work is housekeeping:
 
@@ -85,7 +85,7 @@ Semantic `ska-icon` markup now covers the active templates and runtime JS. Remai
 - dormant vendored glyphicon font assets bundled with Bootstrap 3 CSS
 - any compatibility selectors that become removable after the final CSS swap
 
-The live font dependency is gone because [public_html/style.css](/var/www/ska/public_html/style.css) now renders active icons through local SVG assets.
+The live font dependency is gone because `public_html/style.css` now renders active icons through local SVG assets.
 
 ### 2. Generic component ownership is now Bootstrap 5-native
 

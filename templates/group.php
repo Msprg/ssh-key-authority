@@ -128,7 +128,7 @@ foreach($this->get('group_members') as $member) {
 				</div>
 				<div class="col-md-7 mb-3">
 					<div class="input-group">
-						<span class="input-group-text"><label for="hostname">@</label></span>
+						<span class="input-group-text"><label for="hostname">@<span class="visually-hidden">Hostname</span></label></span>
 						<input type="text" id="hostname" name="hostname" class="form-control" placeholder="Hostname" required list="<?php out($this->get('admin') ? 'serverlist' : 'adminedserverlist')?>">
 					</div>
 				</div>
@@ -395,11 +395,13 @@ foreach($this->get('group_members') as $member) {
 				</div>
 			</div>
 			<div class="ska-setting-row">
-				<div class="ska-setting-label">Group status</div>
-				<div class="ska-setting-control ska-choice-list">
-					<div class="form-check ska-text-success"><label class="form-check-label"><input type="radio" class="form-check-input" name="active" value="1"<?php if($this->get('group')->active == 1) out(' checked') ?>> <span>Enabled</span></label></div>
-					<div class="form-check ska-text-danger"><label class="form-check-label"><input type="radio" class="form-check-input" name="active" value="0"<?php if($this->get('group')->active == 0) out(' checked') ?>> <span>Disabled</span></label></div>
-				</div>
+				<fieldset>
+					<legend class="ska-setting-label">Group status</legend>
+					<div class="ska-setting-control ska-choice-list">
+						<div class="form-check ska-text-success"><label class="form-check-label"><input type="radio" class="form-check-input" name="active" value="1"<?php if($this->get('group')->active == 1) out(' checked') ?>> <span>Enabled</span></label></div>
+						<div class="form-check ska-text-danger"><label class="form-check-label"><input type="radio" class="form-check-input" name="active" value="0"<?php if($this->get('group')->active == 0) out(' checked') ?>> <span>Disabled</span></label></div>
+					</div>
+				</fieldset>
 			</div>
 			<div class="ska-setting-actions">
 					<button type="submit" name="edit_group" value="1" class="btn btn-primary">Change settings</button>

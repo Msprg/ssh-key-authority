@@ -56,8 +56,7 @@ Scope: behavior-preserving modernization of architecture, dependencies, frontend
 - Gaps/risks:
   - CSP currently minimal (`default-src 'self'`) and set in template layer.
   - legacy hardening header (`X-XSS-Protection`) still used.
-  - `eval()` in autoload fallback in `core.php` was identified as unnecessary risk (removed during final cleanup work).
-  - `scripts/ssh.php` disables strict host checking for jumphost chain command.
+  - `scripts/ssh.php` enables strict host key checking for jumphost chain commands by default (via `build_jumphost_security_options`, which sets `$strict_checking = true`), yielding `StrictHostKeyChecking=yes` unless operators explicitly set `config['security']['jumphost_strict_host_key_checking']` to 0.
   - inconsistent auth/session logic split between request handler, login view, and `AuthService`.
 
 ### Data/model and domain

@@ -12,10 +12,8 @@ browser_smoke_require_prereqs
 smoke_require_env SKA_SMOKE_BASE_URL
 smoke_require_env SKA_SMOKE_USERNAME
 smoke_require_env SKA_SMOKE_PASSWORD
-smoke_require_env SKA_SMOKE_ACCESS_SERVER_HOSTNAME
 
 BASE_URL="${SKA_SMOKE_BASE_URL%/}"
-TARGET_SERVER=$(smoke_urlencode "$SKA_SMOKE_ACCESS_SERVER_HOSTNAME")
 
 browser_smoke_init 1600 1200
 trap browser_smoke_cleanup EXIT

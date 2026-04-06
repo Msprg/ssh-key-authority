@@ -68,7 +68,7 @@ grep -q 'data-bs-toggle="dropdown"' "$TMP_DIR/post-login.html" || smoke_die "Aut
 ! grep -Eq "$LEGACY_PRESENTATION_RE" "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell still renders Bootstrap-named semantic helper classes"
 
 smoke_log "Adding and deleting a public key for logged-in user"
-KEY_COMMENT="ska-smoke-$(date +%s)"
+KEY_COMMENT="ska-smoke-$(date +%s)-$$"
 KEY_PATH="$TMP_DIR/smoke-key"
 ssh-keygen -q -t ed25519 -N '' -C "$KEY_COMMENT" -f "$KEY_PATH" >/dev/null
 PUBLIC_KEY=$(cat "$KEY_PATH.pub")

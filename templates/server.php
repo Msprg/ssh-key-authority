@@ -290,7 +290,7 @@
 				</div>
 			</div>
 			<div class="ska-setting-row">
-				<label for="host_key" class="ska-setting-label">Jumphosts (<a href="<?php outurl('/help#jumphost_format')?>">format</a>)</label>
+				<label for="jumphosts" class="ska-setting-label">Jumphosts (<a href="<?php outurl('/help#jumphost_format')?>">format</a>)</label>
 				<div class="ska-setting-control">
 					<input type="text" id="jumphosts" name="jumphosts" value="<?php out($this->get('server')->jumphosts)?>" pattern="([^@ >]+@[a-zA-Z0-9\-.\u0080-\uffff]+(:[0-9]+)?(,[^@ >]+@[a-zA-Z0-9\-.\u0080-\uffff]+(:[0-9]+)?)*)?( *-> *[a-zA-Z0-9\-.\u0080-\uffff]+)?" class="form-control">
 				</div>
@@ -586,13 +586,13 @@
 		<div class="col-sm-3 mb-3">
 			<div class="input-group">
 				<span class="input-group-text">From: </span>
-				<span class="input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account name</span></label></span>
+				<span class="input-group-text"><label for="account_remote"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account name</span></label></span>
 				<input type="text" id="account_remote" name="account_remote" class="form-control" placeholder="Account name" required pattern=".*[^\s].*">
 			</div>
 		</div>
 		<div class="col-sm-3 mb-3">
 			<div class="input-group">
-				<span class="input-group-text"><label for="hostname">@</label></span>
+				<span class="input-group-text"><label for="hostname_remote">@<span class="visually-hidden">Hostname</span></label></span>
 				<input type="text" id="hostname_remote" name="hostname_remote" class="form-control" placeholder="Hostname" list="serverlist" required>
 				<datalist id="serverlist">
 					<?php foreach($this->get('all_servers') as $server) { ?>
@@ -624,7 +624,7 @@
 	<div class="row">
 		<div class="col-sm-5 mb-3">
 			 <div class="input-group">
-				<span class="input-group-text"><label for="account"><span class="ska-icon ska-icon-group" title="Group account"></span><span class="visually-hidden">Group name</span></label></span>
+				<span class="input-group-text"><label for="group_account"><span class="ska-icon ska-icon-group" title="Group account"></span><span class="visually-hidden">Group name</span></label></span>
 				<input type="text" id="group_account" name="group_account" class="form-control" placeholder="Group name" list="grouplist" required>
 				<datalist id="grouplist">
 					<?php foreach($this->get('all_groups') as $group) { ?>

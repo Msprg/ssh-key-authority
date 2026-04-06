@@ -194,7 +194,7 @@ kbd {
 	padding: 0 !important;
 	margin: -1px !important;
 	overflow: hidden !important;
-	clip: rect(0, 0, 0, 0) !important;
+	clip-path: inset(50%) !important;
 	white-space: nowrap !important;
 	border: 0 !important;
 }
@@ -206,7 +206,7 @@ kbd {
 	padding: 0 !important;
 	margin: -1px !important;
 	overflow: hidden !important;
-	clip: rect(0, 0, 0, 0) !important;
+	clip-path: inset(50%) !important;
 	white-space: nowrap !important;
 	border: 0 !important;
 }
@@ -218,7 +218,7 @@ kbd {
 	height: auto !important;
 	margin: 0 !important;
 	overflow: visible !important;
-	clip: auto !important;
+	clip-path: none !important;
 	white-space: normal !important;
 }
 
@@ -467,10 +467,15 @@ a.user::before,
 .ska-icon::before {
 	content: "" !important;
 	display: inline-block;
-	background-image: var(--ska-icon-image);
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: contain;
+	-webkit-mask-image: var(--ska-icon-image);
+	mask-image: var(--ska-icon-image);
+	-webkit-mask-position: center;
+	mask-position: center;
+	-webkit-mask-repeat: no-repeat;
+	mask-repeat: no-repeat;
+	-webkit-mask-size: contain;
+	mask-size: contain;
+	background-color: currentColor;
 }
 
 a.group::before,
