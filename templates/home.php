@@ -24,18 +24,18 @@
 <?php keygen_help('below') ?>
 <form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-	<div class="ska-mb-3">
-		<label for="public_key">Public key</label>
-		<textarea class="ska-form-control" rows="4" id="add_public_key" name="add_public_key" required></textarea>
+	<div class="mb-3">
+		<label for="public_key" class="form-label">Public key</label>
+		<textarea class="form-control" rows="4" id="add_public_key" name="add_public_key" required></textarea>
 	</div>
-	<div class="ska-mb-3"><button class="ska-btn ska-btn-primary ska-btn-lg ska-w-100">Add public key</button></div>
+	<div class="mb-3"><button class="btn btn-primary btn-lg w-100">Add public key</button></div>
 </form>
 <?php } else { ?>
 <h2>Your public keys</h2>
 <form method="post" action="<?php out($this->data->relative_request_url)?>">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 	<div class="ska-scroll-container">
-		<table class="ska-table">
+		<table class="table table-striped table-sm">
 			<thead>
 				<tr>
 					<th>Type</th>
@@ -70,8 +70,8 @@
 						<?php if ($key->deletion_date !== null) { ?>
 							<i class="ska-icon ska-icon-remove"></i> Deleted
 						<?php } else { ?>
-							<a href="<?php outurl('/users/'.urlencode($this->get('uid')).'/pubkeys/'.urlencode($key->id))?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-cog"></span> Manage public key</a>
-							<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete public key</button>
+							<a href="<?php outurl('/users/'.urlencode($this->get('uid')).'/pubkeys/'.urlencode($key->id))?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-cog"></span> Manage public key</a>
+							<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete public key</button>
 						<?php } ?>
 					</td>
 				</tr>
@@ -80,25 +80,25 @@
 		</table>
 	</div>
 </form>
-<p><button id="add_key_button" class="ska-btn ska-btn-secondary">Add another public key</button></p>
-<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-d-none" id="add_key_form">
+<p><button id="add_key_button" class="btn btn-secondary">Add another public key</button></p>
+<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="d-none" id="add_key_form">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-	<div class="ska-mb-3">
-		<label for="add_public_key">Public key</label>
-		<textarea class="ska-form-control" rows="4" id="add_public_key" name="add_public_key" required></textarea>
+	<div class="mb-3">
+		<label for="add_public_key" class="form-label">Public key</label>
+		<textarea class="form-control" rows="4" id="add_public_key" name="add_public_key" required></textarea>
 	</div>
-	<div class="ska-row">
-		<div class="ska-col-md-8">
-			<button type="submit" class="ska-btn ska-btn-primary ska-btn-lg ska-w-100">Add public key</button>
+	<div class="row g-3">
+		<div class="col-md-8 d-grid">
+			<button type="submit" class="btn btn-primary btn-lg w-100">Add public key</button>
 		</div>
-		<div class="ska-col-md-2">
-			<button type="button" class="ska-btn ska-btn-info ska-btn-lg ska-w-100" data-action="toggle-help">Help</button>
+		<div class="col-md-2 d-grid">
+			<button type="button" class="btn btn-outline-secondary btn-lg w-100" data-action="toggle-help">Help</button>
 		</div>
-		<div class="ska-col-md-2">
-			<button type="button" class="ska-btn ska-btn-secondary ska-btn-lg ska-w-100" data-action="cancel-add-key">Cancel</button>
+		<div class="col-md-2 d-grid">
+			<button type="button" class="btn btn-secondary btn-lg w-100" data-action="cancel-add-key">Cancel</button>
 		</div>
 	</div>
-	<div id="help" class="ska-d-none">
+	<div id="help" class="d-none">
 		<?php keygen_help('above') ?>
 	</div>
 </form>
@@ -106,7 +106,7 @@
 <h2>Your servers</h2>
 <p>You are listed as a leader for the following servers:</p>
 <div class="ska-scroll-container">
-	<table class="ska-table">
+	<table class="table table-striped table-sm">
 		<thead>
 			<tr>
 				<th>Hostname</th>
@@ -211,7 +211,7 @@
 <?php if (count($this->get('allowed_access')) > 0) { ?>
 <p>You are allowed (possibly via some groups) to access the following accounts:</p>
 <div class="ska-scroll-container">
-	<table class="ska-table ska-table-bordered">
+	<table class="table table-bordered">
 		<?php foreach ($this->get('allowed_access') as $account) { ?>
 		<tr>
 			<td><?php out(Format::server_account_link($account), ESC_NONE) ?></td>

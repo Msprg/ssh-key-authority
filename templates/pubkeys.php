@@ -19,7 +19,7 @@
 function show_key(ExternalKey $key, array $buttons, string $relative_request_url, string $csrf_field) {
 	?>
 	<div class="card">
-		<dl class="card-body ska-mb-0">
+		<dl class="card-body mb-0">
 			<dt>Key data</dt>
 			<dd><pre><?php out($key->type) ?> <?php out($key->keydata) ?></pre></dd>
 			<dt>Occurrences</dt>
@@ -74,31 +74,31 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 		<p><a href="<?php outurl('/pubkeys.json') ?>" class="btn btn-secondary btn-sm">
 			<span class="ska-icon ska-icon-console"></span> JSON
 		</a></p>
-		<div class="ska-card-stack">
+		<div class="mb-4">
 			<div class="card">
 				<div class="card-header">
-					<h3 class="h5 ska-mb-0">Filter options</h3>
+					<h3 class="h5 mb-0">Filter options</h3>
 				</div>
 				<div id="search_filter">
 					<div class="card-body">
 						<form>
-							<div class="ska-row">
-								<div class="ska-col-md-6 ska-mb-3">
+							<div class="row">
+								<div class="col-md-6 mb-3">
 									<label for="fingerprint-search">Fingerprint</label>
 									<input type="text" id="fingerprint-search" name="fingerprint" class="form-control" value="<?php out($this->get('filter')['fingerprint'])?>">
 								</div>
-								<div class="ska-col-md-2 ska-mb-3">
+								<div class="col-md-2 mb-3">
 									<label for="type-search">Key type</label>
 									<input type="text" id="type-search" name="type" class="form-control" value="<?php out($this->get('filter')['type'])?>">
 								</div>
-								<div class="ska-col-md-2 ska-mb-3">
+								<div class="col-md-2 mb-3">
 									<label for="keysize-min">Min key size</label>
 									<div class="input-group">
 										<span class="input-group-text">≥</span>
 										<input type="text" id="keysize-min" name="keysize-min" class="form-control" value="<?php out($this->get('filter')['keysize-min'])?>">
 									</div>
 								</div>
-								<div class="ska-col-md-2 ska-mb-3">
+								<div class="col-md-2 mb-3">
 									<label for="keysize-max">Max key size</label>
 									<div class="input-group">
 										<span class="input-group-text">≤</span>

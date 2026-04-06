@@ -1,6 +1,6 @@
 # Bootstrap 5 Gap Analysis
 
-Date: 2026-04-05
+Date: 2026-04-06
 Branch: `bootstrap5-upgrade-part1`
 
 ## Scope
@@ -13,15 +13,15 @@ This inventory covers the rendered HTML templates and the globally loaded fronte
 
 Status legend:
 
-- `Bootstrap 5-ready`: mostly modern markup, only inherits the remaining Bootstrap 3 CSS baseline.
-- `Mixed`: behavior is already native/Bootstrap 5-style, but the template still depends on Bootstrap 3 CSS or local compatibility shims for legacy markup families.
-- `Legacy-heavy`: high-traffic page with substantial remaining Bootstrap 3 layout or helper markup that would make Bootstrap 3 CSS removal risky today.
+- `Bootstrap 5-ready`: generic layout/components now use Bootstrap 5 directly; only app-specific SKA wrappers remain.
+- `Mixed`: page works on the Bootstrap 5 runtime, but still has heavier SKA-local layout/status wrappers that could be simplified later.
 
 ## Runtime Baseline
 
 Current pages load the frontend shell from [templates/base.php](/var/www/ska/templates/base.php) with:
 
 - `public_html/vendor/bootstrap5/bootstrap-5.3.8.min.css`
+- `public_html/vendor/bootstrap5/bootstrap-5.3.8.bundle.min.js`
 - `public_html/style.css`
 - `public_html/header.js`
 - `public_html/extra.js`
@@ -29,51 +29,44 @@ Current pages load the frontend shell from [templates/base.php](/var/www/ska/tem
 Current runtime facts:
 
 - Bootstrap 5.3.8 CSS is now loaded globally from the local vendored asset in [public_html/vendor/bootstrap5/bootstrap-5.3.8.min.css](/var/www/ska/public_html/vendor/bootstrap5/bootstrap-5.3.8.min.css).
+- Bootstrap 5.3.8 JS is now loaded globally from the local vendored asset in [public_html/vendor/bootstrap5/bootstrap-5.3.8.bundle.min.js](/var/www/ska/public_html/vendor/bootstrap5/bootstrap-5.3.8.bundle.min.js).
 - Bootstrap 3 CSS is no longer loaded.
 - Bootstrap 3 JS is no longer loaded.
 - jQuery is no longer loaded.
 - `public_html/bootstrap5-compat.js` has been retired.
-- Tabs, collapses, dropdowns, alert dismissal, and the local form helpers now run through native DOM code in [public_html/extra.js](/var/www/ska/public_html/extra.js).
-- Migrated tabsets now use repo-local `ska-tabs` / `ska-tab-content` / `ska-tab-pane` classes in [public_html/style.css](/var/www/ska/public_html/style.css), so active tab behavior and styling no longer depend on Bootstrap 3 tab CSS.
-- High-traffic list/detail tables on the main shell pages now use repo-local `ska-table*` classes in [public_html/style.css](/var/www/ska/public_html/style.css), reducing dependence on Bootstrap 3 table CSS.
-- Shared button and alert presentation now has a repo-local baseline in [public_html/style.css](/var/www/ska/public_html/style.css), so active pages no longer rely on Bootstrap 3 for those visual primitives.
-- Shared `container`, `row`, `col-sm-*`, `col-md-*`, and text/status utility styling now has a repo-local baseline in [public_html/style.css](/var/www/ska/public_html/style.css), and the shell/login plus the busiest list/detail templates now render `ska-container`, `ska-row`, `ska-col-*`, and `ska-*` spacing/status helpers directly.
-- Shared `form-group`, `form-control`, and `input-group` styling now has a repo-local baseline in [public_html/style.css](/var/www/ska/public_html/style.css), reducing dependence on Bootstrap 3’s form/layout layer across the busiest pages.
-- Active form-heavy templates now render local `ska-form-group` wrappers instead of the Bootstrap 3-only `form-group` helper, and the shell dropdown root uses repo-local class hooks.
-- Base typography/content defaults, badge styling, and collapse state styling now have repo-local coverage in [public_html/style.css](/var/www/ska/public_html/style.css), which still sits after the new Bootstrap 5 CSS include so migrated `ska-*` ownership wins.
-- Tabs and collapses now use `show` state only; the Bootstrap 3-only `in` marker has been retired from active templates and native runtime code.
-- Bootstrap handoff prep has started: repo-local aliases such as `ska-btn*`, `ska-alert*`, `ska-form-label`, `ska-form-control`, `ska-input-group*`, `ska-form-check*`, `ska-badge*`, `ska-text-*`, `ska-rounded`, `ska-img-fluid`, and `ska-d-xl-none` now exist and are in use on the shell/login plus the busiest list/detail pages.
-- Dynamic runtime HTML now follows the same ownership rules: [public_html/extra.js](/var/www/ska/public_html/extra.js) injects `ska-form-control`, `ska-btn*`, `ska-text-*`, `ska-d-none`, and `ska-invisible` classes instead of Bootstrap-era helper names, and view-emitted alert links now use `ska-alert-link`.
+- Tabs, collapses, dropdowns, and alert dismissal now run through the Bootstrap 5 bundle; [public_html/extra.js](/var/www/ska/public_html/extra.js) only keeps app-specific behaviors plus hash/ARIA glue for tabs/collapses and sync/form helpers.
+- Active templates now use Bootstrap 5 classes for generic grid, forms, buttons, alerts, tables, tabs, spacing, responsive helpers, and dropdown markup.
+- The remaining `ska-*` runtime surface is app-specific: shell layout, navigation treatment, icon system, badge/status treatment, settings-shell wrappers, card-stack wrappers, and a small number of special admin layouts.
 - High-traffic pages now use semantic `ska-icon` helpers and entity-link icons rendered through repo-owned SVG assets in [public_html/icons/](/var/www/ska/public_html/icons/) via [public_html/style.css](/var/www/ska/public_html/style.css), not the Bootstrap font glyphs.
-- Bootstrap 3 `panel-*` markup has been migrated to local `ska-card*` classes in active templates.
+- Bootstrap 3 `panel-*` markup has been migrated either to Bootstrap 5 `card`/`accordion` markup or to a small number of app-specific `ska-card*` wrappers where the layout is domain-specific.
 - `public_html/bootstrap5-compat.css` has been retired; its remaining live utility and component aliases were folded into [public_html/style.css](/var/www/ska/public_html/style.css).
 - Headless browser capture is now available through [scripts/smoke/browser-capture.sh](/var/www/ska/scripts/smoke/browser-capture.sh) for authenticated visual regression checks, and [scripts/smoke/browser-interactions.sh](/var/www/ska/scripts/smoke/browser-interactions.sh) exercises one live dropdown, collapse, and tab interaction during smoke runs.
 
-The main remaining blockers are now page-local CSS- and markup-oriented rather than Bootstrap 3 plugin-oriented:
+The major migration goal is now achieved. Remaining work is housekeeping:
 
-- untargeted secondary templates that may still assume older Bootstrap-era content defaults
-- remaining page-local helper/content cleanup on mixed templates
-- cleanup of stale docs/checkpoint references from earlier migration phases
+- trim stale historical checkpoint references
+- optionally simplify some app-specific wrappers on detail/settings pages
+- keep browser/smoke coverage current as future UI work lands
 
 ## Page Inventory
 
 | Page / Route | Template | Status | Current state | Remaining blockers |
 | --- | --- | --- | --- | --- |
-| Global shell | `templates/base.php` | Bootstrap 5-ready | Native dropdown and alert-dismiss behavior; Bootstrap 5 CSS is loaded locally; no Bootstrap or jQuery runtime JS assets; shell container/text utility classes are repo-local | Residual risk is visual parity on less-traveled shell states and future class-family handoff sequencing |
-| Login `/login` | `templates/login.php` | Bootstrap 5-ready | Form markup is already modern and low-complexity; shared spacing/text/width utilities now render through `ska-*` classes | Residual risk is visual-only |
-| Home `/` | `templates/home.php` | Bootstrap 5-ready | Native add-key interactions; high-traffic icon markup, table markup, shared grid/spacing/width helpers, buttons, and form controls are local | Residual risk is visual-only |
-| Users list `/users` | `templates/users.php` | Bootstrap 5-ready | Inactive-row text handling is now local via `ska-text-muted`; no significant template-local Bootstrap 3 markers remain | Inherits global CSS baseline only |
-| User detail `/users/:uid` | `templates/user.php` | Mixed | Tabs, high-traffic tables, and icons are now local | Still uses Bootstrap 3 form styling in key-management areas |
-| Groups list `/groups` | `templates/groups.php` | Mixed | Tabs, filter card, group-list table, add-group forms, and the main row/column/spacing layout now use native Bootstrap 5 classes | Remaining blockers are residual content styling and a few page-local SKA wrappers such as the card stack and muted-status helpers |
-| Group detail `/groups/:name` | `templates/group.php` | Mixed | Tabs, member/access/admin/log tables, add/grant flows, administrator controls, settings radios, and the main row/column/width layout now use native Bootstrap 5 classes | Remaining blockers are settings-shell wrappers, residual content styling, and a few page-local SKA helpers such as muted-status text |
-| Servers list `/servers` | `templates/servers.php` | Mixed | Tabs, filter card, server-list table, add forms, bulk-action trigger, info alerts, and the main row/column/spacing/visibility layout now use native Bootstrap 5 classes | Remaining blockers are residual content styling, table status text treatment, and a few page-local SKA wrappers such as the card stack |
-| Server detail `/servers/:hostname` | `templates/server.php` | Mixed | Tabs, account/admin/log tables, access-request forms, contact/note actions, and the main row/column/spacing/visibility helpers now use native Bootstrap 5 classes | Remaining blockers are the settings-shell wrappers/choice styling, note-card styling, and residual content styling |
-| Server account `/servers/:hostname/accounts/:name` | `templates/serveraccount.php` | Mixed | Tabs, access/public-key/outbound/admin/log tables, access-grant forms, public-key form, leader controls, and the main row/column/spacing/width helpers now use native Bootstrap 5 classes | Remaining blockers are residual content styling across the secondary panes and a few remaining page-local SKA wrappers |
-| Public key admin `/pubkeys` | `templates/pubkeys.php` | Mixed | Public-key tabs, filter card, scan-result cards, filter controls, and main tables now use native Bootstrap 5 tab, card, button, form, input-group, and table classes | Remaining blockers are page-local status styling and the shared SKA grid/layout wrapper classes |
-| Public key detail `/pubkeys/:id` | `templates/pubkey.php` | Mixed | Detail tabs, signature/restriction tables, detail forms, and action buttons now use native Bootstrap 5 tab, table, button, and form classes | Remaining blockers are the higher-level public-key list/admin surfaces and residual content styling |
-| Help `/help` | `templates/help.php` | Bootstrap 5-ready | Help topics now use native Bootstrap 5 accordion and alert classes with the existing native collapse behavior, and `keygen_help()` now renders Bootstrap 5 tab markup | Residual risk is visual-only |
-| Access options | `templates/access_options.php` | Mixed | Advanced options collapse is native, wrapped in local SKA card markup, and uses local check controls | Remaining blockers are shell baseline CSS and mixed utility styling |
-| Servers bulk action | `templates/servers_bulk_action.php` | Mixed | Server-list collapse is native, wrapped in local SKA card markup, and the add-leader form now uses SKA-owned form helpers | Remaining blockers are page-local table/content styling |
+| Global shell | `templates/base.php` | Bootstrap 5-ready | Bootstrap 5 CSS and JS are loaded globally; shell dropdown and flash alerts now use Bootstrap 5 component markup; SKA owns only the shell/navigation presentation | Residual risk is visual-only on less-traveled shell states |
+| Login `/login` | `templates/login.php` | Bootstrap 5-ready | Uses Bootstrap 5 form, alert, spacing, and button classes with only a small app-specific login wrapper | Residual risk is visual-only |
+| Home `/` | `templates/home.php` | Bootstrap 5-ready | Uses Bootstrap 5 forms, tables, buttons, spacing, grid, and responsive helpers; add-key behavior remains app-specific JS | Residual risk is visual-only |
+| Users list `/users` | `templates/users.php` | Bootstrap 5-ready | Uses Bootstrap 5 table styling; inactive-user treatment is app-specific status styling only | Inherits global shell only |
+| User detail `/users/:uid` | `templates/user.php` | Bootstrap 5-ready | Uses Bootstrap 5 tabs, tables, buttons, and form controls; only the settings-shell layout and status treatment remain app-specific | Residual risk is visual-only |
+| Groups list `/groups` | `templates/groups.php` | Bootstrap 5-ready | Uses Bootstrap 5 tabs, cards, tables, forms, and layout helpers | Only app-specific status/card-stack wrappers remain |
+| Group detail `/groups/:name` | `templates/group.php` | Mixed | Generic components are now Bootstrap 5-native; remaining SKA wrappers are the settings-shell and some domain-specific status/layout treatment | Further simplification is optional, not required for Bootstrap ownership |
+| Servers list `/servers` | `templates/servers.php` | Bootstrap 5-ready | Uses Bootstrap 5 tabs, cards, tables, forms, alerts, and layout helpers | Only app-specific status/card-stack wrappers remain |
+| Server detail `/servers/:hostname` | `templates/server.php` | Mixed | Generic components are now Bootstrap 5-native; remaining SKA wrappers are settings-shell, note-card, and domain-specific status treatment | Further simplification is optional |
+| Server account `/servers/:hostname/accounts/:name` | `templates/serveraccount.php` | Mixed | Generic components are now Bootstrap 5-native across tabs, tables, forms, buttons, and layout | Remaining SKA wrappers are limited to domain-specific secondary-pane/status treatment |
+| Public key admin `/pubkeys` | `templates/pubkeys.php` | Bootstrap 5-ready | Uses Bootstrap 5 tabs, cards, filters, forms, input groups, and tables | Residual risk is visual-only |
+| Public key detail `/pubkeys/:id` | `templates/pubkey.php` | Bootstrap 5-ready | Uses Bootstrap 5 tabs, forms, buttons, alerts, and tables | Residual risk is visual-only |
+| Help `/help` | `templates/help.php` | Bootstrap 5-ready | Uses Bootstrap 5 accordion, tabs, alerts, and collapse behavior | Residual risk is visual-only |
+| Access options | `templates/access_options.php` | Bootstrap 5-ready | Uses Bootstrap 5 form controls, checks, buttons, grid, and collapse/card markup | Residual risk is visual-only |
+| Servers bulk action | `templates/servers_bulk_action.php` | Bootstrap 5-ready | Uses Bootstrap 5 card, form, table, alert, and collapse behavior | Residual risk is visual-only |
 | User public keys | `templates/user_pubkeys.php` | Bootstrap 5-ready | User key export/add flows now use native Bootstrap 5 card, form, and button classes | Residual risk is visual-only |
 | Activity | `templates/activity.php` | Bootstrap 5-ready | Secondary activity table now renders through native Bootstrap 5 `card` and `table` classes | Residual risk is visual-only |
 | Report | `templates/report.php` | Bootstrap 5-ready | Secondary report sections now use native Bootstrap 5 `card`, `table`, and `table-responsive` classes | Residual risk is visual-only |
@@ -84,17 +77,7 @@ The main remaining blockers are now page-local CSS- and markup-oriented rather t
 
 ## Common Blockers
 
-### 1. Remaining visual cleanup is now page-local
-
-Most remaining work is now about replacing:
-
-- untargeted secondary pages that still assume older Bootstrap-era helper or content defaults
-- remaining template markup that can be simplified now that the repo no longer loads Bootstrap CSS
-- stale references and checkpoints that are no longer part of the runtime
-
-This is the main path to finishing the Bootstrap 5 migration cleanup.
-
-### 2. Icon migration is functionally complete, but cleanup remains
+### 1. Icon migration is functionally complete, but cleanup remains
 
 Semantic `ska-icon` markup now covers the active templates and runtime JS. Remaining icon-related cleanup is now about deleting compatibility residue and dead references such as:
 
@@ -104,36 +87,26 @@ Semantic `ska-icon` markup now covers the active templates and runtime JS. Remai
 
 The live font dependency is gone because [public_html/style.css](/var/www/ska/public_html/style.css) now renders active icons through local SVG assets.
 
-### 3. Bootstrap 5 CSS is now wired in, but ownership cleanup remains
+### 2. Generic component ownership is now Bootstrap 5-native
 
-Bootstrap 3 CSS is gone from runtime, and Bootstrap 5 CSS is now loaded from a fixed local asset. Remaining work is concentrated in:
+Bootstrap 3 CSS/JS is gone from runtime, Bootstrap 5 CSS/JS is loaded from fixed local assets, and generic component ownership now sits with Bootstrap 5. Remaining work is maintenance-oriented:
 
-- secondary templates that have not yet been visually rechecked under the repo-local baseline
-- deliberate handoff of more shared families from `ska-*` ownership back to real Bootstrap 5 semantics where that reduces local maintenance
-- stale docs/checkpoint references that still mention the old runtime path
-
-The next structural work should target those residual page-local assumptions and dead assets directly.
+- stale docs/checkpoint references that still describe earlier migration phases
+- optional simplification of app-specific wrappers on a few detail/settings pages
+- keeping smoke/browser coverage current as those pages evolve
 
 ## Recommended Next Slices
 
-1. Continue selective Bootstrap 5 handoff on the remaining mixed detail surfaces:
-   - `templates/user.php`
-   - `templates/access_options.php`
-   - `templates/servers_bulk_action.php`
-   - residual SKA layout/choice wrappers on `templates/group.php`, `templates/server.php`, and `templates/serveraccount.php`
-
-2. Continue shell/content cleanup after structural cleanup:
-   - visually recheck untargeted secondary pages under the repo-local baseline
-   - remove any remaining migration-only markup once pages no longer need Bootstrap-era behavior
-   - start handing selected shared families back from `ska-*` ownership to Bootstrap 5-native classes where the conflict surface is now small
-   - delete dead Bootstrap/icon compatibility selectors and stale migration references now that Bootstrap 3 CSS is gone
+1. Keep stale migration docs/checkpoints trimmed so current-state docs stay authoritative.
+2. Optionally simplify the remaining app-specific settings-shell wrappers on `group`, `server`, and `serveraccount` if future UI work touches them.
+3. Extend browser smoke coverage when new interaction-heavy UI changes land.
 
 ## Exit Criteria For Completing The CSS Migration
 
-The CSS migration is complete when:
+This migration target is reached on the current branch when:
 
-- remaining Bootstrap-era helper/content assumptions are eliminated from active templates
-- Bootstrap 5 CSS remains the only third-party frontend stylesheet in the runtime
+- Bootstrap 5 CSS and JS are the only third-party frontend runtime assets
+- generic layout/components use Bootstrap 5 directly
+- SKA-specific CSS is limited to shell, icon, status, and bespoke admin-layout concerns
 - semantic local icons are the only live icon path in templates/runtime JS
-- stale migration references are trimmed so docs match the live runtime
-- smoke/browser capture confirms the cleaned high-traffic and secondary pages still render acceptably under the repo-local baseline
+- smoke/browser capture confirms the cleaned high-traffic and secondary pages still render acceptably

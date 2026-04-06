@@ -16,6 +16,6 @@
 ##
 ?>
 <h1>Public key upload failed</h1>
-<div class="ska-alert ska-alert-danger">
+<div class="alert alert-danger">
 <p><?php out($this->get('message')) ?> Please <a href="" class="navigate-back">go back</a> and try again.</p>
 </div>

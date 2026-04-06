@@ -50,7 +50,7 @@ function show_dynamic_element(element, animate) {
 	}
 
 	clear_dynamic_animation(element);
-	element.classList.remove('ska-hide', 'hidden', 'ska-d-none');
+	element.classList.remove('ska-hide', 'hidden', 'd-none');
 	if(!animate) {
 		element.style.display = '';
 		element.style.removeProperty('height');
@@ -83,7 +83,7 @@ function hide_dynamic_element(element, animate) {
 	}
 
 	clear_dynamic_animation(element);
-	element.classList.remove('ska-hide', 'hidden', 'ska-d-none');
+	element.classList.remove('ska-hide', 'hidden', 'd-none');
 	if(!animate) {
 		element.style.display = 'none';
 		element.style.removeProperty('height');
@@ -142,155 +142,13 @@ dom_ready(function() {
 	}
 });
 
-// Native dropdown and alert-dismiss behavior for the base shell.
-(function() {
-	var dropdownSelector = '[data-bs-toggle="dropdown"]';
-	var alertDismissSelector = '[data-bs-dismiss="alert"]';
-
-	function dispatch_bootstrap_event(target, type, relatedTarget) {
-		return target.dispatchEvent(new CustomEvent(type, {
-			bubbles: true,
-			cancelable: true,
-			detail: {relatedTarget: relatedTarget || null}
-		}));
-	}
-
-	function get_dropdown_root(trigger) {
-		return trigger.closest('.ska-dropdown-root') || trigger.parentElement;
-	}
-
-	function get_dropdown_menu(root) {
-		if(!root) {
-			return null;
-		}
-		return root.querySelector('.ska-dropdown-menu');
-	}
-
-	function close_dropdown(root, trigger, relatedTarget) {
-		if(!root || !root.classList.contains('open')) {
-			return;
-		}
-
-		var menu = get_dropdown_menu(root);
-		if(!dispatch_bootstrap_event(root, 'hide.bs.dropdown', relatedTarget || trigger)) {
-			return;
-		}
-
-		root.classList.remove('open');
-		if(trigger) {
-			trigger.setAttribute('aria-expanded', 'false');
-		}
-		if(menu) {
-			menu.setAttribute('aria-hidden', 'true');
-		}
-
-		dispatch_bootstrap_event(root, 'hidden.bs.dropdown', relatedTarget || trigger);
-	}
-
-	function close_other_dropdowns(currentRoot, relatedTarget) {
-		var openDropdowns = document.querySelectorAll('.ska-dropdown-root.open');
-		for(var i = 0; i < openDropdowns.length; i++) {
-			if(openDropdowns[i] === currentRoot) {
-				continue;
-			}
-
-			var trigger = openDropdowns[i].querySelector(dropdownSelector);
-			close_dropdown(openDropdowns[i], trigger, relatedTarget);
-		}
-	}
-
-	function open_dropdown(root, trigger) {
-		var menu = get_dropdown_menu(root);
-		if(!root || !menu) {
-			return;
-		}
-
-		close_other_dropdowns(root, trigger);
-		if(root.classList.contains('open')) {
-			return;
-		}
-
-		if(!dispatch_bootstrap_event(root, 'show.bs.dropdown', trigger)) {
-			return;
-		}
-
-		root.classList.add('open');
-		trigger.setAttribute('aria-expanded', 'true');
-		menu.setAttribute('aria-hidden', 'false');
-
-		dispatch_bootstrap_event(root, 'shown.bs.dropdown', trigger);
-	}
-
-	document.addEventListener('click', function(event) {
-		var dropdownTrigger = event.target.closest(dropdownSelector);
-		if(dropdownTrigger) {
-			var dropdownRoot = get_dropdown_root(dropdownTrigger);
-			if(!dropdownRoot) {
-				return;
-			}
-
-			event.preventDefault();
-			if(dropdownRoot.classList.contains('open')) {
-				close_dropdown(dropdownRoot, dropdownTrigger, dropdownTrigger);
-			} else {
-				open_dropdown(dropdownRoot, dropdownTrigger);
-			}
-			return;
-		}
-
-		var dismissButton = event.target.closest(alertDismissSelector);
-		if(dismissButton) {
-			var alertTargetSelector = dismissButton.getAttribute('data-bs-target') || dismissButton.getAttribute('data-target');
-			var alertElement = null;
-
-			if(alertTargetSelector && alertTargetSelector.indexOf('#') === 0) {
-				alertElement = document.querySelector(alertTargetSelector);
-			}
-			if(!alertElement) {
-				alertElement = dismissButton.closest('.ska-alert');
-			}
-			if(!alertElement) {
-				return;
-			}
-
-			event.preventDefault();
-			if(!dispatch_bootstrap_event(alertElement, 'close.bs.alert', dismissButton)) {
-				return;
-			}
-
-			alertElement.parentNode.removeChild(alertElement);
-			dispatch_bootstrap_event(alertElement, 'closed.bs.alert', dismissButton);
-			return;
-		}
-
-		close_other_dropdowns(null, event.target);
-	});
-
-	document.addEventListener('keydown', function(event) {
-		if(event.key !== 'Escape') {
-			return;
-		}
-
-		var openDropdowns = document.querySelectorAll('.ska-dropdown-root.open');
-		for(var i = 0; i < openDropdowns.length; i++) {
-			var trigger = openDropdowns[i].querySelector(dropdownSelector);
-			close_dropdown(openDropdowns[i], trigger, event.target);
-			if(trigger) {
-				trigger.focus();
-			}
-		}
-	});
-})();
-
-// Bootstrap 5-compatible tab behavior for migrated tabsets.
+// Keep hash-based deep links in sync with Bootstrap 5 tabs.
 dom_ready(function() {
-	var selector = '[data-bs-toggle="tab"]';
-	var tabGroupSelector = '.ska-tabs, .nav-tabs, .nav-pills';
-	var migratedTabs = document.querySelectorAll(selector);
-
-	if(!migratedTabs.length) {
+	if(!window.bootstrap || !window.bootstrap.Tab) {
 		return;
 	}
+
+	var selector = '[data-bs-toggle="tab"]';
 
 	function get_tab_target(link) {
 		var target = link.getAttribute('data-bs-target') || link.getAttribute('href') || '';
@@ -298,25 +156,6 @@ dom_ready(function() {
 			return null;
 		}
 		return document.getElementById(target.substring(1));
-	}
-
-	function get_tab_group(link) {
-		return link.closest(tabGroupSelector);
-	}
-
-	function find_active_tab(links) {
-		for(var i = 0; i < links.length; i++) {
-			if(links[i].classList.contains('active')) {
-				return links[i];
-			}
-
-			var item = links[i].closest('li');
-			if(item && item.classList.contains('active')) {
-				return links[i];
-			}
-		}
-
-		return null;
 	}
 
 	function set_history_hash(hash) {
@@ -327,118 +166,45 @@ dom_ready(function() {
 		}
 	}
 
-	function show_tab(link, updateHash, animate) {
-		var group = get_tab_group(link);
-		var target = get_tab_target(link);
-		if(!group || !target) {
+	function sync_tab_from_location() {
+		var fragment = window.location.hash ? window.location.hash.substring(1) : '';
+		if(!fragment) {
 			return;
 		}
 
-		var links = group.querySelectorAll(selector);
-		var previous = find_active_tab(links);
-		var showEvent = new CustomEvent('show.bs.tab', {
-			bubbles: true,
-			cancelable: true,
-			detail: {relatedTarget: previous}
-		});
-		if(!link.dispatchEvent(showEvent)) {
-			return;
-		}
-
+		var links = document.querySelectorAll(selector);
 		for(var i = 0; i < links.length; i++) {
-			links[i].classList.remove('active');
-			links[i].setAttribute('aria-selected', 'false');
-			links[i].setAttribute('tabindex', '-1');
-
-			var item = links[i].closest('li');
-			if(item) {
-				item.classList.remove('active');
+			var target = get_tab_target(links[i]);
+			if(target && target.id === fragment) {
+				window.bootstrap.Tab.getOrCreateInstance(links[i]).show();
+				return;
 			}
 		}
-
-		var tabContent = target.closest('.ska-tab-content, .tab-content');
-		if(tabContent) {
-			var panes = tabContent.querySelectorAll('.ska-tab-pane, .tab-pane');
-			for(var p = 0; p < panes.length; p++) {
-				panes[p].classList.remove('active');
-				panes[p].classList.remove('show');
-				panes[p].setAttribute('aria-hidden', 'true');
-			}
-		}
-
-		link.classList.add('active');
-		link.setAttribute('aria-selected', 'true');
-		link.removeAttribute('tabindex');
-
-		var activeItem = link.closest('li');
-		if(activeItem) {
-			activeItem.classList.add('active');
-		}
-
-		target.classList.add('active');
-		if(target.classList.contains('fade')) {
-			if(animate) {
-				force_reflow(target);
-				window.requestAnimationFrame(function() {
-					target.classList.add('show');
-				});
-			} else {
-				target.classList.add('show');
-			}
-		} else {
-			target.classList.add('show');
-		}
-		target.setAttribute('aria-hidden', 'false');
-
-		if(updateHash) {
-			set_history_hash('#' + target.id);
-		}
-
-		link.dispatchEvent(new CustomEvent('shown.bs.tab', {
-			bubbles: true,
-			detail: {relatedTarget: previous}
-		}));
 	}
 
-	for(var t = 0; t < migratedTabs.length; t++) {
-		migratedTabs[t].addEventListener('click', function(event) {
-			event.preventDefault();
-			show_tab(this, true, true);
+	var migratedTabs = document.querySelectorAll(selector);
+	for(var i = 0; i < migratedTabs.length; i++) {
+		migratedTabs[i].addEventListener('shown.bs.tab', function() {
+			var target = get_tab_target(this);
+			if(target && target.id) {
+				var panes = target.parentElement ? target.parentElement.querySelectorAll('.tab-pane') : [];
+				for(var paneIndex = 0; paneIndex < panes.length; paneIndex++) {
+					panes[paneIndex].setAttribute('aria-hidden', panes[paneIndex] === target ? 'false' : 'true');
+				}
+				set_history_hash('#' + target.id);
+			}
 		});
 	}
 
-	var groups = document.querySelectorAll(tabGroupSelector);
-	var fragment = window.location.hash ? window.location.hash.substring(1) : '';
-
-	for(var g = 0; g < groups.length; g++) {
-		var groupLinks = groups[g].querySelectorAll(selector);
-		if(!groupLinks.length) {
-			continue;
-		}
-
-		var initial = null;
-		if(fragment) {
-			for(var h = 0; h < groupLinks.length; h++) {
-				var target = get_tab_target(groupLinks[h]);
-				if(target && target.id === fragment) {
-					initial = groupLinks[h];
-					break;
-				}
-			}
-		}
-
-		if(!initial) {
-			initial = find_active_tab(groupLinks) || groupLinks[0];
-		}
-
-		show_tab(initial, false, false);
-	}
+	sync_tab_from_location();
+	window.addEventListener('hashchange', sync_tab_from_location);
 });
 
-// Remember the expanded-state of a collapsible section
+// Keep collapse deep links working with Bootstrap 5 collapse instances.
 dom_ready(function() {
-	var migratedCollapseSelector = '.collapse[data-bs-parent], .collapse.ska-collapse-target, .ska-card-collapse.collapse';
-	var migratedCollapseTriggers = document.querySelectorAll('[data-bs-toggle="collapse"]');
+	if(!window.bootstrap || !window.bootstrap.Collapse) {
+		return;
+	}
 
 	function get_collapse_target(trigger) {
 		var target = trigger.getAttribute('data-bs-target') || trigger.getAttribute('href') || '';
@@ -448,158 +214,41 @@ dom_ready(function() {
 		return document.getElementById(target.substring(1));
 	}
 
-	function get_collapse_triggers(collapse) {
-		var triggers = [];
-		for(var i = 0; i < migratedCollapseTriggers.length; i++) {
-			if(get_collapse_target(migratedCollapseTriggers[i]) === collapse) {
-				triggers.push(migratedCollapseTriggers[i]);
-			}
-		}
-		return triggers;
-	}
-
-	function finish_collapse_animation(collapse, expanded) {
-		collapse.classList.remove('collapsing');
-		collapse.classList.add('collapse');
-		collapse.classList.toggle('show', expanded);
-		collapse.style.removeProperty('height');
-		collapse.__skaCollapseTimer = null;
-	}
-
-	function set_collapse_state(collapse, expanded, animate) {
-		var triggers = get_collapse_triggers(collapse);
-		collapse.setAttribute('aria-hidden', expanded ? 'false' : 'true');
-
-		for(var i = 0; i < triggers.length; i++) {
-			triggers[i].setAttribute('aria-expanded', expanded ? 'true' : 'false');
-			triggers[i].classList.toggle('collapsed', !expanded);
-		}
-
-		if(collapse.__skaCollapseTimer) {
-			window.clearTimeout(collapse.__skaCollapseTimer);
-			collapse.__skaCollapseTimer = null;
-		}
-
-		if(!animate) {
-			collapse.classList.remove('collapsing');
-			collapse.classList.add('collapse');
-			collapse.classList.toggle('show', expanded);
-			collapse.style.removeProperty('height');
-			return;
-		}
-
-		if(expanded) {
-			collapse.classList.remove('collapse', 'show');
-			collapse.classList.add('collapsing');
-			collapse.style.height = '0px';
-			force_reflow(collapse);
-			collapse.style.height = collapse.scrollHeight + 'px';
-		} else {
-			collapse.style.height = collapse.scrollHeight + 'px';
-			force_reflow(collapse);
-			collapse.classList.remove('collapse', 'show');
-			collapse.classList.add('collapsing');
-			collapse.style.height = '0px';
-		}
-
-		collapse.__skaCollapseTimer = window.setTimeout(function() {
-			finish_collapse_animation(collapse, expanded);
-		}, SKA_COLLAPSE_TRANSITION_MS);
-	}
-
-	function collapse_related_sections(trigger, collapse, animate) {
-		var parentSelector = trigger.getAttribute('data-bs-parent') || collapse.getAttribute('data-bs-parent');
-		if(!parentSelector) {
-			return;
-		}
-
-		var parent = document.querySelector(parentSelector);
-		if(!parent) {
-			return;
-		}
-
-		var related = parent.querySelectorAll(migratedCollapseSelector);
-		for(var i = 0; i < related.length; i++) {
-			if(related[i] !== collapse) {
-				set_collapse_state(related[i], false, animate);
-			}
-		}
-	}
-
 	function get_section_fragment() {
-		var url = document.location.toString();
-		if(url.match('#')) {
-			return url.split('#')[1];
-		}
-		return '';
+		return window.location.hash ? window.location.hash.substring(1) : '';
 	}
 
-	function sync_migrated_collapses_from_location() {
+	function sync_collapse_from_location() {
 		var fragment = get_section_fragment();
-		var collapses = document.querySelectorAll(migratedCollapseSelector);
+		if(!fragment) {
+			return;
+		}
 
-		for(var i = 0; i < collapses.length; i++) {
-			var expanded = collapses[i].id === fragment;
-			if(expanded) {
-				var triggers = get_collapse_triggers(collapses[i]);
-				if(triggers.length) {
-					collapse_related_sections(triggers[0], collapses[i], false);
-				}
-			}
-			set_collapse_state(collapses[i], expanded, false);
+		var collapse = document.getElementById(fragment);
+		if(collapse && collapse.classList.contains('collapse')) {
+			window.bootstrap.Collapse.getOrCreateInstance(collapse, {toggle: false}).show();
 		}
 	}
 
-	for(var c = 0; c < migratedCollapseTriggers.length; c++) {
-		migratedCollapseTriggers[c].addEventListener('click', function(event) {
-			var collapse = get_collapse_target(this);
-			if(!collapse) {
-				return;
-			}
-
-			event.preventDefault();
-			var expanded = !collapse.classList.contains('show');
-			if(expanded) {
-				var showEvent = new CustomEvent('show.bs.collapse', {
-					bubbles: true,
-					cancelable: true
-				});
-				if(!collapse.dispatchEvent(showEvent)) {
-					return;
-				}
-				collapse_related_sections(this, collapse, true);
-				set_collapse_state(collapse, true, true);
-				if(history) {
-					history.replaceState(null, null, '#' + collapse.id);
+	var collapses = document.querySelectorAll('.collapse');
+	for(var i = 0; i < collapses.length; i++) {
+		collapses[i].addEventListener('shown.bs.collapse', function(event) {
+			event.target.setAttribute('aria-hidden', 'false');
+			if(event.target && event.target.id) {
+				if(window.history && history.replaceState) {
+					history.replaceState(null, null, '#' + event.target.id);
 				} else {
-					window.location.hash = collapse.id;
+					window.location.hash = event.target.id;
 				}
-				window.setTimeout(function() {
-					collapse.dispatchEvent(new CustomEvent('shown.bs.collapse', {bubbles: true}));
-				}, SKA_COLLAPSE_TRANSITION_MS);
-			} else {
-				var hideEvent = new CustomEvent('hide.bs.collapse', {
-					bubbles: true,
-					cancelable: true
-				});
-				if(!collapse.dispatchEvent(hideEvent)) {
-					return;
-				}
-				set_collapse_state(collapse, false, true);
-				window.setTimeout(function() {
-					collapse.dispatchEvent(new CustomEvent('hidden.bs.collapse', {bubbles: true}));
-				}, SKA_COLLAPSE_TRANSITION_MS);
 			}
+		});
+		collapses[i].addEventListener('hidden.bs.collapse', function(event) {
+			event.target.setAttribute('aria-hidden', 'true');
 		});
 	}
 
-	if(document.querySelector(migratedCollapseSelector)) {
-		sync_migrated_collapses_from_location();
-	}
-
-	window.addEventListener('popstate', function() {
-		sync_migrated_collapses_from_location();
-	});
+	sync_collapse_from_location();
+	window.addEventListener('hashchange', sync_collapse_from_location);
 });
 
 // Show only chosen fingerprint hash format in list views
@@ -914,23 +563,25 @@ dom_ready(function() {
 			});
 
 			var reassignWrapper = document.createElement('div');
-			reassignWrapper.className = 'ska-form-group';
+			reassignWrapper.className = 'mb-3';
 			var label = document.createElement('label');
-			label.textContent = 'Reassign to ';
+			label.className = 'form-label';
+			label.textContent = 'Reassign to';
 			var input = document.createElement('input');
 			input.type = 'text';
+			input.id = 'reassign_to';
 			input.name = 'reassign_to';
-			input.className = 'ska-form-control';
-			label.appendChild(input);
+			input.className = 'form-control';
 			reassignWrapper.appendChild(label);
+			reassignWrapper.appendChild(input);
 			parent.appendChild(reassignWrapper);
 
 			var submitWrapper = document.createElement('div');
-			submitWrapper.className = 'ska-form-group';
+			submitWrapper.className = 'mb-3';
 			var submitButton = document.createElement('button');
 			submitButton.type = 'submit';
 			submitButton.name = 'reassign_servers';
-			submitButton.className = 'ska-btn ska-btn-primary';
+			submitButton.className = 'btn btn-primary';
 			submitButton.textContent = 'Reassign selected servers';
 			submitWrapper.appendChild(submitButton);
 			parent.appendChild(submitWrapper);
@@ -995,9 +646,9 @@ dom_ready(function() {
 		set_status_text(statusSpan, classname, message);
 		if(explainLink) {
 			if(classname === 'success') {
-				explainLink.classList.add('ska-d-none');
+				explainLink.classList.add('d-none');
 			} else {
-				explainLink.classList.remove('ska-d-none');
+				explainLink.classList.remove('d-none');
 				if(classname === 'warning') {
 					explainLink.href = '/help#sync_warning';
 				}
@@ -1011,7 +662,7 @@ dom_ready(function() {
 			spinner = null;
 		}
 		if(syncButton) {
-			syncButton.classList.remove('ska-invisible');
+			syncButton.classList.remove('invisible');
 		}
 	}
 
@@ -1134,7 +785,7 @@ dom_ready(function() {
 		}
 
 		serverAdmin.value = '';
-		serverAdmins.classList.remove('ska-d-none');
+		serverAdmins.classList.remove('d-none');
 		serverAdmin.removeAttribute('required');
 	}
 
@@ -1155,13 +806,13 @@ dom_ready(function() {
 
 	serverAdmins.addEventListener('blur', function() {
 		if(!serverAdmins.value.trim()) {
-			serverAdmins.classList.add('ska-d-none');
+			serverAdmins.classList.add('d-none');
 			serverAdmin.setAttribute('required', '');
 		}
 	});
 
 	if(serverAdmins.value.trim()) {
-		serverAdmins.classList.remove('ska-d-none');
+		serverAdmins.classList.remove('d-none');
 		serverAdmin.removeAttribute('required');
 	}
 });

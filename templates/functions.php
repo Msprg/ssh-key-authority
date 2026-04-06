@@ -112,9 +112,9 @@ function keygen_help($box_position) {
 		<li class="nav-item" role="presentation"><a href="#mac_instructions" id="mac_instructions_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="mac_instructions" aria-selected="false" tabindex="-1">Mac</a></li>
 		<li class="nav-item" role="presentation"><a href="#linux_instructions" id="linux_instructions_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="linux_instructions" aria-selected="false" tabindex="-1">Linux</a></li>
 	</ul>
-	<div class="tab-content ska-clearfix">
+	<div class="tab-content">
 		<div class="tab-pane fade active show" id="windows_instructions" role="tabpanel" aria-labelledby="windows_instructions_tab" aria-hidden="false">
-				<aside class="ska-float-end"><img src="/putty-key-generator.png" class="ska-rounded ska-img-fluid"></aside>
+				<aside class="float-md-end ms-md-4 mb-3"><img src="/putty-key-generator.png" class="rounded img-fluid d-block" alt="PuTTY key generator"></aside>
 			<p>On Windows you will typically use the <a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html">PuTTYgen</a> application to generate your key pair.</p>
 			<ol>
 				<li>Download and run the latest Windows installer from the <a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html">PuTTY download page</a>.

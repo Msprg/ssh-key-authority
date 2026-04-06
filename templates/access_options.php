@@ -65,63 +65,66 @@ switch(get_class($remote_entity)) {
 		<a href="<?php outurl($re_url)?>" class="<?php out(strtolower(get_class($remote_entity)))?>"><?php out($remote_entity_name)?></a>.
 	</p>
 	<?php if($mode == 'create') { ?>
-	<div class="ska-form-group">
-		<div class="ska-card-stack">
-			<div class="ska-card">
-				<div class="ska-card-header">
-					<h3 class="ska-card-title">
+	<div class="mb-3">
+		<div class="card">
+				<div class="card-header">
+					<h3 class="h5 mb-0">
 						<a data-bs-toggle="collapse" href="#advanced_options" aria-expanded="false">
 							Advanced options <span class="ska-caret" aria-hidden="true"></span>
 						</a>
 					</h3>
 				</div>
-				<div id="advanced_options" class="collapse ska-collapse-target" aria-hidden="true">
+				<div id="advanced_options" class="collapse" aria-hidden="true">
 	<?php } ?>
-					<div class="ska-card-body">
+					<div class="card-body">
 						<p>
 							Presets:
-							<button type="button" class="ska-btn ska-btn-secondary ska-btn-sm" data-preset="default">Default</button>
-							<button type="button" class="ska-btn ska-btn-secondary ska-btn-sm" data-preset="command">Command</button>
-							<button type="button" class="ska-btn ska-btn-secondary ska-btn-sm" data-preset="dbbackup">DB backup</button>
-							<button type="button" class="ska-btn ska-btn-secondary ska-btn-sm" data-preset="checkmk">CheckMK</button>
+							<button type="button" class="btn btn-secondary btn-sm" data-preset="default">Default</button>
+							<button type="button" class="btn btn-secondary btn-sm" data-preset="command">Command</button>
+							<button type="button" class="btn btn-secondary btn-sm" data-preset="dbbackup">DB backup</button>
+							<button type="button" class="btn btn-secondary btn-sm" data-preset="checkmk">CheckMK</button>
 						</p>
-						<div class="ska-form-check">
-							<label class="ska-form-check-label"><input type="checkbox" class="ska-form-check-input" name="access_option[command][enabled]"<?php if(isset($options['command'])) out(' checked'); ?>> <span>Specify command (<code>command=&quot;command&quot;</code>)</span></label>
+						<div class="form-check">
+							<input type="checkbox" class="form-check-input" id="access_option_command_enabled" name="access_option[command][enabled]"<?php if(isset($options['command'])) out(' checked'); ?>>
+							<label class="form-check-label" for="access_option_command_enabled">Specify command (<code>command=&quot;command&quot;</code>)</label>
 						</div>
-						<div class="ska-mb-3">
-							<input type="text" id="command_value" name="access_option[command][value]" value="<?php if(isset($options['command'])) out($options['command']->value); ?>" class="ska-form-control">
+						<div class="mb-3">
+							<input type="text" id="command_value" name="access_option[command][value]" value="<?php if(isset($options['command'])) out($options['command']->value); ?>" class="form-control">
 						</div>
-						<div class="ska-form-check">
-							<label class="ska-form-check-label"><input type="checkbox" class="ska-form-check-input" name="access_option[from][enabled]"<?php if(isset($options['from'])) out(' checked'); ?>> <span>Restrict source address (<code>from=&quot;<abbr title="A pattern-list is a comma-separated list of patterns.  Each pattern can be either a hostname or an IP address, with wildcards (* and ?) allowed.">pattern-list</abbr>&quot;</code>)</span></label>
+						<div class="form-check">
+							<input type="checkbox" class="form-check-input" id="access_option_from_enabled" name="access_option[from][enabled]"<?php if(isset($options['from'])) out(' checked'); ?>>
+							<label class="form-check-label" for="access_option_from_enabled">Restrict source address (<code>from=&quot;<abbr title="A pattern-list is a comma-separated list of patterns.  Each pattern can be either a hostname or an IP address, with wildcards (* and ?) allowed.">pattern-list</abbr>&quot;</code>)</label>
 						</div>
-						<div class="ska-mb-3">
-							<input type="text" id="from_value" name="access_option[from][value]" value="<?php if(isset($options['from'])) out($options['from']->value); ?>" class="ska-form-control">
+						<div class="mb-3">
+							<input type="text" id="from_value" name="access_option[from][value]" value="<?php if(isset($options['from'])) out($options['from']->value); ?>" class="form-control">
 						</div>
-						<div class="ska-form-check">
-							<label class="ska-form-check-label"><input type="checkbox" class="ska-form-check-input" name="access_option[no-port-forwarding][enabled]"<?php if(isset($options['no-port-forwarding'])) out(' checked'); ?>> <span>Disallow port forwarding (<code>no-port-forwarding</code>)</span></label>
+						<div class="form-check">
+							<input type="checkbox" class="form-check-input" id="access_option_no_port_forwarding_enabled" name="access_option[no-port-forwarding][enabled]"<?php if(isset($options['no-port-forwarding'])) out(' checked'); ?>>
+							<label class="form-check-label" for="access_option_no_port_forwarding_enabled">Disallow port forwarding (<code>no-port-forwarding</code>)</label>
 						</div>
-						<div class="ska-form-check">
-							<label class="ska-form-check-label"><input type="checkbox" class="ska-form-check-input" name="access_option[no-X11-forwarding][enabled]"<?php if(isset($options['no-X11-forwarding'])) out(' checked'); ?>> <span>Disallow X11 forwarding (<code>no-X11-forwarding</code>)</span></label>
+						<div class="form-check">
+							<input type="checkbox" class="form-check-input" id="access_option_no_x11_forwarding_enabled" name="access_option[no-X11-forwarding][enabled]"<?php if(isset($options['no-X11-forwarding'])) out(' checked'); ?>>
+							<label class="form-check-label" for="access_option_no_x11_forwarding_enabled">Disallow X11 forwarding (<code>no-X11-forwarding</code>)</label>
 						</div>
-						<div class="ska-form-check">
-							<label class="ska-form-check-label"><input type="checkbox" class="ska-form-check-input" name="access_option[no-pty][enabled]"<?php if(isset($options['no-pty'])) out(' checked'); ?>> <span>Disable terminal (<code>no-pty</code>)</span></label>
+						<div class="form-check">
+							<input type="checkbox" class="form-check-input" id="access_option_no_pty_enabled" name="access_option[no-pty][enabled]"<?php if(isset($options['no-pty'])) out(' checked'); ?>>
+							<label class="form-check-label" for="access_option_no_pty_enabled">Disable terminal (<code>no-pty</code>)</label>
 						</div>
 					</div>
 	<?php if($mode == 'create') { ?>
 				</div>
 			</div>
-		</div>
 	</div>
 	<?php } ?>
-	<div class="ska-row">
-		<div class="ska-col-md-8">
-			<button type="submit" name="<?php if($mode == 'create') out('add_access'); else out('update_access')?>" value="2" class="ska-btn ska-btn-primary ska-w-100"><?php if($mode == 'create') out('Confirm'); else out('Modify')?> access</button>
+	<div class="row g-3">
+		<div class="col-md-8 d-grid">
+			<button type="submit" name="<?php if($mode == 'create') out('add_access'); else out('update_access')?>" value="2" class="btn btn-primary w-100"><?php if($mode == 'create') out('Confirm'); else out('Modify')?> access</button>
 		</div>
-		<div class="ska-col-md-4">
+		<div class="col-md-4 d-grid">
 			<?php if(isset($server)) { ?>
-			<a href="<?php outurl('/servers/'.urlencode($server->hostname).'/accounts/'.urlencode($account->name))?>" class="ska-btn ska-btn-secondary ska-w-100">Cancel</a>
+			<a href="<?php outurl('/servers/'.urlencode($server->hostname).'/accounts/'.urlencode($account->name))?>" class="btn btn-secondary w-100">Cancel</a>
 			<?php } elseif(isset($group)) { ?>
-			<a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="ska-btn ska-btn-secondary ska-w-100">Cancel</a>
+			<a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="btn btn-secondary w-100">Cancel</a>
 			<?php } ?>
 		</div>
 	</div>

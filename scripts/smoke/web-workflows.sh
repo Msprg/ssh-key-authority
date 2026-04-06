@@ -25,8 +25,9 @@ LEGACY_CARET_RE='class="caret([[:space:]]|")|class="[^"]+[[:space:]]caret([[:spa
 LEGACY_IN_CLASS_RE='class="in([[:space:]]|")|class="[^"]+[[:space:]]in([[:space:]]|")'
 LEGACY_LAYOUT_TOKENS='container|row|col-sm-[0-9]+|col-md-[0-9]+|text-muted|w-100|mb-0|mb-1|mb-3|mb-4|mt-3|d-none|float-end|invisible'
 LEGACY_LAYOUT_RE="class=\"(${LEGACY_LAYOUT_TOKENS})([[:space:]]|\")|class=\"[^\"]+[[:space:]](${LEGACY_LAYOUT_TOKENS})([[:space:]]|\")"
-LEGACY_PRESENTATION_TOKENS='text-center|text-muted|text-success|text-warning|text-danger|text-info|rounded|img-fluid|clearfix|d-xl-none|h-50px|alert-link'
+LEGACY_PRESENTATION_TOKENS='text-muted|text-success|text-warning|text-danger|text-info|d-xl-none|h-50px'
 LEGACY_PRESENTATION_RE="class=\"(${LEGACY_PRESENTATION_TOKENS})([[:space:]]|\")|class=\"[^\"]+[[:space:]](${LEGACY_PRESENTATION_TOKENS})([[:space:]]|\")"
+RETIRED_SKA_GENERIC_RE='ska-(form-control|form-label|btn|tabs|tab-content|tab-pane|row|col-(sm|md)-[0-9]+|d-none|w-100|form-check|table)'
 
 cleanup() {
     smoke_cleanup_dir "$TMP_DIR"
@@ -38,11 +39,13 @@ curl -fsS -L -c "$COOKIE_JAR" "$BASE_URL/login" -o "$TMP_DIR/login.html"
 LOGIN_CSRF=$(smoke_extract_csrf "$TMP_DIR/login.html")
 [ -n "$LOGIN_CSRF" ] || smoke_die "Login CSRF token not found"
 grep -Eq '<link[^>]+href="[^"]*/vendor/bootstrap5/bootstrap-5\.3\.8\.min\.css' "$TMP_DIR/login.html" || smoke_die "Login page is missing the vendored Bootstrap 5 CSS"
+grep -Eq '<script[^>]+src="[^"]*/vendor/bootstrap5/bootstrap-5\.3\.8\.bundle\.min\.js' "$TMP_DIR/login.html" || smoke_die "Login page is missing the vendored Bootstrap 5 bundle"
 ! grep -Eq '<link[^>]+href="[^"]*/bootstrap/css/bootstrap\.min\.css' "$TMP_DIR/login.html" || smoke_die "Login page still loads bootstrap.min.css"
-grep -Eq 'class="[^"]*ska-form-control' "$TMP_DIR/login.html" || smoke_die "Login page is missing SKA-owned form-control classes"
-grep -Eq 'class="[^"]*ska-form-label' "$TMP_DIR/login.html" || smoke_die "Login page is missing SKA-owned form-label classes"
-! grep -Eq "$LEGACY_LAYOUT_RE" "$TMP_DIR/login.html" || smoke_die "Login page still renders Bootstrap-named layout/utility classes"
+! grep -Eq "$RETIRED_SKA_GENERIC_RE" "$TMP_DIR/login.html" || smoke_die "Login page still renders retired SKA generic classes"
 ! grep -Eq "$LEGACY_PRESENTATION_RE" "$TMP_DIR/login.html" || smoke_die "Login page still renders Bootstrap-named semantic helper classes"
+grep -Eq 'class="[^"]*form-label' "$TMP_DIR/login.html" || smoke_die "Login page is missing Bootstrap 5 form-label classes"
+grep -Eq 'class="[^"]*form-control' "$TMP_DIR/login.html" || smoke_die "Login page is missing Bootstrap 5 form-control classes"
+grep -Eq 'class="[^"]*btn[^"]*btn-primary' "$TMP_DIR/login.html" || smoke_die "Login page is missing Bootstrap 5 button classes"
 
 smoke_log "Executing LDAP login flow"
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" \
@@ -53,6 +56,7 @@ curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" \
 
 grep -q '>Logout<' "$TMP_DIR/post-login.html" || smoke_die "Login failed or did not reach authenticated UI"
 grep -Eq '<link[^>]+href="[^"]*/vendor/bootstrap5/bootstrap-5\.3\.8\.min\.css' "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell is missing the vendored Bootstrap 5 CSS"
+grep -Eq '<script[^>]+src="[^"]*/vendor/bootstrap5/bootstrap-5\.3\.8\.bundle\.min\.js' "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell is missing the vendored Bootstrap 5 bundle"
 ! grep -Eq '<link[^>]+href="[^"]*/bootstrap/css/bootstrap\.min\.css' "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell still loads bootstrap.min.css"
 ! grep -q '/bootstrap/js/bootstrap.min.js' "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell still loads bootstrap.min.js"
 ! grep -Eq '<script[^>]+src="[^"]*/jquery/jquery-3\.7\.1\.min\.js' "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell still loads jquery"
@@ -60,7 +64,6 @@ grep -Eq '<link[^>]+href="[^"]*/vendor/bootstrap5/bootstrap-5\.3\.8\.min\.css' "
 ! grep -Eq '<script[^>]+src="[^"]*/bootstrap5-compat\.js' "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell still loads bootstrap5-compat.js"
 ! grep -q 'data-ska-skip-legacy' "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell still renders migration-only data-ska-skip-legacy markup"
 ! grep -Eq '\bsr-only\b|\bhidden-xl\b' "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell still renders Bootstrap 3 visibility helper classes"
-! grep -Eq "$LEGACY_DROPDOWN_RE" "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell still renders legacy dropdown helper classes"
 grep -q 'data-bs-toggle="dropdown"' "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell is missing Bootstrap 5 dropdown markup"
 ! grep -Eq "$LEGACY_PRESENTATION_RE" "$TMP_DIR/post-login.html" || smoke_die "Authenticated shell still renders Bootstrap-named semantic helper classes"
 
@@ -74,6 +77,7 @@ curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/" -o "$TMP_DIR/home-be
 HOME_CSRF=$(smoke_extract_csrf "$TMP_DIR/home-before-key.html")
 [ -n "$HOME_CSRF" ] || smoke_die "Home page CSRF token not found before key add"
 grep -Eq '<link[^>]+href="[^"]*/vendor/bootstrap5/bootstrap-5\.3\.8\.min\.css' "$TMP_DIR/home-before-key.html" || smoke_die "Home page is missing the vendored Bootstrap 5 CSS"
+grep -Eq '<script[^>]+src="[^"]*/vendor/bootstrap5/bootstrap-5\.3\.8\.bundle\.min\.js' "$TMP_DIR/home-before-key.html" || smoke_die "Home page is missing the vendored Bootstrap 5 bundle"
 ! grep -Eq '<link[^>]+href="[^"]*/bootstrap/css/bootstrap\.min\.css' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still loads bootstrap.min.css"
 ! grep -q '/bootstrap/js/bootstrap.min.js' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still loads bootstrap.min.js"
 ! grep -Eq '<script[^>]+src="[^"]*/jquery/jquery-3\.7\.1\.min\.js' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still loads jquery"
@@ -82,14 +86,13 @@ grep -Eq '<link[^>]+href="[^"]*/vendor/bootstrap5/bootstrap-5\.3\.8\.min\.css' "
 ! grep -q 'data-ska-skip-legacy' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders migration-only data-ska-skip-legacy markup"
 ! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders legacy glyphicon classes"
 ! grep -Eq 'class="[^"]*\\bhidden\\b' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders the legacy hidden helper class"
-! grep -Eq 'class="[^"]*\\btable\\b|class="[^"]*\\btable-bordered\\b|class="[^"]*\\btable-striped\\b|class="[^"]*\\btable-hover\\b|class="[^"]*\\btable-sm\\b' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders legacy Bootstrap table classes"
-! grep -Eq "$LEGACY_LAYOUT_RE" "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders Bootstrap-named layout/utility classes"
+! grep -Eq "$RETIRED_SKA_GENERIC_RE" "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders retired SKA generic classes"
 ! grep -Eq "$LEGACY_PRESENTATION_RE" "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders Bootstrap-named semantic helper classes"
 ! grep -Eq 'class="[^"]*\\btext-bg-secondary\\b' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders Bootstrap-named inactive badge classes"
-! grep -Eq 'class="[^"]*\\bform-control\\b' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders Bootstrap-named form-control classes"
-! grep -Eq 'class="[^"]*\\bbtn\\b|class="[^"]*\\bbtn-primary\\b|class="[^"]*\\bbtn-secondary\\b|class="[^"]*\\bbtn-success\\b|class="[^"]*\\bbtn-danger\\b|class="[^"]*\\bbtn-info\\b|class="[^"]*\\bbtn-sm\\b|class="[^"]*\\bbtn-lg\\b' "$TMP_DIR/home-before-key.html" || smoke_die "Home page still renders Bootstrap-named button classes"
-grep -Eq 'class="[^"]*ska-form-control' "$TMP_DIR/home-before-key.html" || smoke_die "Home page is missing SKA-owned form-control classes"
-grep -Eq 'class="[^"]*ska-btn' "$TMP_DIR/home-before-key.html" || smoke_die "Home page is missing SKA-owned button classes"
+grep -Eq 'class="[^"]*table[^"]*table-striped' "$TMP_DIR/home-before-key.html" || smoke_die "Home page is missing Bootstrap 5 table classes"
+grep -Eq 'class="[^"]*form-control' "$TMP_DIR/home-before-key.html" || smoke_die "Home page is missing Bootstrap 5 form-control classes"
+grep -Eq 'class="[^"]*btn[^"]*btn-primary' "$TMP_DIR/home-before-key.html" || smoke_die "Home page is missing Bootstrap 5 primary button classes"
+grep -Eq 'class="[^"]*btn[^"]*btn-secondary' "$TMP_DIR/home-before-key.html" || smoke_die "Home page is missing Bootstrap 5 secondary button classes"
 
 TARGET_SERVER=$(smoke_urlencode "$SKA_SMOKE_ACCESS_SERVER_HOSTNAME")
 TARGET_ACCOUNT=$(smoke_urlencode "$SKA_SMOKE_ACCESS_ACCOUNT_NAME")
@@ -240,13 +243,18 @@ curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/users/${TARGET_USER}" 
 grep -q '>Logout<' "$TMP_DIR/user.html" || smoke_die "Authenticated session was lost while loading target user page"
 ! grep -Eq "form-inline|form-horizontal|control-label|col-sm-offset-|help-block|<div class=\"checkbox|<div class=\"radio|\\bsr-only\\b|$LEGACY_FORM_GROUP_RE" "$TMP_DIR/user.html" || smoke_die "Target user page still renders legacy Bootstrap 3 form helpers"
 ! grep -Eq 'glyphicon-[a-z0-9-]+' "$TMP_DIR/user.html" || smoke_die "Target user page still renders legacy glyphicon classes"
-! grep -Eq 'class="[^"]*\\btable\\b|class="[^"]*\\btable-bordered\\b|class="[^"]*\\btable-striped\\b|class="[^"]*\\btable-hover\\b|class="[^"]*\\btable-sm\\b' "$TMP_DIR/user.html" || smoke_die "Target user page still renders legacy Bootstrap table classes"
-! grep -Eq 'class="nav nav-tabs"|class="[^"]*\\bnav-item\\b|class="[^"]*\\bnav-link\\b|class="tab-content"|class="[^"]*\\btab-pane\\b' "$TMP_DIR/user.html" || smoke_die "Target user page still renders legacy Bootstrap tab classes"
+! grep -Eq "$RETIRED_SKA_GENERIC_RE" "$TMP_DIR/user.html" || smoke_die "Target user page still renders retired SKA generic classes"
 ! grep -Eq "$LEGACY_IN_CLASS_RE" "$TMP_DIR/user.html" || smoke_die "Target user page still renders legacy collapse/tab state classes"
 ! grep -Eq 'class="[^"]*\\btext-bg-secondary\\b' "$TMP_DIR/user.html" || smoke_die "Target user page still renders Bootstrap-named inactive badge classes"
-! grep -Eq 'class="[^"]*\\bbtn\\b|class="[^"]*\\bbtn-primary\\b|class="[^"]*\\bbtn-secondary\\b|class="[^"]*\\bbtn-success\\b|class="[^"]*\\bbtn-danger\\b|class="[^"]*\\bbtn-info\\b|class="[^"]*\\bbtn-sm\\b|class="[^"]*\\bbtn-lg\\b' "$TMP_DIR/user.html" || smoke_die "Target user page still renders Bootstrap-named button classes"
-grep -Eq 'class="[^"]*ska-btn' "$TMP_DIR/user.html" || smoke_die "Target user page is missing SKA-owned button classes"
 ! grep -Eq "$LEGACY_PRESENTATION_RE" "$TMP_DIR/user.html" || smoke_die "Target user page still renders Bootstrap-named semantic helper classes"
+grep -Eq 'class="[^"]*nav[^"]*nav-tabs' "$TMP_DIR/user.html" || smoke_die "Target user page is missing Bootstrap 5 nav-tab classes"
+grep -Eq 'class="[^"]*tab-content' "$TMP_DIR/user.html" || smoke_die "Target user page is missing Bootstrap 5 tab-content classes"
+grep -Eq 'class="[^"]*table[^"]*table-striped' "$TMP_DIR/user.html" || smoke_die "Target user page is missing Bootstrap 5 table classes"
+grep -Eq 'class="[^"]*btn[^"]*btn-secondary' "$TMP_DIR/user.html" || smoke_die "Target user page is missing Bootstrap 5 secondary button classes"
+if grep -Eq 'name="edit_user"' "$TMP_DIR/user.html"; then
+    grep -Eq 'class="[^"]*btn[^"]*btn-primary' "$TMP_DIR/user.html" || smoke_die "Target user page is missing Bootstrap 5 primary button classes"
+    grep -Eq 'class="[^"]*form-check-input' "$TMP_DIR/user.html" || smoke_die "Target user page is missing Bootstrap 5 form-check inputs"
+fi
 
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL/bulk_mail/server_admins" -o "$TMP_DIR/bulk-mail.html"
 grep -q '>Logout<' "$TMP_DIR/bulk-mail.html" || smoke_die "Authenticated session was lost while loading bulk mail page"
@@ -404,14 +412,13 @@ curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL$ACCESS_OPTIONS_PATH" -
 grep -q '>Logout<' "$TMP_DIR/access-options.html" || smoke_die "Authenticated session was lost while loading access options page"
 ! grep -Eq "$LEGACY_FORM_GROUP_RE" "$TMP_DIR/access-options.html" || smoke_die "Access options page still renders legacy form-group markup"
 ! grep -Eq "$LEGACY_CARET_RE" "$TMP_DIR/access-options.html" || smoke_die "Access options page still renders legacy caret markup"
-! grep -Eq "$LEGACY_LAYOUT_RE" "$TMP_DIR/access-options.html" || smoke_die "Access options page still renders Bootstrap-named layout/utility classes"
+! grep -Eq "$RETIRED_SKA_GENERIC_RE" "$TMP_DIR/access-options.html" || smoke_die "Access options page still renders retired SKA generic classes"
 ! grep -Eq "$LEGACY_PRESENTATION_RE" "$TMP_DIR/access-options.html" || smoke_die "Access options page still renders Bootstrap-named semantic helper classes"
-! grep -Eq 'class="[^"]*\\bform-check\\b|class="[^"]*\\bform-check-label\\b|class="[^"]*\\bform-check-input\\b' "$TMP_DIR/access-options.html" || smoke_die "Access options page still renders Bootstrap-named form-check classes"
-! grep -Eq 'class="[^"]*\\bform-control\\b' "$TMP_DIR/access-options.html" || smoke_die "Access options page still renders Bootstrap-named form-control classes"
-! grep -Eq 'class="[^"]*\\bbtn\\b|class="[^"]*\\bbtn-primary\\b|class="[^"]*\\bbtn-secondary\\b|class="[^"]*\\bbtn-success\\b|class="[^"]*\\bbtn-danger\\b|class="[^"]*\\bbtn-info\\b|class="[^"]*\\bbtn-sm\\b|class="[^"]*\\bbtn-lg\\b' "$TMP_DIR/access-options.html" || smoke_die "Access options page still renders Bootstrap-named button classes"
-grep -Eq 'class="[^"]*ska-form-check' "$TMP_DIR/access-options.html" || smoke_die "Access options page is missing SKA-owned form-check classes"
-grep -Eq 'class="[^"]*ska-form-control' "$TMP_DIR/access-options.html" || smoke_die "Access options page is missing SKA-owned form-control classes"
-grep -Eq 'class="[^"]*ska-btn' "$TMP_DIR/access-options.html" || smoke_die "Access options page is missing SKA-owned button classes"
+grep -Eq 'class="[^"]*form-check' "$TMP_DIR/access-options.html" || smoke_die "Access options page is missing Bootstrap 5 form-check classes"
+grep -Eq 'class="[^"]*form-control' "$TMP_DIR/access-options.html" || smoke_die "Access options page is missing Bootstrap 5 form-control classes"
+grep -Eq 'class="[^"]*btn[^"]*btn-primary' "$TMP_DIR/access-options.html" || smoke_die "Access options page is missing Bootstrap 5 primary button classes"
+grep -Eq 'class="[^"]*btn[^"]*btn-secondary' "$TMP_DIR/access-options.html" || smoke_die "Access options page is missing Bootstrap 5 secondary button classes"
+grep -Eq 'class="[^"]*row' "$TMP_DIR/access-options.html" || smoke_die "Access options page is missing Bootstrap 5 row classes"
 
 curl -fsS -L -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$BASE_URL$TARGET_PATH" -o "$TMP_DIR/account-before-access-delete.html"
 ACCOUNT_DELETE_CSRF=$(smoke_extract_csrf "$TMP_DIR/account-before-access-delete.html")

@@ -19,16 +19,16 @@
 <h1>Bulk Action for Servers</h1>
 <p>You selected <?php out(count($this->data->server_names)) ?> <?php out($this->data->plural ? 'servers' : 'server') ?> to perform a bulk action.</p>
 
-<div class="ska-card">
-	<div class="ska-card-header">
-		<h3 class="ska-card-title">
+<div class="card mb-3">
+	<div class="card-header">
+		<h3 class="h5 mb-0">
 			<a data-bs-toggle="collapse" href="#server_list" aria-expanded="false">
 				Server list
 			</a>
 		</h3>
 	</div>
-	<div id="server_list" class="ska-card-collapse collapse" aria-hidden="true">
-		<div class="ska-card-body">
+	<div id="server_list" class="collapse" aria-hidden="true">
+		<div class="card-body">
 			<ul>
 			<?php foreach ($this->data->server_names as $server_name) { ?>
 				<li><?php out($server_name) ?></li>
@@ -38,16 +38,16 @@
 	</div>
 </div>
 
-<form action="<?php outurl($this->data->relative_request_url)?>" method="post" class="ska-inline-form">
+<form action="<?php outurl($this->data->relative_request_url)?>" method="post" class="row g-3 align-items-end mb-4">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 	<?php foreach ($this->data->server_names as $server_name) { ?>
 		<input type="hidden" name="selected_servers[]" value="<?php out($server_name) ?>">
 	<?php } ?>
 
 	<h3>Add a new leader to all selected servers</h3>
-	<div class="ska-form-group ska-mb-3">
-		<label for="user_name" class="visually-hidden">User or group name</label>
-		<input type="text" id="user_name" name="user_name" class="ska-form-control" placeholder="User or group name" required list="userlist">
+	<div class="col-lg-8">
+		<label for="user_name" class="form-label">User or group name</label>
+		<input type="text" id="user_name" name="user_name" class="form-control" placeholder="User or group name" required list="userlist">
 		<datalist id="userlist">
 			<?php foreach($this->get('all_users') as $user) { ?>
 			<option value="<?php out($user->uid)?>" label="<?php out($user->name)?>">
@@ -57,19 +57,21 @@
 			<?php } ?>
 		</datalist>
 	</div>
-	<button type="submit" name="add_admin" value="1" class="ska-btn ska-btn-primary">Add leader to selected <?php out($this->data->plural ? 'servers' : 'server') ?></button>
+	<div class="col-lg-4 d-grid">
+		<button type="submit" name="add_admin" value="1" class="btn btn-primary">Add leader to selected <?php out($this->data->plural ? 'servers' : 'server') ?></button>
+	</div>
 </form>
 
 <h3>Remove leaders from all selected servers</h3>
 <?php if(count($this->get('server_admins')) == 0) { ?>
-<p class="ska-alert ska-alert-danger">The selected <?php out($this->data->plural ? 'servers do' : 'server does') ?> not have any leaders assigned.</p>
+<p class="alert alert-danger">The selected <?php out($this->data->plural ? 'servers do' : 'server does') ?> not have any leaders assigned.</p>
 <?php } else { ?>
 <form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 	<?php foreach ($this->data->server_names as $server_name) { ?>
 		<input type="hidden" name="selected_servers[]" value="<?php out($server_name) ?>">
 	<?php } ?>
-	<table class="ska-table ska-table-bordered ska-table-striped">
+	<table class="table table-bordered table-striped">
 		<thead>
 			<tr>
 				<th>Entity</th>
@@ -91,7 +93,7 @@
 						<td><?php out($admin->name); if(!$admin->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 						<td><?php out($count_affected) ?></td>
 						<td>
-							<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove leader</button>
+							<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove leader</button>
 						</td>
 					</tr>
 				<?php } elseif(strtolower(get_class($admin)) == "group"){ ?>
@@ -100,7 +102,7 @@
 						<td><?php out($admin->name); if(!$admin->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 						<td><?php out($count_affected) ?></td>
 						<td>
-							<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="ska-btn ska-btn-secondary ska-btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove leader</button>
+							<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove leader</button>
 						</td>
 					</tr>
 				<?php }} ?>

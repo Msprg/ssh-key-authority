@@ -24,6 +24,11 @@ browser_smoke_login "$BASE_URL" "$SKA_SMOKE_USERNAME" "$SKA_SMOKE_PASSWORD"
 
 smoke_log "Checking authenticated shell dropdown interaction"
 browser_smoke_navigate "${BASE_URL}/"
+browser_smoke_wait_for_js '
+    return !!(window.bootstrap && window.bootstrap.Dropdown) &&
+        !!document.querySelector("[data-bs-toggle=\"dropdown\"]") &&
+        !!document.querySelector(".ska-dropdown-menu");
+' 40 0.1 || smoke_die "Shell dropdown assets did not initialize"
 browser_smoke_exec '
     var trigger = document.querySelector("[data-bs-toggle=\"dropdown\"]");
     if (!trigger) {
@@ -34,10 +39,9 @@ browser_smoke_exec '
 ' >/dev/null
 browser_smoke_wait_for_js '
     var trigger = document.querySelector("[data-bs-toggle=\"dropdown\"]");
-    var menu = document.querySelector(".ska-dropdown-root.open .ska-dropdown-menu");
+    var menu = document.querySelector(".ska-dropdown-menu.show");
     return !!trigger && !!menu &&
-        trigger.getAttribute("aria-expanded") === "true" &&
-        menu.getAttribute("aria-hidden") === "false";
+        trigger.getAttribute("aria-expanded") === "true";
 ' 40 0.1 || smoke_die "Shell dropdown did not open"
 browser_smoke_exec '
     document.documentElement.click();
@@ -45,12 +49,11 @@ browser_smoke_exec '
 ' >/dev/null
 browser_smoke_wait_for_js '
     var trigger = document.querySelector("[data-bs-toggle=\"dropdown\"]");
-    var root = document.querySelector(".ska-dropdown-root");
     var menu = document.querySelector(".ska-dropdown-menu");
-    return !!trigger && !!root && !!menu &&
-        !root.classList.contains("open") &&
+    return !!trigger && !!menu &&
+        !menu.classList.contains("show") &&
         trigger.getAttribute("aria-expanded") === "false" &&
-        menu.getAttribute("aria-hidden") === "true";
+        menu.getAttribute("aria-hidden") !== "false";
 ' 40 0.1 || smoke_die "Shell dropdown did not close"
 
 smoke_log "Checking help collapse interaction"
@@ -91,7 +94,7 @@ browser_smoke_wait_for_js '
 smoke_log "Checking server list tab interaction"
 browser_smoke_navigate "${BASE_URL}/servers"
 TAB_RESULT=$(browser_smoke_exec '
-    var tab = document.querySelector(".nav-link[data-bs-toggle=\"tab\"]:not(.active), .ska-tab-link[data-bs-toggle=\"tab\"]:not(.active)");
+    var tab = document.querySelector(".nav-link[data-bs-toggle=\"tab\"]:not(.active)");
     if (!tab) {
         return "";
     }

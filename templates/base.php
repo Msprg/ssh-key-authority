@@ -46,15 +46,15 @@ $footer=str_replace("%v", "1.5.0", $web_config['footer']);
 					<?php } ?>
 				</ul>
 			</div>
-			<div class="ska-navbar-side ska-dropdown-root">
-				<button class="ska-side-button ska-dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<div class="ska-navbar-side dropdown">
+				<button class="ska-side-button dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					<svg class="ska-dropdown-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5h16M4 12h16M4 19h16"/></svg>
 					<span class="ska-dropdown-name">
 						<?php out($this->get('active_user')->name)?> 
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M18.53 9.53a.75.75 0 0 0 0-1.06H5.47a.75.75 0 0 0 0 1.06l6 6a.75.75 0 0 0 1.06 0z"/></svg>
 					</span>
 				</button>
-				<div class="ska-dropdown-menu" aria-labelledby="dropdownMenuButton" aria-hidden="true">
+				<div class="ska-dropdown-menu dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
 						<div class="ska-dropdown"><span class="ska-dropdown-name-dp ska-d-xl-none">
 							<?php out($this->get('active_user')->name)?> 
 						</span>
@@ -73,8 +73,8 @@ $footer=str_replace("%v", "1.5.0", $web_config['footer']);
 </div>
 <div class="ska-container" id="content">
 <?php foreach($this->get('alerts') as $alert) { ?>
-<div class="ska-alert ska-alert-<?php out($alert->class)?> ska-alert-dismissible">
-	<button type="button" class="ska-btn-close" data-bs-dismiss="alert" aria-label="Close">&times;</button>
+<div class="alert alert-<?php out($alert->class)?> alert-dismissible fade show" role="alert">
+	<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 	<?php out($alert->content, $alert->escaping)?>
 </div>
 <?php } ?>
@@ -83,9 +83,10 @@ $footer=str_replace("%v", "1.5.0", $web_config['footer']);
 </div>
 <div id="footer">
 	<div class="ska-container">
-		<p class="ska-text-muted credit"><?php out($footer, ESC_NONE)?></p>
+		<p class="text-body-secondary credit"><?php out($footer, ESC_NONE)?></p>
 		<?php if($this->get('active_user') && $this->get('active_user')->developer) { ?>
 		<?php } ?>
 	</div>
 </div>
+<script src="<?php outurl('/vendor/bootstrap5/bootstrap-5.3.8.bundle.min.js?'.filemtime('public_html/vendor/bootstrap5/bootstrap-5.3.8.bundle.min.js'))?>"></script>
 <script src="<?php outurl('/extra.js?'.filemtime('public_html/extra.js'))?>"></script>
