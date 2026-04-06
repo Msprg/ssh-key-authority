@@ -46,7 +46,7 @@ class SyncFailureReporter {
 	 * @return string
 	 */
 	public static function classify_reason($reason) {
-		$normalized = strtolower(self::normalize_reason($reason));
+		$normalized = strtolower(self::normalize_reason_full($reason));
 		if($normalized === '') {
 			return 'sync_failure';
 		}
@@ -138,8 +138,8 @@ class SyncFailureReporter {
 	private static function compose_message($summary, $reason, $code, $reschedule) {
 		$parts = array();
 		$parts[] = self::escape_semicolons(trim((string)$summary));
-		if(self::normalize_reason($reason) !== '') {
-			$parts[] = 'reason='.self::escape_semicolons(self::normalize_reason($reason));
+		if(self::normalize_reason_full($reason) !== '') {
+			$parts[] = 'reason='.self::escape_semicolons(self::normalize_reason_for_storage($reason));
 		}
 		$parts[] = 'code='.$code;
 		if($reschedule) {
@@ -157,12 +157,25 @@ class SyncFailureReporter {
 	}
 
 	/**
+	 * Normalize reason text without truncation (for classification).
+	 *
 	 * @param string|null $reason
 	 * @return string
 	 */
-	private static function normalize_reason($reason) {
+	private static function normalize_reason_full($reason) {
 		$text = trim((string)$reason);
 		$text = trim((string)preg_replace('/\s+/', ' ', $text));
+		return $text;
+	}
+
+	/**
+	 * Normalize reason text with truncation (for storage/display).
+	 *
+	 * @param string|null $reason
+	 * @return string
+	 */
+	private static function normalize_reason_for_storage($reason) {
+		$text = self::normalize_reason_full($reason);
 		if($text === '') {
 			return '';
 		}
@@ -170,5 +183,14 @@ class SyncFailureReporter {
 			return substr($text, 0, 240).'...';
 		}
 		return $text;
+	}
+
+	/**
+	 * @deprecated Use normalize_reason_full() or normalize_reason_for_storage() instead
+	 * @param string|null $reason
+	 * @return string
+	 */
+	private static function normalize_reason($reason) {
+		return self::normalize_reason_for_storage($reason);
 	}
 }

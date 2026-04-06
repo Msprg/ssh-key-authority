@@ -45,7 +45,7 @@ class LoginFlowService {
 								$this->audit_log('failure', $username, 'Invalid credentials');
 								$error_message = 'Invalid username or password.';
 							}
-						} catch(Exception $e) {
+						} catch(Throwable $e) {
 							$this->audit_log('failure', $username, 'Authentication error: '.$e->getMessage());
 							$error_message = 'Authentication error. Please try again.';
 						}

@@ -9,7 +9,13 @@ class ResponseSecurityHeaders {
 	 * @param array $config Application configuration
 	 */
 	public function apply(array $config) {
-		if(headers_sent()) {
+		if(headers_sent($file, $line)) {
+			error_log(sprintf(
+				'[ResponseSecurityHeaders::apply] Headers already sent in %s on line %d. Unable to apply security headers (CSP, HSTS, etc.). Current headers: %s',
+				$file,
+				$line,
+				json_encode(headers_list())
+			));
 			return;
 		}
 

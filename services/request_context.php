@@ -12,7 +12,10 @@ class RequestContext {
 		$context = new self();
 		$context->base_url = dirname($_SERVER['SCRIPT_NAME']);
 		$context->request_url = $_SERVER['REQUEST_URI'];
-		$context->relative_request_url = preg_replace('/^'.preg_quote($context->base_url, '/').'/', '/', $context->request_url);
+		$context->relative_request_url = preg_replace('/^'.preg_quote($context->base_url, '/').'(?=\/|$)/', '', $context->request_url);
+		if($context->relative_request_url === '' || $context->relative_request_url[0] !== '/') {
+			$context->relative_request_url = '/'.$context->relative_request_url;
+		}
 		$scheme = 'http';
 		if(self::is_https_request()) {
 			$scheme = 'https';
