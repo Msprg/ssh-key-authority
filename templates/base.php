@@ -62,7 +62,7 @@ $footer=str_replace("%v", "1.5.2", $web_config['footer']);
 						</span>
 						<div class="ska-divider ska-d-xl-none"></div>
 						<?php foreach($this->get('menu_items') as $url => $name) { ?>
-						<a <?php if($url == $this->get('relative_request_url')) out(' class="ska-dp-item ska-d-xl-none is-active"', ESC_NONE); else out(' class="ska-dp-item ska-d-xl-none"', ESC_NONE) ?> href="<?php outurl($url)?>"><?php out($name)?></a></li>
+						<a <?php if($url == $this->get('relative_request_url')) out(' class="ska-dp-item ska-d-xl-none is-active"', ESC_NONE); else out(' class="ska-dp-item ska-d-xl-none"', ESC_NONE) ?> href="<?php outurl($url)?>"><?php out($name)?></a>
 						<?php } ?>
 						<div class="ska-divider ska-d-xl-none"></div>
 						<a class="ska-dp-item" href="<?php outurl('/logout')?>">Logout</a>
