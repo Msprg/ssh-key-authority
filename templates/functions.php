@@ -113,7 +113,7 @@ function keygen_help($box_position) {
 		<li class="nav-item" role="presentation"><a href="#linux_instructions" id="linux_instructions_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="linux_instructions" aria-selected="false" tabindex="-1">Linux</a></li>
 	</ul>
 	<div class="tab-content clearfix">
-		<div class="tab-pane fade" id="windows_instructions">
+		<div class="tab-pane fade show active" id="windows_instructions" role="tabpanel" aria-labelledby="windows_instructions_tab">
 				<aside class="pull-right"><img src="/windows-key-generator.gif" class="img-rounded img-responsive"></aside>
 			<p>On Windows you will typically use the <a href="https://mobaxterm.mobatek.net/download-home-edition.html">MobaXterm MobaKeyGen</a> application to generate your key pair.</p>
 			<ol>
