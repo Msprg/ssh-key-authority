@@ -16,8 +16,12 @@
 ##
 ?>
 <h1>Bulk mail</h1>
-<p>Choose recipients:</p>
-<ul>
-	<li><a href="<?php outurl('/bulk_mail/all_users')?>">All users</a></li>
-	<li><a href="<?php outurl('/bulk_mail/server_admins')?>">All server leaders</a></li>
-</ul>
+<div class="card">
+	<div class="card-body">
+		<p>Choose recipients:</p>
+		<ul class="ska-link-list">
+			<li><a href="<?php outurl('/bulk_mail/all_users')?>">All users</a></li>
+			<li><a href="<?php outurl('/bulk_mail/server_admins')?>">All server leaders</a></li>
+		</ul>
+	</div>
+</div>

@@ -49,11 +49,30 @@ abstract class Record {
 	*/
 	public $id;
 
+	/**
+	 * Resolve a runtime dependency from RuntimeState with $GLOBALS fallback.
+	 * Keeps legacy behavior while centralizing resolution logic.
+	 *
+	 * @param string $key
+	 * @param mixed $default
+	 * @return mixed
+	 */
+	protected static function resolve_runtime($key, $default = null) {
+		if(array_key_exists($key, $GLOBALS)) {
+			return $GLOBALS[$key];
+		}
+		if(class_exists('RuntimeState', false)) {
+			return RuntimeState::get($key, $default);
+		}
+		return $default;
+	}
+
 	public function __construct($id = null, $preload_data = array()) {
-		global $database;
-		global $active_user;
-		$this->database = &$database;
-		$this->active_user = &$active_user;
+		$this->database = self::resolve_runtime('database');
+		if($this->database === null) {
+			throw new RuntimeException('Database service is unavailable for Record initialization.');
+		}
+		$this->active_user = self::resolve_runtime('active_user');
 		$this->id = $id;
 		$this->data = array();
 		foreach($preload_data as $field => $value) {

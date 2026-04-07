@@ -18,399 +18,823 @@
 */
 'use strict';
 
+function dom_ready(callback) {
+	if(document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', callback);
+	} else {
+		callback();
+	}
+}
+
+var SKA_SHORT_TRANSITION_MS = 150;
+var SKA_COLLAPSE_TRANSITION_MS = 350;
+
+function force_reflow(element) {
+	return element.offsetHeight;
+}
+
+function clear_dynamic_animation(element) {
+	if(!element) {
+		return;
+	}
+
+	if(element.__skaVisibilityTimer) {
+		window.clearTimeout(element.__skaVisibilityTimer);
+		element.__skaVisibilityTimer = null;
+	}
+}
+
+function show_dynamic_element(element, animate) {
+	if(!element) {
+		return;
+	}
+
+	clear_dynamic_animation(element);
+	element.classList.remove('ska-hide', 'hidden', 'd-none');
+	if(!animate) {
+		element.style.display = '';
+		element.style.removeProperty('height');
+		element.style.removeProperty('opacity');
+		element.style.removeProperty('overflow');
+		element.style.removeProperty('transition');
+		return;
+	}
+
+	element.style.removeProperty('display');
+	element.style.overflow = 'hidden';
+	element.style.height = '0px';
+	element.style.opacity = '0';
+	element.style.transition = 'height ' + SKA_SHORT_TRANSITION_MS + 'ms ease, opacity ' + SKA_SHORT_TRANSITION_MS + 'ms ease';
+	force_reflow(element);
+	element.style.height = element.scrollHeight + 'px';
+	element.style.opacity = '1';
+	element.__skaVisibilityTimer = window.setTimeout(function() {
+		element.style.removeProperty('height');
+		element.style.removeProperty('opacity');
+		element.style.removeProperty('overflow');
+		element.style.removeProperty('transition');
+		element.__skaVisibilityTimer = null;
+	}, SKA_SHORT_TRANSITION_MS);
+}
+
+function hide_dynamic_element(element, animate) {
+	if(!element) {
+		return;
+	}
+
+	clear_dynamic_animation(element);
+	element.classList.remove('ska-hide', 'hidden', 'd-none');
+	if(!animate) {
+		element.style.display = 'none';
+		element.style.removeProperty('height');
+		element.style.removeProperty('opacity');
+		element.style.removeProperty('overflow');
+		element.style.removeProperty('transition');
+		return;
+	}
+
+	element.style.overflow = 'hidden';
+	element.style.height = element.scrollHeight + 'px';
+	element.style.opacity = '1';
+	element.style.transition = 'height ' + SKA_SHORT_TRANSITION_MS + 'ms ease, opacity ' + SKA_SHORT_TRANSITION_MS + 'ms ease';
+	force_reflow(element);
+	element.style.height = '0px';
+	element.style.opacity = '0';
+	element.__skaVisibilityTimer = window.setTimeout(function() {
+		element.style.display = 'none';
+		element.style.removeProperty('height');
+		element.style.removeProperty('opacity');
+		element.style.removeProperty('overflow');
+		element.style.removeProperty('transition');
+		element.__skaVisibilityTimer = null;
+	}, SKA_SHORT_TRANSITION_MS);
+}
+
+function toggle_dynamic_element(element) {
+	if(!element) {
+		return;
+	}
+
+	if(window.getComputedStyle(element).display === 'none') {
+		show_dynamic_element(element, true);
+	} else {
+		hide_dynamic_element(element, true);
+	}
+}
+
+function set_section_visibility(element, visible, animate) {
+	if(visible) {
+		show_dynamic_element(element, animate);
+	} else {
+		hide_dynamic_element(element, animate);
+	}
+}
+
 // Handle 'navigate-back' links
-$(function() {
-	$('a.navigate-back').on('click', function(e) {
-		window.history.back();
-		event.stopPropagation();
-	});
+dom_ready(function() {
+	var links = document.querySelectorAll('a.navigate-back');
+	for(var i = 0; i < links.length; i++) {
+		links[i].addEventListener('click', function(event) {
+			event.preventDefault();
+			window.history.back();
+			event.stopPropagation();
+		});
+	}
 });
 
-// Tab behavior: default to first tab; honor URL hash if present; do not persist selection
-$(function() {
-	function show_initial_tab() {
-		var fragment = window.location.hash.substring(1);
-		if (fragment) {
-			var $tab = $('.nav-tabs a[href="#' + fragment + '"]');
-			if ($tab.length) {
-				$tab.tab('show');
+// Keep hash-based deep links in sync with Bootstrap 5 tabs.
+dom_ready(function() {
+	if(!window.bootstrap || !window.bootstrap.Tab) {
+		return;
+	}
+
+	var selector = '[data-bs-toggle="tab"]';
+
+	function get_tab_target(link) {
+		var target = link.getAttribute('data-bs-target') || link.getAttribute('href') || '';
+		if(target.indexOf('#') !== 0) {
+			return null;
+		}
+		return document.getElementById(target.substring(1));
+	}
+
+	function set_history_hash(hash) {
+		if(window.history && history.replaceState) {
+			history.replaceState(null, null, hash);
+		} else {
+			window.location.hash = hash;
+		}
+	}
+
+	function sync_tab_from_location() {
+		var fragment = window.location.hash ? window.location.hash.substring(1) : '';
+		if(!fragment) {
+			return;
+		}
+
+		var links = document.querySelectorAll(selector);
+		for(var i = 0; i < links.length; i++) {
+			var target = get_tab_target(links[i]);
+			if(target && target.id === fragment) {
+				window.bootstrap.Tab.getOrCreateInstance(links[i]).show();
 				return;
 			}
 		}
-		$('a[data-toggle="tab"]:first').tab('show');
 	}
-	show_initial_tab();
 
-	// Update URL hash when switching tabs so refresh keeps the selected tab
-	$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-		if (window.history && history.replaceState) {
-			history.replaceState(null, null, e.target.hash);
-		} else {
-			window.location.hash = e.target.hash;
-		}
-	});
-});
-
-// Remember the expanded-state of a collapsible section
-$(function() {
-	get_section_from_location();
-	window.onpopstate = function(event) {
-		get_section_from_location();
-	}
-	function get_section_from_location() {
-		// Javascript to enable link to section
-		var url = document.location.toString();
-		if(url.match('#')) {
-			var fragment = url.split('#')[1];
-		} else {
-			var fragment = '';
-		}
-		$(".collapse").each(function(){
-			if(this.id == fragment) $(this).addClass("in");
-			else $(this).removeClass("in");
+	var migratedTabs = document.querySelectorAll(selector);
+	for(var i = 0; i < migratedTabs.length; i++) {
+		migratedTabs[i].addEventListener('shown.bs.tab', function() {
+			var target = get_tab_target(this);
+			if(target && target.id) {
+				var panes = target.parentElement ? target.parentElement.querySelectorAll('.tab-pane') : [];
+				for(var paneIndex = 0; paneIndex < panes.length; paneIndex++) {
+					panes[paneIndex].setAttribute('aria-hidden', panes[paneIndex] === target ? 'false' : 'true');
+				}
+				set_history_hash('#' + target.id);
+			}
 		});
 	}
 
-	// Do the location modifying code after all other setup, since we don't want the initial loading to trigger this
-	$('.panel-collapse').on('show.bs.collapse', function (e) {
-		if(history) {
-			history.replaceState(null, null, '#' + e.target.id);
-		} else {
-			window.location.hash = e.target.id;
-		}
-	});
+	sync_tab_from_location();
+	window.addEventListener('hashchange', sync_tab_from_location);
+});
 
+// Keep collapse deep links working with Bootstrap 5 collapse instances.
+dom_ready(function() {
+	if(!window.bootstrap || !window.bootstrap.Collapse) {
+		return;
+	}
+
+	function get_collapse_target(trigger) {
+		var target = trigger.getAttribute('data-bs-target') || trigger.getAttribute('href') || '';
+		if(target.indexOf('#') !== 0) {
+			return null;
+		}
+		return document.getElementById(target.substring(1));
+	}
+
+	function get_section_fragment() {
+		return window.location.hash ? window.location.hash.substring(1) : '';
+	}
+
+	function sync_collapse_from_location() {
+		var fragment = get_section_fragment();
+		if(!fragment) {
+			return;
+		}
+
+		var collapse = document.getElementById(fragment);
+		if(collapse && collapse.classList.contains('collapse')) {
+			window.bootstrap.Collapse.getOrCreateInstance(collapse, {toggle: false}).show();
+		}
+	}
+
+	var collapses = document.querySelectorAll('.collapse');
+	for(var i = 0; i < collapses.length; i++) {
+		collapses[i].addEventListener('shown.bs.collapse', function(event) {
+			event.target.setAttribute('aria-hidden', 'false');
+			if(event.target && event.target.id) {
+				if(window.history && history.replaceState) {
+					history.replaceState(null, null, '#' + event.target.id);
+				} else {
+					window.location.hash = event.target.id;
+				}
+			}
+		});
+		collapses[i].addEventListener('hidden.bs.collapse', function(event) {
+			event.target.setAttribute('aria-hidden', 'true');
+		});
+	}
+
+	sync_collapse_from_location();
+	window.addEventListener('hashchange', sync_collapse_from_location);
 });
 
 // Show only chosen fingerprint hash format in list views
-$(function() {
-	$('table th.fingerprint').first().each(function() {
-		$(this).append(' ');
-		var select = $('<select>');
-		var options = ['MD5', 'SHA256'];
-		for(var i = 0, option; option = options[i]; i++) {
-			select.append($('<option>').text(option).val(option));
+dom_ready(function() {
+	var fingerprintHeader = document.querySelector('table th.fingerprint');
+	if(!fingerprintHeader) {
+		return;
+	}
+
+	var select = document.createElement('select');
+	var options = ['MD5', 'SHA256'];
+	for(var i = 0; i < options.length; i++) {
+		var option = document.createElement('option');
+		option.value = options[i];
+		option.textContent = options[i];
+		select.appendChild(option);
+	}
+
+	if(window.localStorage) {
+		var preferredHash = localStorage.getItem('preferred_fingerprint_hash');
+		if(preferredHash) {
+			select.value = preferredHash;
 		}
-		if(localStorage) {
-			var fingerprint_hash = localStorage.getItem('preferred_fingerprint_hash');
-			if(fingerprint_hash) {
-				select.val(fingerprint_hash);
-			}
+	}
+
+	function update_fingerprint_visibility() {
+		var showSha256 = select.value === 'SHA256';
+		var md5Fingerprints = document.querySelectorAll('span.fingerprint_md5');
+		var sha256Fingerprints = document.querySelectorAll('span.fingerprint_sha256');
+
+		for(var j = 0; j < md5Fingerprints.length; j++) {
+			md5Fingerprints[j].style.display = showSha256 ? 'none' : '';
 		}
-		$(this).append(select);
-		select.on('change', function() {
-			if(this.value == 'SHA256') {
-				$('span.fingerprint_md5').hide();
-				$('span.fingerprint_sha256').show();
-			} else {
-				$('span.fingerprint_sha256').hide();
-				$('span.fingerprint_md5').show();
-			}
-			if(localStorage) {
-				localStorage.setItem('preferred_fingerprint_hash', this.value);
-			}
-		});
-	});
+		for(var k = 0; k < sha256Fingerprints.length; k++) {
+			sha256Fingerprints[k].style.display = showSha256 ? '' : 'none';
+		}
+
+		if(window.localStorage) {
+			localStorage.setItem('preferred_fingerprint_hash', select.value);
+		}
+	}
+
+	fingerprintHeader.appendChild(document.createTextNode(' '));
+	fingerprintHeader.appendChild(select);
+	select.addEventListener('change', update_fingerprint_visibility);
+	update_fingerprint_visibility();
 });
 
 // Add confirmation dialog to all submit buttons with data-confirm attribute
-$(function() {
-	$('button[type="submit"][data-confirm]').each(function() {
-		$(this).on('click', function() { return confirm($(this).data('confirm')); });
-	});
+dom_ready(function() {
+	var buttons = document.querySelectorAll('button[type="submit"][data-confirm]');
+	for(var i = 0; i < buttons.length; i++) {
+		buttons[i].addEventListener('click', function(event) {
+			if(!window.confirm(this.getAttribute('data-confirm'))) {
+				event.preventDefault();
+			}
+		});
+	}
 });
 
 // Add "clear field" button functionality
-$(function() {
-	$('button[data-clear]').each(function() {
-		$(this).on('click', function() { this.form[$(this).data('clear')].value = ''; });
-	});
+dom_ready(function() {
+	var buttons = document.querySelectorAll('button[data-clear]');
+	for(var i = 0; i < buttons.length; i++) {
+		buttons[i].addEventListener('click', function() {
+			if(!this.form) {
+				return;
+			}
+
+			var fieldName = this.getAttribute('data-clear');
+			var field = this.form.elements[fieldName];
+			if(field) {
+				field.value = '';
+			}
+		});
+	}
 });
 
 // Home page dynamic add pubkey form
-$(function() {
-	$('#add_key_button').on('click', function() {
-		$('#help').hide().removeClass('hidden');
-		$('#add_key_form').hide().removeClass('hidden');
-		$('#add_key_form').show('fast');
-		$('#add_key_button').hide();
-		$('#add_public_key').focus();
+dom_ready(function() {
+	var addKeyButton = document.getElementById('add_key_button');
+	var help = document.getElementById('help');
+	var addKeyForm = document.getElementById('add_key_form');
+	var addPublicKey = document.getElementById('add_public_key');
+
+	if(!addKeyButton || !addKeyForm) {
+		return;
+	}
+
+	addKeyButton.addEventListener('click', function(event) {
+		event.preventDefault();
+		hide_dynamic_element(help, false);
+		show_dynamic_element(addKeyForm, true);
+		hide_dynamic_element(addKeyButton, true);
+		if(addPublicKey) {
+			addPublicKey.focus();
+		}
 	});
-	$('#add_key_form button[type=button].btn-info').on('click', function() {
-		$('#help').toggle('fast');
-	});
-	$('#add_key_form button[type=button].btn-default').on('click', function() {
-		$('#add_key_form').hide('fast');
-		$('#add_key_button').show();
-	});
+
+	var helpButtons = addKeyForm.querySelectorAll('[data-action="toggle-help"]');
+	for(var i = 0; i < helpButtons.length; i++) {
+		helpButtons[i].addEventListener('click', function() {
+			toggle_dynamic_element(help);
+		});
+	}
+
+	var cancelButtons = addKeyForm.querySelectorAll('[data-action="cancel-add-key"]');
+	for(var j = 0; j < cancelButtons.length; j++) {
+		cancelButtons[j].addEventListener('click', function() {
+			hide_dynamic_element(addKeyForm, true);
+			show_dynamic_element(addKeyButton, true);
+		});
+	}
 });
 
 // Show/hide appropriate sections of the server settings form
-$(function() {
-	var form = $('#server_settings');
-	form.each(function() {
-		$('#authorization.hide').hide().removeClass('hide');
-		$('#ldap_access_options.hide').hide().removeClass('hide');
-		$('#history_username_env.hide').hide().removeClass('hide');
-		$("input[name='key_management']", form).on('click', function() {display_relevant_options()});
-		$("input[name='authorization']", form).on('click', function() {display_relevant_options()});
-		function display_relevant_options() {
-			if($("input[name='key_management']:checked").val() == 'keys') {
-				$('#authorization').show('fast');
-				$('#supervision').show('fast');
-				$('#history_username_env').show('fast');
-				if($("input[name='authorization']:checked").val() == 'manual') {
-					$('#ldap_access_options').hide('fast');
-				} else {
-					$('#ldap_access_options').show('fast');
-				}
-			} else {
-				$('#authorization').hide('fast');
-				$('#ldap_access_options').hide('fast');
-				$('#supervision').hide('fast');
-				$('#history_username_env').hide('fast');
+dom_ready(function() {
+	var form = document.getElementById('server_settings');
+	if(!form) {
+		return;
+	}
+
+	var authorizationSection = document.getElementById('authorization');
+	var ldapAccessOptionsSection = document.getElementById('ldap_access_options');
+	var historyUsernameEnvSection = document.getElementById('history_username_env');
+	var supervisionSection = document.getElementById('supervision');
+	var keyManagementInputs = form.querySelectorAll('input[name="key_management"]');
+	var authorizationInputs = form.querySelectorAll('input[name="authorization"]');
+	var commandEnabled = form.elements['access_option[command][enabled]'];
+	var commandValue = form.elements['access_option[command][value]'];
+	var fromEnabled = form.elements['access_option[from][enabled]'];
+	var fromValue = form.elements['access_option[from][value]'];
+
+	function get_checked_value(inputs) {
+		for(var i = 0; i < inputs.length; i++) {
+			if(inputs[i].checked) {
+				return inputs[i].value;
 			}
 		}
+		return '';
+	}
 
-		var ao_command_enabled = $("input[name='access_option[command][enabled]']", form);
-		var ao_command_value = $("input[name='access_option[command][value]']", form);
-		var ao_from_enabled = $("input[name='access_option[from][enabled]']", form);
-		var ao_from_value = $("input[name='access_option[from][value]']", form);
-		ao_command_enabled.on('click', function() {ao_update_disabled()});
-		ao_from_enabled.on('click', function() {ao_update_disabled()});
-		ao_update_disabled();
-		function ao_update_disabled() {
-			ao_command_value.prop('disabled', !ao_command_enabled.prop('checked'));
-			ao_command_value.prop('required', ao_command_enabled.prop('checked'));
-			ao_from_value.prop('disabled', !ao_from_enabled.prop('checked'));
-			ao_from_value.prop('required', ao_from_enabled.prop('checked'));
+	function update_relevant_options() {
+		var managesKeys = get_checked_value(keyManagementInputs) === 'keys';
+		set_section_visibility(authorizationSection, managesKeys, true);
+		set_section_visibility(supervisionSection, managesKeys, true);
+		set_section_visibility(historyUsernameEnvSection, managesKeys, true);
+		set_section_visibility(ldapAccessOptionsSection, managesKeys && get_checked_value(authorizationInputs) !== 'manual', true);
+	}
+
+	function update_disabled_fields() {
+		if(commandValue && commandEnabled) {
+			commandValue.disabled = !commandEnabled.checked;
+			commandValue.required = commandEnabled.checked;
 		}
-	});
+		if(fromValue && fromEnabled) {
+			fromValue.disabled = !fromEnabled.checked;
+			fromValue.required = fromEnabled.checked;
+		}
+	}
+
+	for(var i = 0; i < keyManagementInputs.length; i++) {
+		keyManagementInputs[i].addEventListener('click', update_relevant_options);
+	}
+	for(var j = 0; j < authorizationInputs.length; j++) {
+		authorizationInputs[j].addEventListener('click', update_relevant_options);
+	}
+	if(commandEnabled) {
+		commandEnabled.addEventListener('click', update_disabled_fields);
+	}
+	if(fromEnabled) {
+		fromEnabled.addEventListener('click', update_disabled_fields);
+	}
+
+	set_section_visibility(authorizationSection, get_checked_value(keyManagementInputs) === 'keys', false);
+	set_section_visibility(supervisionSection, get_checked_value(keyManagementInputs) === 'keys', false);
+	set_section_visibility(historyUsernameEnvSection, get_checked_value(keyManagementInputs) === 'keys', false);
+	set_section_visibility(ldapAccessOptionsSection, get_checked_value(keyManagementInputs) === 'keys' && get_checked_value(authorizationInputs) !== 'manual', false);
+	update_disabled_fields();
 });
 
 // Enable/disable relevant sections of the access options form
-$(function() {
-	var form = $('#access_options');
-	form.each(function() {
-		var ao_command_enabled = $("input[name='access_option[command][enabled]']", form);
-		var ao_command_value = $("input[name='access_option[command][value]']", form);
-		var ao_from_enabled = $("input[name='access_option[from][enabled]']", form);
-		var ao_from_value = $("input[name='access_option[from][value]']", form);
-		var ao_noportfwd_enabled = $("input[name='access_option[no-port-forwarding][enabled]']", form);
-		var ao_nox11fwd_enabled = $("input[name='access_option[no-X11-forwarding][enabled]']", form);
-		var ao_nopty_enabled = $("input[name='access_option[no-pty][enabled]']", form);
+dom_ready(function() {
+	var form = document.getElementById('access_options');
+	if(!form) {
+		return;
+	}
 
-		ao_command_enabled.on('click', function() {ao_update_disabled()});
-		ao_from_enabled.on('click', function() {ao_update_disabled()});
+	var commandEnabled = form.elements['access_option[command][enabled]'];
+	var commandValue = form.elements['access_option[command][value]'];
+	var fromEnabled = form.elements['access_option[from][enabled]'];
+	var fromValue = form.elements['access_option[from][value]'];
+	var noPortForwardingEnabled = form.elements['access_option[no-port-forwarding][enabled]'];
+	var noX11ForwardingEnabled = form.elements['access_option[no-X11-forwarding][enabled]'];
+	var noPtyEnabled = form.elements['access_option[no-pty][enabled]'];
+	var presetButtons = form.querySelectorAll('button[type="button"][data-preset]');
 
-		$("button[type='button']", form).on('click', function(e) {
-			var preset
-			if(preset = $(e.target).attr('data-preset')) {
-				$('input:checkbox', form).val([]);
-				ao_command_value.val('');
-				ao_from_value.val('');
-				if(preset == 'command' || preset == 'dbbackup' || preset == 'checkmk') {
-					ao_command_enabled.prop('checked', true);
-					ao_command_value.focus();
-					ao_noportfwd_enabled.prop('checked', true);
-					ao_nox11fwd_enabled.prop('checked', true);
-					ao_nopty_enabled.prop('checked', true);
+	function update_disabled_fields() {
+		if(commandValue && commandEnabled) {
+			commandValue.disabled = !commandEnabled.checked;
+			commandValue.required = commandEnabled.checked;
+		}
+		if(fromValue && fromEnabled) {
+			fromValue.disabled = !fromEnabled.checked;
+			fromValue.required = fromEnabled.checked;
+		}
+	}
+
+	function reset_checkboxes() {
+		var checkboxes = form.querySelectorAll('input[type="checkbox"]');
+		for(var i = 0; i < checkboxes.length; i++) {
+			checkboxes[i].checked = false;
+		}
+	}
+
+	if(commandEnabled) {
+		commandEnabled.addEventListener('click', update_disabled_fields);
+	}
+	if(fromEnabled) {
+		fromEnabled.addEventListener('click', update_disabled_fields);
+	}
+
+	for(var i = 0; i < presetButtons.length; i++) {
+		presetButtons[i].addEventListener('click', function() {
+			var preset = this.getAttribute('data-preset');
+			if(!preset) {
+				return;
+			}
+
+			reset_checkboxes();
+			if(commandValue) {
+				commandValue.value = '';
+			}
+			if(fromValue) {
+				fromValue.value = '';
+			}
+
+			if(preset === 'command' || preset === 'dbbackup' || preset === 'checkmk') {
+				if(commandEnabled) {
+					commandEnabled.checked = true;
 				}
-				if(preset == 'dbbackup') {
-					ao_command_value.val('/usr/bin/innobackupex --slave-info --defaults-file=/etc/mysql/my.cnf /var/tmp');
-				} else if (preset == 'checkmk') {
-					ao_command_value.val('/usr/bin/check_mk_agent');
+				if(noPortForwardingEnabled) {
+					noPortForwardingEnabled.checked = true;
+				}
+				if(noX11ForwardingEnabled) {
+					noX11ForwardingEnabled.checked = true;
+				}
+				if(noPtyEnabled) {
+					noPtyEnabled.checked = true;
+				}
+				if(commandValue) {
+					commandValue.focus();
 				}
 			}
-			ao_update_disabled();
+
+			if(commandValue && preset === 'dbbackup') {
+				commandValue.value = '/usr/bin/innobackupex --slave-info --defaults-file=/etc/mysql/my.cnf /var/tmp';
+			} else if(commandValue && preset === 'checkmk') {
+				commandValue.value = '/usr/bin/check_mk_agent';
+			}
+
+			update_disabled_fields();
 		});
-		ao_update_disabled();
-		function ao_update_disabled() {
-			ao_command_value.prop('disabled', !ao_command_enabled.prop('checked'));
-			ao_command_value.prop('required', ao_command_enabled.prop('checked'));
-			ao_from_value.prop('disabled', !ao_from_enabled.prop('checked'));
-			ao_from_value.prop('required', ao_from_enabled.prop('checked'));
-		}
-	});
+	}
+
+	update_disabled_fields();
 });
 
 // Provide dynamic reassign form on user page
-$(function() {
-	$('button[data-reassign]').on('click', function() {
-		var id = $(this).data('reassign');
-		var table = $('#' + id);
-		var cell = document.createElement('th');
-		var checkbox = document.createElement('input');
-		checkbox.type = 'checkbox';
-		$(checkbox).on('click', function() {$("input[type='checkbox']", table).prop('checked', this.checked)});
-		cell.appendChild(checkbox);
-		table.children('thead').children('tr').prepend(cell);
-		table.children('tbody').children('tr').each(function() {
-			var hostname = $(this).children('td:first-child').text().trim();
-			var cell = document.createElement('td');
-			var checkbox = document.createElement('input');
-			checkbox.type = 'checkbox';
-			checkbox.name = 'servers[]';
-			checkbox.value = hostname;
-			cell.appendChild(checkbox);
-			$(this).prepend(cell);
+dom_ready(function() {
+	var buttons = document.querySelectorAll('button[data-reassign]');
+	for(var i = 0; i < buttons.length; i++) {
+		buttons[i].addEventListener('click', function() {
+			var id = this.getAttribute('data-reassign');
+			var table = document.getElementById(id);
+			var parent = this.parentElement;
+			if(!table || !parent) {
+				return;
+			}
+
+			var headerRow = table.querySelector('thead tr');
+			var bodyRows = table.querySelectorAll('tbody tr');
+			var selectAllCell = document.createElement('th');
+			var selectAllCheckbox = document.createElement('input');
+			selectAllCheckbox.type = 'checkbox';
+			selectAllCell.appendChild(selectAllCheckbox);
+			if(headerRow) {
+				headerRow.insertBefore(selectAllCell, headerRow.firstChild);
+			}
+
+			var rowCheckboxes = [];
+			for(var rowIndex = 0; rowIndex < bodyRows.length; rowIndex++) {
+				var hostnameCell = bodyRows[rowIndex].querySelector('td:first-child');
+				if(!hostnameCell) {
+					continue;
+				}
+
+				var cell = document.createElement('td');
+				var checkbox = document.createElement('input');
+				checkbox.type = 'checkbox';
+				checkbox.name = 'servers[]';
+				checkbox.value = hostnameCell.textContent.trim();
+				cell.appendChild(checkbox);
+				bodyRows[rowIndex].insertBefore(cell, bodyRows[rowIndex].firstChild);
+				rowCheckboxes.push(checkbox);
+			}
+
+			selectAllCheckbox.addEventListener('click', function() {
+				for(var checkboxIndex = 0; checkboxIndex < rowCheckboxes.length; checkboxIndex++) {
+					rowCheckboxes[checkboxIndex].checked = this.checked;
+				}
+			});
+
+			var reassignWrapper = document.createElement('div');
+			reassignWrapper.className = 'mb-3';
+			var label = document.createElement('label');
+			label.className = 'form-label';
+			label.textContent = 'Reassign to';
+			var input = document.createElement('input');
+			input.type = 'text';
+			input.id = 'reassign_to';
+			input.name = 'reassign_to';
+			input.className = 'form-control';
+			reassignWrapper.appendChild(label);
+			reassignWrapper.appendChild(input);
+			parent.appendChild(reassignWrapper);
+
+			var submitWrapper = document.createElement('div');
+			submitWrapper.className = 'mb-3';
+			var submitButton = document.createElement('button');
+			submitButton.type = 'submit';
+			submitButton.name = 'reassign_servers';
+			submitButton.className = 'btn btn-primary';
+			submitButton.textContent = 'Reassign selected servers';
+			submitWrapper.appendChild(submitButton);
+			parent.appendChild(submitWrapper);
+
+			this.remove();
 		});
-		$(this).parent().append('<div class="form-group"><label>Reassign to <input type="text" name="reassign_to" class="form-control"></label></div>');
-		$(this).parent().append('<div class="form-group"><button type="submit" name="reassign_servers" class="btn btn-primary">Reassign selected servers</button></div>');
-		$(this).remove();
-	});
+	}
 });
 
-// Server sync status
-$(function() {
-	var status_div = $('#server_sync_status');
-	status_div.each(function() {
-		if(status_div.data('class')) {
-			update_server_sync_status(status_div.data('class'), status_div.data('message'));
-			$('span.server_account_sync_status').each(function() {
-				update_server_account_sync_status(this.id, $(this).data('class'), $(this).data('message'));
-			});
-		} else {
-			$('span', status_div).addClass('text-warning');
-			$('span', status_div).text('Pending');
-			$('span.server_account_sync_status').addClass('text-warning');
-			$('span.server_account_sync_status').text('Pending');
-			var timeout = 1000;
-			var max_timeout = 10000;
-			get_server_sync_status();
+function set_status_text(element, classname, message) {
+	if(!element) {
+		return;
+	}
+
+	element.classList.remove('ska-text-success', 'ska-text-warning', 'ska-text-danger', 'ska-text-info');
+	element.classList.add('ska-text-' + classname);
+	element.textContent = message;
+}
+
+function map_sync_status(syncStatus) {
+	switch(syncStatus) {
+	case 'sync success':
+		return {classname: 'success', message: 'Synced'};
+	case 'sync failure':
+		return {classname: 'danger', message: 'Failed'};
+	case 'sync warning':
+		return {classname: 'warning', message: 'Not synced'};
+	case 'proposed':
+		return {classname: 'info', message: 'Requested'};
+	default:
+		return {classname: 'warning', message: 'Pending'};
+	}
+}
+
+function fetch_json(url) {
+	return fetch(url, {
+		headers: {'Accept': 'application/json'}
+	}).then(function(response) {
+		if(!response.ok) {
+			throw new Error('Request failed: ' + response.status);
 		}
-		function get_server_sync_status() {
-			var xhr = $.ajax({
-				url: window.location.pathname + '/sync_status',
-				dataType: 'json'
-			});
-			xhr.done(function(status) {
-				if(status.pending) {
-					timeout = Math.min(timeout * 1.5, max_timeout);
-					setTimeout(get_server_sync_status, timeout);
-				} else {
-					var classname;
-					if(status.sync_status == 'sync success') classname = 'success';
-					if(status.sync_status == 'sync failure') classname = 'danger';
-					if(status.sync_status == 'sync warning') classname = 'warning';
-					update_server_sync_status(classname, status.last_sync.details);
-				}
-				$.each(status.accounts, function(index, item) {
-					if(!item.pending) {
-						var classname;
-						var message;
-						if(item.sync_status == 'proposed') { classname = 'info'; message = 'Requested'; }
-						if(item.sync_status == 'sync success') { classname = 'success'; message = 'Synced'; }
-						if(item.sync_status == 'sync failure') { classname = 'danger'; message = 'Failed'; }
-						if(item.sync_status == 'sync warning') { classname = 'warning'; message = 'Not synced'; }
-						update_server_account_sync_status('server_account_sync_status_' + item.name, classname, message);
-					}
-				});
-			});
-		}
-		function update_server_sync_status(classname, message) {
-			$('span', status_div).removeClass('text-success text-warning text-danger');
-			$('span', status_div).addClass('text-' + classname);
-			$('span', status_div).text(message);
-			if(classname == 'success') {
-				$('a', status_div).addClass('hidden');
-			} else {
-				$('a', status_div).removeClass('hidden');
-				if(classname == 'warning') $('a', status_div).prop('href', '/help#sync_warning');
-				if(classname == 'danger') $('a', status_div).prop('href', '/help#sync_error');
-			}
-			$('div.spinner', status_div).remove();
-			$('button[name=sync]', status_div).removeClass('invisible');
-		}
-		function update_server_account_sync_status(id, classname, message) {
-			$('#' + id).removeClass('text-success text-warning text-danger');
-			$('#' + id).addClass('text-' + classname);
-			$('#' + id).text(message);
-		}
+		return response.json();
 	});
+}
+
+// Server sync status
+dom_ready(function() {
+	var statusDiv = document.getElementById('server_sync_status');
+	if(!statusDiv) {
+		return;
+	}
+
+	var statusSpan = statusDiv.querySelector('span');
+	var explainLink = statusDiv.querySelector('a');
+	var spinner = statusDiv.querySelector('div.spinner');
+	var syncButton = statusDiv.querySelector('button[name="sync"]');
+	var accountStatusSpans = document.querySelectorAll('span.server_account_sync_status');
+	var timeout = 1000;
+	var maxTimeout = 10000;
+
+	function update_server_sync_status(classname, message) {
+		set_status_text(statusSpan, classname, message);
+		if(explainLink) {
+			if(classname === 'success') {
+				explainLink.classList.add('d-none');
+			} else {
+				explainLink.classList.remove('d-none');
+				if(classname === 'warning') {
+					explainLink.href = '/help#sync_warning';
+				}
+				if(classname === 'danger') {
+					explainLink.href = '/help#sync_error';
+				}
+			}
+		}
+		if(spinner && spinner.parentNode) {
+			spinner.parentNode.removeChild(spinner);
+			spinner = null;
+		}
+		if(syncButton) {
+			syncButton.classList.remove('invisible');
+		}
+	}
+
+	function update_server_account_sync_status_by_id(id, classname, message) {
+		var element = document.getElementById(id);
+		set_status_text(element, classname, message);
+	}
+
+	function set_pending_statuses() {
+		set_status_text(statusSpan, 'warning', 'Pending');
+		for(var i = 0; i < accountStatusSpans.length; i++) {
+			set_status_text(accountStatusSpans[i], 'warning', 'Pending');
+		}
+	}
+
+	function poll_server_sync_status() {
+		fetch_json(window.location.pathname + '/sync_status')
+			.then(function(status) {
+				if(status.pending) {
+					timeout = Math.min(timeout * 1.5, maxTimeout);
+					setTimeout(poll_server_sync_status, timeout);
+				} else {
+					var mappedServerStatus = map_sync_status(status.sync_status);
+					var details = (status.last_sync != null) ? status.last_sync.details : '';
+					update_server_sync_status(mappedServerStatus.classname, details);
+				}
+
+					if(status && Array.isArray(status.accounts)) {
+						for(var i = 0; i < status.accounts.length; i++) {
+							if(!status.accounts[i].pending) {
+								var mappedAccountStatus = map_sync_status(status.accounts[i].sync_status);
+								update_server_account_sync_status_by_id('server_account_sync_status_' + status.accounts[i].name, mappedAccountStatus.classname, mappedAccountStatus.message);
+							}
+						}
+					}
+			})
+			.catch(function() {
+				timeout = Math.min(timeout * 1.5, maxTimeout);
+				setTimeout(poll_server_sync_status, timeout);
+			});
+	}
+
+	if(statusDiv.getAttribute('data-class')) {
+		update_server_sync_status(statusDiv.getAttribute('data-class'), statusDiv.getAttribute('data-message'));
+		for(var i = 0; i < accountStatusSpans.length; i++) {
+			if(accountStatusSpans[i].getAttribute('data-class')) {
+				update_server_account_sync_status_by_id(
+					accountStatusSpans[i].id,
+					accountStatusSpans[i].getAttribute('data-class'),
+					accountStatusSpans[i].getAttribute('data-message')
+				);
+			}
+		}
+	} else {
+		set_pending_statuses();
+		poll_server_sync_status();
+	}
 });
 
 // Server account sync status
-$(function() {
-	var status_div = $('#server_account_sync_status');
-	status_div.each(function() {
-		if(status_div.data('class')) {
-			update_server_account_sync_status(status_div.data('class'), status_div.data('message'));
-		} else {
-			$('span', status_div).addClass('text-warning');
-			$('span', status_div).text('Pending');
-			var timeout = 1000;
-			var max_timeout = 10000;
-			get_server_account_sync_status();
+dom_ready(function() {
+	var statusDiv = document.getElementById('server_account_sync_status');
+	if(!statusDiv) {
+		return;
+	}
+
+	var statusSpan = statusDiv.querySelector('span');
+	var spinner = statusDiv.querySelector('div.spinner');
+	var timeout = 1000;
+	var maxTimeout = 10000;
+
+	function update_server_account_sync_status(classname, message) {
+		set_status_text(statusSpan, classname, message);
+		if(spinner && spinner.parentNode) {
+			spinner.parentNode.removeChild(spinner);
+			spinner = null;
 		}
-		function get_server_account_sync_status() {
-			var xhr = $.ajax({
-				url: window.location.pathname + '/sync_status',
-				dataType: 'json'
-			});
-			xhr.done(function(status) {
-				console.debug(status);
+	}
+
+	function poll_server_account_sync_status() {
+		fetch_json(window.location.pathname + '/sync_status')
+			.then(function(status) {
 				if(status.pending) {
-					timeout = Math.min(timeout * 1.5, max_timeout);
-					setTimeout(get_server_account_sync_status, timeout);
+					timeout = Math.min(timeout * 1.5, maxTimeout);
+					setTimeout(poll_server_account_sync_status, timeout);
 				} else {
-					var classname;
-					if(status.sync_status == 'sync success') { classname = 'success'; message = 'Synced'; }
-					if(status.sync_status == 'sync failure') { classname = 'danger'; message = 'Failed'; }
-					if(status.sync_status == 'sync warning') { classname = 'warning'; message = 'Not synced'; }
-					update_server_account_sync_status(classname, message);
+					var mappedStatus = map_sync_status(status.sync_status);
+					update_server_account_sync_status(mappedStatus.classname, mappedStatus.message);
 				}
+			})
+			.catch(function() {
+				timeout = Math.min(timeout * 1.5, maxTimeout);
+				setTimeout(poll_server_account_sync_status, timeout);
 			});
-		}
-		function update_server_account_sync_status(classname, message) {
-			$('span', status_div).removeClass('text-success text-warning text-danger');
-			$('span', status_div).addClass('text-' + classname);
-			$('span', status_div).text(message);
-			$('div.spinner', status_div).remove();
-		}
-	});
+	}
+
+	if(statusDiv.getAttribute('data-class')) {
+		update_server_account_sync_status(statusDiv.getAttribute('data-class'), statusDiv.getAttribute('data-message'));
+	} else {
+		update_server_account_sync_status('warning', 'Pending');
+		poll_server_account_sync_status();
+	}
 });
 
 // Server add form - multiple leader autocomplete
-$(function() {
-	var server_admin = $('input#server_admin');
-	server_admin.each(function() {
-		server_admin.on('keydown', function(event) {
-			var keycode = (event.keyCode ? event.keyCode : event.which);
-			if((keycode == 13 || keycode == 32 || keycode == 188) && $("#server_admin").val() != '') { // Enter, space, comma
-				appendAdmin();
-				// Reset focus to remove <datalist> autocomplete dialog
-				$("#server_admin").blur();
-				$("#server_admin").focus();
-				return false;
-			}
-		});
-		server_admin.on('blur', function(event) {
-			if($("#server_admin").val()) {
-				appendAdmin();
-			}
-		});
-		function appendAdmin() {
-			if($("#server_admins").val()) {
-				$("#server_admins").val($("#server_admins").val() + ', ' + $("#server_admin").val());
-			} else {
-				$("#server_admins").val($("#server_admin").val());
-			}
-			$("#server_admin").val("");
-			$("#server_admins").removeClass('hidden');
-			$("#server_admin").removeAttr("required");
+dom_ready(function() {
+	var serverAdmin = document.getElementById('server_admin');
+	var serverAdmins = document.getElementById('server_admins');
+	if(!serverAdmin || !serverAdmins) {
+		return;
+	}
+	var form = serverAdmin.form;
+
+	function append_admin() {
+		var newAdmin = serverAdmin.value.trim();
+		if(!newAdmin) {
+			return;
 		}
-		$('input#server_admins').on('blur', function(event) {
-			if(!$("#server_admins").val()) {
-				$("#server_admins").addClass('hidden');
-				$("#server_admin").attr("required", "");
-			}
-		});
-		if($("#server_admins").val()) {
-			$("#server_admins").removeClass('hidden');
-			$("#server_admin").removeAttr("required");
+
+		if(serverAdmins.value) {
+			serverAdmins.value = serverAdmins.value + ', ' + newAdmin;
+		} else {
+			serverAdmins.value = newAdmin;
+		}
+
+		serverAdmin.value = '';
+		serverAdmins.classList.remove('d-none');
+		serverAdmin.removeAttribute('required');
+	}
+
+	serverAdmin.addEventListener('keydown', function(event) {
+		if((event.key === 'Enter' || event.key === ',') && serverAdmin.value.trim() !== '') {
+			event.preventDefault();
+			append_admin();
+			serverAdmin.blur();
+			serverAdmin.focus();
 		}
 	});
+
+	serverAdmin.addEventListener('blur', function() {
+		if(serverAdmin.value.trim()) {
+			append_admin();
+		}
+	});
+
+	serverAdmins.addEventListener('blur', function() {
+		if(!serverAdmins.value.trim()) {
+			serverAdmins.classList.add('d-none');
+			serverAdmin.setAttribute('required', '');
+		}
+	});
+
+	if(form) {
+		form.addEventListener('submit', function(event) {
+			if(serverAdmin.value.trim()) {
+				append_admin();
+			}
+			if(!serverAdmins.value.trim()) {
+				event.preventDefault();
+				serverAdmin.setAttribute('required', '');
+				serverAdmin.setCustomValidity('Please add at least one leader.');
+				serverAdmin.reportValidity();
+				return;
+			}
+			serverAdmin.setCustomValidity('');
+		});
+	}
+
+	if(serverAdmins.value.trim()) {
+		serverAdmins.classList.remove('d-none');
+		serverAdmin.removeAttribute('required');
+	}
 });
 
 // ldap tree view
@@ -433,11 +857,11 @@ function registerClickHandler(li, link, icon, guid) {
 		if (ul == null) {
 			ul = genUL(guid);
 			li.appendChild(ul);
-			icon.classList.remove("glyphicon-folder-close");
-			icon.classList.add("glyphicon-folder-open");
+			icon.classList.remove("ska-icon-folder-close");
+			icon.classList.add("ska-icon-folder-open");
 		} else {
-			icon.classList.remove("glyphicon-folder-open");
-			icon.classList.add("glyphicon-folder-close");
+			icon.classList.remove("ska-icon-folder-open");
+			icon.classList.add("ska-icon-folder-close");
 			li.removeChild(ul);
 			ul = null;
 		}
@@ -447,8 +871,8 @@ function addOU(li, ou) {
 	let link = document.createElement("a");
 	link.setAttribute("href", "#");
 	let icon = document.createElement("i");
-	icon.classList.add("glyphicon");
-	icon.classList.add("glyphicon-folder-close");
+	icon.classList.add("ska-icon");
+	icon.classList.add("ska-icon-folder-close");
 	link.appendChild(icon);
 	let text = document.createTextNode(" " + ou.name);
 	link.appendChild(text);
@@ -500,31 +924,38 @@ function createTreeview(elem) {
 	elem.innerHTML = "";
 	elem.appendChild(genUL(null));
 }
-$(function() {
-	let trees = $('div.ldap-treeview');
-	trees.each(function(idx) {
-		createTreeview(trees[idx]);
-	});
+dom_ready(function() {
+	let trees = document.querySelectorAll('div.ldap-treeview');
+	for(let i = 0; i < trees.length; i++) {
+		createTreeview(trees[i]);
+	}
 });
 
 // Manage "select-all" checkbox on /servers
-$(function() {
-	let select_all = $('#cb_all_servers');
-	if (select_all.length == 1) {
-		select_all = select_all[0];
-		let host_selects = $('[name=selected_servers\\[\\]]');
-		select_all.addEventListener("input", () => {
-			host_selects.each((i, sel) => {
-				sel.checked = select_all.checked;
-			});
-		});
-		function update_select_all_box() {
-			let all_checked = true;
-			host_selects.each((i, sel) => all_checked = all_checked && sel.checked);
-			select_all.checked = all_checked;
-		}
-		host_selects.each((i, sel) => {
-			sel.addEventListener("input", update_select_all_box);
-		});
+dom_ready(function() {
+	let select_all = document.getElementById('cb_all_servers');
+	if(!select_all) {
+		return;
 	}
+
+	let host_selects = document.querySelectorAll('[name="selected_servers[]"]');
+	select_all.addEventListener("input", () => {
+		for(let i = 0; i < host_selects.length; i++) {
+			host_selects[i].checked = select_all.checked;
+		}
+	});
+
+	function update_select_all_box() {
+		let all_checked = host_selects.length > 0;
+		for(let i = 0; i < host_selects.length; i++) {
+			all_checked = all_checked && host_selects[i].checked;
+		}
+		select_all.checked = all_checked;
+	}
+
+	for(let i = 0; i < host_selects.length; i++) {
+		host_selects[i].addEventListener("input", update_select_all_box);
+	}
+
+	update_select_all_box();
 });

@@ -6,3 +6,6 @@ extensions/*.php
 docker-compose*
 docker/
 /vendor/
+var/
+scripts/smoke/fixtures/sync/*.txt
+testenvs.env

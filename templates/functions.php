@@ -106,14 +106,17 @@ function show_event_participant($participant) {
 	}
 }
 function keygen_help($box_position) {
+	static $call_count = 0;
+	$call_count++;
+	$id_prefix = 'keygen_' . $call_count . '_';
 	?>
-	<ul class="nav nav-tabs">
-		<li><a href="#windows_instructions" data-toggle="tab">Windows</a></li>
-		<li><a href="#mac_instructions" data-toggle="tab">Mac</a></li>
-		<li><a href="#linux_instructions" data-toggle="tab">Linux</a></li>
+	<ul class="nav nav-tabs" role="tablist">
+		<li class="nav-item" role="presentation"><a href="#<?php out($id_prefix)?>windows_instructions" id="<?php out($id_prefix)?>windows_instructions_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="<?php out($id_prefix)?>windows_instructions" aria-selected="true">Windows</a></li>
+		<li class="nav-item" role="presentation"><a href="#<?php out($id_prefix)?>mac_instructions" id="<?php out($id_prefix)?>mac_instructions_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="<?php out($id_prefix)?>mac_instructions" aria-selected="false" tabindex="-1">Mac</a></li>
+		<li class="nav-item" role="presentation"><a href="#<?php out($id_prefix)?>linux_instructions" id="<?php out($id_prefix)?>linux_instructions_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="<?php out($id_prefix)?>linux_instructions" aria-selected="false" tabindex="-1">Linux</a></li>
 	</ul>
-	<div class="tab-content clearfix">
-		<div class="tab-pane fade" id="windows_instructions">
+		<div class="tab-content clearfix">
+			<div class="tab-pane fade show active" id="<?php out($id_prefix)?>windows_instructions" role="tabpanel" aria-labelledby="<?php out($id_prefix)?>windows_instructions_tab" tabindex="0">
 				<aside class="pull-right"><img src="/windows-key-generator.gif" class="img-rounded img-responsive"></aside>
 			<p>On Windows you will typically use the <a href="https://mobaxterm.mobatek.net/download-home-edition.html">MobaXterm MobaKeyGen</a> application to generate your key pair.</p>
 			<ol>
@@ -138,7 +141,7 @@ function keygen_help($box_position) {
 				<strong>Note:</strong> if you are using Cygwin or MSYS bash, the instructions for Linux can be used instead.
 			</div>
 		</div>
-		<div class="tab-pane fade" id="mac_instructions">
+			<div class="tab-pane fade" id="<?php out($id_prefix)?>mac_instructions" role="tabpanel" aria-labelledby="<?php out($id_prefix)?>mac_instructions_tab" tabindex="0">
 			<p>On Mac you can generate a key pair with the ssh-keygen command.</p>
 			<ol>
 				<li>Start the "Terminal" program.
@@ -150,7 +153,7 @@ function keygen_help($box_position) {
 				<?php } ?>
 			</ol>
 		</div>
-		<div class="tab-pane fade" id="linux_instructions">
+			<div class="tab-pane fade" id="<?php out($id_prefix)?>linux_instructions" role="tabpanel" aria-labelledby="<?php out($id_prefix)?>linux_instructions_tab" tabindex="0">
 			<p>On Linux you can generate a key pair with the ssh-keygen command.</p>
 			<ol>
 				<li>Open a terminal on your machine

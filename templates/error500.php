@@ -17,7 +17,7 @@
 ?>
 <?php if($this->get('error_details')) { ?>
 <h1>Error</h1>
-<p><?php out($this->get('exception_class')) ?> "<span class="text-danger"><?php out($this->get('error_details')->getMessage()) ?></span>"</p>
+<p><?php out($this->get('exception_class')) ?> "<span class="ska-text-danger"><?php out($this->get('error_details')->getMessage()) ?></span>"</p>
 <p>Occurred in <?php out($this->get('error_details')->getFile().' line '.$this->get('error_details')->getLine()) ?></p>
 <h2>Stack trace</h2>
 <div class="ska-scroll-container">

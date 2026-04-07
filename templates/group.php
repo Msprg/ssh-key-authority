@@ -21,25 +21,25 @@ foreach($this->get('group_members') as $member) {
 	$membercounts[get_class($member)]++;
 }
 ?>
-<h1><span class="glyphicon glyphicon-list-alt" title="Group"></span> <?php out($this->get('group')->name)?><?php if($this->get('group')->active == 0) out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></h1>
+<h1><span class="ska-icon ska-icon-group" title="Group"></span> <?php out($this->get('group')->name)?><?php if($this->get('group')->active == 0) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></h1>
 <?php if($this->get('admin') || $this->get('group_admin')) { ?>
-<ul class="nav nav-tabs">
-	<li><a href="#members" data-toggle="tab">Members</a></li>
-	<li><a href="#access" data-toggle="tab">Access</a></li>
-	<li><a href="#outbound" data-toggle="tab">Outbound access</a></li>
-	<li><a href="#admins" data-toggle="tab">Administrators</a></li>
+<ul class="nav nav-tabs" role="tablist">
+	<li class="nav-item" role="presentation"><a href="#members" id="group_members_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="members" aria-selected="true">Members</a></li>
+	<li class="nav-item" role="presentation"><a href="#access" id="group_access_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="access" aria-selected="false" tabindex="-1">Access</a></li>
+	<li class="nav-item" role="presentation"><a href="#outbound" id="group_outbound_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="outbound" aria-selected="false" tabindex="-1">Outbound access</a></li>
+	<li class="nav-item" role="presentation"><a href="#admins" id="group_admins_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="admins" aria-selected="false" tabindex="-1">Administrators</a></li>
 	<?php if($this->get('admin')) { ?>
-	<li><a href="#settings" data-toggle="tab">Settings</a></li>
+	<li class="nav-item" role="presentation"><a href="#settings" id="group_settings_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="settings" aria-selected="false" tabindex="-1">Settings</a></li>
 	<?php } ?>
-	<li><a href="#log" data-toggle="tab">Log</a></li>
+	<li class="nav-item" role="presentation"><a href="#log" id="group_log_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="log" aria-selected="false" tabindex="-1">Log</a></li>
 </ul>
 
 <!-- Tab panes -->
 <div class="tab-content">
-	<div class="tab-pane fade" id="members">
-		<h2 class="sr-only">Group members</h2>
-		<p><a href="<?php outurl('/groups/'.urlencode($this->get('group')->name).'/members.json') ?>" class="btn btn-default btn-xs">
-			<span class="glyphicon glyphicon-console"></span> JSON
+	<div class="tab-pane fade active show" id="members" role="tabpanel" aria-labelledby="group_members_tab" aria-hidden="false">
+		<h2 class="visually-hidden">Group members</h2>
+		<p><a href="<?php outurl('/groups/'.urlencode($this->get('group')->name).'/members.json') ?>" class="btn btn-secondary btn-sm">
+			<span class="ska-icon ska-icon-console"></span> JSON
 		</a></p>
 		<?php if(count($this->get('group_members')) == 0) { ?>
 		<p>No members have been added to this group yet.</p>
@@ -70,13 +70,13 @@ foreach($this->get('group_members') as $member) {
 							case 'User':
 							?>
 							<td><a href="<?php outurl('/users/'.urlencode($member->uid))?>" class="user"><?php out($member->uid)?></a></td>
-							<td><?php out($member->name); if(!$member->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE)?></td>
+							<td><?php out($member->name); if(!$member->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE)?></td>
 							<?php
 								break;
 							case 'ServerAccount':
 							?>
 							<td><a href="<?php outurl('/servers/'.urlencode($member->server->hostname).'/accounts/'.urlencode($member->name))?>" class="serveraccount"><?php out($member->name.'@'.$member->server->hostname)?></a></td>
-							<td><em>Server account</em><?php if($member->server->key_management == 'decommissioned') out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
+							<td><em>Server account</em><?php if($member->server->key_management == 'decommissioned') out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 							<?php
 								break;
 							case 'Group':
@@ -90,11 +90,11 @@ foreach($this->get('group_members') as $member) {
 							<td>Added on <?php out($member->add_date) ?> by <a href="<?php outurl('/users/'.urlencode($member->added_by->uid))?>" class="user"><?php out($member->added_by->uid) ?></a></td>
 							<?php if(!$this->get('group')->system) { ?>
 							<td>
-								<button type="submit" name="delete_member" value="<?php out($member->entity_id)?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-ban-circle"></span> Remove from group</button>
+								<button type="submit" name="delete_member" value="<?php out($member->entity_id)?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-ban-circle"></span> Remove from group</button>
 							</td>
 							<?php } ?>
-							<?php } ?>
 						</tr>
+						<?php } ?>
 					</tbody>
 				</table>
 			</div>
@@ -105,14 +105,14 @@ foreach($this->get('group_members') as $member) {
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Add user</h3>
 			<div class="row">
-				<div class="form-group col-md-9">
+				<div class="col-md-9 mb-3">
 					<div class="input-group">
-						<span class="input-group-addon"><label for="username"><span class="glyphicon glyphicon-user" title="User"></span><span class="sr-only">User name</span></label></span>
+						<span class="input-group-text"><label for="username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
 						<input type="text" id="username" name="username" class="form-control" placeholder="User name" required list="userlist">
 					</div>
 				</div>
-				<div class="form-group col-md-3">
-					<button type="submit" name="add_member" value="1" class="btn btn-primary btn-block">Add user to group</button>
+				<div class="col-md-3 mb-3">
+					<button type="submit" name="add_member" value="1" class="btn btn-primary w-100">Add user to group</button>
 				</div>
 			</div>
 		</form>
@@ -120,20 +120,20 @@ foreach($this->get('group_members') as $member) {
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Add server account</h3>
 			<div class="row">
-				<div class="form-group col-md-2">
+				<div class="col-md-2 mb-3">
 					<div class="input-group">
-						<span class="input-group-addon"><label for="account"><span class="glyphicon glyphicon-log-in" title="Server account"></span><span class="sr-only">Account</span></label></span>
+						<span class="input-group-text"><label for="account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account</span></label></span>
 						<input type="text" id="account" name="account" class="form-control" placeholder="Account name" required>
 					</div>
 				</div>
-				<div class="form-group col-md-7">
+				<div class="col-md-7 mb-3">
 					<div class="input-group">
-						<span class="input-group-addon"><label for="hostname">@</label></span>
+						<span class="input-group-text"><label for="hostname">@<span class="visually-hidden">Hostname</span></label></span>
 						<input type="text" id="hostname" name="hostname" class="form-control" placeholder="Hostname" required list="<?php out($this->get('admin') ? 'serverlist' : 'adminedserverlist')?>">
 					</div>
 				</div>
-				<div class="form-group col-md-3">
-					<button type="submit" name="add_member" value="1" class="btn btn-primary btn-block">Add server account to group</button>
+				<div class="col-md-3 mb-3">
+					<button type="submit" name="add_member" value="1" class="btn btn-primary w-100">Add server account to group</button>
 				</div>
 			</div>
 		</form>
@@ -142,20 +142,20 @@ foreach($this->get('group_members') as $member) {
 			<h3>Add multiple server accounts</h3>
 			<p>Enter a list of accounts, one per line, in the form accountname@hostname</p>
 			<div class="row">
-				<div class="form-group col-md-12">
+				<div class="col-md-12 mb-3">
 					<textarea name="accounts" class="form-control"></textarea>
 				</div>
 			</div>
 			<div class="row">
-				<div class="form-group col-md-3">
-					<button type="submit" name="add_members" value="1" class="btn btn-primary btn-block">Add server accounts to group</button>
+				<div class="col-md-3 mb-3">
+					<button type="submit" name="add_members" value="1" class="btn btn-primary w-100">Add server accounts to group</button>
 				</div>
 			</div>
 		</form>
 		<?php } ?>
 	</div>
-	<div class="tab-pane fade" id="access">
-		<h2 class="sr-only">Access</h2>
+	<div class="tab-pane fade" id="access" role="tabpanel" aria-labelledby="group_access_tab" aria-hidden="true">
+		<h2 class="visually-hidden">Access</h2>
 		<?php if(count($this->get('group_access')) == 0) { ?>
 		<?php if($membercounts['ServerAccount'] > 0 || $membercounts['Group'] > 0) { ?>
 		<p>No access has been granted to this group's resources.</p>
@@ -183,13 +183,13 @@ foreach($this->get('group_members') as $member) {
 							case 'User':
 							?>
 							<td><a href="<?php outurl('/users/'.urlencode($entity->uid))?>" class="user"><?php out($entity->uid)?></a></td>
-							<td><?php out($entity->name); if(!$entity->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE)?></td>
+							<td><?php out($entity->name); if(!$entity->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE)?></td>
 							<?php
 								break;
 							case 'ServerAccount':
 							?>
 							<td><a href="<?php outurl('/servers/'.urlencode($entity->server->hostname).'/accounts/'.urlencode($entity->name))?>" class="serveraccount"><?php out($entity->name.'@'.$entity->server->hostname)?></a></td>
-							<td><em>Server account</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
+							<td><em>Server account</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 							<?php
 								break;
 							case 'Group':
@@ -219,12 +219,12 @@ foreach($this->get('group_members') as $member) {
 								</ul>
 								<?php } ?>
 							</td>
-							<td>
-								<a href="<?php outurl('/groups/'.urlencode($this->get('group')->name).'/access_rules/'.urlencode($access->id))?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-cog"></span> Configure access</a>
-								<button type="submit" name="delete_access" value="<?php out($access->id)?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-ban-circle"></span> Remove access</button>
-							</td>
+								<td>
+									<a href="<?php outurl('/groups/'.urlencode($this->get('group')->name).'/access_rules/'.urlencode($access->id))?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-cog"></span> Configure access</a>
+									<button type="submit" name="delete_access" value="<?php out($access->id)?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-ban-circle"></span> Remove access</button>
+								</td>
+							</tr>
 							<?php } ?>
-						</tr>
 					</tbody>
 				</table>
 			</div>
@@ -237,14 +237,14 @@ foreach($this->get('group_members') as $member) {
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Grant user access</h3>
 			<div class="row">
-				<div class="form-group col-md-8">
+				<div class="col-md-8 mb-3">
 					<div class="input-group">
-						<span class="input-group-addon"><label for="access-username"><span class="glyphicon glyphicon-user" title="User"></span><span class="sr-only">User name</span></label></span>
+						<span class="input-group-text"><label for="access-username"><span class="ska-icon ska-icon-user" title="User"></span><span class="visually-hidden">User name</span></label></span>
 						<input type="text" id="access-username" name="username" class="form-control" placeholder="User name" required list="userlist">
 					</div>
 				</div>
-				<div class="form-group col-md-4">
-					<button type="submit" name="add_access" value="1" class="btn btn-primary btn-block">Grant user access to group resources</button>
+				<div class="col-md-4 mb-3">
+					<button type="submit" name="add_access" value="1" class="btn btn-primary w-100">Grant user access to group resources</button>
 				</div>
 			</div>
 		</form>
@@ -252,20 +252,20 @@ foreach($this->get('group_members') as $member) {
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Grant server account access</h3>
 			<div class="row">
-				<div class="form-group col-md-2">
+				<div class="col-md-2 mb-3">
 					<div class="input-group">
-						<span class="input-group-addon"><label for="access-account"><span class="glyphicon glyphicon-log-in" title="Server account"></span><span class="sr-only">Account</span></label></span>
+						<span class="input-group-text"><label for="access-account"><span class="ska-icon ska-icon-serveraccount" title="Server account"></span><span class="visually-hidden">Account</span></label></span>
 						<input type="text" id="access-account" name="account" class="form-control" placeholder="Account name" required>
 					</div>
 				</div>
-				<div class="form-group col-md-6">
+				<div class="col-md-6 mb-3">
 					<div class="input-group">
-						<span class="input-group-addon"><label for="access-hostname">@</label></span>
+						<span class="input-group-text"><label for="access-hostname">@<span class="visually-hidden">Hostname</span></label></span>
 						<input type="text" id="access-hostname" name="hostname" class="form-control" placeholder="Hostname" required list="serverlist">
 					</div>
 				</div>
-				<div class="form-group col-md-4">
-					<button type="submit" name="add_access" value="1" class="btn btn-primary btn-block">Grant server account access to group resources</button>
+				<div class="col-md-4 mb-3">
+					<button type="submit" name="add_access" value="1" class="btn btn-primary w-100">Grant server account access to group resources</button>
 				</div>
 			</div>
 		</form>
@@ -273,21 +273,21 @@ foreach($this->get('group_members') as $member) {
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Grant group access</h3>
 			<div class="row">
-				<div class="form-group col-md-8">
+				<div class="col-md-8 mb-3">
 					<div class="input-group">
-						<span class="input-group-addon"><label for="access-group"><span class="glyphicon glyphicon-list-alt" title="Group"></span><span class="sr-only">Group name</span></label></span>
+						<span class="input-group-text"><label for="access-group"><span class="ska-icon ska-icon-group" title="Group"></span><span class="visually-hidden">Group name</span></label></span>
 						<input type="text" id="access-group" name="group" class="form-control" placeholder="Group name" required list="grouplist">
 					</div>
 				</div>
-				<div class="form-group col-md-4">
-					<button type="submit" name="add_access" value="1" class="btn btn-primary btn-block">Grant a group access to this group's resources</button>
+				<div class="col-md-4 mb-3">
+					<button type="submit" name="add_access" value="1" class="btn btn-primary w-100">Grant a group access to this group's resources</button>
 				</div>
 			</div>
 		</form>
 		<?php } ?>
 	</div>
-	<div class="tab-pane fade" id="outbound">
-		<h2 class="sr-only">Outbound access</h2>
+	<div class="tab-pane fade" id="outbound" role="tabpanel" aria-labelledby="group_outbound_tab" aria-hidden="true">
+		<h2 class="visually-hidden">Outbound access</h2>
 		<?php if(count($this->get('group_remote_access')) == 0) { ?>
 		<p>This group has not been granted access to other resources.</p>
 		<?php } else { ?>
@@ -309,13 +309,13 @@ foreach($this->get('group_members') as $member) {
 						case 'User':
 						?>
 						<td><a href="<?php outurl('/users/'.urlencode($entity->uid))?>" class="user"><?php out($entity->uid)?></a></td>
-						<td><?php out($entity->name); if(!$entity->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE)?></td>
+						<td><?php out($entity->name); if(!$entity->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE)?></td>
 						<?php
 							break;
 						case 'ServerAccount':
 						?>
 						<td><a href="<?php outurl('/servers/'.urlencode($entity->server->hostname).'/accounts/'.urlencode($entity->name))?>" class="serveraccount"><?php out($entity->name.'@'.$entity->server->hostname)?></a></td>
-						<td><em>Server account</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
+						<td><em>Server account</em><?php if($entity->server->key_management == 'decommissioned') out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 						<?php
 							break;
 						case 'Group':
@@ -334,8 +334,8 @@ foreach($this->get('group_members') as $member) {
 		</div>
 		<?php } ?>
 	</div>
-	<div class="tab-pane fade" id="admins">
-		<h2 class="sr-only">Group administrators</h2>
+	<div class="tab-pane fade" id="admins" role="tabpanel" aria-labelledby="group_admins_tab" aria-hidden="true">
+		<h2 class="visually-hidden">Group administrators</h2>
 		<?php if(count($this->get('group_admins')) == 0) { ?>
 		<p class="alert alert-danger">This group does not have any administrators assigned.</p>
 		<?php } else { ?>
@@ -356,10 +356,10 @@ foreach($this->get('group_members') as $member) {
 						<?php foreach($this->get('group_admins') as $admin) { ?>
 						<tr>
 							<td><a href="<?php outurl('/users/'.urlencode($admin->uid))?>" class="user"><?php out($admin->uid) ?></a></td>
-							<td><?php out($admin->name); if(!$admin->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></td>
+							<td><?php out($admin->name); if(!$admin->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?></td>
 							<?php if($this->get('admin')) { ?>
 							<td>
-								<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Remove admin</button>
+								<button type="submit" name="delete_admin" value="<?php out($admin->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Remove admin</button>
 							</td>
 							<?php } ?>
 						</tr>
@@ -370,55 +370,47 @@ foreach($this->get('group_members') as $member) {
 		</form>
 		<?php } ?>
 		<?php if($this->get('admin')) { ?>
-		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="form-inline">
+		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="row g-3 align-items-end">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<h3>Add administrator</h3>
-			<div class="form-group">
-				<label for="user_name" class="sr-only">User name</label>
+			<div class="col-md-4">
+				<label for="user_name" class="visually-hidden">User name</label>
 				<input type="text" id="user_name" name="user_name" class="form-control" placeholder="User name" required list="userlist">
 			</div>
-			<button type="submit" name="add_admin" value="1" class="btn btn-primary">Add administrator to group</button>
+			<div class="col-md-auto">
+				<button type="submit" name="add_admin" value="1" class="btn btn-primary">Add administrator to group</button>
+			</div>
 		</form>
 		<?php } ?>
 	</div>
 	<?php if($this->get('admin')) { ?>
-	<div class="tab-pane fade" id="settings">
-		<h2 class="sr-only">Settings</h2>
-		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="form-horizontal">
+	<div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="group_settings_tab" aria-hidden="true">
+		<h2 class="visually-hidden">Settings</h2>
+		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-settings-form">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<div class="form-group">
-				<label for="name" class="col-sm-2 control-label">Name</label>
-				<div class="col-sm-10">
+			<div class="ska-setting-row">
+				<label for="name" class="ska-setting-label">Name</label>
+				<div class="ska-setting-control">
 					<input type="text" id="name" name="name" value="<?php out($this->get('group')->name)?>" required class="form-control">
 				</div>
 			</div>
-			<div class="form-group">
-				<label class="col-sm-2 control-label">Group status</label>
-				<div class="col-sm-10">
-					<div class="radio">
-						<label class="text-success">
-							<input type="radio" name="active" value="1"<?php if($this->get('group')->active == 1) out(' checked') ?>>
-							Enabled
-						</label>
+			<div class="ska-setting-row">
+				<fieldset>
+					<legend class="ska-setting-label">Group status</legend>
+					<div class="ska-setting-control ska-choice-list">
+						<div class="form-check ska-text-success"><label class="form-check-label"><input type="radio" class="form-check-input" name="active" value="1"<?php if($this->get('group')->active == 1) out(' checked') ?>> <span>Enabled</span></label></div>
+						<div class="form-check ska-text-danger"><label class="form-check-label"><input type="radio" class="form-check-input" name="active" value="0"<?php if($this->get('group')->active == 0) out(' checked') ?>> <span>Disabled</span></label></div>
 					</div>
-					<div class="radio">
-						<label class="text-danger">
-							<input type="radio" name="active" value="0"<?php if($this->get('group')->active == 0) out(' checked') ?>>
-							Disabled
-						</label>
-					</div>
-				</div>
+				</fieldset>
 			</div>
-			<div class="form-group">
-				<div class="col-sm-offset-2 col-sm-10">
+			<div class="ska-setting-actions">
 					<button type="submit" name="edit_group" value="1" class="btn btn-primary">Change settings</button>
-				</div>
 			</div>
 		</form>
 	</div>
 	<?php } ?>
-	<div class="tab-pane fade" id="log">
-		<h2 class="sr-only">Log</h2>
+	<div class="tab-pane fade" id="log" role="tabpanel" aria-labelledby="group_log_tab" aria-hidden="true">
+		<h2 class="visually-hidden">Log</h2>
 		<div class="ska-scroll-container">
 			<table class="table">
 				<thead>

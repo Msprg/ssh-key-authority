@@ -16,28 +16,28 @@
 ## limitations under the License.
 ##
 ?>
-<h1><span class="glyphicon glyphicon-user" title="User"></span> <?php out($this->get('user')->name)?> <small>(<?php out($this->get('user')->uid)?>)</small><?php if(!$this->get('user')->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE)?></h1>
+<h1><span class="ska-icon ska-icon-user" title="User"></span> <?php out($this->get('user')->name)?> <small>(<?php out($this->get('user')->uid)?>)</small><?php if(!$this->get('user')->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE)?></h1>
 <dl>
 	<dt>Account type</dt>
 	<dd><?php out($this->get('user')->auth_realm)?></dd>
 </dl>
-<ul class="nav nav-tabs">
-	<li><a href="#details" data-toggle="tab">Details</a></li>
+<ul class="nav nav-tabs" role="tablist">
+	<li class="nav-item" role="presentation"><a href="#details" id="user_details_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="details" aria-selected="true">Details</a></li>
 	<?php if($this->get('user')->auth_realm == 'LDAP' && $this->get('admin')) { ?>
-	<li><a href="#settings" data-toggle="tab">Settings</a></li>
+	<li class="nav-item" role="presentation"><a href="#settings" id="user_settings_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="settings" aria-selected="false" tabindex="-1">Settings</a></li>
 	<?php } ?>
 </ul>
 <!-- Tab panes -->
 <div class="tab-content">
-	<div class="tab-pane fade" id="details">
-		<h2 class="sr-only">Details</h2>
+	<div class="tab-pane fade active show" id="details" role="tabpanel" aria-labelledby="user_details_tab" aria-hidden="false">
+		<h2 class="visually-hidden">Details</h2>
 		<h3><a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys')?>">Public keys</a></h3>
 		<p>
-			<a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys.txt') ?>" class="btn btn-default btn-xs">
-				<span class="glyphicon glyphicon-console"></span> TXT
+			<a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys.txt') ?>" class="btn btn-secondary btn-sm">
+				<span class="ska-icon ska-icon-console"></span> TXT
 			</a>
-			<a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys.json') ?>" class="btn btn-default btn-xs">
-				<span class="glyphicon glyphicon-console"></span> JSON
+			<a href="<?php outurl('/users/'.urlencode($this->get('user')->uid).'/pubkeys.json') ?>" class="btn btn-secondary btn-sm">
+				<span class="ska-icon ska-icon-console"></span> JSON
 			</a>
 		</p>
 		<?php if(count($this->get('active_user_keys')) == 0) { ?>
@@ -48,7 +48,7 @@
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 		<?php } ?>
 		<div class="ska-scroll-container">
-			<table class="table">
+			<table class="table table-striped table-sm">
 				<thead>
 					<tr>
 						<th>Type</th>
@@ -73,15 +73,15 @@
 							</a>
 						</td>
 						<td>
-							<?php if(count($key->list_signatures()) > 0) { ?><a href="<?php outurl('/pubkeys/'.urlencode($key->id).'#sig')?>"><span class="glyphicon glyphicon-pencil" title="Signed key"></span></a><?php } ?>
-							<?php if(count($key->list_destination_rules()) > 0) { ?><a href="<?php outurl('/pubkeys/'.urlencode($key->id).'#dest')?>"><span class="glyphicon glyphicon-pushpin" title="Destination-restricted"></span></a><?php } ?>
+							<?php if(count($key->list_signatures()) > 0) { ?><a href="<?php outurl('/pubkeys/'.urlencode($key->id).'#sig')?>" aria-label="View key signatures"><span class="ska-icon ska-icon-pencil" aria-hidden="true"></span></a><?php } ?>
+							<?php if(count($key->list_destination_rules()) > 0) { ?><a href="<?php outurl('/pubkeys/'.urlencode($key->id).'#dest')?>" aria-label="View destination restrictions"><span class="ska-icon ska-icon-pushpin" aria-hidden="true"></span></a><?php } ?>
 						</td>
 						<td><?php out($key->format_creation_date()) ?></td>
 						<td><?php out($key->keysize) ?></td>
 						<td><?php out($key->comment) ?></td>
 						<?php if($this->get('admin')) { ?>
 						<td>
-							<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Delete public key</button>
+							<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete public key</button>
 						</td>
 						<?php } ?>
 					</tr>
@@ -108,7 +108,7 @@
 		<?php if(count($this->get('user_groups')) > 0) { ?>
 		<p><?php out($this->get('user')->name)?> is a member of the following groups:</p>
 		<div class="ska-scroll-container">
-			<table class="table">
+			<table class="table table-striped table-sm">
 				<thead>
 					<tr>
 						<th>Group</th>
@@ -131,7 +131,7 @@
 		<?php if(count($this->get('user_admined_groups')) > 0) { ?>
 		<p><?php out($this->get('user')->name)?> is an administrator of the following groups:</p>
 		<div class="ska-scroll-container">
-			<table class="table">
+			<table class="table table-striped table-sm">
 				<thead>
 					<tr>
 						<th>Group</th>
@@ -157,7 +157,7 @@
 		<?php } else { ?>
 		<p><?php out($this->get('user')->name)?> has been explicitly granted access to the following entities:</p>
 		<div class="ska-scroll-container">
-			<table class="table">
+			<table class="table table-striped table-sm">
 				<thead>
 					<tr>
 						<th>Entity</th>
@@ -200,7 +200,7 @@
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<div class="ska-scroll-container">
-				<table class="table" id="admined_servers">
+				<table class="table table-striped table-sm" id="admined_servers">
 					<thead>
 						<tr>
 							<th>Hostname</th>
@@ -231,7 +231,7 @@
 							<td>
 								<a href="<?php outurl('/servers/'.urlencode($server->hostname)) ?>" class="server"><?php out($server->hostname) ?></a>
 								<?php if($server->pending_requests > 0) { ?>
-								<a href="<?php outurl('/servers/'.urlencode($server->hostname).'#requests') ?>"><span class="badge" title="Pending requests"><?php out(number_format($server->pending_requests)) ?></span></a>
+								<a href="<?php outurl('/servers/'.urlencode($server->hostname).'#requests') ?>"><span class="ska-badge ska-badge-muted" title="Pending requests"><?php out(number_format($server->pending_requests)) ?></span></a>
 								<?php } ?>
 							</td>
 							<td>
@@ -256,37 +256,25 @@
 					</tbody>
 				</table>
 			</div>
-			<p><button type="button" class="btn btn-default" data-reassign="admined_servers">Reassign servers</button></p>
+			<p><button type="button" class="btn btn-secondary" data-reassign="admined_servers">Reassign servers</button></p>
 		</form>
 		<?php } ?>
 		<?php } ?>
 	</div>
 	<?php if($this->get('user')->auth_realm == 'LDAP' && $this->get('admin')) { ?>
-	<div class="tab-pane fade" id="settings">
-		<h2 class="sr-only">Settings</h2>
-		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="form-horizontal">
+	<div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="user_settings_tab" aria-hidden="true">
+		<h2 class="visually-hidden">Settings</h2>
+		<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="ska-settings-form">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<div class="form-group">
-				<label class="col-sm-2 control-label">User status</label>
-				<div class="col-sm-10">
-					<div class="radio">
-						<label>
-							<input type="radio" name="force_disable" value="0"<?php if(!$this->get('user')->force_disable) out(' checked') ?>>
-							Use status from LDAP
-						</label>
-					</div>
-					<div class="radio">
-						<label class="text-danger">
-							<input type="radio" name="force_disable" value="1"<?php if($this->get('user')->force_disable) out(' checked') ?>>
-							Disable account (override LDAP)
-						</label>
-					</div>
+			<div class="ska-setting-row">
+				<div class="ska-setting-label">User status</div>
+				<div class="ska-setting-control ska-choice-list">
+					<label class="ska-choice"><input type="radio" class="form-check-input" name="force_disable" value="0"<?php if(!$this->get('user')->force_disable) out(' checked') ?>> <span>Use status from LDAP</span></label>
+					<label class="ska-choice ska-text-danger"><input type="radio" class="form-check-input" name="force_disable" value="1"<?php if($this->get('user')->force_disable) out(' checked') ?>> <span>Disable account (override LDAP)</span></label>
 				</div>
 			</div>
-			<div class="form-group">
-				<div class="col-sm-offset-2 col-sm-10">
+			<div class="ska-setting-actions">
 					<button type="submit" name="edit_user" value="1" class="btn btn-primary">Change settings</button>
-				</div>
 			</div>
 		</form>
 	</div>

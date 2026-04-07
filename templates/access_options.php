@@ -65,63 +65,66 @@ switch(get_class($remote_entity)) {
 		<a href="<?php outurl($re_url)?>" class="<?php out(strtolower(get_class($remote_entity)))?>"><?php out($remote_entity_name)?></a>.
 	</p>
 	<?php if($mode == 'create') { ?>
-	<div class="form-group">
-		<div class="panel-group">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h3 class="panel-title">
-						<a data-toggle="collapse" href="#advanced_options">
-							Advanced options <span class="caret"></span>
-						</a>
-					</h3>
-				</div>
-				<div id="advanced_options" class="collapse">
+	<div class="mb-3">
+		<div class="card">
+				<div class="card-header">
+						<h3 class="h5 mb-0">
+							<a data-bs-toggle="collapse" href="#advanced_options" aria-expanded="false" aria-controls="advanced_options">
+								Advanced options <span class="ska-caret" aria-hidden="true"></span>
+							</a>
+						</h3>
+					</div>
+					<div id="advanced_options" class="collapse">
 	<?php } ?>
-					<div class="panel-body">
+					<div class="card-body">
 						<p>
 							Presets:
-							<button type="button" class="btn btn-default btn-xs" data-preset="default">Default</button>
-							<button type="button" class="btn btn-default btn-xs" data-preset="command">Command</button>
-							<button type="button" class="btn btn-default btn-xs" data-preset="dbbackup">DB backup</button>
-							<button type="button" class="btn btn-default btn-xs" data-preset="checkmk">CheckMK</button>
+							<button type="button" class="btn btn-secondary btn-sm" data-preset="default">Default</button>
+							<button type="button" class="btn btn-secondary btn-sm" data-preset="command">Command</button>
+							<button type="button" class="btn btn-secondary btn-sm" data-preset="dbbackup">DB backup</button>
+							<button type="button" class="btn btn-secondary btn-sm" data-preset="checkmk">CheckMK</button>
 						</p>
-						<div class="checkbox">
-							<label><input type="checkbox" name="access_option[command][enabled]"<?php if(isset($options['command'])) out(' checked'); ?>> Specify command (<code>command=&quot;command&quot;</code>)</label>
+						<div class="form-check">
+							<input type="checkbox" class="form-check-input" id="access_option_command_enabled" name="access_option[command][enabled]"<?php if(isset($options['command'])) out(' checked'); ?>>
+							<label class="form-check-label" for="access_option_command_enabled">Specify command (<code>command=&quot;command&quot;</code>)</label>
 						</div>
-						<div class="form-group">
+						<div class="mb-3">
 							<input type="text" id="command_value" name="access_option[command][value]" value="<?php if(isset($options['command'])) out($options['command']->value); ?>" class="form-control">
 						</div>
-						<div class="checkbox">
-							<label><input type="checkbox" name="access_option[from][enabled]"<?php if(isset($options['from'])) out(' checked'); ?>> Restrict source address (<code>from=&quot;<abbr title="A pattern-list is a comma-separated list of patterns.  Each pattern can be either a hostname or an IP address, with wildcards (* and ?) allowed.">pattern-list</abbr>&quot;</code>)</label>
+						<div class="form-check">
+							<input type="checkbox" class="form-check-input" id="access_option_from_enabled" name="access_option[from][enabled]"<?php if(isset($options['from'])) out(' checked'); ?>>
+							<label class="form-check-label" for="access_option_from_enabled">Restrict source address (<code>from=&quot;<abbr title="A pattern-list is a comma-separated list of patterns.  Each pattern can be either a hostname or an IP address, with wildcards (* and ?) allowed.">pattern-list</abbr>&quot;</code>)</label>
 						</div>
-						<div class="form-group">
+						<div class="mb-3">
 							<input type="text" id="from_value" name="access_option[from][value]" value="<?php if(isset($options['from'])) out($options['from']->value); ?>" class="form-control">
 						</div>
-						<div class="checkbox">
-							<label><input type="checkbox" name="access_option[no-port-forwarding][enabled]"<?php if(isset($options['no-port-forwarding'])) out(' checked'); ?>> Disallow port forwarding (<code>no-port-forwarding</code>)</label>
+						<div class="form-check">
+							<input type="checkbox" class="form-check-input" id="access_option_no_port_forwarding_enabled" name="access_option[no-port-forwarding][enabled]"<?php if(isset($options['no-port-forwarding'])) out(' checked'); ?>>
+							<label class="form-check-label" for="access_option_no_port_forwarding_enabled">Disallow port forwarding (<code>no-port-forwarding</code>)</label>
 						</div>
-						<div class="checkbox">
-							<label><input type="checkbox" name="access_option[no-X11-forwarding][enabled]"<?php if(isset($options['no-X11-forwarding'])) out(' checked'); ?>> Disallow X11 forwarding (<code>no-X11-forwarding</code>)</label>
+						<div class="form-check">
+							<input type="checkbox" class="form-check-input" id="access_option_no_x11_forwarding_enabled" name="access_option[no-X11-forwarding][enabled]"<?php if(isset($options['no-X11-forwarding'])) out(' checked'); ?>>
+							<label class="form-check-label" for="access_option_no_x11_forwarding_enabled">Disallow X11 forwarding (<code>no-X11-forwarding</code>)</label>
 						</div>
-						<div class="checkbox">
-							<label><input type="checkbox" name="access_option[no-pty][enabled]"<?php if(isset($options['no-pty'])) out(' checked'); ?>> Disable terminal (<code>no-pty</code>)</label>
+						<div class="form-check">
+							<input type="checkbox" class="form-check-input" id="access_option_no_pty_enabled" name="access_option[no-pty][enabled]"<?php if(isset($options['no-pty'])) out(' checked'); ?>>
+							<label class="form-check-label" for="access_option_no_pty_enabled">Disable terminal (<code>no-pty</code>)</label>
 						</div>
 					</div>
 	<?php if($mode == 'create') { ?>
 				</div>
 			</div>
-		</div>
 	</div>
 	<?php } ?>
-	<div class="form-group row">
-		<div class="col-md-8">
-			<button type="submit" name="<?php if($mode == 'create') out('add_access'); else out('update_access')?>" value="2" class="btn btn-primary btn-block"><?php if($mode == 'create') out('Confirm'); else out('Modify')?> access</button>
+	<div class="row g-3">
+		<div class="col-md-8 d-grid">
+			<button type="submit" name="<?php if($mode == 'create') out('add_access'); else out('update_access')?>" value="2" class="btn btn-primary w-100"><?php if($mode == 'create') out('Confirm'); else out('Modify')?> access</button>
 		</div>
-		<div class="col-md-4">
+		<div class="col-md-4 d-grid">
 			<?php if(isset($server)) { ?>
-			<a href="<?php outurl('/servers/'.urlencode($server->hostname).'/accounts/'.urlencode($account->name))?>" class="btn btn-default btn-block">Cancel</a>
+			<a href="<?php outurl('/servers/'.urlencode($server->hostname).'/accounts/'.urlencode($account->name))?>" class="btn btn-secondary w-100">Cancel</a>
 			<?php } elseif(isset($group)) { ?>
-			<a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="btn btn-default btn-block">Cancel</a>
+			<a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="btn btn-secondary w-100">Cancel</a>
 			<?php } ?>
 		</div>
 	</div>

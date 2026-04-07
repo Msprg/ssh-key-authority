@@ -23,6 +23,7 @@ set_error_handler('exception_error_handler');
 spl_autoload_register('autoload_model');
 
 require('pagesection.php');
+require('services/runtime_state.php');
 
 $config_file = 'config/config.ini';
 if(file_exists($config_file)) {
@@ -30,6 +31,10 @@ if(file_exists($config_file)) {
 } else {
 	throw new Exception("Config file $config_file does not exist.");
 }
+RuntimeState::set_many(array(
+	'base_path' => $base_path,
+	'config' => $config,
+));
 
 // Session optimizations
 ini_set('session.cookie_httponly', 1);
@@ -55,9 +60,20 @@ $ldap_options = array();
 $ldap_options[LDAP_OPT_PROTOCOL_VERSION] = 3;
 $ldap_options[LDAP_OPT_REFERRALS] = !empty($config['ldap']['follow_referrals']);
 $ldap = new LDAP($config['ldap']['host'], $config['ldap']['starttls'], $config['ldap']['bind_dn'], $config['ldap']['bind_password'], $ldap_options);
-setup_database();
+RuntimeState::set('ldap', $ldap);
+$runtime_services = setup_database($config);
+$database = $runtime_services['database'];
+$driver = $runtime_services['driver'];
+$pubkey_dir = $runtime_services['pubkey_dir'];
+$user_dir = $runtime_services['user_dir'];
+$group_dir = $runtime_services['group_dir'];
+$server_dir = $runtime_services['server_dir'];
+$server_account_dir = $runtime_services['server_account_dir'];
+$event_dir = $runtime_services['event_dir'];
+$sync_request_dir = $runtime_services['sync_request_dir'];
 
 $relative_frontend_base_url = (string)parse_url($config['web']['baseurl'], PHP_URL_PATH);
+RuntimeState::set('relative_frontend_base_url', $relative_frontend_base_url);
 
 // Convert all non-fatal errors into exceptions
 function exception_error_handler($errno, $errstr, $errfile, $errline) {
@@ -66,24 +82,38 @@ function exception_error_handler($errno, $errstr, $errfile, $errline) {
 
 // Autoload needed model files
 function autoload_model($classname) {
-	global $base_path;
+	$original_classname = $classname;
 	$classname = preg_replace('/[^a-z]/', '', strtolower($classname)); # Prevent directory traversal and sanitize name
+	$base_path = RuntimeState::get('base_path', dirname(__FILE__));
 	$filename = path_join($base_path, 'model', $classname.'.php');
 	if(file_exists($filename)) {
 		include($filename);
 	} else {
-		eval("class $classname {}");
-		throw new InvalidArgumentException("Attempted to load a class $classname that did not exist.");
+		throw new InvalidArgumentException("Attempted to load class {$original_classname} but model file {$filename} does not exist.");
 	}
 }
 // Autoload composer libraries
 require __DIR__ . '/vendor/autoload.php';
 
 // Setup database connection and models with optimizations
-function setup_database() {
-	global $config, $database, $driver, $pubkey_dir, $user_dir, $group_dir, $server_dir, $server_account_dir, $event_dir, $sync_request_dir;
+function setup_database($config = null) {
+	if(is_null($config)) {
+		$config = RuntimeState::get('config', null);
+		if(is_null($config) && isset($GLOBALS['config']) && is_array($GLOBALS['config'])) {
+			$config = $GLOBALS['config'];
+		}
+	}
+	if(is_null($config) || !is_array($config)) {
+		throw new InvalidArgumentException('Database setup requires configuration.');
+	}
 	try {
-		$database = new mysqli($config['database']['hostname'], $config['database']['username'], $config['database']['password'], $config['database']['database'], $config['database']['port']);
+		$database = new mysqli(
+			$config['database']['hostname'],
+			$config['database']['username'],
+			$config['database']['password'],
+			$config['database']['database'],
+			$config['database']['port']
+		);
 	} catch(ErrorException $e) {
 		throw new DBConnectionFailedException($e->getMessage());
 	}
@@ -96,6 +126,9 @@ function setup_database() {
 	
 	$driver = new mysqli_driver();
 	$driver->report_mode = MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT;
+	// Keep legacy model constructors (DBDirectory) working during bootstrap.
+	$GLOBALS['database'] = $database;
+	$GLOBALS['driver'] = $driver;
 	$migration_dir = new MigrationDirectory;
 	$pubkey_dir = new PublicKeyDirectory;
 	$user_dir = new UserDirectory;
@@ -104,6 +137,22 @@ function setup_database() {
 	$server_account_dir = new ServerAccountDirectory;
 	$event_dir = new EventDirectory;
 	$sync_request_dir = new SyncRequestDirectory;
+	$services = array(
+		'database' => $database,
+		'driver' => $driver,
+		'pubkey_dir' => $pubkey_dir,
+		'user_dir' => $user_dir,
+		'group_dir' => $group_dir,
+		'server_dir' => $server_dir,
+		'server_account_dir' => $server_account_dir,
+		'event_dir' => $event_dir,
+		'sync_request_dir' => $sync_request_dir,
+	);
+	RuntimeState::set_many($services);
+	foreach($services as $service_name => $service_value) {
+		$GLOBALS[$service_name] = $service_value;
+	}
+	return $services;
 }
 
 /**
@@ -139,7 +188,7 @@ function out($string, $escaping = ESC_HTML) {
 	if (is_null($string)) return '';
 	switch($escaping) {
 	case ESC_HTML:
-		echo htmlspecialchars($string);
+		echo htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 		break;
 	case ESC_URL:
 		echo urlencode($string);
@@ -161,8 +210,7 @@ function out($string, $escaping = ESC_HTML) {
 * @return string root-relative URL
 */
 function rrurl($url) {
-	global $relative_frontend_base_url;
-	return $relative_frontend_base_url.$url;
+	return RuntimeState::get('relative_frontend_base_url', '').$url;
 }
 
 /**
@@ -180,7 +228,7 @@ function outurl($url) {
  */
 function hesc($string) {
 	if (is_null($string)) return '';
-	return htmlspecialchars($string);
+	return htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
 function english_list($array) {
@@ -194,12 +242,19 @@ function english_list($array) {
  * @param string $type HTTP response code/name to use
  */
 function redirect($url = null, $type = '303 See other') {
-	global $absolute_request_url, $relative_frontend_base_url;
+	$absolute_request_url = RuntimeState::get('absolute_request_url', null);
+	$relative_frontend_base_url = RuntimeState::get('relative_frontend_base_url', '');
 	if(is_null($url)) {
 		// Redirect is to current URL
 		$url = $absolute_request_url;
+		if(is_null($url) || $url === '') {
+			$url = '/';
+		}
 	} elseif(substr($url, 0, 1) !== '#') {
 		$url = $relative_frontend_base_url.$url;
+	}
+	if(strpos($url, "\r") !== false || strpos($url, "\n") !== false) {
+		throw new InvalidArgumentException('Redirect URL contains invalid newline characters.');
 	}
 	header("HTTP/1.1 $type");
 	header("Location: $url");
@@ -216,7 +271,7 @@ function redirect($url = null, $type = '303 See other') {
  * @return array result of combining defaults and querystring data
  */
 function simplify_search($defaults, $values) {
-	global $relative_request_url;
+	$relative_request_url = RuntimeState::get('relative_request_url', '');
 	$simplify = false;
 	$simplified = array();
 	foreach($defaults as $key => $default) {

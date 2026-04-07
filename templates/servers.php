@@ -17,35 +17,35 @@
 ##
 ?>
 <h1>Servers</h1>
-<ul class="nav nav-tabs">
-	<li><a href="#list" data-toggle="tab">Server list</a></li>
-	<li><a href="#add" data-toggle="tab">Add server</a></li>
-	<li><a href="#add_bulk" data-toggle="tab">Add multiple servers</a></li>
+<ul class="nav nav-tabs" role="tablist">
+	<li class="nav-item" role="presentation"><a href="#list" id="servers_list_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="list" aria-selected="true">Server list</a></li>
+	<li class="nav-item" role="presentation"><a href="#add" id="servers_add_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="add" aria-selected="false" tabindex="-1">Add server</a></li>
+	<li class="nav-item" role="presentation"><a href="#add_bulk" id="servers_add_bulk_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="add_bulk" aria-selected="false" tabindex="-1">Add multiple servers</a></li>
 </ul>
 
 <!-- Tab panes -->
 <div class="tab-content">
-	<div class="tab-pane fade" id="list">
-		<h2 class="sr-only">Server list</h2>
-		<div class="panel-group">
-			<p><a href="<?php outurl('/servers.json') ?>" class="btn btn-default btn-xs">
-				<span class="glyphicon glyphicon-console"></span> JSON
+	<div class="tab-pane fade active show" id="list" role="tabpanel" aria-labelledby="servers_list_tab" aria-hidden="false">
+		<h2 class="visually-hidden">Server list</h2>
+		<div class="ska-card-stack">
+			<p><a href="<?php outurl('/servers.json') ?>" class="btn btn-secondary btn-sm">
+				<span class="ska-icon ska-icon-console"></span> JSON
 			</a></p>
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h3 class="panel-title">
+			<div class="card">
+				<div class="card-header">
+					<h3 class="h5 mb-0">
 						Filter options
 					</h3>
 				</div>
-					<div class="panel-body">
+					<div class="card-body">
 					<form>
 						<div class="row">
 							<div class="col-sm-4">
-								<div class="form-group">
+								<div class="mb-3">
 									<label for="hostname-search">Hostname (<a href="https://mariadb.com/kb/en/mariadb/regular-expressions-overview/">regexp</a>)</label>
 									<input type="text" id="hostname-search" name="hostname" class="form-control" value="<?php out($this->get('filter')['hostname'])?>" autofocus>
 								</div>
-								<div class="form-group">
+								<div class="mb-3">
 									<label for="ipaddress-search">IP address</label>
 									<input type="text" id="ipaddress-search" name="ip_address" class="form-control" value="<?php out($this->get('filter')['ip_address'])?>">
 								</div>
@@ -61,7 +61,7 @@
 								foreach($options as $value => $label) {
 									$checked = in_array($value, $this->get('filter')['key_management']) ? ' checked' : '';
 								?>
-								<div class="checkbox"><label><input type="checkbox" name="key_management[]" value="<?php out($value)?>"<?php out($checked) ?>> <?php out($label) ?></label></div>
+								<div class="form-check"><label class="form-check-label"><input type="checkbox" class="form-check-input" name="key_management[]" value="<?php out($value)?>"<?php out($checked) ?>> <span><?php out($label) ?></span></label></div>
 								<?php } ?>
 							</div>
 							<div class="col-sm-2">
@@ -75,7 +75,7 @@
 								foreach($options as $value => $label) {
 									$checked = in_array($value, $this->get('filter')['sync_status']) ? ' checked' : '';
 								?>
-								<div class="checkbox"><label><input type="checkbox" name="sync_status[]" value="<?php out($value)?>"<?php out($checked) ?>> <?php out($label) ?></label></div>
+								<div class="form-check"><label class="form-check-label"><input type="checkbox" class="form-check-input" name="sync_status[]" value="<?php out($value)?>"<?php out($checked) ?>> <span><?php out($label) ?></span></label></div>
 								<?php } ?>
 							</div>
 						</div>
@@ -90,7 +90,7 @@
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 			<p><?php $total = count($this->get('servers')); out(number_format($total).' server'.($total == 1 ? '' : 's').' found')?></p>
 			<div class="ska-scroll-container">
-				<table class="table table-hover table-condensed">
+				<table class="table table-hover table-sm">
 					<thead>
 						<tr>
 							<?php if($this->get('admin')) { ?>
@@ -132,9 +132,9 @@
 							<td>
 								<a href="<?php outurl('/servers/'.urlencode($server->hostname)) ?>" class="server"><?php out($server->hostname) ?></a>
 								<?php if($this->get('admin') && $server->pending_requests > 0) { ?>
-								<a href="<?php outurl('/servers/'.urlencode($server->hostname)) ?>"><span class="badge" title="Pending requests"><?php out(number_format($server->pending_requests)) ?></span></a>
+								<a href="<?php outurl('/servers/'.urlencode($server->hostname)) ?>"><span class="ska-badge ska-badge-muted" title="Pending requests"><?php out(number_format($server->pending_requests)) ?></span></a>
 								<?php } elseif(!$this->get('admin') && $this->get('active_user')->has_pending_requests_for_server($server)) { ?>
-								<a href="<?php outurl('/servers/'.urlencode($server->hostname)) ?>"><span class="badge" title="Request for access pending">Request for access pending</span></a>
+								<a href="<?php outurl('/servers/'.urlencode($server->hostname)) ?>"><span class="ska-badge ska-badge-muted" title="Request for access pending">Request for access pending</span></a>
 								<?php } ?>
 							</td>
 							<td class="nowrap">
@@ -165,7 +165,7 @@
 									$type = substr($admin, 0, 1);
 									$name = substr($admin, 2);
 									if($type == 'G') {
-										$admin_list .= '<span class="glyphicon glyphicon-list-alt"></span> ';
+										$admin_list .= '<span class="ska-icon ska-icon-group"></span> ';
 									}
 									$admin_list .= hesc($name).', ';
 								}
@@ -186,28 +186,28 @@
 		</form>
 		<?php } ?>
 	</div>
-	<div class="tab-pane fade" id="add">
-		<h2 class="sr-only">Add server</h2>
+	<div class="tab-pane fade" id="add" role="tabpanel" aria-labelledby="servers_add_tab" aria-hidden="true">
+		<h2 class="visually-hidden">Add server</h2>
 		<div class="alert alert-info">
 			See <a href="<?php outurl('/help#sync_setup')?>" class="alert-link">the sync setup instructions</a> for how to set up the server for key synchronization.
 		</div>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<div class="form-group">
+			<div class="mb-3">
 				<label for="hostname">Server hostname</label>
 				<input type="text" id="hostname" name="hostname" class="form-control" required>
 			</div>
-			<div class="form-group">
+			<div class="mb-3">
 				<label for="port">SSH port number</label>
 				<input type="number" id="port" name="port" class="form-control" value="22" required>
 			</div>
-			<div class="form-group">
+			<div class="mb-3">
 				<label for="jumphosts">Jumphosts (<a href="<?php outurl('/help#jumphost_format')?>">format</a>)</label>
 				<input type="text" id="jumphosts" name="jumphosts" pattern="([^@ >]+@[a-zA-Z0-9\-.\u0080-\uffff]+(:[0-9]+)?(,[^@ >]+@[a-zA-Z0-9\-.\u0080-\uffff]+(:[0-9]+)?)*)?( *-> *[a-zA-Z0-9\-.\u0080-\uffff]+)?" class="form-control">
 			</div>
-			<div class="form-group">
+			<div class="mb-3">
 				<label for="server_admin">Leaders</label>
-				<input type="text" id="server_admins" name="admins" class="form-control hidden" required>
+					<input type="text" id="server_admins" name="admins" class="form-control d-none">
 				<input type="text" id="server_admin" name="admin" class="form-control" placeholder="Type user/group name and press 'Enter' key" list="adminlist" required>
 				<datalist id="adminlist">
 					<?php foreach($this->get('all_users') as $user) { ?>
@@ -221,8 +221,8 @@
 			<button type="submit" name="add_server" value="1" class="btn btn-primary">Add server to key management</button>
 		</form>
 	</div>
-	<div class="tab-pane fade" id="add_bulk">
-		<h2 class="sr-only">Add multiple servers</h2>
+	<div class="tab-pane fade" id="add_bulk" role="tabpanel" aria-labelledby="servers_add_bulk_tab" aria-hidden="true">
+		<h2 class="visually-hidden">Add multiple servers</h2>
 		<div class="alert alert-info">
 			See <a href="<?php outurl('/help#sync_setup')?>" class="alert-link">the sync setup instructions</a> for how to set up the server for key synchronization.
 		</div>
@@ -241,7 +241,7 @@ host2.example.com,2222,,leader1;ld_group4
 host3.example.com,22,,ld_group4;leader2</pre>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<div class="form-group">
+			<div class="mb-3">
 				<label for="import">CSV import data</label>
 				<textarea id="import" name="import" class="form-control" required></textarea>
 			</div>

@@ -24,15 +24,15 @@ $footer=str_replace("%v", "1.5.2", $web_config['footer']);
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?php out($this->get('title'))?></title>
-<link rel="stylesheet" href="<?php outurl('/bootstrap/css/bootstrap.min.css')?>">
+<link rel="stylesheet" href="<?php outurl('/vendor/bootstrap5/bootstrap-5.3.8.min.css?'.filemtime('public_html/vendor/bootstrap5/bootstrap-5.3.8.min.css'))?>">
 <link rel="stylesheet" href="<?php outurl('/style.css?'.filemtime('public_html/style.css'))?>">
 <link rel="icon" href="<?php outurl('/key.png')?>">
 <script src="<?php outurl('/header.js?'.filemtime('public_html/header.js'))?>"></script>
 <?php out($this->get('head'), ESC_NONE) ?>
 <div id="wrap">
-<a href="#content" class="sr-only">Skip to main content</a>
-<div class="navbar navbar-fixed-top">
-	<div class="container h-50px">
+<a href="#content" class="visually-hidden visually-hidden-focusable">Skip to main content</a>
+<div class="ska-shell-nav">
+	<div class="ska-container ska-h-50px">
 		<div class="ska-navbar">
 			<?php if(!empty($web_config['logo'])) { ?>
 			<a href="/" class="ska-logo">
@@ -42,30 +42,30 @@ $footer=str_replace("%v", "1.5.2", $web_config['footer']);
 			<?php } ?>
 			<?php if($this->get('active_user')) { ?>
 			<div class="ska-navbar-items">
-				<ul class="nav navbar-nav">
+				<ul class="ska-nav-list">
 					<?php foreach($this->get('menu_items') as $url => $name) { ?>
-					<li<?php if($url == $this->get('relative_request_url')) out(' class="active"', ESC_NONE); ?>><a href="<?php outurl($url)?>"><?php out($name)?></a></li>
+					<li<?php if($url == $this->get('relative_request_url')) out(' class="ska-nav-item is-active"', ESC_NONE); else out(' class="ska-nav-item"', ESC_NONE) ?>><a class="ska-nav-link" href="<?php outurl($url)?>"><?php out($name)?></a></li>
 					<?php } ?>
 				</ul>
 			</div>
-			<div class="ska-navbar-side">
-				<button class="ska-side-button dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<div class="ska-navbar-side dropdown">
+				<button class="ska-side-button dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					<svg class="ska-dropdown-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5h16M4 12h16M4 19h16"/></svg>
 					<span class="ska-dropdown-name">
 						<?php out($this->get('active_user')->name)?> 
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M18.53 9.53a.75.75 0 0 0 0-1.06H5.47a.75.75 0 0 0 0 1.06l6 6a.75.75 0 0 0 1.06 0z"/></svg>
 					</span>
 				</button>
-				<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-						<div class="ska-dropdown"><span class="ska-dropdown-name-dp hidden-xl">
+				<div class="ska-dropdown-menu dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+						<div class="ska-dropdown"><span class="ska-dropdown-name-dp ska-d-xl-none">
 							<?php out($this->get('active_user')->name)?> 
 						</span>
-						<div class="ska-divider hidden-xl"></div>
+						<div class="ska-divider ska-d-xl-none"></div>
 						<?php foreach($this->get('menu_items') as $url => $name) { ?>
-						<a <?php if($url == $this->get('relative_request_url')) out(' class="dropdown-item ska-dp-item hidden-xl active"', ESC_NONE); else out(' class="dropdown-item ska-dp-item hidden-xl"', ESC_NONE) ?> href="<?php outurl($url)?>"><?php out($name)?></a></li>
+						<a <?php if($url == $this->get('relative_request_url')) out(' class="ska-dp-item ska-d-xl-none is-active"', ESC_NONE); else out(' class="ska-dp-item ska-d-xl-none"', ESC_NONE) ?> href="<?php outurl($url)?>"><?php out($name)?></a>
 						<?php } ?>
-						<div class="ska-divider hidden-xl"></div>
-						<a class="dropdown-item ska-dp-item" href="<?php outurl('/logout')?>">Logout</a>
+						<div class="ska-divider ska-d-xl-none"></div>
+						<a class="ska-dp-item" href="<?php outurl('/logout')?>">Logout</a>
 					</div>
 				</div>
 			</div>
@@ -73,10 +73,10 @@ $footer=str_replace("%v", "1.5.2", $web_config['footer']);
 		</div>
 	</div>
 </div>
-<div class="container" id="content">
+<div class="ska-container" id="content">
 <?php foreach($this->get('alerts') as $alert) { ?>
-<div class="alert alert-<?php out($alert->class)?> alert-dismissable">
-	<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+<div class="alert alert-<?php out($alert->class)?> alert-dismissible fade show" role="alert">
+	<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 	<?php out($alert->content, $alert->escaping)?>
 </div>
 <?php } ?>
@@ -84,12 +84,11 @@ $footer=str_replace("%v", "1.5.2", $web_config['footer']);
 </div>
 </div>
 <div id="footer">
-	<div class="container">
-		<p class="text-muted credit"><?php out($footer, ESC_NONE)?></p>
+	<div class="ska-container">
+		<p class="text-body-secondary credit"><?php out($footer, ESC_NONE)?></p>
 		<?php if($this->get('active_user') && $this->get('active_user')->developer) { ?>
 		<?php } ?>
 	</div>
 </div>
-<script src="<?php outurl('/jquery/jquery-3.7.1.min.js')?>"></script>
-<script src="<?php outurl('/bootstrap/js/bootstrap.min.js')?>"></script>
+<script src="<?php outurl('/vendor/bootstrap5/bootstrap-5.3.8.bundle.min.js?'.filemtime('public_html/vendor/bootstrap5/bootstrap-5.3.8.bundle.min.js'))?>"></script>
 <script src="<?php outurl('/extra.js?'.filemtime('public_html/extra.js'))?>"></script>

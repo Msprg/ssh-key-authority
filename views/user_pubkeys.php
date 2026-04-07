@@ -25,6 +25,7 @@ try {
 $is_target_active_user = $active_user && $active_user->entity_id == $user->entity_id;
 $can_admin_add_for_user = $active_user && $active_user->admin && !$is_target_active_user;
 $can_submit_key = $is_target_active_user || $can_admin_add_for_user;
+$key_lifecycle_service = new KeyLifecycleService();
 
 if(isset($_POST['add_public_key'])) {
 	if(!$can_submit_key) {
@@ -32,12 +33,9 @@ if(isset($_POST['add_public_key'])) {
 		die;
 	}
 	try {
-		$public_key = new PublicKey;
-		$public_key->import($_POST['add_public_key'], $user->uid);
-		$user->add_public_key($public_key);
+		$key_lifecycle_service->add_user_public_key($user, $_POST['add_public_key']);
 		redirect();
 	} catch(InvalidArgumentException $e) {
-		global $config;
 		$content = new PageSection('key_upload_fail');
 		$error_message = $e->getMessage();
 		if(preg_match('/^Insufficient bits in public key: (\d+) < (\d+)$/', $error_message, $matches)) {
@@ -48,7 +46,6 @@ if(isset($_POST['add_public_key'])) {
 			$content->set('message', "The public key you submitted doesn't look valid.");
 		}
 	} catch(BadMethodCallException $e) {
-		global $config;
 		$content = new PageSection('key_upload_fail');
 		$content->set('message', "Unable to add public key: " . $e->getMessage());
 	}

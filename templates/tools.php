@@ -16,6 +16,10 @@
 ##
 ?>
 <h1>Tools</h1>
-<ul>
-<li><a href="<?php outurl('/bulk_mail')?>">Bulk mailer</a></li>
-</ul>
+<div class="card">
+	<div class="card-body">
+		<ul class="ska-link-list">
+			<li><a href="<?php outurl('/bulk_mail')?>">Bulk mailer</a></li>
+		</ul>
+	</div>
+</div>

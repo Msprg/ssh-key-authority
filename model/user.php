@@ -37,10 +37,43 @@ class User extends Entity {
 	 */
 	private $ldap_group_guids;
 
+	/**
+	 * Require an initialized LDAP service for LDAP-backed user operations.
+	 *
+	 * @param string $context
+	 * @return LDAP
+	 */
+	private function require_ldap_service($context) {
+		if($this->ldap === null) {
+			throw new RuntimeException('LDAP service is unavailable; cannot '.$context.'.');
+		}
+		return $this->ldap;
+	}
+
+	/**
+	 * Require a populated config section with the listed keys.
+	 *
+	 * @param mixed $config
+	 * @param string $section
+	 * @param array $required_keys
+	 * @param string $context
+	 * @return array
+	 */
+	private static function require_config_section($config, $section, $required_keys, $context) {
+		if(!is_array($config) || !isset($config[$section]) || !is_array($config[$section])) {
+			throw new RuntimeException('Configuration section "'.$section.'" is unavailable; cannot '.$context.'.');
+		}
+		foreach($required_keys as $required_key) {
+			if(!array_key_exists($required_key, $config[$section])) {
+				throw new RuntimeException('Configuration value "'.$section.'.'.$required_key.'" is unavailable; cannot '.$context.'.');
+			}
+		}
+		return $config[$section];
+	}
+
 	public function __construct($id = null, $preload_data = array()) {
 		parent::__construct($id, $preload_data);
-		global $ldap;
-		$this->ldap = $ldap;
+		$this->ldap = self::resolve_runtime('ldap');
 	}
 
 	/**
@@ -77,7 +110,6 @@ class User extends Entity {
 	* @return mixed data stored in field
 	*/
 	public function &__get($field) {
-		global $user_dir;
 		switch($field) {
 		case 'superior':
 			if(is_null($this->superior_entity_id)) $superior = null;
@@ -94,8 +126,12 @@ class User extends Entity {
 	* @return array of *Event objects
 	*/
 	public function list_events($include = array()) {
-		global $event_dir;
+		$event_dir = self::resolve_runtime('event_dir');
 		if(is_null($this->entity_id)) throw new BadMethodCallException('User must be in directory before events can be listed');
+		if($event_dir === null) {
+			error_log('Event directory service is unavailable; returning no events for user '.($this->uid ?? '(unknown)').'.');
+			return array();
+		}
 		return $event_dir->list_events($include, array('admin' => $this->entity_id));
 	}
 
@@ -105,8 +141,12 @@ class User extends Entity {
 	* @return array of Server objects
 	*/
 	public function list_admined_servers($include = array()) {
-		global $server_dir;
+		$server_dir = self::resolve_runtime('server_dir');
 		if(is_null($this->entity_id)) throw new BadMethodCallException('User must be in directory before admined servers can be listed');
+		if($server_dir === null) {
+			error_log('Server directory service is unavailable; returning no admined servers for user '.($this->uid ?? '(unknown)').'.');
+			return array();
+		}
 		return $server_dir->list_servers($include, array('admin' => $this->entity_id, 'key_management' => array('none', 'keys', 'other')));
 	}
 
@@ -116,8 +156,12 @@ class User extends Entity {
 	* @return array of Group objects
 	*/
 	public function list_admined_groups($include = array()) {
-		global $group_dir;
+		$group_dir = self::resolve_runtime('group_dir');
 		if(is_null($this->entity_id)) throw new BadMethodCallException('User must be in directory before admined group can be listed');
+		if($group_dir === null) {
+			error_log('Group directory service is unavailable; returning no admined groups for user '.($this->uid ?? '(unknown)').'.');
+			return array();
+		}
 		$groups = $group_dir->list_groups($include, array('admin' => $this->entity_id));
 		return $groups;
 	}
@@ -128,8 +172,12 @@ class User extends Entity {
 	* @return array of Group objects
 	*/
 	public function list_group_memberships($include = array()) {
-		global $group_dir;
+		$group_dir = self::resolve_runtime('group_dir');
 		if(is_null($this->entity_id)) throw new BadMethodCallException('User must be in directory before group memberships can be listed');
+		if($group_dir === null) {
+			error_log('Group directory service is unavailable; returning no group memberships for user '.($this->uid ?? '(unknown)').'.');
+			return array();
+		}
 		$groups = $group_dir->list_groups($include, array('member' => $this->entity_id));
 		return $groups;
 	}
@@ -193,19 +241,22 @@ class User extends Entity {
 	* @param PublicKey $key to be added
 	*/
 	public function add_public_key(PublicKey $key) {
-		global $active_user, $config;
+		$active_user = self::resolve_runtime('active_user');
+		$config = self::resolve_runtime('config');
+		$web_config = self::require_config_section($config, 'web', array('baseurl'), 'send public-key notifications');
+		$email_config = self::require_config_section($config, 'email', array('admin_address', 'admin_name', 'report_address', 'report_name'), 'send public-key notifications');
 		parent::add_public_key($key);
-		$url = $config['web']['baseurl'].'/pubkeys/'.urlencode($key->id);
+		$url = $web_config['baseurl'].'/pubkeys/'.urlencode($key->id);
 		$email = new Email;
-		$email->add_reply_to($config['email']['admin_address'], $config['email']['admin_name']);
+		$email->add_reply_to($email_config['admin_address'], $email_config['admin_name']);
 		$email->add_recipient($this->email, $this->name);
-		$email->add_cc($config['email']['report_address'], $config['email']['report_name']);
+		$email->add_cc($email_config['report_address'], $email_config['report_name']);
 		if($active_user && $active_user->entity_id != $this->entity_id) {
 			$email->subject = "A new SSH public key has been added to your account ({$this->uid}) by {$active_user->uid}";
-			$email->body = "{$active_user->name} ({$active_user->uid}) has added a new SSH public key to your account on SSH Key Authority.\n\nIf you did not request this change, please contact {$config['email']['admin_address']} immediately.\n\n".$key->summarize_key_information();
+			$email->body = "{$active_user->name} ({$active_user->uid}) has added a new SSH public key to your account on SSH Key Authority.\n\nIf you did not request this change, please contact {$email_config['admin_address']} immediately.\n\n".$key->summarize_key_information();
 		} else {
 			$email->subject = "A new SSH public key has been added to your account ({$this->uid})";
-			$email->body = "A new SSH public key has been added to your account on SSH Key Authority.\n\nIf you added this key then all is well. If you do not recall adding this key, please contact {$config['email']['admin_address']} immediately.\n\n".$key->summarize_key_information();
+			$email->body = "A new SSH public key has been added to your account on SSH Key Authority.\n\nIf you added this key then all is well. If you do not recall adding this key, please contact {$email_config['admin_address']} immediately.\n\n".$key->summarize_key_information();
 		}
 		$email->send();
 		$this->log(array('action' => 'Pubkey add', 'value' => $key->fingerprint_md5), LOG_WARNING);
@@ -216,7 +267,6 @@ class User extends Entity {
 	* @param PublicKey $key to be removed
 	*/
 	public function delete_public_key(PublicKey $key) {
-		global $active_user;
 		parent::delete_public_key($key);
 		$this->log(array('action' => 'Pubkey remove', 'value' => $key->fingerprint_md5));
 	}
@@ -306,38 +356,50 @@ class User extends Entity {
 	* @throws UserNotFoundException if the user is not found in LDAP
 	*/
 	public function get_details_from_ldap() {
-		global $config;
+		$config = self::resolve_runtime('config');
+		$ldap = $this->require_ldap_service('retrieve LDAP user details');
+		$ldap_config = self::require_config_section($config, 'ldap', array(
+			'dn_user',
+			'user_id',
+			'user_name',
+			'user_email',
+			'group_member_value',
+			'dn_group',
+			'group_member',
+			'group_num',
+			'admin_group_cn',
+		), 'retrieve LDAP user details');
 		$attributes = array();
 		$attributes[] = 'dn';
-		$attributes[] = $config['ldap']['user_id'];
-		$attributes[] = $config['ldap']['user_name'];
-		$attributes[] = $config['ldap']['user_email'];
-		$attributes[] = $config['ldap']['group_member_value'];
-		if(isset($config['ldap']['user_active'])) {
-			$attributes[] = $config['ldap']['user_active'];
+		$attributes[] = $ldap_config['user_id'];
+		$attributes[] = $ldap_config['user_name'];
+		$attributes[] = $ldap_config['user_email'];
+		$attributes[] = $ldap_config['group_member_value'];
+		if(isset($ldap_config['user_active'])) {
+			$attributes[] = $ldap_config['user_active'];
 		}
-		$ldapusers = $this->ldap->search($config['ldap']['dn_user'], LDAP::escape($config['ldap']['user_id']).'='.LDAP::escape($this->uid), array_keys(array_flip($attributes)));
+		$ldapusers = $ldap->search($ldap_config['dn_user'], LDAP::escape($ldap_config['user_id']).'='.LDAP::escape($this->uid), array_keys(array_flip($attributes)));
 		if($ldapuser = reset($ldapusers)) {
 			// Preserve the force_disable flag before updating from LDAP
 			$force_disable = $this->force_disable;
 			
 			$this->auth_realm = 'LDAP';
-			$this->uid = $ldapuser[strtolower($config['ldap']['user_id'])];
-			$this->name = $ldapuser[strtolower($config['ldap']['user_name'])];
-			$this->email = $ldapuser[strtolower($config['ldap']['user_email'])];
-			if(isset($config['ldap']['user_active'])) {
+			$this->uid = $ldapuser[strtolower($ldap_config['user_id'])];
+			$this->name = $ldapuser[strtolower($ldap_config['user_name'])];
+			$this->email = $ldapuser[strtolower($ldap_config['user_email'])];
+			if(isset($ldap_config['user_active'])) {
 				$this->active = 0;
-				if(isset($config['ldap']['user_active_true'])) {
-					$this->active = intval($ldapuser[strtolower($config['ldap']['user_active'])] == $config['ldap']['user_active_true']);
-				} elseif(isset($config['ldap']['user_active_false'])) {
-					$this->active = intval($ldapuser[strtolower($config['ldap']['user_active'])] != $config['ldap']['user_active_false']);
-				} elseif (isset($config['ldap']['user_active_bitmask'])) {
+				if(isset($ldap_config['user_active_true'])) {
+					$this->active = intval($ldapuser[strtolower($ldap_config['user_active'])] == $ldap_config['user_active_true']);
+				} elseif(isset($ldap_config['user_active_false'])) {
+					$this->active = intval($ldapuser[strtolower($ldap_config['user_active'])] != $ldap_config['user_active_false']);
+				} elseif (isset($ldap_config['user_active_bitmask'])) {
 					// Microsoft Active Directory uses bitflags to store if a user is active
 					// https://docs.microsoft.com/troubleshoot/windows-server/identity/useraccountcontrol-manipulate-account-properties
-					if (preg_match('/^(!?)([0-9]+)$/', $config['ldap']['user_active_bitmask'], $groups)) {
+					if (preg_match('/^(!?)([0-9]+)$/', $ldap_config['user_active_bitmask'], $groups)) {
 						$negated = $groups[1] == "!";
 						$mask = (int)$groups[2];
-						$bit_set = ((int)$ldapuser[strtolower($config['ldap']['user_active'])] & $mask) != 0;
+						$bit_set = ((int)$ldapuser[strtolower($ldap_config['user_active'])] & $mask) != 0;
 						$this->active = (int)($bit_set ^ $negated);
 					}
 				}
@@ -345,16 +407,16 @@ class User extends Entity {
 				$this->active = 1;
 			}
 			$this->admin = 0;
-			$group_member = $ldapuser[strtolower($config['ldap']['group_member_value'])];
+			$group_member = $ldapuser[strtolower($ldap_config['group_member_value'])];
 			$indirect_option = "";
-			if ($config['ldap']['indirect_group_memberships']) {
+			if (!empty($ldap_config['indirect_group_memberships'])) {
 				$indirect_option = ":1.2.840.113556.1.4.1941:";
 			}
-			$ldapgroups = $this->ldap->search($config['ldap']['dn_group'], LDAP::escape($config['ldap']['group_member'])."$indirect_option=".LDAP::escape($group_member), array('cn', strtolower($config['ldap']['group_num'])));
+			$ldapgroups = $ldap->search($ldap_config['dn_group'], LDAP::escape($ldap_config['group_member'])."$indirect_option=".LDAP::escape($group_member), array('cn', strtolower($ldap_config['group_num'])));
 			$ldap_group_guids = [];
 			foreach($ldapgroups as $ldapgroup) {
-				$ldap_group_guids[] = $ldapgroup[strtolower($config['ldap']['group_num'])];
-				if($ldapgroup['cn'] == $config['ldap']['admin_group_cn']) $this->admin = 1;
+				$ldap_group_guids[] = $ldapgroup[strtolower($ldap_config['group_num'])];
+				if($ldapgroup['cn'] == $ldap_config['admin_group_cn']) $this->admin = 1;
 			}
 			$this->ldap_group_guids = $ldap_group_guids;
 			
@@ -371,7 +433,6 @@ class User extends Entity {
 	 * @return string[] guids of the groups this user is member of
 	 */
 	public function get_ldap_group_guids() {
-		global $config;
 		if ($this->ldap_group_guids === null) {
 			$this->get_details_from_ldap();
 		}
@@ -382,7 +443,11 @@ class User extends Entity {
 	 * Adds the user to ldap groups or removes him from ldap groups, based on the current status on the directory server.
 	 */
 	public function update_group_memberships() {
-		global $group_dir;
+		$group_dir = self::resolve_runtime('group_dir');
+		if($group_dir === null) {
+			error_log('Group directory service is unavailable; skipping LDAP group membership sync for user '.($this->uid ?? '(unknown)').'.');
+			return;
+		}
 		foreach ($group_dir->get_sys_groups() as $sys_group) {
 			$should_be_member = $this->active && in_array($sys_group->ldap_guid, $this->get_ldap_group_guids());
 			if ($should_be_member && !$this->member_of($sys_group)) {
@@ -402,16 +467,22 @@ class User extends Entity {
 	* @throws UserNotFoundException if the user is not found in LDAP
 	*/
 	public function get_superior_from_ldap() {
-		global $user_dir, $config;
+		$user_dir = self::resolve_runtime('user_dir');
+		$config = self::resolve_runtime('config');
+		$ldap = $this->require_ldap_service('retrieve LDAP superior details');
 		if(is_null($this->entity_id)) throw new BadMethodCallException('User must be in directory before superior employee can be looked up');
-		if(!isset($config['ldap']['user_superior'])) {
+		if($user_dir === null) {
+			throw new RuntimeException('User directory service is unavailable; cannot retrieve superior from LDAP.');
+		}
+		$ldap_config = self::require_config_section($config, 'ldap', array('dn_user', 'user_id'), 'retrieve LDAP superior details');
+		if(!isset($ldap_config['user_superior'])) {
 			throw new BadMethodCallException("Cannot retrieve user's superior if user_superior is not configured");
 		}
-		$ldapusers = $this->ldap->search($config['ldap']['dn_user'], LDAP::escape($config['ldap']['user_id']).'='.LDAP::escape($this->uid), array($config['ldap']['user_superior']));
+		$ldapusers = $ldap->search($ldap_config['dn_user'], LDAP::escape($ldap_config['user_id']).'='.LDAP::escape($this->uid), array($ldap_config['user_superior']));
 		if($ldapuser = reset($ldapusers)) {
 			$superior = null;
-			if(isset($ldapuser[strtolower($config['ldap']['user_superior'])]) && $ldapuser[strtolower($config['ldap']['user_superior'])] != $this->uid) {
-				$superior_uid = $ldapuser[strtolower($config['ldap']['user_superior'])];
+			if(isset($ldapuser[strtolower($ldap_config['user_superior'])]) && $ldapuser[strtolower($ldap_config['user_superior'])] != $this->uid) {
+				$superior_uid = $ldapuser[strtolower($ldap_config['user_superior'])];
 				try {
 					$superior = $user_dir->get_user_by_uid($superior_uid);
 				} catch(UserNotFoundException $e) {
@@ -436,7 +507,11 @@ class User extends Entity {
 	 * @return User An instance of the keys-sync user
 	 */
 	public static function get_keys_sync_user() {
-		global $user_dir;
+		$user_dir = self::resolve_runtime('user_dir');
+		if($user_dir === null) {
+			error_log('User directory service is unavailable; cannot resolve keys-sync user.');
+			throw new RuntimeException('User directory service is unavailable; cannot resolve keys-sync user.');
+		}
 		try {
 			$keys_sync = $user_dir->get_user_by_uid('keys-sync');
 		} catch(UserNotFoundException $e) {

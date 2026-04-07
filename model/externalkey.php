@@ -43,7 +43,17 @@ class ExternalKey extends Record {
 	 * @return array An array of ExternalKey objects
 	 */
 	public static function list_external_keys($with_hostnames = false) {
-		global $database;
+		if(class_exists('RuntimeState', false)) {
+			$database = RuntimeState::get('database', null);
+		} else {
+			$database = null;
+		}
+		if(is_null($database) && array_key_exists('database', $GLOBALS)) {
+			$database = $GLOBALS['database'];
+		}
+		if(is_null($database)) {
+			throw new BadMethodCallException('Database connection is not available.');
+		}
 
 		// load the keys
 		$result = $database->query("SELECT * FROM external_key");
@@ -87,7 +97,17 @@ class ExternalKey extends Record {
 	 * @return ExternalKey|null The loaded key, or null if there was no key with this id
 	 */
 	public static function get_by_id(int $id) {
-		global $database;
+		if(class_exists('RuntimeState', false)) {
+			$database = RuntimeState::get('database', null);
+		} else {
+			$database = null;
+		}
+		if(is_null($database) && array_key_exists('database', $GLOBALS)) {
+			$database = $GLOBALS['database'];
+		}
+		if(is_null($database)) {
+			throw new BadMethodCallException('Database connection is not available.');
+		}
 		$stmt = $database->prepare("SELECT * FROM external_key WHERE id = ?");
 		$stmt->bind_param("i", $id);
 		$stmt->execute();

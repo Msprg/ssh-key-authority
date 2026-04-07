@@ -18,14 +18,14 @@
 
 function show_key(ExternalKey $key, array $buttons, string $relative_request_url, string $csrf_field) {
 	?>
-	<div class="panel panel-default">
-		<dl class="panel-body">
+	<div class="card">
+		<dl class="card-body mb-0">
 			<dt>Key data</dt>
 			<dd><pre><?php out($key->type) ?> <?php out($key->keydata) ?></pre></dd>
 			<dt>Occurrences</dt>
 			<dd>
 				<div class="ska-scroll-container">
-					<table class="table">
+					<table class="table table-sm">
 						<thead>
 							<tr>
 								<th>Location</th>
@@ -48,10 +48,10 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 				<form method="post" action="<?php outurl($relative_request_url)?>">
 					<?php out($csrf_field, ESC_NONE) ?>
 					<?php if (in_array('allow', $buttons)) { ?>
-					<button type="submit" name="allow" value="<?php out($key->id) ?>" class="btn btn-default btn-xs">Allow</button>
+					<button type="submit" name="allow" value="<?php out($key->id) ?>" class="btn btn-secondary btn-sm">Allow</button>
 					<?php } ?>
 					<?php if (in_array('deny', $buttons)) { ?>
-					<button type="submit" name="deny" value="<?php out($key->id) ?>" class="btn btn-default btn-xs">Deny</button>
+					<button type="submit" name="deny" value="<?php out($key->id) ?>" class="btn btn-secondary btn-sm">Deny</button>
 					<?php } ?>
 				</form>
 			</dd>
@@ -62,46 +62,46 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 
 ?>
 <h1>Public keys</h1>
-<ul class="nav nav-tabs">
-	<li><a href="#managed" data-toggle="tab">Managed keys</a></li>
-	<li><a href="#new" data-toggle="tab">New keys</a></li>
-	<li><a href="#allowed" data-toggle="tab">Allowed keys</a></li>
-	<li><a href="#denied" data-toggle="tab">Denied keys</a></li>
+<ul class="nav nav-tabs" role="tablist">
+	<li class="nav-item" role="presentation"><a href="#managed" id="pubkeys_managed_tab" class="nav-link active" role="tab" data-bs-toggle="tab" aria-controls="managed" aria-selected="true">Managed keys</a></li>
+	<li class="nav-item" role="presentation"><a href="#new" id="pubkeys_new_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="new" aria-selected="false" tabindex="-1">New keys</a></li>
+	<li class="nav-item" role="presentation"><a href="#allowed" id="pubkeys_allowed_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="allowed" aria-selected="false" tabindex="-1">Allowed keys</a></li>
+	<li class="nav-item" role="presentation"><a href="#denied" id="pubkeys_denied_tab" class="nav-link" role="tab" data-bs-toggle="tab" aria-controls="denied" aria-selected="false" tabindex="-1">Denied keys</a></li>
 </ul>
 <div class="tab-content">
-	<div class="tab-pane fade in active" id="managed">
-		<h2 class="sr-only">Managed keys</h2>
-		<p><a href="<?php outurl('/pubkeys.json') ?>" class="btn btn-default btn-xs">
-			<span class="glyphicon glyphicon-console"></span> JSON
+	<div class="tab-pane fade active show" id="managed" role="tabpanel" aria-labelledby="pubkeys_managed_tab" aria-hidden="false">
+		<h2 class="visually-hidden">Managed keys</h2>
+		<p><a href="<?php outurl('/pubkeys.json') ?>" class="btn btn-secondary btn-sm">
+			<span class="ska-icon ska-icon-console"></span> JSON
 		</a></p>
-		<div class="panel-group">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h3 class="panel-title">Filter options</h3>
+		<div class="mb-4">
+			<div class="card">
+				<div class="card-header">
+					<h3 class="h5 mb-0">Filter options</h3>
 				</div>
 				<div id="search_filter">
-					<div class="panel-body">
+					<div class="card-body">
 						<form>
 							<div class="row">
-								<div class="col-md-6 form-group">
+								<div class="col-md-6 mb-3">
 									<label for="fingerprint-search">Fingerprint</label>
 									<input type="text" id="fingerprint-search" name="fingerprint" class="form-control" value="<?php out($this->get('filter')['fingerprint'])?>">
 								</div>
-								<div class="col-md-2 form-group">
+								<div class="col-md-2 mb-3">
 									<label for="type-search">Key type</label>
 									<input type="text" id="type-search" name="type" class="form-control" value="<?php out($this->get('filter')['type'])?>">
 								</div>
-								<div class="col-md-2 form-group">
+								<div class="col-md-2 mb-3">
 									<label for="keysize-min">Min key size</label>
 									<div class="input-group">
-										<span class="input-group-addon">≥</span>
+										<span class="input-group-text">≥</span>
 										<input type="text" id="keysize-min" name="keysize-min" class="form-control" value="<?php out($this->get('filter')['keysize-min'])?>">
 									</div>
 								</div>
-								<div class="col-md-2 form-group">
+								<div class="col-md-2 mb-3">
 									<label for="keysize-max">Max key size</label>
 									<div class="input-group">
-										<span class="input-group-addon">≤</span>
+										<span class="input-group-text">≤</span>
 										<input type="text" id="keysize-max" name="keysize-max" class="form-control" value="<?php out($this->get('filter')['keysize-max'])?>">
 									</div>
 								</div>
@@ -163,13 +163,13 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 							case 'User':
 							?>
 							<a href="<?php outurl('/users/'.urlencode($pubkey->owner->uid))?>" class="user"><?php out($pubkey->owner->uid)?></a>
-							<?php if(!$pubkey->owner->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?>
+							<?php if(!$pubkey->owner->active) out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?>
 							<?php
 								break;
 							case 'ServerAccount':
 							?>
 							<a href="<?php outurl('/servers/'.urlencode($pubkey->owner->server->hostname))?>/accounts/<?php out($pubkey->owner->name, ESC_URL)?>" class="serveraccount"><?php out($pubkey->owner->name.'@'.$pubkey->owner->server->hostname)?></a>
-							<?php if($pubkey->owner->server->key_management == 'decommissioned') out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?>
+							<?php if($pubkey->owner->server->key_management == 'decommissioned') out(' <span class="ska-badge ska-badge-muted">Inactive</span>', ESC_NONE) ?>
 							<?php
 								break;
 							}
@@ -177,7 +177,7 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 						</td>
 						<td>
 							<?php if ($pubkey->deletion_date !== null) { ?>
-								<i class="glyphicon glyphicon-remove"></i> Deleted
+								<i class="ska-icon ska-icon-remove"></i> Deleted
 							<?php } ?>
 						</td>
 					</tr>
@@ -188,8 +188,8 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 			</table>
 		</div>
 	</div>
-	<div class="tab-pane fade" id="new">
-		<h2 class="sr-only">New keys</h2>
+	<div class="tab-pane fade" id="new" role="tabpanel" aria-labelledby="pubkeys_new_tab" aria-hidden="true">
+		<h2 class="visually-hidden">New keys</h2>
 		<?php
 		if (empty($this->get('new_keys'))) {
 			?><p>There are currently no new, unknown keys.</p><?php
@@ -212,8 +212,8 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 		}
 		?>
 	</div>
-	<div class="tab-pane fade" id="allowed">
-		<h2 class="sr-only">Allowed keys</h2>
+	<div class="tab-pane fade" id="allowed" role="tabpanel" aria-labelledby="pubkeys_allowed_tab" aria-hidden="true">
+		<h2 class="visually-hidden">Allowed keys</h2>
 		<?php
 		if (empty($this->get('allowed_keys'))) {
 			?><p>There are currently no explicitly allowed keys.</p><?php
@@ -224,8 +224,8 @@ function show_key(ExternalKey $key, array $buttons, string $relative_request_url
 		}
 		?>
 	</div>
-	<div class="tab-pane fade" id="denied">
-		<h2 class="sr-only">Denied keys</h2>
+	<div class="tab-pane fade" id="denied" role="tabpanel" aria-labelledby="pubkeys_denied_tab" aria-hidden="true">
+		<h2 class="visually-hidden">Denied keys</h2>
 		<?php
 		if (empty($this->get('denied_keys'))) {
 			?><p>There are currently no explicitly denied keys.</p><?php

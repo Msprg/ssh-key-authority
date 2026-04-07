@@ -26,8 +26,9 @@ class ServerNote extends Record {
 
 	public function __construct($id = null, $preload_data = array()) {
 		parent::__construct($id, $preload_data);
-		global $active_user;
-		if(is_null($id)) $this->entity_id = $active_user->entity_id;
+		if(is_null($id) && $this->active_user) {
+			$this->entity_id = $this->active_user->entity_id;
+		}
 	}
 
 	/**
@@ -37,7 +38,6 @@ class ServerNote extends Record {
 	* @return mixed data stored in field
 	*/
 	public function &__get($field) {
-		global $user_dir;
 		switch($field) {
 		case 'user':
 			$user = new User($this->entity_id);

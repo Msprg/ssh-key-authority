@@ -24,18 +24,18 @@
 <?php keygen_help('below') ?>
 <form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-	<div class="form-group">
-		<label for="public_key">Public key</label>
+	<div class="mb-3">
+		<label for="add_public_key" class="form-label">Public key</label>
 		<textarea class="form-control" rows="4" id="add_public_key" name="add_public_key" required></textarea>
 	</div>
-	<div class="form-group"><button class="btn btn-primary btn-lg btn-block">Add public key</button></div>
+	<div class="mb-3"><button class="btn btn-primary btn-lg w-100">Add public key</button></div>
 </form>
 <?php } else { ?>
 <h2>Your public keys</h2>
 <form method="post" action="<?php out($this->data->relative_request_url)?>">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
 	<div class="ska-scroll-container">
-		<table class="table">
+		<table class="table table-striped table-sm">
 			<thead>
 				<tr>
 					<th>Type</th>
@@ -59,8 +59,8 @@
 						</a>
 					</td>
 					<td>
-						<?php if(count($key->list_signatures()) > 0) { ?><a href="<?php outurl('/users/'.urlencode($this->get('uid')).'/pubkeys/'.urlencode($key->id).'#sig')?>"><span class="glyphicon glyphicon-pencil" title="Signed key"></span></a><?php } ?>
-						<?php if(count($key->list_destination_rules()) > 0) { ?><a href="<?php outurl('/users/'.urlencode($this->get('uid')).'/pubkeys/'.urlencode($key->id).'#dest')?>"><span class="glyphicon glyphicon-pushpin" title="Destination-restricted"></span></a><?php } ?>
+						<?php if(count($key->list_signatures()) > 0) { ?><a href="<?php outurl('/users/'.urlencode($this->get('uid')).'/pubkeys/'.urlencode($key->id).'#sig')?>"><span class="ska-icon ska-icon-pencil" title="Signed key"></span></a><?php } ?>
+						<?php if(count($key->list_destination_rules()) > 0) { ?><a href="<?php outurl('/users/'.urlencode($this->get('uid')).'/pubkeys/'.urlencode($key->id).'#dest')?>"><span class="ska-icon ska-icon-pushpin" title="Destination-restricted"></span></a><?php } ?>
 					</td>
 					<td><?php out($key->format_creation_date()) ?></td>
 					<td><?php out($key->format_deletion_date()) ?></td>
@@ -68,10 +68,10 @@
 					<td><?php out($key->comment) ?></td>
 					<td>
 						<?php if ($key->deletion_date !== null) { ?>
-							<i class="glyphicon glyphicon-remove"></i> Deleted
+							<i class="ska-icon ska-icon-remove"></i> Deleted
 						<?php } else { ?>
-							<a href="<?php outurl('/users/'.urlencode($this->get('uid')).'/pubkeys/'.urlencode($key->id))?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-cog"></span> Manage public key</a>
-							<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Delete public key</button>
+							<a href="<?php outurl('/users/'.urlencode($this->get('uid')).'/pubkeys/'.urlencode($key->id))?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-cog"></span> Manage public key</a>
+							<button type="submit" name="delete_public_key" value="<?php out($key->id) ?>" class="btn btn-secondary btn-sm"><span class="ska-icon ska-icon-trash"></span> Delete public key</button>
 						<?php } ?>
 					</td>
 				</tr>
@@ -80,25 +80,25 @@
 		</table>
 	</div>
 </form>
-<p><button id="add_key_button" class="btn btn-default">Add another public key</button></p>
-<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="hidden" id="add_key_form">
+<p><button id="add_key_button" class="btn btn-secondary">Add another public key</button></p>
+<form method="post" action="<?php outurl($this->data->relative_request_url)?>" class="d-none" id="add_key_form">
 	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-	<div class="form-group">
-		<label for="add_public_key">Public key</label>
-		<textarea class="form-control" rows="4" id="add_public_key" name="add_public_key" required></textarea>
+	<div class="mb-3">
+		<label for="add_public_key_2" class="form-label">Public key</label>
+		<textarea class="form-control" rows="4" id="add_public_key_2" name="add_public_key" required></textarea>
 	</div>
-	<div class="form-group row">
-		<div class="col-md-8">
-			<button type="submit" class="btn btn-primary btn-lg btn-block">Add public key</button>
+	<div class="row g-3">
+		<div class="col-md-8 d-grid">
+			<button type="submit" class="btn btn-primary btn-lg w-100">Add public key</button>
 		</div>
-		<div class="col-md-2">
-			<button type="button" class="btn btn-info btn-lg btn-block">Help</button>
+		<div class="col-md-2 d-grid">
+			<button type="button" class="btn btn-outline-secondary btn-lg w-100" data-action="toggle-help">Help</button>
 		</div>
-		<div class="col-md-2">
-			<button type="button" class="btn btn-default btn-lg btn-block">Cancel</button>
+		<div class="col-md-2 d-grid">
+			<button type="button" class="btn btn-secondary btn-lg w-100" data-action="cancel-add-key">Cancel</button>
 		</div>
 	</div>
-	<div id="help" class="hidden">
+	<div id="help" class="d-none">
 		<?php keygen_help('above') ?>
 	</div>
 </form>
@@ -106,7 +106,7 @@
 <h2>Your servers</h2>
 <p>You are listed as a leader for the following servers:</p>
 <div class="ska-scroll-container">
-	<table class="table">
+	<table class="table table-striped table-sm">
 		<thead>
 			<tr>
 				<th>Hostname</th>
@@ -138,7 +138,7 @@
 				<td rowspan="2">
 					<a href="<?php outurl('/servers/'.urlencode($server->hostname)) ?>" class="server"><?php out($server->hostname) ?></a>
 					<?php if($server->pending_requests > 0) { ?>
-					<a href="<?php outurl('/servers/'.urlencode($server->hostname).'#requests') ?>"><span class="badge" title="Pending requests"><?php out(number_format($server->pending_requests)) ?></span></a>
+					<a href="<?php outurl('/servers/'.urlencode($server->hostname).'#requests') ?>"><span class="ska-badge ska-badge-muted" title="Pending requests"><?php out(number_format($server->pending_requests)) ?></span></a>
 					<?php } ?>
 				</td>
 				<td>
@@ -165,7 +165,7 @@
 						$type = substr($admin, 0, 1);
 						$name = substr($admin, 2);
 						if($type == 'G') {
-							$admin_list .= '<span class="glyphicon glyphicon-list-alt"></span> ';
+							$admin_list .= '<span class="ska-icon ska-icon-group"></span> ';
 						}
 						$admin_list .= hesc($name).', ';
 					}
@@ -192,7 +192,7 @@
 								$list[] = hesc($entity->name.'@'.$entity->server->hostname);
 								break;
 							case 'Group':
-								$list[] = '<span class="glyphicon glyphicon-list-alt"></span> '.hesc($entity->name);
+								$list[] = '<span class="ska-icon ska-icon-group"></span> '.hesc($entity->name);
 								break;
 							}
 						}

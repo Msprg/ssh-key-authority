@@ -128,10 +128,6 @@ class LDAP {
 		} else {
 			$r = @ldap_search($this->conn, $basedn, $filter, $fields);
 		}
-		$sort = array_reverse($sort);
-		foreach($sort as $field) {
-			@ldap_sort($this->conn, $r, $field);
-		}
 		if($r) {
 			// Fetch entries
 			$result = @ldap_get_entries($this->conn, $r);
@@ -154,6 +150,11 @@ class LDAP {
 				}
 				$items[] = $itemResult;
 			}
+			if(!empty($sort)) {
+				usort($items, function(array $left, array $right) use ($sort) {
+					return self::compare_entries_by_fields($left, $right, $sort);
+				});
+			}
 			return $items;
 		}
 		return false;
@@ -167,6 +168,32 @@ class LDAP {
 		}
 		$str = str_replace($metaChars, $quotedMetaChars, $str);
 		return $str;
+	}
+
+	private static function compare_entries_by_fields(array $left, array $right, array $sort_fields): int {
+		foreach($sort_fields as $field) {
+			$left_value = self::normalize_sort_value($left, $field);
+			$right_value = self::normalize_sort_value($right, $field);
+			$comparison = strnatcasecmp($left_value, $right_value);
+			if($comparison !== 0) {
+				return $comparison;
+			}
+		}
+		return 0;
+	}
+
+	private static function normalize_sort_value(array $entry, $field): string {
+		$target = strtolower((string)$field);
+		foreach($entry as $key => $value) {
+			if(strtolower((string)$key) !== $target) {
+				continue;
+			}
+			if(is_array($value)) {
+				return implode(',', array_map('strval', $value));
+			}
+			return (string)$value;
+		}
+		return '';
 	}
 }
 

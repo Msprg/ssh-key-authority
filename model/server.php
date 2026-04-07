@@ -20,6 +20,17 @@
 * Class that represents a server
 */
 class Server extends Record {
+	private static function runtime_value($key, $default = null) {
+		if(class_exists('RuntimeState', false)) {
+			return RuntimeState::get($key, $default);
+		}
+		return $default;
+	}
+
+	private static function runtime_config() {
+		return self::runtime_value('config', array_key_exists('config', $GLOBALS) ? $GLOBALS['config'] : array());
+	}
+
 	/**
 	* Defines the database table that this object is stored in
 	*/
@@ -162,7 +173,7 @@ class Server extends Record {
 	* @return bool True if the entity has been added as leader, false if it was already a leader.
 	*/
 	public function add_admin(Entity $entity, bool $send_mail = true): bool {
-		global $config;
+		$config = self::runtime_config();
 		if(is_null($this->id)) throw new BadMethodCallException('Server must be in directory before leaders can be added');
 		if(is_null($entity->entity_id)) throw new InvalidArgumentException('User or group must be in directory before it can be made leader');
 		$entity_id = $entity->entity_id;
@@ -292,7 +303,8 @@ class Server extends Record {
 	* groups.
 	*/
 	public function add_standard_accounts() {
-		global $group_dir, $config;
+		$group_dir = self::runtime_value('group_dir', array_key_exists('group_dir', $GLOBALS) ? $GLOBALS['group_dir'] : null);
+		$config = self::runtime_config();
 		if(!isset($config['defaults']['account_groups'])) return;
 		foreach($config['defaults']['account_groups'] as $account_name => $group_name) {
 			$account = new ServerAccount;
@@ -568,7 +580,8 @@ class Server extends Record {
 	 * @throws SSHException If the connection fails for some reason
 	 */
 	public function connect_ssh(): SSH {
-		global $config, $server_dir;
+		$config = self::runtime_config();
+		$server_dir = self::runtime_value('server_dir', array_key_exists('server_dir', $GLOBALS) ? $GLOBALS['server_dir'] : null);
 
 		$this->ip_address = gethostbyname($this->hostname);
 		$this->update();
@@ -594,7 +607,8 @@ class Server extends Record {
 			'keys-sync',
 			'config/keys-sync.pub',
 			'config/keys-sync',
-			$this->host_key
+			$this->host_key,
+			SSH::build_jumphost_security_options($config)
 		);
 		$this->update(); // fingerprint might have changed
 
@@ -627,7 +641,7 @@ class Server extends Record {
 				$output = $connection->exec('/bin/hostname -f');
 				$allowed_hostnames = array(trim($output));
 			}
-			if(!in_array($hostname, $allowed_hostnames)) {
+			if(!in_array($this->hostname, $allowed_hostnames, true)) {
 				throw new SSHException("Hostname check failed (allowed: ".implode(", ", $allowed_hostnames).").");
 			}
 		}
@@ -639,7 +653,7 @@ class Server extends Record {
 	* Trigger a sync for all accounts on this server.
 	*/
 	public function sync_access() {
-		global $sync_request_dir;
+		$sync_request_dir = self::runtime_value('sync_request_dir', array_key_exists('sync_request_dir', $GLOBALS) ? $GLOBALS['sync_request_dir'] : null);
 		$sync_request = new SyncRequest;
 		$sync_request->server_id = $this->id;
 		$sync_request->account_name = null;
@@ -681,7 +695,7 @@ class Server extends Record {
 	 * Delete sync requests for this server and schedule a new request in 30 minutes
 	 */
 	public function reschedule_sync_request() {
-		global $sync_request_dir;
+		$sync_request_dir = self::runtime_value('sync_request_dir', array_key_exists('sync_request_dir', $GLOBALS) ? $GLOBALS['sync_request_dir'] : null);
 
 		$this->delete_all_sync_requests();
 		$req = new SyncRequest();
@@ -697,7 +711,7 @@ class Server extends Record {
 	 * @param SSH $connection The ssh connection instance to this server
 	 */
 	public function update_status_file(SSH $connection) {
-		global $config;
+		$config = self::runtime_config();
 		$timeout = (int)($config['monitoring']['status_file_timeout'] ?? 7200);
 		$expire = date('r', time() + $timeout);
 		$lastlogmsg = $this->get_last_sync_event();
