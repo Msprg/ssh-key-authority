@@ -186,7 +186,12 @@ if(isset($_POST['add_admin']) && ($active_user->admin)) {
 		}
 	}
 } elseif(isset($_POST['delete_access']) && ($group_admin || $active_user->admin)) {
-	$access_rule_service->delete_group_access_by_id($group, $group_access, $_POST['delete_access']);
+	if(!$access_rule_service->delete_group_access_by_id($group, $group_access, $_POST['delete_access'])) {
+		$alert = new UserAlert;
+		$alert->class = 'danger';
+		$alert->content = 'The selected access rule could not be found.';
+		$active_user->add_alert($alert);
+	}
 	redirect('#access');
 } elseif(isset($_POST['edit_group']) && ($active_user->admin)) {
 	$name = trim($_POST['name']);

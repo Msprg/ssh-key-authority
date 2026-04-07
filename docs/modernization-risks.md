@@ -22,7 +22,7 @@ Scale:
 | R-12 | Insufficient automated coverage before deep refactor | High | High | High regression probability | Write compatibility and smoke tests first in high-risk areas | Manual test burden grows; regressions discovered late | Pause refactor stream, add tests, then resume |
 
 ## Top Risks For Next 3 Phases
-- `R-01`, `R-02`, `R-04`, `R-08`, `R-12`
+- `R-01`, `R-02`, `R-03`, `R-04`, `R-08`, `R-10`, `R-12`
 
 ## Risk Review Cadence
 - Reassess register at start and end of every phase.

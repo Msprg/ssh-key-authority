@@ -28,7 +28,11 @@ class Group extends Entity {
 	}
 
 	private static function runtime_config() {
-		return self::runtime_value('config', array_key_exists('config', $GLOBALS) ? $GLOBALS['config'] : array());
+		$config = self::runtime_value('config', array_key_exists('config', $GLOBALS) ? $GLOBALS['config'] : null);
+		if(!is_array($config)) {
+			throw new RuntimeException('Application configuration not found for Group operations.');
+		}
+		return $config;
 	}
 
 	/**

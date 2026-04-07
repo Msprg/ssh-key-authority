@@ -488,15 +488,29 @@ a.user::before,
 .ska-icon::before {
 	content: "" !important;
 	display: inline-block;
-	-webkit-mask-image: var(--ska-icon-image);
-	mask-image: var(--ska-icon-image);
-	-webkit-mask-position: center;
-	mask-position: center;
-	-webkit-mask-repeat: no-repeat;
-	mask-repeat: no-repeat;
-	-webkit-mask-size: contain;
-	mask-size: contain;
-	background-color: currentColor;
+	background-image: var(--ska-icon-image);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+}
+
+@supports ((-webkit-mask-image: url("")) or (mask-image: url(""))) {
+	a.group::before,
+	a.server::before,
+	a.serveraccount::before,
+	a.user::before,
+	.ska-icon::before {
+		background-image: none;
+		-webkit-mask-image: var(--ska-icon-image);
+		mask-image: var(--ska-icon-image);
+		-webkit-mask-position: center;
+		mask-position: center;
+		-webkit-mask-repeat: no-repeat;
+		mask-repeat: no-repeat;
+		-webkit-mask-size: contain;
+		mask-size: contain;
+		background-color: currentColor;
+	}
 }
 
 a.group::before,

@@ -55,10 +55,11 @@ class LoginFlowService {
 								$this->audit_log('failure', $username, 'Invalid credentials');
 								$error_message = 'Invalid username or password.';
 							}
-						} catch(Throwable $e) {
-							$this->audit_log('failure', $username, 'Authentication error: '.$e->getMessage());
-							$error_message = 'Authentication error. Please try again.';
-						}
+							} catch(Throwable $e) {
+								$this->audit_log('failure', $username, 'Authentication failed');
+								error_log('[LoginFlowService::handle_request] Authentication exception for '.preg_replace('/[^a-zA-Z0-9._-]/', '', $username).': '.$e->getMessage()."\n".$e);
+								$error_message = 'Authentication error. Please try again.';
+							}
 					}
 				}
 				$_SESSION['csrf_token'] = $this->generate_csrf_token();

@@ -48,12 +48,15 @@ class AccessRuleService {
 	 * @param ServerAccount $account
 	 * @param array $account_access list of Access objects
 	 * @param mixed $access_id identifier from request payload
+	 * @return bool true when access is deleted, false when not found
 	 */
-	public function delete_access_by_id(ServerAccount $account, array $account_access, $access_id) {
+	public function delete_access_by_id(ServerAccount $account, array $account_access, $access_id): bool {
 		$access = $this->find_access_by_id($account_access, $access_id);
 		if($access instanceof Access) {
 			$account->delete_access($access);
+			return true;
 		}
+		return false;
 	}
 
 	/**
@@ -61,12 +64,15 @@ class AccessRuleService {
 	 * @param Group $group
 	 * @param array $group_access list of Access objects
 	 * @param mixed $access_id identifier from request payload
+	 * @return bool true when access is deleted, false when not found
 	 */
-	public function delete_group_access_by_id(Group $group, array $group_access, $access_id) {
+	public function delete_group_access_by_id(Group $group, array $group_access, $access_id): bool {
 		$access = $this->find_access_by_id($group_access, $access_id);
 		if($access instanceof Access) {
 			$group->delete_access($access);
+			return true;
 		}
+		return false;
 	}
 
 	/**

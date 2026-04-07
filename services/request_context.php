@@ -11,8 +11,8 @@ class RequestContext {
 	public static function from_globals() {
 		$context = new self();
 		$script_name = $_SERVER['SCRIPT_NAME'] ?? '';
-		$context->base_url = dirname($script_name);
-		if($context->base_url === '.' || $context->base_url === DIRECTORY_SEPARATOR) {
+		$context->base_url = str_replace('\\', '/', dirname($script_name));
+		if($context->base_url === '.' || $context->base_url === '/') {
 			$context->base_url = '';
 		}
 		$context->request_url = $_SERVER['REQUEST_URI'] ?? '';

@@ -5,7 +5,7 @@ Branch: `bootstrap5-upgrade`
 
 ## Objective
 
-Migrate high-value pages incrementally to Bootstrap 5-compatible markup while preserving existing Bootstrap 3 runtime behavior and all critical SKA workflows.
+Migrate high-value pages incrementally to Bootstrap 5-compatible markup while preserving existing Bootstrap 3 runtime behavior and all critical SSH Key Authority (SKA) workflows.
 
 ## Completed slices
 

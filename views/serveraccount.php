@@ -93,7 +93,12 @@ if(isset($_POST['add_access']) && ($server_admin || $account_admin || $active_us
 		}
 	}
 } elseif(isset($_POST['delete_access']) && ($server_admin || $account_admin || $active_user->admin)) {
-	$access_rule_service->delete_access_by_id($account, $account_access, $_POST['delete_access']);
+	if(!$access_rule_service->delete_access_by_id($account, $account_access, $_POST['delete_access'])) {
+		$alert = new UserAlert;
+		$alert->class = 'danger';
+		$alert->content = 'The selected access rule could not be found.';
+		$active_user->add_alert($alert);
+	}
 	redirect('#access');
 } elseif(isset($_POST['approve_access']) && ($server_admin || $account_admin || $active_user->admin)) {
 	$request_to_approve = $access_rule_service->find_access_request_by_id($account_access_requests, $_POST['approve_access']);

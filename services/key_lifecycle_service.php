@@ -50,15 +50,20 @@ class KeyLifecycleService {
 	 * @return PublicKey|null
 	 */
 	public function find_public_key_by_id(array $existing_public_keys, $public_key_id): ?PublicKey {
-		if(
-			!(
-				is_int($public_key_id) ||
-				(is_string($public_key_id) && preg_match('/^[0-9]+$/', $public_key_id))
-			)
-		) {
+		if(is_int($public_key_id)) {
+			$target_id = $public_key_id;
+		} elseif(is_string($public_key_id) && ctype_digit($public_key_id)) {
+			$max_int = (string)PHP_INT_MAX;
+			if(
+				strlen($public_key_id) > strlen($max_int) ||
+				(strlen($public_key_id) === strlen($max_int) && strcmp($public_key_id, $max_int) > 0)
+			) {
+				return null;
+			}
+			$target_id = (int)$public_key_id;
+		} else {
 			return null;
 		}
-		$target_id = (int)$public_key_id;
 		foreach($existing_public_keys as $public_key) {
 			if($public_key instanceof PublicKey && (int)$public_key->id === $target_id) {
 				return $public_key;

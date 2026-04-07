@@ -68,13 +68,13 @@ switch(get_class($remote_entity)) {
 	<div class="mb-3">
 		<div class="card">
 				<div class="card-header">
-					<h3 class="h5 mb-0">
-						<a data-bs-toggle="collapse" href="#advanced_options" aria-expanded="false">
-							Advanced options <span class="ska-caret" aria-hidden="true"></span>
-						</a>
-					</h3>
-				</div>
-				<div id="advanced_options" class="collapse" aria-hidden="true">
+						<h3 class="h5 mb-0">
+							<a data-bs-toggle="collapse" href="#advanced_options" aria-expanded="false" aria-controls="advanced_options">
+								Advanced options <span class="ska-caret" aria-hidden="true"></span>
+							</a>
+						</h3>
+					</div>
+					<div id="advanced_options" class="collapse">
 	<?php } ?>
 					<div class="card-body">
 						<p>

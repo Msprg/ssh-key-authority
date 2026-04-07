@@ -37,9 +37,9 @@ browser_smoke_webdriver_post() {
     local endpoint="$1"
     local payload="${2:-}"
     if [ -n "$payload" ]; then
-        curl -fsS -H 'Content-Type: application/json' -d "$payload" "http://127.0.0.1:$(cat "$BROWSER_SMOKE_PORT_FILE")$endpoint"
+        curl -fsS -X POST -H 'Content-Type: application/json' -d "$payload" "http://127.0.0.1:$(cat "$BROWSER_SMOKE_PORT_FILE")$endpoint"
     else
-        curl -fsS -H 'Content-Type: application/json' "http://127.0.0.1:$(cat "$BROWSER_SMOKE_PORT_FILE")$endpoint"
+        curl -fsS -X POST -H 'Content-Type: application/json' "http://127.0.0.1:$(cat "$BROWSER_SMOKE_PORT_FILE")$endpoint"
     fi
 }
 
@@ -189,7 +189,13 @@ browser_smoke_capture() {
             "y" => 0,
         ], JSON_UNESCAPED_SLASHES);
     ' "$BROWSER_SMOKE_WINDOW_WIDTH" "$page_height")
-    browser_smoke_webdriver_post "/session/$BROWSER_SMOKE_SESSION_ID/window/rect" "$rect_payload" >/dev/null || true
+    if ! browser_smoke_webdriver_post "/session/$BROWSER_SMOKE_SESSION_ID/window/rect" "$rect_payload" >/dev/null 2>&1; then
+        printf '[smoke][warn] Failed to set window rect for session %s with payload %s; retrying\n' "$BROWSER_SMOKE_SESSION_ID" "$rect_payload" >&2
+        sleep 0.2
+        if ! browser_smoke_webdriver_post "/session/$BROWSER_SMOKE_SESSION_ID/window/rect" "$rect_payload" >/dev/null 2>&1; then
+            smoke_die "Failed to set browser window rect for session $BROWSER_SMOKE_SESSION_ID"
+        fi
+    fi
     sleep 0.3
 
     browser_smoke_webdriver_post "/session/$BROWSER_SMOKE_SESSION_ID/screenshot" | browser_smoke_json_value >"$BROWSER_SMOKE_TMP_DIR/screenshot.b64"
