@@ -29,42 +29,38 @@ class LoginFlowService {
 					$error_message = 'Please enter both username and password.';
 				} elseif(!preg_match('/^[a-zA-Z0-9._-]+$/', $username)) {
 					$error_message = 'Invalid username format. Username can only contain letters, numbers, dots, hyphens, and underscores.';
-				} else {
-					$current_time = time();
-					$user_attempts = $_SESSION['login_attempts'][$username] ?? null;
-					if(is_array($user_attempts) && isset($user_attempts['time']) && ($current_time - $user_attempts['time']) >= 900) {
-						$_SESSION['login_attempts'][$username] = array('count' => 0, 'time' => $current_time);
-						$user_attempts = $_SESSION['login_attempts'][$username];
-					}
-
-					if($this->is_rate_limited($user_attempts, $current_time)) {
-						$remaining_time = 900 - ($current_time - $user_attempts['time']);
-						$error_message = 'Too many login attempts. Please try again in '.ceil($remaining_time / 60).' minutes.';
-						$this->audit_log('rate_limited', $username, 'Rate limit exceeded');
 					} else {
-						try {
-							$user = $this->auth_service->authenticate($username, $password);
-							if($user) {
-								unset($_SESSION['login_attempts'][$username]);
-								$this->audit_log('success', $username, 'Authentication successful');
-								$redirect_url = $this->sanitize_redirect_path($_SESSION['redirect_after_login'] ?? '/');
-								unset($_SESSION['redirect_after_login']);
-								redirect($redirect_url);
-							} else {
-								$this->record_failed_attempt($username, $current_time);
-								$this->audit_log('failure', $username, 'Invalid credentials');
-								$error_message = 'Invalid username or password.';
-							}
+						$current_time = time();
+						$user_attempts = $this->get_login_attempts($username, $current_time);
+
+						if($this->is_rate_limited($user_attempts, $current_time)) {
+							$remaining_time = 900 - ($current_time - $user_attempts['time']);
+							$error_message = 'Too many login attempts. Please try again in '.ceil($remaining_time / 60).' minutes.';
+							$this->audit_log('rate_limited', $username, 'Rate limit exceeded');
+						} else {
+							try {
+								$user = $this->auth_service->authenticate($username, $password);
+								if($user) {
+									$this->reset_login_attempts($username);
+									$this->audit_log('success', $username, 'Authentication successful');
+									$redirect_url = $this->sanitize_redirect_path($_SESSION['redirect_after_login'] ?? '/');
+									unset($_SESSION['redirect_after_login']);
+									redirect($redirect_url);
+								} else {
+									$this->increment_login_attempt($username, $current_time);
+									$this->audit_log('failure', $username, 'Invalid credentials');
+									$error_message = 'Invalid username or password.';
+								}
 							} catch(Throwable $e) {
 								$this->audit_log('failure', $username, 'Authentication failed');
 								error_log('[LoginFlowService::handle_request] Authentication exception for '.preg_replace('/[^a-zA-Z0-9._-]/', '', $username).': '.$e->getMessage()."\n".$e);
 								$error_message = 'Authentication error. Please try again.';
 							}
+						}
 					}
+					$_SESSION['csrf_token'] = $this->generate_csrf_token();
 				}
-				$_SESSION['csrf_token'] = $this->generate_csrf_token();
 			}
-		}
 
 		return array(
 			'error_message' => $error_message,
@@ -76,9 +72,6 @@ class LoginFlowService {
 	private function ensure_state() {
 		if(!isset($_SESSION['csrf_token'])) {
 			$_SESSION['csrf_token'] = $this->generate_csrf_token();
-		}
-		if(!isset($_SESSION['login_attempts'])) {
-			$_SESSION['login_attempts'] = array();
 		}
 	}
 
@@ -96,12 +89,92 @@ class LoginFlowService {
 		return $user_attempts['count'] >= 5 && ($current_time - $user_attempts['time']) < 900;
 	}
 
-	private function record_failed_attempt($username, $current_time) {
-		if(!isset($_SESSION['login_attempts'][$username])) {
-			$_SESSION['login_attempts'][$username] = array('count' => 0, 'time' => $current_time);
+	private function login_attempt_storage_dir() {
+		$dir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'ska-login-attempts';
+		if(!is_dir($dir) && !mkdir($dir, 0700, true) && !is_dir($dir)) {
+			throw new RuntimeException('Unable to initialize server-side login attempt storage.');
 		}
-		$_SESSION['login_attempts'][$username]['count']++;
-		$_SESSION['login_attempts'][$username]['time'] = $current_time;
+		return $dir;
+	}
+
+	private function login_attempt_storage_path($username) {
+		$client_ip = (string)($_SERVER['REMOTE_ADDR'] ?? '');
+		$safe_username = preg_replace('/[^a-zA-Z0-9._-]/', '', (string)$username);
+		$key = hash('sha256', $safe_username.'|'.$client_ip);
+		return $this->login_attempt_storage_dir().DIRECTORY_SEPARATOR.$key.'.json';
+	}
+
+	private function decode_login_attempt_record($raw_record) {
+		$record = json_decode((string)$raw_record, true);
+		if(
+			!is_array($record) ||
+			!isset($record['count']) ||
+			!isset($record['time']) ||
+			!is_numeric($record['count']) ||
+			!is_numeric($record['time'])
+		) {
+			return null;
+		}
+		return array(
+			'count' => (int)$record['count'],
+			'time' => (int)$record['time'],
+		);
+	}
+
+	private function get_login_attempts($username, $current_time) {
+		$path = $this->login_attempt_storage_path($username);
+		if(!is_file($path)) {
+			return null;
+		}
+		$handle = fopen($path, 'c+');
+		if($handle === false) {
+			error_log('[LoginFlowService::get_login_attempts] Failed to open login-attempt store for '.$username);
+			return null;
+		}
+		if(!flock($handle, LOCK_EX)) {
+			fclose($handle);
+			error_log('[LoginFlowService::get_login_attempts] Failed to lock login-attempt store for '.$username);
+			return null;
+		}
+		$record = $this->decode_login_attempt_record(stream_get_contents($handle));
+		flock($handle, LOCK_UN);
+		fclose($handle);
+		if(!is_array($record) || ($current_time - $record['time']) >= 900) {
+			@unlink($path);
+			return null;
+		}
+		return $record;
+	}
+
+	private function increment_login_attempt($username, $current_time) {
+		$path = $this->login_attempt_storage_path($username);
+		$handle = fopen($path, 'c+');
+		if($handle === false) {
+			throw new RuntimeException('Unable to open server-side login attempt storage.');
+		}
+		if(!flock($handle, LOCK_EX)) {
+			fclose($handle);
+			throw new RuntimeException('Unable to lock server-side login attempt storage.');
+		}
+		$record = $this->decode_login_attempt_record(stream_get_contents($handle));
+		if(!is_array($record) || ($current_time - $record['time']) >= 900) {
+			$record = array('count' => 0, 'time' => $current_time);
+		}
+		$record['count']++;
+		rewind($handle);
+		ftruncate($handle, 0);
+		fwrite($handle, json_encode($record));
+		fflush($handle);
+		flock($handle, LOCK_UN);
+		fclose($handle);
+		return $record;
+	}
+
+	private function reset_login_attempts($username) {
+		$path = $this->login_attempt_storage_path($username);
+		if(is_file($path)) {
+			@unlink($path);
+		}
 	}
 
 	private function sanitize_redirect_path($candidate) {

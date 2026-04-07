@@ -116,7 +116,15 @@ class SSH {
 	public static function build_jumphost_security_options(array $config): array {
 		$strict_checking = true;
 		if(isset($config['security']['jumphost_strict_host_key_checking'])) {
-			$strict_checking = (int)$config['security']['jumphost_strict_host_key_checking'] === 1;
+			$configured_value = $config['security']['jumphost_strict_host_key_checking'];
+			if(is_bool($configured_value)) {
+				$strict_checking = $configured_value;
+			} elseif($configured_value !== null) {
+				$filtered = filter_var($configured_value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+				if($filtered !== null) {
+					$strict_checking = $filtered;
+				}
+			}
 		}
 
 		$known_hosts_file = '/dev/null';

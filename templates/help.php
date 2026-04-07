@@ -21,13 +21,13 @@ $security_config = $this->get('security_config');
 ?>
 <div class="accordion ska-card-stack" id="help">
 	<h1>Help</h1>
-	<div class="accordion-item">
+		<div class="accordion-item">
 		<h2 class="accordion-header">
 			<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#getting_started" aria-expanded="false" aria-controls="getting_started">
 				Getting started (Generating an SSH keypair)
 			</button>
 		</h2>
-		<div id="getting_started" class="accordion-collapse collapse" data-bs-parent="#help" aria-hidden="true">
+			<div id="getting_started" class="accordion-collapse collapse" data-bs-parent="#help">
 			<div class="accordion-body">
 				<h3>Generating an SSH keypair</h3>
 				<?php keygen_help(null) ?>
@@ -42,7 +42,7 @@ $security_config = $this->get('security_config');
 				Concepts
 			</button>
 		</h2>
-		<div id="concepts" class="accordion-collapse collapse" data-bs-parent="#help" aria-hidden="true">
+			<div id="concepts" class="accordion-collapse collapse" data-bs-parent="#help">
 			<div class="accordion-body">
 				<h3>Iconography</h3>
 				<p>Most objects that are known by SSH Key Authority are represented by icons:</p>
@@ -63,7 +63,7 @@ $security_config = $this->get('security_config');
 				Getting access to a server
 			</button>
 		</h2>
-		<div id="getting_access" class="accordion-collapse collapse" data-bs-parent="#help" aria-hidden="true">
+			<div id="getting_access" class="accordion-collapse collapse" data-bs-parent="#help">
 			<div class="accordion-body">
 				<p>Begin by browsing the <a href="<?php outurl('/servers')?>">server list</a>.  Click on the server that you need access to.</p>
 				<p>You should see a "request access" form, in which you will need to enter the name of the account on the server that you are requesting access for.  For example, if you need access to the <i>root</i> account, then that is what you should enter in this field.</p>
@@ -78,7 +78,7 @@ $security_config = $this->get('security_config');
 				Adding a server to SSH Key Authority
 			</button>
 		</h2>
-		<div id="add_server" class="accordion-collapse collapse" data-bs-parent="#help" aria-hidden="true">
+			<div id="add_server" class="accordion-collapse collapse" data-bs-parent="#help">
 			<div class="accordion-body">
 				<p>Contact <a href="mailto:<?php out($admin_mail)?>"><?php out($admin_mail)?></a> to have your server(s) added to SSH Key Authority.</p>
 			</div>
@@ -90,7 +90,7 @@ $security_config = $this->get('security_config');
 				Jumphost list format
 			</button>
 		</h2>
-		<div id="jumphost_format" class="accordion-collapse collapse" data-bs-parent="#help" aria-hidden="true">
+			<div id="jumphost_format" class="accordion-collapse collapse" data-bs-parent="#help">
 			<div class="accordion-body">
 				<p>It is possible to connect to target servers via one or more jumphosts. The hosts must be listed as comma-separated chain, in the order from SSH Key Authority to target server.</p>
 				<p>Each entry has the format user@hostname:port (but the ":port" part is optional).</p>
@@ -120,7 +120,7 @@ $security_config = $this->get('security_config');
 				What does this sync error for my server mean?
 			</button>
 		</h3>
-		<div id="sync_error" class="accordion-collapse collapse" data-bs-parent="#help" aria-hidden="true">
+			<div id="sync_error" class="accordion-collapse collapse" data-bs-parent="#help">
 			<div class="accordion-body">
 				<dl class="spaced">
 					<dt>SSH connection failed</dt>
@@ -167,13 +167,13 @@ $security_config = $this->get('security_config');
 				What does this sync warning for my server mean?
 			</button>
 		</h3>
-		<div id="sync_warning" class="accordion-collapse collapse" data-bs-parent="#help" aria-hidden="true">
+			<div id="sync_warning" class="accordion-collapse collapse" data-bs-parent="#help">
 			<div class="accordion-body">
 				<dl class="spaced">
 					<dt>Key directory does not exist</dt>
-					<dd>Your server has not been set up for <a data-bs-toggle="collapse" data-bs-parent="#help" href="#sync_setup" aria-expanded="false">full account syncing</a>. The <i>root</i> account <strong>is</strong> being synced, but other accounts are not.</dd>
+						<dd>Your server has not been set up for <a data-bs-toggle="collapse" data-bs-parent="#help" href="#sync_setup" aria-expanded="false" aria-controls="sync_setup">full account syncing</a>. The <i>root</i> account <strong>is</strong> being synced, but other accounts are not.</dd>
 					<dt>Using legacy sync method</dt>
-					<dd>Your server <strong>has</strong> been set up for <a data-bs-toggle="collapse" data-bs-parent="#help" href="#sync_setup" aria-expanded="false">full account syncing</a> (stage 1), but the authentication on your server has not been switched over to keys control (stage 2). Legacy syncing is still being used, so only the <i>root</i> account sync is taking effect.</dd>
+						<dd>Your server <strong>has</strong> been set up for <a data-bs-toggle="collapse" data-bs-parent="#help" href="#sync_setup" aria-expanded="false" aria-controls="sync_setup">full account syncing</a> (stage 1), but the authentication on your server has not been switched over to keys control (stage 2). Legacy syncing is still being used, so only the <i>root</i> account sync is taking effect.</dd>
 				</dl>
 			</div>
 		</div>
@@ -184,7 +184,7 @@ $security_config = $this->get('security_config');
 				How do I set up my server to sync access for all accounts?
 			</button>
 		</h3>
-		<div id="sync_setup" class="accordion-collapse collapse" data-bs-parent="#help" aria-hidden="true">
+			<div id="sync_setup" class="accordion-collapse collapse" data-bs-parent="#help">
 			<div class="accordion-body">
 				<p>Use the following instructions to setup a target server for managing keys via SSH Key Authority:</p>
 				<ol>
@@ -217,7 +217,7 @@ $security_config = $this->get('security_config');
 				How do I grant access to an account on my server?
 			</button>
 		</h3>
-		<div id="grant_access" class="accordion-collapse collapse" data-bs-parent="#help" aria-hidden="true">
+			<div id="grant_access" class="accordion-collapse collapse" data-bs-parent="#help">
 			<div class="accordion-body">
 				<p>For access to accounts by employees:</p>
 				<ol>

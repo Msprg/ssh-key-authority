@@ -207,7 +207,7 @@
 			</div>
 			<div class="mb-3">
 				<label for="server_admin">Leaders</label>
-				<input type="text" id="server_admins" name="admins" class="form-control d-none" required>
+					<input type="text" id="server_admins" name="admins" class="form-control d-none">
 				<input type="text" id="server_admin" name="admin" class="form-control" placeholder="Type user/group name and press 'Enter' key" list="adminlist" required>
 				<datalist id="adminlist">
 					<?php foreach($this->get('all_users') as $user) { ?>

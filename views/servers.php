@@ -127,6 +127,9 @@ function default_key_scan_setting(): string {
  */
 function run_import(array $entries): array {
 	$server_dir = RuntimeState::get('server_dir');
+	if(!$server_dir instanceof ServerDirectory) {
+		throw new RuntimeException('Server directory service is unavailable; cannot import servers.');
+	}
 
 	$imported = 0;
 	$existed = 0;
@@ -153,6 +156,10 @@ function run_import(array $entries): array {
 }
 
 $relation_lifecycle_service = new RelationLifecycleService();
+$server_dir = RuntimeState::get('server_dir');
+if(!$server_dir instanceof ServerDirectory) {
+	throw new RuntimeException('Server directory service is unavailable; cannot manage servers.');
+}
 
 if(isset($_POST['add_server'])) {
 	$hostname = trim($_POST['hostname']);

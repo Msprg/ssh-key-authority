@@ -2,11 +2,14 @@
 
 class RequestAuthGuard {
 	private $auth_service;
+	/**
+	 * @var array<string,bool>
+	 */
 	private $public_routes;
 
 	public function __construct($auth_service, $public_routes) {
 		$this->auth_service = $auth_service;
-		$this->public_routes = $public_routes;
+		$this->public_routes = $this->normalize_public_routes($public_routes);
 	}
 
 	public function resolve_active_user($request_context) {
@@ -42,6 +45,42 @@ class RequestAuthGuard {
 			}
 		}
 		return false;
+	}
+
+	private function normalize_public_routes($public_routes) {
+		if(!is_array($public_routes)) {
+			throw new InvalidArgumentException('Public routes must be an array of route strings or route=>bool entries.');
+		}
+		$normalized = array();
+		foreach($public_routes as $key => $value) {
+			if(is_int($key)) {
+				if(!is_string($value) || $value === '') {
+					throw new InvalidArgumentException('Indexed public route entries must be non-empty strings.');
+				}
+				$normalized[$value] = true;
+				continue;
+			}
+			if(!is_string($key) || $key === '') {
+				throw new InvalidArgumentException('Public route keys must be non-empty strings.');
+			}
+			if(is_bool($value)) {
+				$normalized[$key] = $value;
+				continue;
+			}
+			if(is_int($value) && ($value === 0 || $value === 1)) {
+				$normalized[$key] = (bool)$value;
+				continue;
+			}
+			if(is_string($value)) {
+				$boolean_value = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+				if($boolean_value !== null) {
+					$normalized[$key] = $boolean_value;
+					continue;
+				}
+			}
+			throw new InvalidArgumentException('Public route value for "'.$key.'" must be boolean-like.');
+		}
+		return $normalized;
 	}
 
 	private function sanitize_redirect_path($candidate) {

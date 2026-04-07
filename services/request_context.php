@@ -176,6 +176,11 @@ class RequestContext {
 
 	private static function ip_matches_rule($ip, $rule) {
 		if(strpos($rule, '/') === false) {
+			$packed_ip = inet_pton($ip);
+			$packed_rule = inet_pton($rule);
+			if($packed_ip !== false && $packed_rule !== false) {
+				return $packed_ip === $packed_rule;
+			}
 			return $ip === $rule;
 		}
 		return self::ip_in_cidr($ip, $rule);

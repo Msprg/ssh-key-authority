@@ -80,7 +80,12 @@ if(isset($_POST['add_admin']) && ($active_user->admin)) {
 		redirect('#admins');
 	}
 } elseif(isset($_POST['delete_admin']) && ($active_user->admin)) {
-	$relation_lifecycle_service->delete_group_admin_by_id($group, $group_admins, $_POST['delete_admin']);
+	if(!$relation_lifecycle_service->delete_group_admin_by_id($group, $group_admins, $_POST['delete_admin'])) {
+		$alert = new UserAlert;
+		$alert->class = 'danger';
+		$alert->content = 'The selected group administrator could not be found.';
+		$active_user->add_alert($alert);
+	}
 	redirect('#admins');
 } elseif(isset($_POST['add_member']) && ($group_admin || $active_user->admin)) {
 	if(isset($_POST['username'])) {
@@ -147,7 +152,14 @@ if(isset($_POST['add_admin']) && ($active_user->admin)) {
 	}
 	redirect('#members');
 } elseif(isset($_POST['delete_member']) && ($group_admin || $active_user->admin)) {
-	$relation_lifecycle_service->delete_group_member_by_entity_id($group, $group_members, $_POST['delete_member']);
+	if(!$relation_lifecycle_service->delete_group_member_by_entity_id($group, $group_members, $_POST['delete_member'])) {
+		$alert = new UserAlert;
+		$alert->class = 'danger';
+		$alert->content = $group->system
+			? 'System groups cannot be modified.'
+			: 'The selected group member could not be found.';
+		$active_user->add_alert($alert);
+	}
 	redirect('#members');
 } elseif(isset($_POST['add_access']) && ($group_admin || $active_user->admin)) {
 	if(isset($_POST['username'])) {

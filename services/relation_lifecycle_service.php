@@ -182,11 +182,13 @@ class RelationLifecycleService {
 	 * @param array $admins
 	 * @param mixed $admin_id
 	 */
-	public function delete_group_admin_by_id(Group $group, array $admins, $admin_id) {
+	public function delete_group_admin_by_id(Group $group, array $admins, $admin_id): bool {
 		$admin = $this->find_entity_by_id($admins, $admin_id);
 		if($admin instanceof User) {
 			$group->delete_admin($admin);
+			return true;
 		}
+		return false;
 	}
 
 	/**
@@ -194,11 +196,13 @@ class RelationLifecycleService {
 	 * @param array $members
 	 * @param mixed $member_entity_id
 	 */
-	public function delete_group_member_by_entity_id(Group $group, array $members, $member_entity_id) {
+	public function delete_group_member_by_entity_id(Group $group, array $members, $member_entity_id): bool {
 		$member = $this->find_entity_by_entity_id($members, $member_entity_id);
 		if($member instanceof Entity && !$group->system) {
 			$group->delete_member($member);
+			return true;
 		}
+		return false;
 	}
 
 	/**

@@ -772,6 +772,7 @@ dom_ready(function() {
 	if(!serverAdmin || !serverAdmins) {
 		return;
 	}
+	var form = serverAdmin.form;
 
 	function append_admin() {
 		var newAdmin = serverAdmin.value.trim();
@@ -811,6 +812,22 @@ dom_ready(function() {
 			serverAdmin.setAttribute('required', '');
 		}
 	});
+
+	if(form) {
+		form.addEventListener('submit', function(event) {
+			if(serverAdmin.value.trim()) {
+				append_admin();
+			}
+			if(!serverAdmins.value.trim()) {
+				event.preventDefault();
+				serverAdmin.setAttribute('required', '');
+				serverAdmin.setCustomValidity('Please add at least one leader.');
+				serverAdmin.reportValidity();
+				return;
+			}
+			serverAdmin.setCustomValidity('');
+		});
+	}
 
 	if(serverAdmins.value.trim()) {
 		serverAdmins.classList.remove('d-none');

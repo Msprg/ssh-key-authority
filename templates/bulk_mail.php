@@ -28,7 +28,7 @@
 				</div>
 				<div class="mb-3">
 					<label for="body" class="form-label">Body</label>
-					<textarea class="form-control monospace" rows="20" id="body" name="body" required>You are being sent this mail as a <?php out($this->get('rcpt_role'))?> the SSH Key Authority system.
+					<textarea class="form-control monospace" rows="20" id="body" name="body" required>You are being sent this mail as a <?php out($this->get('rcpt_role'))?> of the SSH Key Authority system.
 
 </textarea>
 				</div>

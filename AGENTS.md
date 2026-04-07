@@ -72,10 +72,14 @@ Run these before handoff:
 
 ```bash
 source testenvs.env
-COMPOSER_ALLOW_SUPERUSER=1 make ci-check
+make ci-check
 make smoke-dry-run
 make smoke
 ```
+
+Security note:
+- Do not use `COMPOSER_ALLOW_SUPERUSER=1` for local/dev workflows.
+- If a CI runner must execute Composer as root, follow the guidance in [docs/operations-runbook.md](/var/www/ska/docs/operations-runbook.md) and keep that exception scoped to the CI environment.
 
 If `testenvs.env` is not present in the environment, coordinate with the user for smoke variables.
 

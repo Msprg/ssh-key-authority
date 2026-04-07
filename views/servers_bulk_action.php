@@ -24,6 +24,9 @@
 function send_bulk_add_mail(Entity $entity, array $affected_servers) {
 	$active_user = RuntimeState::get('active_user');
 	$config = RuntimeState::get('config');
+	if(!($active_user instanceof User)) {
+		throw new RuntimeException('Bulk leader mail requires an authenticated user context.');
+	}
 	if(
 		!is_array($config) ||
 		!isset($config['email']['report_address']) ||

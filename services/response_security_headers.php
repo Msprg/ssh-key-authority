@@ -87,7 +87,7 @@ class ResponseSecurityHeaders {
 		$max_age = 31536000;
 		if(isset($config['security']['hsts_max_age']) && is_numeric($config['security']['hsts_max_age'])) {
 			$candidate = (int)$config['security']['hsts_max_age'];
-			if($candidate > 0) {
+			if($candidate >= 0) {
 				$max_age = $candidate;
 			}
 		}
