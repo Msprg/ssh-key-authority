@@ -153,7 +153,7 @@ class SyncFailureReporter {
 	 * @return string
 	 */
 	private static function escape_semicolons($text) {
-		return str_replace(';', '\;', $text);
+		return str_replace(';', '\;', str_replace('\\', '\\\\', $text));
 	}
 
 	/**

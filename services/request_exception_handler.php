@@ -20,7 +20,7 @@ class RequestExceptionHandler {
 			$error_number = uniqid('', true);
 		}
 		error_log("$error_number: ".$e->getMessage()."\n$error_number: ".$e->getTraceAsString());
-		while(ob_get_length()) {
+		while(ob_get_level() > 0) {
 			ob_end_clean();
 		}
 		http_response_code(500);

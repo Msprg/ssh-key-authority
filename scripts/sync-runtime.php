@@ -92,7 +92,8 @@ class SyncRuntime {
 			return $validated;
 		}
 
-		return 'timeout';
+		error_log('SyncRuntime could not resolve a validated timeout binary.');
+		throw new RuntimeException('Unable to resolve a validated timeout binary for sync execution.');
 	}
 
 	/**

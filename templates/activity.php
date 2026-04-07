@@ -33,11 +33,15 @@
 					</tr>
 				</thead>
 				<tbody>
-					<?php
-					foreach($this->get('events') as $event) {
-						show_event($event);
-					}
-					?>
+						<?php
+						$events = $this->get('events');
+						if(!is_iterable($events)) {
+							$events = array();
+						}
+						foreach($events as $event) {
+							show_event($event);
+						}
+						?>
 				</tbody>
 			</table>
 		</div>

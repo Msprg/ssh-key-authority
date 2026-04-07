@@ -32,6 +32,18 @@ class PublicKey extends Record {
 		return array_key_exists('config', $GLOBALS) ? $GLOBALS['config'] : array();
 	}
 
+	private static function get_runtime_baseurl() {
+		$config = self::get_runtime_config();
+		$baseurl = '';
+		if(is_array($config) && isset($config['web']) && is_array($config['web'])) {
+			$baseurl = trim((string)($config['web']['baseurl'] ?? ''));
+		}
+		if($baseurl === '') {
+			error_log('PublicKey runtime configuration is missing web.baseurl; omitting key URL output.');
+		}
+		return $baseurl;
+	}
+
 	/**
 	* Import all key data from a provided OpenSSH-text-format public key.
 	* Cope with some possible correctable whitespace data issues.
@@ -192,7 +204,6 @@ class PublicKey extends Record {
 	 * @return string key in OpenSSH-text-format
 	 */
 	public function export_userkey_with_fixed_comment(User $owner, int $comment) {
-		$config = self::get_runtime_config();
 		if ($comment == 1) {
 			if ($this->creation_date === null) {
 				$date = '';
@@ -201,7 +212,8 @@ class PublicKey extends Record {
 			}
 			$comment = " {$owner->name}{$date}";
 		} else if ($comment == 2) {
-			$comment = " " . $config['web']['baseurl'] ."/pubkeys/".urlencode($this->id);
+			$baseurl = self::get_runtime_baseurl();
+			$comment = $baseurl === '' ? '' : " " . $baseurl ."/pubkeys/".urlencode($this->id);
 		} else {
 			$comment = '';
 		}
@@ -216,7 +228,6 @@ class PublicKey extends Record {
 	 * @return string key in OpenSSH-text-format
 	 */
 	public function export_serverkey_with_fixed_comment(ServerAccount $owner, int $comment) {
-		$config = self::get_runtime_config();
 		if ($comment == 1) {
 			if ($this->creation_date === null) {
 				$date = '';
@@ -225,7 +236,8 @@ class PublicKey extends Record {
 			}
 			$comment = " {$owner->name}@{$owner->server->hostname}{$date}";
 		} else if ($comment == 2) {
-			$comment = " " . $config['web']['baseurl'] ."/pubkeys/".urlencode($this->id);
+			$baseurl = self::get_runtime_baseurl();
+			$comment = $baseurl === '' ? '' : " " . $baseurl ."/pubkeys/".urlencode($this->id);
 		} else {
 			$comment = '';
 		}
@@ -237,8 +249,7 @@ class PublicKey extends Record {
 	* @return string text summary
 	*/
 	public function summarize_key_information() {
-		$config = self::get_runtime_config();
-		$url = $config['web']['baseurl'].'/pubkeys/'.urlencode($this->id);
+		$baseurl = self::get_runtime_baseurl();
 		$output = "The key fingerprint is:\n";
 		$output .= " MD5:{$this->fingerprint_md5}\n";
 		$output .= " SHA256:{$this->fingerprint_sha256}\n\n";
@@ -248,7 +259,10 @@ class PublicKey extends Record {
 		foreach($randomart_md5 as $ref => $line) {
 			$output .= $line.' '.$randomart_sha256[$ref]."\n";
 		}
-		$output .= "\nYou can also view the key at <$url>";
+		if($baseurl !== '') {
+			$url = $baseurl.'/pubkeys/'.urlencode($this->id);
+			$output .= "\nYou can also view the key at <$url>";
+		}
 		return $output;
 	}
 

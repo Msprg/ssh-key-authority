@@ -171,9 +171,9 @@ class SSH {
 		if (empty($jumphosts)) {
 			return new SSH(new SFTP($host, $port));
 		}
-		$strict_host_key_checking = isset($jumphost_security_options['strict_host_key_checking']) ? $jumphost_security_options['strict_host_key_checking'] : 'no';
-		$user_known_hosts_file = isset($jumphost_security_options['user_known_hosts_file']) ? $jumphost_security_options['user_known_hosts_file'] : '/dev/null';
-		$fix_options = " -o BatchMode=yes -o StrictHostKeyChecking=".escapeshellarg($strict_host_key_checking)." -o UserKnownHostsFile=".escapeshellarg($user_known_hosts_file)." -i config/keys-sync";
+			$strict_host_key_checking = $jumphost_security_options['strict_host_key_checking'] ?? 'yes';
+			$user_known_hosts_file = $jumphost_security_options['user_known_hosts_file'] ?? '/etc/ssh/ssh_known_hosts';
+			$fix_options = " -o BatchMode=yes -o StrictHostKeyChecking=".escapeshellarg($strict_host_key_checking)." -o UserKnownHostsFile=".escapeshellarg($user_known_hosts_file)." -i config/keys-sync";
 		$jumphosts[] = [
 			"user" => "keys-sync",
 			"host" => $host,

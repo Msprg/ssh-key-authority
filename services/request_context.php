@@ -63,7 +63,7 @@ class RequestContext {
 	}
 
 	private static function should_bypass_csrf_protection() {
-		if(!isset($_SERVER['HTTP_X_BYPASS_CSRF_PROTECTION']) || $_SERVER['HTTP_X_BYPASS_CSRF_PROTECTION'] != 1) {
+		if(!isset($_SERVER['HTTP_X_BYPASS_CSRF_PROTECTION']) || $_SERVER['HTTP_X_BYPASS_CSRF_PROTECTION'] !== '1') {
 			return false;
 		}
 		if(defined('APP_ENV')) {

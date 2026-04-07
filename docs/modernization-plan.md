@@ -53,10 +53,10 @@ Scope: behavior-preserving modernization of architecture, dependencies, frontend
   - CSRF checks on POST flows
   - some secure session flags
   - host-key verification logic in sync path
+  - `scripts/ssh.php` enables strict host key checking for jumphost chain commands by default via `build_jumphost_security_options()`, which sets `StrictHostKeyChecking=yes` unless `config['security']['jumphost_strict_host_key_checking']` is explicitly disabled
 - Gaps/risks:
   - CSP currently minimal (`default-src 'self'`) and set in template layer.
   - legacy hardening header (`X-XSS-Protection`) still used.
-  - `scripts/ssh.php` enables strict host key checking for jumphost chain commands by default (via `build_jumphost_security_options`, which sets `$strict_checking = true`), yielding `StrictHostKeyChecking=yes` unless operators explicitly set `config['security']['jumphost_strict_host_key_checking']` to 0.
   - inconsistent auth/session logic split between request handler, login view, and `AuthService`.
   - auto-running migrations during bootstrap via `MigrationDirectory::LAST_MIGRATION` is an operational risk in production; automatic startup migrations can trigger unexpected downtime, schema/data incompatibilities, or failed rollbacks while the app is coming up.
   - mitigation for bootstrap-triggered migrations should require controlled execution instead of implicit startup mutation:

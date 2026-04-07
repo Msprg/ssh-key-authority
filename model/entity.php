@@ -481,11 +481,16 @@ abstract class Entity extends Record {
 			$access->dest_entity->sync_access();
 		}
 		// Sync whatever groups this entity is a member of
-		$group_dir = class_exists('RuntimeState', false)
-			? RuntimeState::get('group_dir', array_key_exists('group_dir', $GLOBALS) ? $GLOBALS['group_dir'] : null)
-			: (array_key_exists('group_dir', $GLOBALS) ? $GLOBALS['group_dir'] : null);
-		$memberships = $group_dir->list_group_membership($this);
-		foreach($memberships as $group) {
+			$group_dir = class_exists('RuntimeState', false)
+				? RuntimeState::get('group_dir', array_key_exists('group_dir', $GLOBALS) ? $GLOBALS['group_dir'] : null)
+				: (array_key_exists('group_dir', $GLOBALS) ? $GLOBALS['group_dir'] : null);
+			if($group_dir === null) {
+				error_log('Group directory service is unavailable; skipping remote-access group membership sync for entity '.get_class($this).':'.$this->entity_id);
+				$memberships = array();
+			} else {
+				$memberships = $group_dir->list_group_membership($this);
+			}
+			foreach($memberships as $group) {
 			if(!isset($seen[$group->entity_id])) {
 				$group->sync_remote_access($seen);
 			}

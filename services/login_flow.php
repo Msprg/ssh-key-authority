@@ -29,38 +29,38 @@ class LoginFlowService {
 					$error_message = 'Please enter both username and password.';
 				} elseif(!preg_match('/^[a-zA-Z0-9._-]+$/', $username)) {
 					$error_message = 'Invalid username format. Username can only contain letters, numbers, dots, hyphens, and underscores.';
-					} else {
-						$current_time = time();
-						$user_attempts = $this->get_login_attempts($username, $current_time);
+				} else {
+					$current_time = time();
+					$user_attempts = $this->get_login_attempts($username, $current_time);
 
-						if($this->is_rate_limited($user_attempts, $current_time)) {
-							$remaining_time = 900 - ($current_time - $user_attempts['time']);
-							$error_message = 'Too many login attempts. Please try again in '.ceil($remaining_time / 60).' minutes.';
-							$this->audit_log('rate_limited', $username, 'Rate limit exceeded');
-						} else {
-							try {
-								$user = $this->auth_service->authenticate($username, $password);
-								if($user) {
-									$this->reset_login_attempts($username);
-									$this->audit_log('success', $username, 'Authentication successful');
-									$redirect_url = $this->sanitize_redirect_path($_SESSION['redirect_after_login'] ?? '/');
-									unset($_SESSION['redirect_after_login']);
-									redirect($redirect_url);
-								} else {
-									$this->increment_login_attempt($username, $current_time);
-									$this->audit_log('failure', $username, 'Invalid credentials');
-									$error_message = 'Invalid username or password.';
-								}
-							} catch(Throwable $e) {
-								$this->audit_log('failure', $username, 'Authentication failed');
-								error_log('[LoginFlowService::handle_request] Authentication exception for '.preg_replace('/[^a-zA-Z0-9._-]/', '', $username).': '.$e->getMessage()."\n".$e);
-								$error_message = 'Authentication error. Please try again.';
+					if($this->is_rate_limited($user_attempts, $current_time)) {
+						$remaining_time = 900 - ($current_time - $user_attempts['time']);
+						$error_message = 'Too many login attempts. Please try again in '.ceil($remaining_time / 60).' minutes.';
+						$this->audit_log('rate_limited', $username, 'Rate limit exceeded');
+					} else {
+						try {
+							$user = $this->auth_service->authenticate($username, $password);
+							if($user) {
+								$this->reset_login_attempts($username);
+								$this->audit_log('success', $username, 'Authentication successful');
+								$redirect_url = $this->sanitize_redirect_path($_SESSION['redirect_after_login'] ?? '/');
+								unset($_SESSION['redirect_after_login']);
+								redirect($redirect_url);
+							} else {
+								$this->increment_login_attempt($username, $current_time);
+								$this->audit_log('failure', $username, 'Invalid credentials');
+								$error_message = 'Invalid username or password.';
 							}
+						} catch(Throwable $e) {
+							$this->audit_log('failure', $username, 'Authentication failed');
+							error_log('[LoginFlowService::handle_request] Authentication exception for '.preg_replace('/[^a-zA-Z0-9._-]/', '', $username).': '.$e->getMessage()."\n".$e);
+							$error_message = 'Authentication error. Please try again.';
 						}
 					}
-					$_SESSION['csrf_token'] = $this->generate_csrf_token();
 				}
+				$_SESSION['csrf_token'] = $this->generate_csrf_token();
 			}
+		}
 
 		return array(
 			'error_message' => $error_message,
@@ -211,7 +211,6 @@ class LoginFlowService {
 	private function sanitize_log_details($details) {
 		$details = preg_replace('/[\x00-\x1F\x7F]+/u', ' ', (string)$details);
 		$details = trim((string)preg_replace('/\s+/u', ' ', $details));
-		$details = str_replace('%', '%%', $details);
 		if(strlen($details) > 500) {
 			$details = substr($details, 0, 500).'...';
 		}

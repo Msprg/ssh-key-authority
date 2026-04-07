@@ -690,12 +690,14 @@ dom_ready(function() {
 					update_server_sync_status(mappedServerStatus.classname, details);
 				}
 
-				for(var i = 0; i < status.accounts.length; i++) {
-					if(!status.accounts[i].pending) {
-						var mappedAccountStatus = map_sync_status(status.accounts[i].sync_status);
-						update_server_account_sync_status_by_id('server_account_sync_status_' + status.accounts[i].name, mappedAccountStatus.classname, mappedAccountStatus.message);
+					if(status && Array.isArray(status.accounts)) {
+						for(var i = 0; i < status.accounts.length; i++) {
+							if(!status.accounts[i].pending) {
+								var mappedAccountStatus = map_sync_status(status.accounts[i].sync_status);
+								update_server_account_sync_status_by_id('server_account_sync_status_' + status.accounts[i].name, mappedAccountStatus.classname, mappedAccountStatus.message);
+							}
+						}
 					}
-				}
 			})
 			.catch(function() {
 				timeout = Math.min(timeout * 1.5, maxTimeout);

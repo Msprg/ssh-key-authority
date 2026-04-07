@@ -36,11 +36,18 @@ function send_mail_key_allowed(ExternalKey $key) {
 	}
 	$email->subject = "Key has been allowed";
 
-	$allowed_keys_url = rtrim($base_url, '/').'/pubkeys#allowed';
-	$email->body = "The following key has been allowed by {$actor_name} ({$actor_uid}):\n";
-	$email->body .= "{$key->type} {$key->keydata}\n\n";
-	$email->body .= "This means, the key will stay untouched in ~/.ssh/authorized_keys files on target machines, if it appears.\n";
-	$email->body .= "You can see the full list of allowed keys at $allowed_keys_url";
+		$allowed_keys_url = null;
+		if(trim($base_url) === '') {
+			error_log('send_mail_key_allowed: web.baseurl is not configured; omitting allowed keys link from email.');
+		} else {
+			$allowed_keys_url = rtrim($base_url, '/').'/pubkeys#allowed';
+		}
+		$email->body = "The following key has been allowed by {$actor_name} ({$actor_uid}):\n";
+		$email->body .= "{$key->type} {$key->keydata}\n\n";
+		$email->body .= "This means, the key will stay untouched in ~/.ssh/authorized_keys files on target machines, if it appears.\n";
+		if($allowed_keys_url !== null) {
+			$email->body .= "You can see the full list of allowed keys at $allowed_keys_url";
+		}
 
 	if($report_address !== '') {
 		$email->send();
