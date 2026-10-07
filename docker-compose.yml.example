@@ -1,6 +1,11 @@
 services:
   ska-app:
-    build: .
+    build:
+      context: .
+      args:
+        # Version shown in the UI footer. Build with:
+        #   SKA_VERSION=$(git describe --tags --always) docker compose up -d --build
+        SKA_VERSION: "${SKA_VERSION:-dev}"
     image: msprg/ssh-key-authority
     container_name: ska-app
     restart: unless-stopped

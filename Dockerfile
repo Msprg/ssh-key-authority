@@ -24,6 +24,11 @@ RUN cp -r ${APP_DIR}/etc / && rm -rf ${APP_DIR}/etc
 
 RUN composer install --no-dev --prefer-dist --optimize-autoloader
 
+# Version shown in the web UI footer. CI passes the git tag/describe output;
+# local builds get "dev" unless SKA_VERSION is given (see docker-compose.yml.example).
+ARG SKA_VERSION=dev
+RUN printf '%s\n' "${SKA_VERSION}" > ${APP_DIR}/VERSION && rm -rf ${APP_DIR}/.git
+
 RUN set -eux; \
     PHP_VERSION="$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;')"; \
     FPM_DIR="/etc/php/${PHP_VERSION}/fpm"; \

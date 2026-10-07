@@ -47,6 +47,9 @@ See `migrations/00x.php` for schema.
 - Sync: `sync_request`, `external_key`
 
 ## Development and runtime notes
+- Version string: never hardcode it. `ska_version()` in `core.php` reads `VERSION` (written by the
+  Dockerfile from the `SKA_VERSION` build arg, which CI sets via `git describe`), else `git describe`
+  on a checkout, else `dev`. Releasing = publishing a GitHub release whose tag is the version.
 - PHP 8.2+, MySQL/MariaDB, LDAP.
 - Docker is the preferred deployment method (`Dockerfile`, `docker-compose.yml`).
 - Container start goes through `scripts/docker-entrypoint.sh`: it fixes ownership of the bind-mounted

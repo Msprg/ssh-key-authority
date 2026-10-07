@@ -40,10 +40,18 @@ jobs:
     steps:
     - name: Check out repository
       uses: actions/checkout@v6
+      with:
+        fetch-depth: 0   # full history + tags, needed for git describe
 
     - name: Prepare ref name
       id: ref
       run: echo "safe_ref=${GITHUB_REF_NAME//\//-}" >> "$GITHUB_OUTPUT"
+
+    - name: Determine version
+      id: version
+      # On a release this is exactly the tag (e.g. 1.5.4); on a branch push it is
+      # e.g. 1.5.4-3-gabc1234. Baked into the image and shown in the UI footer.
+      run: echo "version=$(git describe --tags --always --dirty)" >> "$GITHUB_OUTPUT"
 
     - name: Login to Docker Hub
       uses: docker/login-action@v3
@@ -62,6 +70,8 @@ jobs:
         push: true
         cache-from: type=gha
         cache-to: type=gha,mode=max
+        build-args: |
+          SKA_VERSION=${{ steps.version.outputs.version }}
         tags: |
           ${{ env.IMAGE_NAME }}:latest-${{ steps.ref.outputs.safe_ref }}-${{ matrix.arch }}
 
@@ -73,6 +83,8 @@ jobs:
         push: true
         cache-from: type=gha
         cache-to: type=gha,mode=max
+        build-args: |
+          SKA_VERSION=${{ steps.version.outputs.version }}
         tags: |
           ${{ env.IMAGE_NAME }}:${{ steps.ref.outputs.safe_ref }}-${{ matrix.arch }}
           ${{ env.IMAGE_NAME }}:latest-${{ matrix.arch }}

@@ -24,6 +24,30 @@ spl_autoload_register('autoload_model');
 
 require('pagesection.php');
 
+/**
+ * Application version string shown in the page footer.
+ *
+ * Resolution order:
+ *  1. A VERSION file in the application root (written by the Dockerfile from
+ *     the SKA_VERSION build argument, which CI sets from the git tag).
+ *  2. `git describe` when running from a git checkout (bare-metal/dev installs).
+ *  3. The literal "dev".
+ */
+function ska_version(): string {
+	static $version = null;
+	if($version !== null) return $version;
+	$file = __DIR__.'/VERSION';
+	if(is_readable($file)) {
+		$v = trim((string)file_get_contents($file));
+		if($v !== '') return $version = $v;
+	}
+	if(is_dir(__DIR__.'/.git')) {
+		$out = @shell_exec('git -C '.escapeshellarg(__DIR__).' describe --tags --always --dirty 2>/dev/null');
+		if(is_string($out) && trim($out) !== '') return $version = trim($out);
+	}
+	return $version = 'dev';
+}
+
 $config_file = 'config/config.ini';
 if(file_exists($config_file)) {
 	$config = parse_ini_file($config_file, true);

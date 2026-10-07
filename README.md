@@ -49,6 +49,11 @@ Installation
 
 2. Copy `docker-compose.yml.example` to `docker-compose.yml` and configure it.
 
+   When building the image locally, pass the version so it appears in the UI footer
+   (CI does this automatically for published releases):
+
+       SKA_VERSION=$(git describe --tags --always) docker compose up -d --build
+
 3. Write initial configuration file according to `config/config.ini.example`
 
 4.  Generate an SSH key pair to synchronize with. SSH Key Authority will expect to find the files next to the config.ini file as `config/keys-sync` and `config/keys-sync.pub` for the private and public keys respectively. Be careful to use PEM format.
