@@ -49,6 +49,9 @@ See `migrations/00x.php` for schema.
 ## Development and runtime notes
 - PHP 8.2+, MySQL/MariaDB, LDAP.
 - Docker is the preferred deployment method (`Dockerfile`, `docker-compose.yml`).
+- Container start goes through `scripts/docker-entrypoint.sh`: it fixes ownership of the bind-mounted
+  `/var/log/ska` (www-data) and `/var/local/keys-sync` (keys-sync) dirs, installs the mounted sync key
+  pair, then execs supervisord. Without this, cron jobs silently fail on root-owned host dirs.
 - Cron and supervisor configs live under `etc/`.
 - Web assets in `public_html/` (Bootstrap + jQuery).
 

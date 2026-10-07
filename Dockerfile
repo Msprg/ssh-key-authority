@@ -36,11 +36,12 @@ RUN set -eux; \
     chown www-data:www-data /run/php /var/lib/php/sessions; \
     chmod 1733 /var/lib/php/sessions
 
-RUN chmod 0644 /etc/cron.d/ska
+RUN chmod 0644 /etc/cron.d/ska && \
+    install -m 0755 ${APP_DIR}/scripts/docker-entrypoint.sh /usr/local/bin/ska-entrypoint
 
 EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 CMD curl -fsS http://127.0.0.1:8080/ || exit 1
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]
+CMD ["/usr/local/bin/ska-entrypoint"]
