@@ -194,3 +194,55 @@ function pubkey_json($pubkey, $include_keydata = true, $include_owner = true) {
 	}
 	return $json;
 }
+/**
+ * Output a text that is given as a list of parts: plain strings, entities (shown as links to their pages) and
+ * arrays for markup: array('code' => text), or array('url' => relative url, 'text' => link text).
+ * Everything is escaped here, so the parts must not contain HTML.
+ * @param array $parts the parts to output
+ */
+function show_parts(array $parts) {
+	foreach($parts as $part) {
+		try {
+			if(is_array($part)) {
+				if(isset($part['code'])) {
+					?><code><?php out($part['code']) ?></code><?php
+				} elseif(isset($part['url'])) {
+					?><a href="<?php outurl($part['url']) ?>"><?php out($part['text'] ?? $part['url']) ?></a><?php
+				}
+			} elseif($part instanceof User) {
+				?><a href="<?php outurl('/users/'.urlencode($part->uid)) ?>" class="user"><?php out($part->uid) ?></a><?php
+				if(!$part->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE);
+			} elseif($part instanceof Group) {
+				?><a href="<?php outurl('/groups/'.urlencode($part->name)) ?>" class="group"><?php out($part->name) ?></a><?php
+				if(!$part->active) out(' <span class="label label-default">Inactive</span>', ESC_NONE);
+			} elseif($part instanceof ServerAccount) {
+				?><a href="<?php outurl('/servers/'.urlencode($part->server->hostname).'/accounts/'.urlencode($part->name)) ?>" class="serveraccount"><?php out($part->name.'@'.$part->server->hostname) ?></a><?php
+			} elseif($part instanceof Server) {
+				?><a href="<?php outurl('/servers/'.urlencode($part->hostname)) ?>" class="server"><?php out($part->hostname) ?></a><?php
+			} elseif($part instanceof PublicKey) {
+				?><a href="<?php outurl('/pubkeys/'.urlencode($part->id)) ?>"><code><?php out($part->type.' SHA256:'.$part->fingerprint_sha256) ?></code></a><?php
+			} else {
+				out((string)$part);
+			}
+		} catch(Exception $e) {
+			// An entity that a rule refers to no longer exists
+			?><em>(deleted)</em><?php
+		}
+	}
+}
+
+/**
+ * Output the icon for the status of a finding of the "Troubleshoot access" tool.
+ * @param string $status 'ok', 'fail', 'warn', 'unknown' or 'info'
+ */
+function show_finding_icon($status) {
+	$icons = array(
+		'ok' => array('glyphicon-ok-sign text-success', 'OK'),
+		'fail' => array('glyphicon-remove-sign text-danger', 'Problem'),
+		'warn' => array('glyphicon-exclamation-sign text-warning', 'Warning'),
+		'unknown' => array('glyphicon-question-sign text-muted', 'Unknown'),
+		'info' => array('glyphicon-info-sign text-info', 'Note'),
+	);
+	list($class, $title) = $icons[$status] ?? $icons['info'];
+	?><span class="glyphicon <?php out($class) ?>" title="<?php out($title) ?>"></span><span class="sr-only"><?php out($title) ?>:</span><?php
+}

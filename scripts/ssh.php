@@ -158,9 +158,69 @@ class SSH {
 	 * @return string The output of the command as one string
 	 */
 	public function exec(string $command): string {
-		return $this->guard("Failed to execute the command: $command", function() use ($command) {
+		$result = $this->guard("Failed to execute the command: $command", function() use ($command) {
 			return $this->connection->exec($command);
 		});
+		if (!is_string($result)) {
+			// The library reports some failures (e.g. a closed channel) by returning false
+			throw new SSHException("Failed to execute the command: $command");
+		}
+		return $result;
+	}
+
+	/**
+	 * Like exec(), but fail if the command does not finish within the timeout of the library, instead of
+	 * returning the output received so far as if it were complete. The channel of the unfinished command is
+	 * closed, so that the connection stays usable for further commands.
+	 *
+	 * @param string $command Shell command to execute
+	 * @throws SSHException If starting the command fails or it does not finish in time
+	 * @return string The complete output of the command as one string
+	 */
+	public function exec_complete(string $command): string {
+		// A command that timed out earlier on this connection has left its channel open
+		$this->close_timed_out_command();
+		try {
+			$result = $this->exec($command);
+		} catch (SSHException $e) {
+			// The message of exec() quotes the whole command, which is of no use to whoever reads this one
+			$cause = $e->getPrevious();
+			throw new SSHException("The command could not be run".($cause === null ? "" : ": ".$cause->getMessage()));
+		}
+		if ($this->connection->isTimeout()) {
+			$this->close_timed_out_command();
+			throw new SSHException("The command did not finish in time");
+		}
+		return $result;
+	}
+
+	/**
+	 * If the last command ran into the timeout of the library, close its channel so that the connection can
+	 * run further commands.
+	 */
+	private function close_timed_out_command() {
+		try {
+			if ($this->connection->isTimeout()) {
+				$this->connection->reset(\phpseclib3\Net\SSH2::CHANNEL_EXEC);
+			}
+		} catch (Throwable $e) {
+			// The next command will report that the connection is unusable
+		}
+	}
+
+	/**
+	 * Get the identification string that the ssh server sent when connecting.
+	 * It usually names the server software and its version, like "SSH-2.0-OpenSSH_9.2p1 Debian-2".
+	 *
+	 * @return string|null The identification string, null if it is not available
+	 */
+	public function get_server_identification(): ?string {
+		try {
+			$identification = $this->connection->getServerIdentification();
+		} catch (Exception $e) {
+			return null;
+		}
+		return is_string($identification) ? $identification : null;
 	}
 
 	/**

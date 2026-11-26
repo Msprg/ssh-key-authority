@@ -38,6 +38,20 @@ This document gives AI agents enough context to work safely in this repo.
 - Key upload: stored in `model/publickey.php` and related directories.
 - Access rules: `model/access.php` and related access option classes.
 - Key distribution: `scripts/sync.php` over SSH to write files under `/var/local/keys-sync/`.
+  - The content of the key files is built in `keyfile_common.php` (`build_account_keyfile()`,
+    `build_ldap_user_keyfile()`). The sync and the "Troubleshoot access" tool both call it; do not build key
+    file content anywhere else, or the tool will explain something the sync does not do.
+- Troubleshoot access (Tools menu, admins only): `views/troubleshoot_access.php` asks for a user or key, a
+  server and a login name, and `model/accesstroubleshooter.php` explains why access is or is not granted.
+  - It retraces the rules itself to explain them, but the verdict comes from the generated key file. When the
+    sync logic changes (inactive handling, nested groups, destination rules), change the trace with it.
+  - The web process cannot open SSH connections (it cannot read the sync key). Facts about a target server
+    (sshd configuration, key directory, login accounts) are collected by `ServerHostFacts::collect_and_store()`
+    at the end of each sync and, at most every 15 minutes, by `scripts/supervise_external_keys.php`, and
+    stored in `server_host_facts`. Collection must never fail or slow down a sync noticeably.
+  - `model/sshdconfig.php` evaluates the collected sshd directives the way sshd does (first value wins,
+    Include in place, Match blocks). Text from target servers is untrusted: only allowlisted directives are
+    stored, and it is always escaped on output.
 - Periodic tasks:
   - `scripts/ldap_update.php` (LDAP sync)
   - `scripts/supervise_external_keys.php` (detect external keys)
@@ -52,6 +66,7 @@ See `migrations/00x.php` for schema.
 - Access rules: `access`, `access_option`
 - Events/audit: `entity_event`, `server_event`
 - Sync: `sync_request`, `external_key`
+- Facts collected from target servers: `server_host_facts` (one JSON snapshot per server)
 
 ## Development and runtime notes
 - Version string: never hardcode it. `ska_version()` in `core.php` reads `VERSION` (written by the
@@ -69,7 +84,8 @@ See `migrations/00x.php` for schema.
 - UI changes: `templates/` and `views/`
 - Access logic: `model/access.php` and `model/accessoption.php`
 - LDAP behavior: `ldap.php` and `services/auth.php`
-- Sync behavior: `scripts/sync.php` and `scripts/sync-common.php`
+- Sync behavior: `scripts/sync.php` and `scripts/sync-common.php`; key file content: `keyfile_common.php`
+- "Why can't X log in": `model/accesstroubleshooter.php`, `model/sshdconfig.php`, `model/serverhostfacts.php`
 
 ## Safety checks for edits
 - Validate any change that touches SSH key generation or distribution.

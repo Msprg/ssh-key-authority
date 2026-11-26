@@ -152,6 +152,12 @@
 		</div>
 		<?php } ?>
 		<h3>Access</h3>
+		<p class="text-muted">
+			Only access that was granted to this user directly is listed here. Access through groups that the user is a member of is not.
+			<?php if($this->get('active_user')->admin) { ?>
+			<a href="<?php outurl(AccessTroubleshooter::url($this->get('user')->uid, '', ''))?>">Troubleshoot access</a> shows everything that applies for a given server and account.
+			<?php } ?>
+		</p>
 		<?php if(count($this->get('user_access')) == 0) { ?>
 		<p><?php out($this->get('user')->name)?> has not been explicitly granted access to any entities.</p>
 		<?php } else { ?>

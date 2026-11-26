@@ -21,6 +21,9 @@ require('../core.php');
 require('ssh.php');
 $active_user = User::get_keys_sync_user();
 
+/** Seconds after which the facts collected from a target server are collected again */
+const HOST_FACTS_MAX_AGE = 900;
+
 $keys_in_db = ExternalKey::list_external_keys();
 
 // Associative array that maps key contents (base64 strings) to a list of ExternalKey objects.
@@ -58,6 +61,9 @@ foreach ($servers as $server) {
 		} catch (Throwable $e) {
 			// ignore - Monitoring will complain if status file is not updated
 		}
+		// Snapshot of sshd configuration and key directory for the "Troubleshoot access" tool. This script
+		// runs every few minutes, so refresh only what has become stale; a sync always refreshes it.
+		ServerHostFacts::collect_and_store($server, $ssh, 'supervision', HOST_FACTS_MAX_AGE);
 	}
 }
 

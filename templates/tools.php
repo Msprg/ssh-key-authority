@@ -18,4 +18,5 @@
 <h1>Tools</h1>
 <ul>
 <li><a href="<?php outurl('/bulk_mail')?>">Bulk mailer</a></li>
+<li><a href="<?php outurl('/tools/troubleshoot_access')?>">Troubleshoot access</a> – find out why somebody can or cannot log in to an account on a server</li>
 </ul>

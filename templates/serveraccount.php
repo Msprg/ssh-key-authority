@@ -63,6 +63,9 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 	<?php if($this->get('server')->key_management == 'keys') { ?>
 	<div class="tab-pane fade" id="access">
 		<h2 class="sr-only">Access</h2>
+		<?php if($this->get('active_user')->admin) { ?>
+		<p><a href="<?php outurl(AccessTroubleshooter::url('', $this->get('server')->hostname, $this->get('account')->name))?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-search"></span> Troubleshoot access to this account</a></p>
+		<?php } ?>
 		<?php if(count($this->get('access')) == 0 && count($this->get('access_requests')) == 0) { ?>
 		<p>No-one has been granted access directly to this account.<?php if(count($this->get('group_membership')) > 0) out(' Rules inherited from its groups are listed under "Group access rules" below.') ?></p>
 		<?php } else { ?>

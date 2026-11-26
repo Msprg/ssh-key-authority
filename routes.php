@@ -44,6 +44,7 @@ $routes = array(
 	'/servers/{hostname}/sync_status' => 'server_sync_status',
 	'/servers_bulk_action' => 'servers_bulk_action',
 	'/tools' => 'tools',
+	'/tools/troubleshoot_access' => 'troubleshoot_access',
 	'/users' => 'users',
 	'/users/{username}' => 'user',
 	'/users/{username}/pubkeys' => 'user_pubkeys',
