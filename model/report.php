@@ -40,6 +40,17 @@ class Report {
 	public static function create(): Report {
 		global $server_dir;
 
+		// The same few groups come up for every account of every server
+		remember_access_rules(true);
+		try {
+			return self::build($server_dir);
+		} finally {
+			remember_access_rules(false);
+		}
+	}
+
+	private static function build($server_dir): Report {
+
 		// Server leader report
 		$servers = $server_dir->list_servers([], ['key_management' => ['keys']]);
 		$leaders_serverlist = [];
@@ -155,8 +166,10 @@ function get_permitted_users(ServerAccount $account): array {
 	$users = array_filter($accessors, function($accessor) {
 		return get_class($accessor) == "User";
 	});
+	// By name, and by id among users of the same name, so that the same set of users always comes in the same
+	// order and servers with the same access are grouped together
 	usort($users, function($u1, $u2) {
-		return $u1->name <=> $u2->name;
+		return [$u1->name, $u1->entity_id] <=> [$u2->name, $u2->entity_id];
 	});
 	return $users;
 }

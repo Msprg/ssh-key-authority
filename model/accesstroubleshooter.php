@@ -176,6 +176,16 @@ class AccessTroubleshooter {
 	 * @return array with 'verdict', 'sections' and the objects that were examined, for the template
 	 */
 	public function run(): array {
+		// One request, one picture of the rules: the groups are the same for every account that is looked at
+		remember_access_rules(true);
+		try {
+			return $this->examine();
+		} finally {
+			remember_access_rules(false);
+		}
+	}
+
+	private function examine(): array {
 		$this->examine_who();
 		$this->examine_server();
 		if($this->server->key_management == 'keys') {
@@ -456,9 +466,10 @@ class AccessTroubleshooter {
 		}
 		$this->link['label'] = 'not managed by SKA';
 		$names = array();
-		foreach($keyfile_accounts as $account) {
+		foreach($keyfile_accounts as $filename => $account) {
 			if(count($names) > 0) $names[] = ', ';
-			$names[] = $this->rerun_link($account->name, $account->name);
+			// The login is the name of the key file; an account name may contain slashes, a login cannot
+			$names[] = $this->rerun_link((string)$filename, $account->name);
 		}
 		$this->deny($id, array(array('code' => $this->login), ' is not an account that SKA manages on ', $server, '. SKA writes no key file for it, so it grants nobody access to it.'),
 			array(
@@ -622,7 +633,8 @@ class AccessTroubleshooter {
 		$sets = array();
 		$chains = $this->membership_chains($account);
 		$listed = array();
-		foreach(list_account_rule_sets($account) as $rule_set) {
+		// With the rules of inactive groups, to show that they exist and are not applied
+		foreach(list_account_rule_sets($account, true) as $rule_set) {
 			$entity = $rule_set['target'];
 			$key = get_class($entity).$entity->id;
 			// A group that the account is in by more than one way has its rules written again; shown once here
@@ -1003,12 +1015,12 @@ class AccessTroubleshooter {
 			return;
 		}
 		$accounts = array();
-		foreach(list_keyfile_accounts($this->server) as $account) {
+		foreach(list_keyfile_accounts($this->server) as $filename => $account) {
 			if(!is_null($this->account) && $account->entity_id == $this->account->entity_id) continue;
 			foreach($this->collect_rule_sets($account) as $set) {
 				foreach($set['rules'] as $rule) {
 					if($rule['match']['effective']) {
-						$accounts[$account->name] = $account;
+						$accounts[(string)$filename] = $account;
 					}
 				}
 			}
@@ -1018,11 +1030,12 @@ class AccessTroubleshooter {
 		}
 		$this->section('other', 'Other accounts on this server');
 		$parts = array_merge($this->subject_label(), array(' is covered by access rules for: '));
-		foreach(array_values($accounts) as $index => $account) {
-			if($index > 0) $parts[] = ', ';
+		$index = 0;
+		foreach($accounts as $filename => $account) {
+			if($index++ > 0) $parts[] = ', ';
 			$parts[] = $account;
 			$parts[] = ' (';
-			$parts[] = $this->rerun_link($account->name, 'explain');
+			$parts[] = $this->rerun_link((string)$filename, 'explain');
 			$parts[] = ')';
 		}
 		$parts[] = '.';

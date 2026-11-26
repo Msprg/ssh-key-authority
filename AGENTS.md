@@ -45,8 +45,8 @@ This document gives AI agents enough context to work safely in this repo.
     (`model/report.php`) and the inherited rules on the server and account pages all use it. Do not walk
     `group_member` and `access` yourself to say who has access, and do not "fix" an oddity in one caller:
     nested groups are expanded even when inactive, each group once per rule by name, duplicates are kept.
-    Results are remembered per process and never refreshed; call `forget_access_rule_cache()` before relying
-    on them after a change in the same process.
+    The report and the tool switch on remembering of group rules and members for the duration of their work
+    (`remember_access_rules()`); the sync never does and reads everything at the moment it builds a file.
 - Troubleshoot access (Tools menu, admins only): `views/troubleshoot_access.php` asks for a user or key, a
   server and a login name, and `model/accesstroubleshooter.php` explains why access is or is not granted.
   - Rules and the people they cover come from the shared functions above, and the verdict from the generated

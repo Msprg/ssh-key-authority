@@ -33,25 +33,31 @@ const KEYFILE_HEADER = "## Auto generated keys file for %s
 ";
 
 /**
- * What the functions below have looked up so far in this process: the rules of groups and the members of the
- * groups that rules name. Many accounts share the same few groups, so this saves most of the work of a report.
+ * What list_account_rule_sets() and expand_access_source() have looked up, while remembering is switched on:
+ * the rules of groups and the members of the groups that rules name.
  *
- * Nothing in here is ever refreshed. That is fine for the callers there are - a sync of one server, the
- * rendering of one page - but these functions must not be relied on after members or rules were changed in
- * the same process without calling forget_access_rule_cache() in between. The Access and entity objects that
- * they return are shared between calls: treat them as read-only.
+ * A report asks for the same few groups (such as "root-accounts") once per account of every server, and
+ * remembering them saves most of its work. It is off unless a caller switches it on with
+ * remember_access_rules(). The sync never does: every key file is built from what the database says at that
+ * moment, so that a change made while a sync runs is not missed for the accounts that follow.
+ *
+ * While it is on, nothing is refreshed, and the Access and entity objects that are returned are shared between
+ * calls: treat them as read-only.
  */
 function &access_rule_cache() {
-	static $cache = array('rules' => array(), 'members' => array());
+	static $cache = array('enabled' => false, 'rules' => array(), 'members' => array());
 	return $cache;
 }
 
 /**
- * Drop everything that was remembered about rules and group members, see access_rule_cache().
+ * Switch remembering of rules and group members on or off, see access_rule_cache(). Either way, what was
+ * remembered so far is dropped. Whoever switches it on for a piece of work switches it off afterwards.
+ *
+ * @param bool $enabled true to remember from now on
  */
-function forget_access_rule_cache() {
+function remember_access_rules($enabled) {
 	$cache = &access_rule_cache();
-	$cache = array('rules' => array(), 'members' => array());
+	$cache = array('enabled' => (bool)$enabled, 'rules' => array(), 'members' => array());
 }
 
 /**
@@ -66,11 +72,29 @@ function account_gets_keyfile(ServerAccount $account) {
 }
 
 /**
- * List the managed accounts that the sync writes key files for on a server, by the name of their key file.
+ * List the accounts of a server that the sync builds a key file for, each with the name of its file, in the
+ * order in which the sync goes through them. The file name is the account name without slashes, so several
+ * accounts can come with the same one; and "keys-sync" is still among them. This is the raw material of the
+ * sync; everybody else wants list_keyfile_accounts().
  *
- * The file name is the account name without slashes. If several accounts end up with the same file name, the
- * last one gets the file. There is never a file for "keys-sync": that is the account SKA itself logs in with,
- * and its key file is set up by hand. A server whose keys are not managed by SKA gets no files at all.
+ * @param Server $server The server to list the accounts of
+ * @return array of array('filename' => string, 'account' => ServerAccount)
+ */
+function list_keyfile_candidates(Server $server) {
+	$candidates = array();
+	foreach($server->list_accounts() as $account) {
+		if(!account_gets_keyfile($account)) continue;
+		$candidates[] = array('filename' => str_replace('/', '', $account->name), 'account' => $account);
+	}
+	return $candidates;
+}
+
+/**
+ * List the managed accounts that end up with a key file on a server, by the name of that file.
+ *
+ * If several accounts come with the same file name, the last one gets the file. There is never a file for
+ * "keys-sync": that is the account SKA itself logs in with, and its key file is set up by hand. A server whose
+ * keys are not managed by SKA gets no files at all.
  *
  * @param Server $server The server to list the accounts of
  * @return array file name => ServerAccount
@@ -80,9 +104,8 @@ function list_keyfile_accounts(Server $server) {
 	if($server->key_management != 'keys') {
 		return $accounts;
 	}
-	foreach($server->list_accounts() as $account) {
-		if(!account_gets_keyfile($account)) continue;
-		$accounts[str_replace('/', '', $account->name)] = $account;
+	foreach(list_keyfile_candidates($server) as $candidate) {
+		$accounts[$candidate['filename']] = $candidate['account'];
 	}
 	unset($accounts['keys-sync']);
 	return $accounts;
@@ -97,21 +120,29 @@ function list_keyfile_accounts(Server $server) {
  * of each group itself. Whether the account gets a key file at all is not looked at here, see
  * list_keyfile_accounts().
  *
- * Group rules are remembered, see access_rule_cache(): a report asks for the same few groups (such as
- * "root-accounts") once per account of every server.
- *
  * @param ServerAccount $account The account to list the rule sets of
+ * @param bool $with_ineffective Also load the rules of inactive groups, for a caller that wants to show them.
+ *                               The sync does not look at them at all.
  * @return array of array('target' => Group|ServerAccount, 'in_effect' => bool, 'rules' => array of Access).
- *               The rules of an inactive group are not in effect: the sync leaves them out.
+ *               The rules of an inactive group are not in effect: the sync leaves them out, and they are
+ *               only listed here if asked for.
  */
-function list_account_rule_sets(ServerAccount $account) {
+function list_account_rule_sets(ServerAccount $account, $with_ineffective = false) {
 	$cache = &access_rule_cache();
 	$sets = array();
 	foreach($account->list_group_membership() as $group) {
-		if(!isset($cache['rules'][$group->id])) {
-			$cache['rules'][$group->id] = $group->list_access();
+		$in_effect = $group->active != 0;
+		if(!$in_effect && !$with_ineffective) {
+			$rules = array();
+		} elseif(!$cache['enabled']) {
+			$rules = $group->list_access();
+		} else {
+			if(!isset($cache['rules'][$group->id])) {
+				$cache['rules'][$group->id] = $group->list_access();
+			}
+			$rules = $cache['rules'][$group->id];
 		}
-		$sets[] = array('target' => $group, 'in_effect' => $group->active != 0, 'rules' => $cache['rules'][$group->id]);
+		$sets[] = array('target' => $group, 'in_effect' => $in_effect, 'rules' => $rules);
 	}
 	$sets[] = array('target' => $account, 'in_effect' => true, 'rules' => $account->list_access());
 	return $sets;
@@ -128,7 +159,7 @@ function list_account_rule_sets(ServerAccount $account) {
  * These are the rules of the sync, oddities included. A caller that wants something else (no duplicates,
  * say) has to filter the result, not expand differently.
  *
- * The members of a group are remembered, see access_rule_cache(), as many accounts share the same rules.
+ * While remembering is switched on (see access_rule_cache()), the members of a group are looked up once.
  *
  * @param Entity $source The user, server account or group that the rule grants access to
  * @param bool $even_if_inactive Expand a group although it is inactive, to tell whom the rule would cover
@@ -144,6 +175,10 @@ function expand_access_source(Entity $source, $even_if_inactive = false) {
 	case 'Group':
 		if(!$source->active && !$even_if_inactive) {
 			return array('group' => $source, 'expanded' => false, 'members' => array());
+		}
+		if(!$cache['enabled']) {
+			$seen = array($source->name => true);
+			return array('group' => $source, 'expanded' => true, 'members' => expand_group_members($source->list_members(), $seen));
 		}
 		if(!isset($cache['members'][$source->id])) {
 			$seen = array($source->name => true);

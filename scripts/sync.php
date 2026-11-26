@@ -316,10 +316,13 @@ function sync_server($id, $only_username = null, $preview = false) {
 	if($server->key_management != 'keys') return;
 	$keyfiles = array();
 	$sync_warning = false;
-	// Rules and group members are looked up afresh for every sync
-	forget_access_rule_cache();
-	// Generate keyfiles for each account
-	foreach(list_keyfile_accounts($server) as $username => $account) {
+	// Every key file is built from what the database says at that moment
+	remember_access_rules(false);
+	// Generate keyfiles for each account. Accounts that share a file name are all built, and the last one
+	// keeps the name; "keys-sync" stays in the list until the LDAP users are through, see below.
+	foreach(list_keyfile_candidates($server) as $candidate) {
+		$username = $candidate['filename'];
+		$account = $candidate['account'];
 		$keyfile = build_account_keyfile($server, $account);
 		$keyfiles[$username] = array('keyfile' => $keyfile, 'check' => false, 'account' => $account);
 	}
