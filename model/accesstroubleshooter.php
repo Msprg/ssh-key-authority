@@ -18,9 +18,9 @@ require_once(__DIR__.'/../keyfile_common.php');
 /**
  * Explains why a user (or the owner of an SSH key) can or cannot log in to an account on a server.
  *
- * It retraces what the sync does when it builds the key file of the account (see keyfile_common.php), but
- * records every decision instead of only producing text. As a safeguard, the outcome is compared with the key
- * file that the sync code itself generates; a difference is reported as a finding.
+ * It goes through what the sync does when it builds the key file of the account, and records every decision
+ * instead of only producing text. Which rules apply to an account and whom a rule covers comes from the same
+ * functions that the sync uses (keyfile_common.php), and the verdict from the key file that they generate.
  *
  * It then compares with the facts collected from the target server (see ServerHostFacts): whether the file has
  * arrived there, and whether the sshd configuration lets the key be used.
@@ -64,7 +64,8 @@ class AccessTroubleshooter {
 	private $trace = array();
 	/** Whether one of the examined keys was found in a home directory on the server */
 	private $external_key_found = false;
-	private $members_cache = array();
+	/** @var array id of a group => whom a rule for that group covers, see list_access_grantees() */
+	private $grantees_cache = array();
 	/** @var array sshd directives in Match blocks that may or may not apply, see SshdConfig::evaluate() */
 	private $conditional = array();
 	/** Whether part of the sshd configuration could not be read, so that conclusions from it are not certain */
@@ -73,7 +74,6 @@ class AccessTroubleshooter {
 	private $age_text = null;
 	/** @var array|null Parts that say why syncs to the server do not get through, if they do not */
 	private $sync_problem = null;
-	private $paths_cache = array();
 	/**
 	 * @var array What connects the subject to the login, for the diagram: 'type' is 'rule' (with 'set' and
 	 *            'rule'), 'ldap' (the user's own key file) or 'none' (with 'label' saying why not)
@@ -433,16 +433,10 @@ class AccessTroubleshooter {
 			$this->link['label'] = 'reserved for SKA itself';
 			return;
 		}
-		// The sync writes a file per active account that is not just a pending request. Several account names can
-		// map to one file name (slashes are dropped); as in the sync, the last one wins.
-		$candidates = array();
-		foreach($server->list_accounts() as $account) {
-			if(str_replace('/', '', $account->name) === $this->keyfile_name && $account->sync_status != 'proposed') {
-				$candidates[] = $account;
-			}
-		}
-		if(count($candidates) > 0) {
-			$this->account = end($candidates);
+		// The account that the sync writes this file for, if any
+		$keyfile_accounts = list_keyfile_accounts($server);
+		if(isset($keyfile_accounts[$this->keyfile_name])) {
+			$this->account = $keyfile_accounts[$this->keyfile_name];
 			$this->add($id, 'ok', array($this->account, ' is an account managed by SKA. Its keys are written to ', $file, '.'));
 			$this->examine_rules();
 			return;
@@ -462,8 +456,7 @@ class AccessTroubleshooter {
 		}
 		$this->link['label'] = 'not managed by SKA';
 		$names = array();
-		foreach($server->list_accounts() as $account) {
-			if($account->sync_status == 'proposed') continue;
+		foreach($keyfile_accounts as $account) {
 			if(count($names) > 0) $names[] = ', ';
 			$names[] = $this->rerun_link($account->name, $account->name);
 		}
@@ -537,10 +530,11 @@ class AccessTroubleshooter {
 	}
 
 	/**
-	 * List the groups that an entity is a member of, directly or through other groups, with the chain of
-	 * groups that leads there. Mirrors GroupDirectory::list_group_membership, which the sync uses.
+	 * Find the chains of groups through which an entity is a member of each of its groups. Which groups those
+	 * are, and so which rules apply, is decided by list_account_rule_sets(); this only supplies the way there,
+	 * for display.
 	 *
-	 * @return array of array('group' => Group, 'chain' => array of Group from the direct group to this one)
+	 * @return array group id => array of Group, from the group that the entity is directly in to that group
 	 */
 	private function membership_chains(Entity $entity, array $chain = array(), array &$found = array()): array {
 		global $database;
@@ -563,63 +557,38 @@ class AccessTroubleshooter {
 			}
 			$this_chain = array_merge($chain, array($group));
 			if(!isset($found[$group_id])) {
-				$found[$group_id] = array('group' => $group, 'chain' => $this_chain);
+				$found[$group_id] = $this_chain;
 			}
 			if(!$in_chain) {
 				$this->membership_chains($group, $this_chain, $found);
 			}
 		}
-		return array_values($found);
-	}
-
-	private function members(Group $group): array {
-		if(!isset($this->members_cache[$group->id])) {
-			$this->members_cache[$group->id] = $group->list_members();
-		}
-		return $this->members_cache[$group->id];
+		return $found;
 	}
 
 	/**
-	 * Find the ways in which the subject is a member of a group that was granted access, the way the sync
-	 * expands such a group: nested groups are followed, each group name once.
-	 *
-	 * @param Group $group Group to search
-	 * @param array &$seen Names of the groups visited so far
-	 * @param array $chain Groups passed on the way to this one
-	 * @param array &$paths Found ways, each an array of the nested groups between the granted group and the subject
-	 */
-	private function find_member_paths(Group $group, array &$seen, array $chain, array &$paths) {
-		foreach($this->members($group) as $member) {
-			if($member instanceof Group) {
-				if(!isset($seen[$member->name])) {
-					$seen[$member->name] = true;
-					$this->find_member_paths($member, $seen, array_merge($chain, array($member)), $paths);
-				}
-			} elseif(!is_null($this->subject) && $this->same_entity($member, $this->subject)) {
-				// Compared by id: loading every member of a large group to look at it would cost a query each
-				$paths[] = $chain;
-			}
-		}
-	}
-
-	/**
-	 * Decide whether an access rule covers the subject.
+	 * Decide whether an access rule covers the subject. Whom a rule covers is worked out by
+	 * expand_access_source(), which the sync writes the key files with.
 	 *
 	 * @param Access $access The rule
 	 * @return array with 'covers' (the rule names the subject, directly or through a group), 'effective'
-	 *               (the sync writes keys because of it), 'paths' (for group rules) and 'note' (parts)
+	 *               (the sync writes keys because of it), 'paths' (for group rules: for each way in which the
+	 *               subject is a member, the nested groups between the group of the rule and the subject)
+	 *               and 'note' (parts)
 	 */
 	private function match_rule(Access $access): array {
 		$source = $access->source_entity;
 		$result = array('covers' => false, 'effective' => false, 'paths' => array(), 'note' => array());
 		if($source instanceof Group) {
-			$cache_key = (is_null($this->subject) ? '' : get_class($this->subject).$this->subject->id).'/'.$source->id;
-			if(!isset($this->paths_cache[$cache_key])) {
-				$seen = array($source->name => true);
-				$this->paths_cache[$cache_key] = array();
-				$this->find_member_paths($source, $seen, array(), $this->paths_cache[$cache_key]);
+			if(!isset($this->grantees_cache[$source->id])) {
+				// Also for an inactive group, to be able to say that the rule would cover the subject
+				$this->grantees_cache[$source->id] = list_access_grantees(expand_access_source($source, true));
 			}
-			$result['paths'] = $this->paths_cache[$cache_key];
+			foreach($this->grantees_cache[$source->id] as $grantee) {
+				if(!is_null($this->subject) && $this->same_entity($grantee['entity'], $this->subject)) {
+					$result['paths'][] = $grantee['via'];
+				}
+			}
 			$result['covers'] = count($result['paths']) > 0;
 			if(!$source->active) {
 				$result['note'] = array('This group is inactive, so the sync ignores the rule.');
@@ -643,7 +612,7 @@ class AccessTroubleshooter {
 
 	/**
 	 * Collect the rules that apply to an account, in the order in which the sync processes them, and how each
-	 * relates to the subject.
+	 * relates to the subject. The rules come from list_account_rule_sets(), like those of the sync.
 	 *
 	 * @return array of array('target' => ServerAccount|Group, 'chain' => groups leading from the account to the
 	 *               target, 'active' => whether the sync uses the rules of this target, 'rules' => array of
@@ -651,17 +620,21 @@ class AccessTroubleshooter {
 	 */
 	private function collect_rule_sets(ServerAccount $account): array {
 		$sets = array();
-		$targets = $this->membership_chains($account);
-		$targets[] = array('group' => $account, 'chain' => array());
-		foreach($targets as $target) {
-			$entity = $target['group'];
+		$chains = $this->membership_chains($account);
+		$listed = array();
+		foreach(list_account_rule_sets($account) as $rule_set) {
+			$entity = $rule_set['target'];
+			$key = get_class($entity).$entity->id;
+			// A group that the account is in by more than one way has its rules written again; shown once here
+			if(isset($listed[$key])) continue;
+			$listed[$key] = true;
 			$set = array(
 				'target' => $entity,
-				'chain' => $target['chain'],
-				'active' => !($entity instanceof Group) || (bool)$entity->active,
+				'chain' => $entity instanceof Group ? ($chains[$entity->id] ?? array($entity)) : array(),
+				'active' => $rule_set['in_effect'],
 				'rules' => array(),
 			);
-			foreach($entity->list_access() as $access) {
+			foreach($rule_set['rules'] as $access) {
 				$match = $this->match_rule($access);
 				if(!$set['active']) {
 					$match['effective'] = false;
@@ -1030,8 +1003,7 @@ class AccessTroubleshooter {
 			return;
 		}
 		$accounts = array();
-		foreach($this->server->list_accounts() as $account) {
-			if($account->sync_status == 'proposed') continue;
+		foreach(list_keyfile_accounts($this->server) as $account) {
 			if(!is_null($this->account) && $account->entity_id == $this->account->entity_id) continue;
 			foreach($this->collect_rule_sets($account) as $set) {
 				foreach($set['rules'] as $rule) {

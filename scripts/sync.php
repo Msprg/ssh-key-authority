@@ -314,13 +314,12 @@ function sync_server($id, $only_username = null, $preview = false) {
 	}
 	
 	if($server->key_management != 'keys') return;
-	$accounts = $server->list_accounts();
 	$keyfiles = array();
 	$sync_warning = false;
+	// Rules and group members are looked up afresh for every sync
+	forget_access_rule_cache();
 	// Generate keyfiles for each account
-	foreach($accounts as $account) {
-		if($account->active == 0 || $account->sync_status == 'proposed') continue;
-		$username = str_replace('/', '', $account->name);
+	foreach(list_keyfile_accounts($server) as $username => $account) {
 		$keyfile = build_account_keyfile($server, $account);
 		$keyfiles[$username] = array('keyfile' => $keyfile, 'check' => false, 'account' => $account);
 	}

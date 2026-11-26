@@ -38,13 +38,21 @@ This document gives AI agents enough context to work safely in this repo.
 - Key upload: stored in `model/publickey.php` and related directories.
 - Access rules: `model/access.php` and related access option classes.
 - Key distribution: `scripts/sync.php` over SSH to write files under `/var/local/keys-sync/`.
-  - The content of the key files is built in `keyfile_common.php` (`build_account_keyfile()`,
-    `build_ldap_user_keyfile()`). The sync and the "Troubleshoot access" tool both call it; do not build key
-    file content anywhere else, or the tool will explain something the sync does not do.
+  - Which accounts get a key file, which access rules apply to an account and whom a rule covers is decided
+    in `keyfile_common.php` (`list_keyfile_accounts()`, `list_account_rule_sets()`, `expand_access_source()`,
+    `list_access_grantees()`), and the file content is built there (`build_account_keyfile()`,
+    `build_ldap_user_keyfile()`). The sync, the "Troubleshoot access" tool, the permissions report
+    (`model/report.php`) and the inherited rules on the server and account pages all use it. Do not walk
+    `group_member` and `access` yourself to say who has access, and do not "fix" an oddity in one caller:
+    nested groups are expanded even when inactive, each group once per rule by name, duplicates are kept.
+    Results are remembered per process and never refreshed; call `forget_access_rule_cache()` before relying
+    on them after a change in the same process.
 - Troubleshoot access (Tools menu, admins only): `views/troubleshoot_access.php` asks for a user or key, a
   server and a login name, and `model/accesstroubleshooter.php` explains why access is or is not granted.
-  - It retraces the rules itself to explain them, but the verdict comes from the generated key file. When the
-    sync logic changes (inactive handling, nested groups, destination rules), change the trace with it.
+  - Rules and the people they cover come from the shared functions above, and the verdict from the generated
+    key file. What the tool still checks itself to explain it, and what has to change with the sync, is:
+    inactive users and decommissioned servers (`match_rule()`), key destination rules (`examine_keys()`) and
+    the LDAP user files (`examine_ldap_login()`).
   - The page shows the verdict, an "access path" diagram (`AccessTroubleshooter::diagram()`: user, groups,
     account, key file, server, login, with the break marked) and then the findings as a "Detailed report" that
     is collapsed by default. `public_html/extra.js` remembers in the browser whether the user opened it. The
@@ -86,7 +94,8 @@ See `migrations/00x.php` for schema.
 
 ## Where to look for changes
 - UI changes: `templates/` and `views/`
-- Access logic: `model/access.php` and `model/accessoption.php`
+- Access rules as data: `model/access.php` and `model/accessoption.php`; who has access as a result:
+  `keyfile_common.php`
 - LDAP behavior: `ldap.php` and `services/auth.php`
 - Sync behavior: `scripts/sync.php` and `scripts/sync-common.php`; key file content: `keyfile_common.php`
 - "Why can't X log in": `model/accesstroubleshooter.php`, `model/sshdconfig.php`, `model/serverhostfacts.php`

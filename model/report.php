@@ -15,6 +15,8 @@
 ## limitations under the License.
 ##
 
+require_once(__DIR__.'/../keyfile_common.php');
+
 /**
  * Data class describing the result of a permissions report, ready for rendering into html
  */
@@ -66,8 +68,8 @@ class Report {
 		foreach ($servers as $server) {
 			$access = new AccessRights();
 
-			$accounts = $server->list_accounts();
-			foreach ($accounts as $account) {
+			// The accounts that the sync writes key files for
+			foreach (list_keyfile_accounts($server) as $account) {
 				$permitted = get_permitted_users($account);
 				if (!empty($permitted)) {
 					$access->access_rights[$account->name] = $permitted;
@@ -83,8 +85,7 @@ class Report {
 		foreach ($servers as $server) {
 			$access = new AccessRights();
 
-			$accounts = $server->list_accounts();
-			foreach ($accounts as $account) {
+			foreach (list_keyfile_accounts($server) as $account) {
 				$permitted = get_permitted_accounts($account);
 				if (!empty($permitted)) {
 					$access->access_rights[$account->name] = $permitted;
@@ -182,53 +183,32 @@ function get_permitted_accounts(ServerAccount $target): array {
  * Find all users and server accounts that are allowed to access the given server
  * account by any rule. Each access is counted, even if restricted by options.
  *
+ * Which rules apply to the account and whom a rule covers is worked out by the code that the sync builds the
+ * key files with (keyfile_common.php), so that this list follows the same rules: members of nested groups are
+ * included, the rules of inactive groups are not. Whoever a rule covers is listed here, whether or not they
+ * have a key at the moment.
+ *
  * @param ServerAccount $account The server account to find access rules for.
  * @return array List of User and ServerAccount objects that are allowed to access.
  */
 function get_accessors(ServerAccount $account): array {
-	if (!$account->active || $account->sync_status == 'proposed') {
+	if (!account_gets_keyfile($account)) {
 		return [];
 	}
-	$accesses = $account->list_access();
-	$accessors = expand_accesses($accesses);
-
-	$groups = $account->list_group_membership();
-	foreach ($groups as $group) {
-		if (!$group->active) {
+	$accessors = [];
+	foreach (list_account_rule_sets($account) as $set) {
+		if (!$set['in_effect']) {
 			continue;
 		}
-		$accesses = $group->list_access();
-		$accessors = array_merge($accessors, expand_accesses($accesses));
+		foreach ($set['rules'] as $access) {
+			foreach (list_access_grantees(expand_access_source($access->source_entity)) as $grantee) {
+				$accessors[] = $grantee['entity'];
+			}
+		}
 	}
 	remove_duplicates($accessors, function($accessor) {
 		return $accessor->entity_id;
 	});
-	return $accessors;
-}
-
-/**
- * Get all users and server accounts that are allowed to use one of the given accesses.
- * There may be duplicates in the result.
- *
- * @param array $accesses List of Access objects
- * @return array List of User and ServerAccount objects
- */
-function expand_accesses(array $accesses): array {
-	$accessors = [];
-	foreach ($accesses as $access) {
-		$accessor = $access->source_entity;
-		switch (get_class($accessor)) {
-			case 'User':
-			case 'ServerAccount':
-				$accessors[] = $accessor;
-				break;
-			case 'Group':
-				$accessors = array_merge($accessors, $accessor->list_members());
-				break;
-			default:
-				throw new Exception("Found an accessor that is not a user, server account or group.");
-		}
-	}
 	return $accessors;
 }
 

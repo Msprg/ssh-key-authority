@@ -266,8 +266,14 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			<?php out($grouplisttext, ESC_NONE)?>, the following access rules automatically apply to it:
 		</p>
 		<?php
-		foreach($this->get('group_membership') as $group) {
-			$group_access_rules = $group->list_access();
+		// The same sets of rules that the sync writes the key file from, each group once
+		$group_rule_sets = array();
+		foreach(list_account_rule_sets($this->get('account')) as $rule_set) {
+			if($rule_set['target'] instanceof Group) $group_rule_sets[$rule_set['target']->id] = $rule_set;
+		}
+		foreach($group_rule_sets as $rule_set) {
+			$group = $rule_set['target'];
+			$group_access_rules = $rule_set['in_effect'] ? $rule_set['rules'] : array();
 			if(count($group_access_rules) > 0) {
 			?>
 		<h4><a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="group"><?php out($group->name)?></a></h4>
@@ -332,8 +338,12 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 			</table>
 		</div>
 		<?php } else { ?>
-		<h4><a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="group"><?php out($group->name)?></a></h4>
+		<h4><a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="group"><?php out($group->name)?></a><?php if(!$rule_set['in_effect']) out(' <span class="label label-default">Inactive</span>', ESC_NONE) ?></h4>
+		<?php if(!$rule_set['in_effect']) { ?>
+		<p>This group is inactive, so its access rules are not applied to this account.</p>
+		<?php } else { ?>
 		<p>This group has no access rules, so it does not grant anyone access to this account.</p>
+		<?php } ?>
 		<?php } ?>
 		<?php } ?>
 		<?php } ?>

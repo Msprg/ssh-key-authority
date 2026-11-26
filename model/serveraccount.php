@@ -16,6 +16,8 @@
 ## limitations under the License.
 ##
 
+require_once(__DIR__.'/../keyfile_common.php');
+
 /**
 * Class that represents an account on a server
 */
@@ -419,11 +421,13 @@ class ServerAccount extends Entity {
 	public function list_inherited_access() {
 		$inherited = array();
 		$seen = array();
-		foreach($this->list_group_membership() as $group) {
+		// The same list of rules that the sync writes the key file of this account from
+		foreach(list_account_rule_sets($this) as $set) {
+			$group = $set['target'];
 			// A group can be reached in several ways; list its rules once
-			if(isset($seen[$group->entity_id]) || !$group->active) continue;
-			$seen[$group->entity_id] = true;
-			foreach($group->list_access() as $access) {
+			if(!($group instanceof Group) || !$set['in_effect'] || isset($seen[$group->id])) continue;
+			$seen[$group->id] = true;
+			foreach($set['rules'] as $access) {
 				$inherited[] = array('group' => $group, 'access' => $access);
 			}
 		}
