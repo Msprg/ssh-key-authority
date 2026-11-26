@@ -158,10 +158,55 @@ class SSH {
 	 * @return string The output of the command as one string
 	 */
 	public function exec(string $command): string {
-		try {
+		return $this->guard("Failed to execute the command: $command", function() use ($command) {
 			return $this->connection->exec($command);
-		} catch (ErrorException $e) {
-			throw new SSHException("Failed to execute the command: $command", 0, $e);
+		});
+	}
+
+	/**
+	 * Run an operation of the underlying ssh library and turn everything it throws into an SSHException.
+	 *
+	 * phpseclib signals failures with RuntimeExceptions, and its own notices and warnings arrive as
+	 * ErrorExceptions through the error handler in core.php. Callers only handle SSHException, so anything
+	 * else would abort the whole sync process without reporting a sync status.
+	 *
+	 * @param string $failure Message for the SSHException if the operation throws
+	 * @param callable $operation The library call to run
+	 * @throws SSHException If the operation throws
+	 * @return mixed The return value of the operation
+	 */
+	private function guard(string $failure, callable $operation) {
+		try {
+			return $operation();
+		} catch (SSHException $e) {
+			throw $e;
+		} catch (Exception $e) {
+			throw new SSHException($failure, 0, $e);
+		}
+	}
+
+	/**
+	 * Like guard(), for operations that go through the SFTP channel. If the SSH connection itself is still
+	 * alive, the failure message points at the SFTP subsystem of the target server, because the library
+	 * error for a rejected or immediately closed SFTP channel does not say so ("Undefined array key 256").
+	 *
+	 * @param string $failure Message for the SSHException if the operation throws
+	 * @param callable $operation The library call to run
+	 * @throws SSHException If the operation throws
+	 * @return mixed The return value of the operation
+	 */
+	private function guard_sftp(string $failure, callable $operation) {
+		try {
+			return $this->guard($failure, $operation);
+		} catch (SSHException $e) {
+			if ($e->getPrevious() !== null && $this->connection->isConnected()) {
+				throw new SSHException(
+					"$failure (SFTP session failed, check that the sftp subsystem works for the sync user on this server)",
+					0,
+					$e->getPrevious()
+				);
+			}
+			throw $e;
 		}
 	}
 
@@ -173,7 +218,9 @@ class SSH {
 	 * @return string The file content
 	 */
 	public function file_get_contents(string $filename): string {
-		$result = $this->connection->get($filename);
+		$result = $this->guard_sftp("Could not read file $filename", function() use ($filename) {
+			return $this->connection->get($filename);
+		});
 		if ($result === false) {
 			throw new SSHException("Could not read file $filename");
 		}
@@ -209,7 +256,10 @@ class SSH {
 	 * @throws SSHException If the operation fails
 	 */
 	public function file_put_contents(string $filename, string $content) {
-		if ($this->connection->put($filename, $content) === false) {
+		$result = $this->guard_sftp("Could not write to file $filename", function() use ($filename, $content) {
+			return $this->connection->put($filename, $content);
+		});
+		if ($result === false) {
 			throw new SSHException("Could not write to file $filename");
 		}
 	}
@@ -221,7 +271,10 @@ class SSH {
 	 * @throws SSHException If the delete operation fails
 	 */
 	public function unlink(string $filename) {
-		if ($this->connection->delete($filename) === false) {
+		$result = $this->guard_sftp("Could not unlink file $filename", function() use ($filename) {
+			return $this->connection->delete($filename);
+		});
+		if ($result === false) {
 			throw new SSHException("Could not unlink file $filename");
 		}
 	}
