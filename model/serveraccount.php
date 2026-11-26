@@ -411,6 +411,26 @@ class ServerAccount extends Entity {
 	}
 
 	/**
+	* List the access rules that apply to this account through its group memberships, as opposed to
+	* the rules set on the account itself (see list_access()). As in the sync, the rules of inactive
+	* groups are left out.
+	* @return array of arrays with keys 'group' (Group granting the access) and 'access' (Access rule)
+	*/
+	public function list_inherited_access() {
+		$inherited = array();
+		$seen = array();
+		foreach($this->list_group_membership() as $group) {
+			// A group can be reached in several ways; list its rules once
+			if(isset($seen[$group->entity_id]) || !$group->active) continue;
+			$seen[$group->entity_id] = true;
+			foreach($group->list_access() as $access) {
+				$inherited[] = array('group' => $group, 'access' => $access);
+			}
+		}
+		return $inherited;
+	}
+
+	/**
 	* Trigger a sync for this account.
 	*/
 	public function sync_access() {

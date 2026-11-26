@@ -64,7 +64,7 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 	<div class="tab-pane fade" id="access">
 		<h2 class="sr-only">Access</h2>
 		<?php if(count($this->get('access')) == 0 && count($this->get('access_requests')) == 0) { ?>
-		<p>No-one has been granted access to this account.</p>
+		<p>No-one has been granted access directly to this account.<?php if(count($this->get('group_membership')) > 0) out(' Rules inherited from its groups are listed under "Group access rules" below.') ?></p>
 		<?php } else { ?>
 		<form method="post" action="<?php outurl($this->data->relative_request_url)?>">
 			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
@@ -328,6 +328,9 @@ default: $sync_class = 'warning'; $sync_message = 'Not synced'; break;
 				</tbody>
 			</table>
 		</div>
+		<?php } else { ?>
+		<h4><a href="<?php outurl('/groups/'.urlencode($group->name))?>" class="group"><?php out($group->name)?></a></h4>
+		<p>This group has no access rules, so it does not grant anyone access to this account.</p>
 		<?php } ?>
 		<?php } ?>
 		<?php } ?>

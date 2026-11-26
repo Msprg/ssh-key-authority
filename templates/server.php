@@ -109,13 +109,19 @@
 							<th>Sync status</th>
 							<?php } ?>
 							<th>Account actions</th>
-							<th colspan="2">Access granted for</th>
+							<th colspan="3">Access granted for</th>
 						</tr>
 					</thead>
 					<tbody>
 						<?php foreach($this->get('server_accounts') as $account) { ?>
 						<?php
 						$access_list = $account->list_access();
+						// Rules inherited through group membership grant access just the same, so list them too
+						$access_via = array();
+						foreach($account->list_inherited_access() as $inherited) {
+							$access_list[] = $inherited['access'];
+							$access_via[spl_object_id($inherited['access'])] = $inherited['group'];
+						}
 						switch($account->sync_status) {
 						case 'proposed': $sync_class = 'info'; $sync_message = 'Requested'; break;
 						case 'sync success': $sync_class = 'success'; $sync_message = 'Synced'; break;
@@ -176,6 +182,10 @@
 							<?php
 									break;
 								}
+								$via = $access_via[spl_object_id($access)] ?? null;
+								?>
+								<td><?php if($via) { ?>via <a href="<?php outurl('/groups/'.urlencode($via->name))?>" class="group"><?php out($via->name) ?></a><?php } else { ?>Direct<?php } ?></td>
+								<?php
 							}
 							?>
 							<?php } ?>
@@ -743,13 +753,19 @@
 				<th>Account</th>
 				<th>Sync status</th>
 				<th>Account actions</th>
-				<th colspan="2">Access granted for</th>
+				<th colspan="3">Access granted for</th>
 			</tr>
 		</thead>
 		<tbody>
 			<?php foreach($this->get('admined_accounts') as $account) { ?>
 			<?php
 			$access_list = $account->list_access();
+			// Rules inherited through group membership grant access just the same, so list them too
+			$access_via = array();
+			foreach($account->list_inherited_access() as $inherited) {
+				$access_list[] = $inherited['access'];
+				$access_via[spl_object_id($inherited['access'])] = $inherited['group'];
+			}
 			?>
 			<tr>
 				<th rowspan="<?php out(max(1, count($access_list)))?>">
@@ -801,6 +817,10 @@
 				<?php
 						break;
 					}
+					$via = $access_via[spl_object_id($access)] ?? null;
+					?>
+					<td><?php if($via) { ?>via <a href="<?php outurl('/groups/'.urlencode($via->name))?>" class="group"><?php out($via->name) ?></a><?php } else { ?>Direct<?php } ?></td>
+					<?php
 				}
 				?>
 				<?php } ?>
