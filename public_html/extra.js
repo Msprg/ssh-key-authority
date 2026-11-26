@@ -528,3 +528,33 @@ $(function() {
 		});
 	}
 });
+
+// Troubleshoot access: the detailed report stays open or closed as the user left it, from one search to the next
+$(function() {
+	var details = document.getElementById('troubleshoot_details');
+	if(!details) return;
+	var storage_key = 'troubleshoot_details_open';
+	try {
+		if(localStorage.getItem(storage_key) === '1') details.open = true;
+	} catch(e) {
+		// Without storage the report simply starts closed
+	}
+	// Only opening or closing the report by its own heading is remembered. A link to one of its sections opens
+	// it for the moment, without changing what the next search starts with.
+	$(details).children('summary').on('click', function() {
+		try {
+			// The click comes before the state changes
+			localStorage.setItem(storage_key, details.open ? '0' : '1');
+		} catch(e) {}
+	});
+	$('a.troubleshoot-jump').on('click', function() {
+		details.open = true;
+	});
+	if(window.location.hash.indexOf('#section_') === 0) {
+		var section = document.getElementById(window.location.hash.substring(1));
+		if(section) {
+			details.open = true;
+			section.scrollIntoView();
+		}
+	}
+});

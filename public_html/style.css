@@ -404,6 +404,127 @@ textarea {
 	margin-top: 20px;
 }
 
+/* Long names and fingerprints must not push the page wider than the screen */
+.troubleshoot-verdict a,
+.troubleshoot-verdict code,
+.troubleshoot-findings a {
+	white-space: normal;
+	overflow-wrap: anywhere;
+}
+
+.troubleshoot-findings > li > div {
+	min-width: 0;
+}
+
+/* The access path: a chain of boxes joined by labelled arrows, wrapping as needed */
+.troubleshoot-path {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: stretch;
+	row-gap: 10px;
+	margin-bottom: 15px;
+}
+
+.troubleshoot-node {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	max-width: 330px;
+	padding: 8px 12px;
+	border: 1px solid #ddd;
+	border-left-width: 4px;
+	border-radius: 4px;
+	background-color: #fff;
+}
+
+.troubleshoot-node > div {
+	min-width: 0;
+}
+
+.troubleshoot-node-icon {
+	top: 3px;
+	color: #777;
+}
+
+.troubleshoot-node-title {
+	font-weight: bold;
+	overflow-wrap: anywhere;
+}
+
+.troubleshoot-node-title code,
+.troubleshoot-node-title a {
+	white-space: normal;
+}
+
+/* The box has an icon of its own */
+.troubleshoot-node-title a::before {
+	display: none;
+}
+
+.troubleshoot-node-caption {
+	font-size: 12px;
+}
+
+.troubleshoot-edge {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-width: 56px;
+	max-width: 150px;
+	padding: 0 8px;
+	font-size: 12px;
+	text-align: center;
+	color: #777;
+}
+
+.troubleshoot-node.troubleshoot-ok { border-color: #3c763d; background-color: #f4faf1; }
+.troubleshoot-node.troubleshoot-warn { border-color: #8a6d3b; background-color: #fcf8e3; }
+.troubleshoot-node.troubleshoot-fail { border-color: #a94442; background-color: #f9eded; }
+.troubleshoot-node.troubleshoot-unknown { border-color: #999; border-style: dashed; border-left-style: solid; }
+/* Not reached: muted by colour, not by transparency, so that the text stays readable */
+.troubleshoot-node.troubleshoot-off { background-color: #f7f7f7; border-style: dotted; border-left-style: solid; }
+.troubleshoot-off .troubleshoot-node-title a, .troubleshoot-off .troubleshoot-node-title code { color: #666; background-color: transparent; }
+.troubleshoot-ok .troubleshoot-node-caption, .troubleshoot-edge.troubleshoot-ok { color: #3c763d; }
+.troubleshoot-warn .troubleshoot-node-caption, .troubleshoot-edge.troubleshoot-warn { color: #8a6d3b; }
+.troubleshoot-fail .troubleshoot-node-caption, .troubleshoot-edge.troubleshoot-fail { color: #a94442; font-weight: bold; }
+.troubleshoot-unknown .troubleshoot-node-caption, .troubleshoot-off .troubleshoot-node-caption { color: #666; }
+.troubleshoot-edge.troubleshoot-off { opacity: 0.55; }
+
+@media (max-width: 767px) {
+	.troubleshoot-path {
+		flex-direction: column;
+		row-gap: 4px;
+	}
+	.troubleshoot-node, .troubleshoot-edge {
+		max-width: none;
+	}
+	.troubleshoot-edge .glyphicon-arrow-right {
+		transform: rotate(90deg);
+	}
+}
+
+.troubleshoot-checks > li {
+	margin-bottom: 5px;
+}
+
+.troubleshoot-refresh {
+	margin-bottom: 15px;
+}
+
+/* Section links must not end up underneath the fixed navigation bar */
+.troubleshoot-details > .panel {
+	scroll-margin-top: 60px;
+}
+
+.troubleshoot-details > summary {
+	display: list-item;
+	cursor: pointer;
+	margin-bottom: 15px;
+	font-size: 18px;
+	color: #337ab7;
+}
+
 .troubleshoot-findings {
 	list-style: none;
 	padding-left: 0;
@@ -426,8 +547,7 @@ textarea {
 }
 
 .troubleshoot-findings + details,
-.panel-body > details + details,
-.troubleshoot-refresh {
+.panel-body > details + details {
 	margin-top: 10px;
 }
 

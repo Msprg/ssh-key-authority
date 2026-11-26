@@ -50,6 +50,8 @@ class AccessTroubleshooter {
 	private $sections = array();
 	/** Reasons why SKA does not grant access, shown with the verdict */
 	private $reasons = array();
+	/** @var array index in $reasons => further lines (each an array of parts) that say what can be done */
+	private $reason_details = array();
 	private $host_blockers = array();
 	private $host_warnings = array();
 	private $outside = array();
@@ -72,6 +74,11 @@ class AccessTroubleshooter {
 	/** @var array|null Parts that say why syncs to the server do not get through, if they do not */
 	private $sync_problem = null;
 	private $paths_cache = array();
+	/**
+	 * @var array What connects the subject to the login, for the diagram: 'type' is 'rule' (with 'set' and
+	 *            'rule'), 'ldap' (the user's own key file) or 'none' (with 'label' saying why not)
+	 */
+	private $link = array('type' => 'none', 'label' => '');
 	/** @var array ids of the considered keys that destination rules keep away from the account */
 	private $blocked_keys = array();
 	private $facts = null;
@@ -187,6 +194,7 @@ class AccessTroubleshooter {
 			'expected_lines' => $this->expected_lines,
 			'facts' => $this->facts,
 			'verdict' => $this->verdict(),
+			'diagram' => $this->diagram(),
 			'trace' => $this->trace + array('keys' => count($this->keys) - count($this->blocked_keys)),
 			'sections' => array_values($this->sections),
 		);
@@ -223,6 +231,8 @@ class AccessTroubleshooter {
 	private function deny(string $id, array $text, array $details = array()) {
 		$this->add($id, 'fail', $text, $details);
 		$this->reasons[] = $text;
+		// What to do about it belongs next to the reason
+		$this->reason_details[count($this->reasons) - 1] = array_slice($details, 0, 6);
 	}
 
 	/**
@@ -378,6 +388,7 @@ class AccessTroubleshooter {
 			$this->deny($id, array($server, ' has SSH key management disabled. SKA writes no key files to it and leaves existing ones alone.'));
 		}
 		if($server->key_management != 'keys') {
+			$this->link['label'] = 'server not managed by SKA';
 			return;
 		}
 		if($server->authorization != 'manual') {
@@ -419,6 +430,7 @@ class AccessTroubleshooter {
 		$file = array('code' => ServerHostFacts::KEYDIR.'/'.$this->keyfile_name);
 		if($this->keyfile_name === 'keys-sync') {
 			$this->deny($id, array(array('code' => 'keys-sync'), ' is the account that SKA itself uses to reach the server. Its key file is set up by hand when the server is added and is never written by the sync.'));
+			$this->link['label'] = 'reserved for SKA itself';
 			return;
 		}
 		// The sync writes a file per active account that is not just a pending request. Several account names can
@@ -448,6 +460,7 @@ class AccessTroubleshooter {
 			$this->examine_ldap_login($id, $file);
 			return;
 		}
+		$this->link['label'] = 'not managed by SKA';
 		$names = array();
 		foreach($server->list_accounts() as $account) {
 			if($account->sync_status == 'proposed') continue;
@@ -486,10 +499,12 @@ class AccessTroubleshooter {
 			$this->deny($id, array('SKA cannot generate the key file for ', array('code' => $this->login), ': '.$e->getMessage()));
 			return;
 		}
+		$this->link['label'] = 'not managed by SKA';
 		if(is_null($owner)) {
 			$this->deny($id, array(array('code' => $this->login), ' is neither a managed account on ', $this->server, ' nor the name of a SKA user, so SKA writes no key file for it.'));
 			return;
 		}
+		$this->link['label'] = 'only holds the keys of '.$owner->uid;
 		$this->add($id, 'ok', array(array('code' => $this->login), ' is the user name of ', $owner, '. On this server every SKA user gets a key file with their own keys: ', $file, '.'));
 		$this->expected_keyfile = $keyfile;
 		$this->collect_expected_lines();
@@ -505,6 +520,7 @@ class AccessTroubleshooter {
 			}
 			return;
 		}
+		$this->link = array('type' => 'ldap', 'label' => 'own key file');
 		if(is_null($this->expected_keyfile)) {
 			$this->deny($id, array($owner, ' has no key that may be used for ', array('code' => $this->login.'@'.$this->server->hostname), ', so SKA writes no file.'));
 			return;
@@ -695,7 +711,9 @@ class AccessTroubleshooter {
 			$this->add($id, 'info', array($account, ' is not a member of any group, so only rules granted to the account itself apply.'));
 		}
 
+		$this->link['label'] = is_null($this->subject) ? '' : 'no access rule covers this '.($this->subject instanceof ServerAccount ? 'account' : 'user');
 		if($rule_count == 0) {
+			$this->link['label'] = 'nobody has been granted access';
 			$where = array();
 			foreach($sets as $set) {
 				if(!($set['target'] instanceof Group)) continue;
@@ -753,6 +771,10 @@ class AccessTroubleshooter {
 			}
 		}
 		$this->trace = array('covering' => count($covering), 'effective' => count($effective));
+		$this->link['label'] = 'access rule not in effect';
+		if(count($effective) > 0) {
+			$this->link = array('type' => 'rule', 'label' => '', 'set' => $effective[0][0], 'rule' => $effective[0][1], 'more' => count($effective) - 1);
+		}
 		if(count($effective) == 0) {
 			$text = array_merge(array('No access rule that covers '), $this->subject_label(), array(' is in effect.'));
 			if(count($this->expected_lines) > 0) {
@@ -1584,6 +1606,192 @@ class AccessTroubleshooter {
 	}
 
 	// ---------------------------------------------------------------------------------------------------------
+	// Diagram
+
+	/**
+	 * Lay out the way from whoever logs in to the login as a chain of nodes, for a picture of the result:
+	 * the user or key, the groups and the access rule that lead to the account, the key file, the server and
+	 * the login itself. Where the chain breaks, the connection is marked and what follows is switched off.
+	 *
+	 * @return array of nodes, each an array with 'icon' (glyphicon name), 'status' ('ok', 'warn', 'fail',
+	 *               'unknown' or 'off'), 'title' (parts), 'caption' (string) and 'edge' (the connection from the
+	 *               node before: array with 'status' and 'label', or null for the first node)
+	 */
+	private function diagram(): array {
+		$nodes = array();
+		$add = function(string $icon, string $status, array $title, string $caption, ?array $edge = null) use (&$nodes) {
+			$nodes[] = array('icon' => $icon, 'status' => $status, 'title' => $title, 'caption' => $caption, 'edge' => $edge);
+		};
+		$edge = function(string $status, string $label) {
+			// A break is marked on the connection only where there is something to say about it; otherwise the
+			// box on either side shows what is wrong
+			return array('status' => ($status == 'fail' && $label === '') ? 'off' : $status, 'label' => $label);
+		};
+		$group_node = function(Group $group, string $label) use ($add, $edge) {
+			$add('list-alt', 'ok', array($group), 'group', $edge('ok', $label));
+		};
+		$target = $this->login.'@'.$this->server->hostname;
+		$ska_grants = count($this->expected_lines) > 0;
+		$managed = $this->server->key_management == 'keys';
+
+		// Who
+		$subject = $this->subject;
+		$subject_status = 'ok';
+		$subject_caption = '';
+		if($subject instanceof User) {
+			if(!$subject->active) {
+				$subject_status = 'fail';
+				$subject_caption = 'inactive user';
+			} elseif($this->by_key()) {
+				$subject_caption = 'user';
+			} elseif(count($this->keys) == 0) {
+				$subject_status = 'fail';
+				$subject_caption = 'no public key';
+			} else {
+				$subject_caption = self::plural(count($this->keys), 'public key');
+			}
+		} elseif($subject instanceof ServerAccount) {
+			$subject_caption = $subject->server->id == $this->server->id ? 'account on this server' : 'account on another server';
+			if($subject->server->key_management == 'decommissioned') {
+				$subject_status = 'fail';
+				$subject_caption = 'account on a decommissioned server';
+			}
+		}
+		switch($this->who['kind']) {
+		case 'key':
+			$key = $this->who['keys'][0];
+			$deleted = count($this->keys) == 0;
+			$add('lock', $deleted ? 'fail' : 'ok', array(array('url' => '/pubkeys/'.urlencode($key->id), 'text' => $key->type.' '.substr($key->fingerprint_sha256, 0, 8).'…')), $deleted ? 'deleted key' : 'public key');
+			$add($subject instanceof User ? 'user' : 'log-in', $subject_status, array($subject), $subject_caption, $edge($deleted ? 'fail' : 'ok', 'registered for'));
+			if($deleted) $subject_status = 'fail';
+			break;
+		case 'user':
+			$add('user', $subject_status, array($subject), $subject_caption);
+			break;
+		case 'unknown_key':
+			$add('lock', 'fail', array(array('code' => substr($this->who['fingerprint'], 0, 15).'…')), 'key not registered in SKA');
+			$subject_status = 'fail';
+			break;
+		default:
+			$add('user', 'fail', array(array('code' => $this->who['canonical'] === '' ? '?' : $this->who['canonical'])), 'not a SKA user');
+			$subject_status = 'fail';
+		}
+
+		// The way to the account
+		$account_title = is_null($this->account) ? array(array('code' => $target)) : array($this->account);
+		if($this->link['type'] == 'rule') {
+			$set = $this->link['set'];
+			$rule = $this->link['rule'];
+			$source = $rule['access']->source_entity;
+			$label = 'has access to';
+			if($source instanceof Group) {
+				foreach(array_reverse($rule['match']['paths'][0] ?? array()) as $nested) {
+					$group_node($nested, 'member of');
+				}
+				$group_node($source, 'member of');
+			}
+			if($set['target'] instanceof Group) {
+				$group_node($set['target'], $label);
+				foreach(array_reverse(array_slice($set['chain'], 0, -1)) as $via) {
+					$group_node($via, 'contains');
+				}
+				$label = 'contains';
+			}
+			$more = $this->link['more'] > 0 ? ' · '.self::plural($this->link['more'], 'more rule').' in the report' : '';
+			$add('log-in', 'ok', $account_title, 'managed account'.$more, $edge('ok', $label));
+		} elseif($this->link['type'] == 'ldap') {
+			$add('log-in', 'ok', $account_title, 'own account of the user (LDAP authorization)', $edge('ok', 'logs in as'));
+		} elseif(!$managed) {
+			// SKA does not look at accounts and rules of a server that it writes no key files to
+			$add('log-in', 'off', $account_title, 'not examined', $edge('off', ''));
+		} else {
+			// If the key is written all the same, another registration of it has access
+			$status = $ska_grants ? 'warn' : 'fail';
+			$label = $ska_grants ? 'only through another registration of the key' : $this->link['label'];
+			$add('log-in', is_null($this->account) && !$ska_grants ? 'fail' : 'ok', $account_title, is_null($this->account) ? 'not a managed account' : 'managed account', $edge($status, $label));
+		}
+
+		// The key file, the server and the login. After a break, they are only shown for orientation, unless
+		// something about them needs attention.
+		$file = array(array('code' => ServerHostFacts::KEYDIR.'/'.$this->keyfile_name));
+		$what = $this->by_key() || $this->who['kind'] == 'unknown_key' ? 'key' : 'user';
+		if($ska_grants) {
+			$foreign = $this->foreign_registration && $this->link['type'] != 'none';
+			$add('file', 'ok', $file, self::plural($this->count_expected_lines(), 'line').' written by SKA', $edge($this->foreign_registration ? 'warn' : 'ok', $foreign ? 'only through another registration of the key' : 'keys written'));
+		} elseif($subject_status == 'ok' && $this->link['type'] != 'none') {
+			// The way to the account is intact, so this is where it ends
+			if(count($this->keys) > 0 && count($this->blocked_keys) == count($this->keys)) {
+				$reason = 'destination rules keep the key'.($this->by_key() ? '' : 's').' away';
+			} elseif(is_null($this->expected_keyfile) && $this->link['type'] == 'ldap') {
+				$reason = 'no key for this account';
+			} elseif(is_null($this->expected_keyfile)) {
+				$reason = 'key file cannot be generated';
+			} else {
+				$reason = 'no key written';
+			}
+			$add('file', 'fail', $file, 'nothing written for this '.$what, $edge('fail', $reason));
+		} else {
+			$add('file', 'off', $file, is_null($this->expected_keyfile) ? 'no key file written' : 'nothing written for this '.$what, $edge('off', ''));
+		}
+		$age = is_null($this->age_text) ? '' : ' · '.$this->age_text;
+		$not_synced = $this->server->sync_status == 'not synced yet';
+		// As in the verdict: what SKA knows about the server is not current if it cannot reach it or last looked long ago
+		$stale = !is_null($this->facts) && (!is_null($this->sync_problem) || $this->facts['age'] > 3600);
+		$sync_note = is_null($this->sync_problem) ? '' : ($not_synced ? ' · not synced yet' : ' · sync is failing');
+		switch($this->delivery) {
+		case 'current':
+			$server = array(!$ska_grants ? 'off' : ($stale ? 'unknown' : 'ok'), ($stale ? 'key file was in place' : 'key file is in place').$age.$sync_note);
+			break;
+		case 'outdated':
+			$server = array('warn', 'has a different key file'.$age.$sync_note);
+			break;
+		case 'missing':
+			$server = array($ska_grants ? 'fail' : 'off', 'key file is not there'.$age.$sync_note);
+			break;
+		case 'stray':
+			$server = array('warn', 'has a key file that SKA would not write'.$age);
+			break;
+		default:
+			if($not_synced) {
+				$server = array($ska_grants ? 'unknown' : 'off', 'not synced yet');
+			} elseif(!is_null($this->sync_problem)) {
+				$server = array($ska_grants ? 'fail' : 'off', 'sync is failing');
+			} else {
+				$server = array($ska_grants ? 'unknown' : 'off', is_null($this->facts) ? 'no information from the server yet' : 'key file not compared'.$age);
+			}
+		}
+		if(!$managed) {
+			// This is where it ends for such a server, whatever else is known about it
+			$captions = array('decommissioned' => 'decommissioned', 'other' => 'managed by another system', 'none' => 'key management disabled');
+			$server = array('fail', ($captions[$this->server->key_management] ?? 'not managed by SKA').($this->delivery == 'stray' ? ' · still has a key file for this account'.$age : ''));
+		}
+		// "synced to" only where something is synced
+		$server_label = $server[0] == 'off' ? '' : ($ska_grants ? 'synced to' : ($managed ? 'on the server' : ''));
+		$add('hdd', $server[0], array($this->server), $server[1], $edge($server[0], $server_label));
+		if(!$ska_grants) {
+			$login = $this->external_key_found ? array('warn', 'key found in a file that SKA does not manage') : array('off', 'no access through SKA');
+		} elseif(count($this->host_blockers) > 0) {
+			$login = array('fail', 'refused by the server configuration');
+		} elseif(!$this->host_checked) {
+			$login = array('unknown', 'server configuration not checked');
+		} elseif($this->host_incomplete) {
+			$login = array('unknown', 'server configuration only partly checked');
+		} elseif(count($this->host_warnings) > 0) {
+			$login = array('warn', self::plural(count($this->host_warnings), 'thing').' on the server may stop it');
+		} else {
+			$login = array('ok', 'accepted by the server configuration');
+		}
+		if($ska_grants && $server[0] == 'fail' && $login[0] == 'ok') {
+			// The configuration is fine, but the key file it would read is not there
+			$login = array('unknown', 'server configuration would accept it');
+		} elseif($ska_grants && $server[0] == 'unknown' && $stale && $login[0] == 'ok') {
+			$login = array('unknown', 'server configuration accepted it then');
+		}
+		$add('console', $login[0], array(array('code' => 'ssh '.$target)), $login[1], $edge($login[0], $login[0] == 'off' ? '' : 'sshd'));
+		return $nodes;
+	}
+
+	// ---------------------------------------------------------------------------------------------------------
 	// Verdict
 
 	/**
@@ -1597,15 +1805,16 @@ class AccessTroubleshooter {
 		$who = $this->who_label();
 		$ska_grants = count($this->expected_lines) > 0;
 		$lines = array();
-		$recheck = array('Use "Sync this server now and re-check" under "Key file on the server" below.');
+		$recheck = array('Use "Sync this server now and re-check" below.');
 		// The picture of the server is not current if SKA cannot reach it or the snapshot is old
 		$stale = !is_null($this->facts) && (!is_null($this->sync_problem) || $this->facts['age'] > 3600);
 		if(!$ska_grants) {
 			$class = 'danger';
 			$title = array_merge(array('SKA does not give '), $who, array(' access to ', $target, '.'));
 			$lines = $this->reasons;
+			$line_details = $this->reason_details;
 			if(count($lines) == 0) {
-				$lines[] = array('See the findings below.');
+				$lines[] = array('See the detailed report below.');
 			}
 			if($this->external_key_found) {
 				$class = 'warning';
@@ -1664,6 +1873,7 @@ class AccessTroubleshooter {
 			array_unshift($lines, array_merge($this->subject_label(), array(' has no access of their own here. The key is written because the same key is also registered for somebody else who has access.')));
 			if($class === 'success') $class = 'warning';
 		}
-		return array('class' => $class, 'title' => $title, 'lines' => $lines, 'ska_grants' => $ska_grants);
+		// Lines are only ever appended after the reasons of a denial, so their details keep their place
+		return array('class' => $class, 'title' => $title, 'lines' => $lines, 'line_details' => $ska_grants ? array() : ($line_details ?? array()), 'ska_grants' => $ska_grants);
 	}
 }

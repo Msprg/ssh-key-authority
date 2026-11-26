@@ -45,6 +45,10 @@ This document gives AI agents enough context to work safely in this repo.
   server and a login name, and `model/accesstroubleshooter.php` explains why access is or is not granted.
   - It retraces the rules itself to explain them, but the verdict comes from the generated key file. When the
     sync logic changes (inactive handling, nested groups, destination rules), change the trace with it.
+  - The page shows the verdict, an "access path" diagram (`AccessTroubleshooter::diagram()`: user, groups,
+    account, key file, server, login, with the break marked) and then the findings as a "Detailed report" that
+    is collapsed by default. `public_html/extra.js` remembers in the browser whether the user opened it. The
+    diagram must never look better than the verdict: a new kind of finding needs a place in both.
   - The web process cannot open SSH connections (it cannot read the sync key). Facts about a target server
     (sshd configuration, key directory, login accounts) are collected by `ServerHostFacts::collect_and_store()`
     at the end of each sync and, at most every 15 minutes, by `scripts/supervise_external_keys.php`, and

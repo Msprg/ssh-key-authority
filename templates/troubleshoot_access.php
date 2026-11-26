@@ -69,8 +69,17 @@ $form_url = AccessTroubleshooter::URL;
 	<p><strong><?php show_parts($verdict['title']) ?></strong></p>
 	<?php if(count($verdict['lines']) > 0) { ?>
 	<ul>
-		<?php foreach($verdict['lines'] as $line) { ?>
-		<li><?php show_parts($line) ?></li>
+		<?php foreach($verdict['lines'] as $index => $line) { ?>
+		<li>
+			<?php show_parts($line) ?>
+			<?php if(count($verdict['line_details'][$index] ?? array()) > 0) { ?>
+			<ul>
+				<?php foreach($verdict['line_details'][$index] as $detail) { ?>
+				<li><?php show_parts($detail) ?></li>
+				<?php } ?>
+			</ul>
+			<?php } ?>
+		</li>
 		<?php } ?>
 	</ul>
 	<?php } ?>
@@ -79,13 +88,58 @@ $form_url = AccessTroubleshooter::URL;
 <p class="alert alert-info"><span class="glyphicon glyphicon-refresh"></span> A sync of this server has been requested. This page reloads until it has run and shows the fresh information from the server then.</p>
 <?php } ?>
 <?php
+// The picture: how whoever logs in gets to the login, and where that way ends
+$status_icons = array('ok' => 'ok', 'warn' => 'exclamation-sign', 'fail' => 'remove', 'unknown' => 'question-sign', 'off' => 'minus');
+$status_words = array('ok' => 'OK', 'warn' => 'Warning', 'fail' => 'Problem', 'unknown' => 'Unknown', 'off' => 'Not reached');
+?>
+<div class="troubleshoot-path" role="list" aria-label="Access path">
+	<?php foreach($result['diagram'] as $node) { ?>
+	<?php if(!is_null($node['edge'])) { ?>
+	<div class="troubleshoot-edge troubleshoot-<?php out($node['edge']['status'])?>" role="presentation">
+		<span class="troubleshoot-edge-label"><?php out($node['edge']['label']) ?></span>
+		<span class="glyphicon glyphicon-<?php out($node['edge']['status'] == 'fail' ? 'remove' : 'arrow-right')?>"></span>
+	</div>
+	<?php } ?>
+	<div class="troubleshoot-node troubleshoot-<?php out($node['status'])?>" role="listitem">
+		<span class="glyphicon glyphicon-<?php out($node['icon'])?> troubleshoot-node-icon"></span>
+		<div>
+			<div class="troubleshoot-node-title"><?php show_parts($node['title']) ?></div>
+			<div class="troubleshoot-node-caption"><span class="glyphicon glyphicon-<?php out($status_icons[$node['status']])?>" title="<?php out($status_words[$node['status']])?>"></span><span class="sr-only"><?php out($status_words[$node['status']])?>:</span> <?php out($node['caption']) ?></div>
+		</div>
+	</div>
+	<?php } ?>
+</div>
+<?php
 // The generated key file is shown once, in the section that deals with its content
 $section_ids = array_column($result['sections'], 'id');
 $keyfile_section = in_array('keys', $section_ids) ? 'keys' : (in_array('rules', $section_ids) ? 'rules' : 'account');
 $panel_classes = array('ok' => 'panel-success', 'fail' => 'panel-danger', 'warn' => 'panel-warning', 'unknown' => 'panel-default', 'info' => 'panel-default');
-foreach($result['sections'] as $section) {
-	if(count($section['findings']) == 0) continue;
+$sections = array_values(array_filter($result['sections'], function($section) { return count($section['findings']) > 0; }));
 ?>
+<ul class="list-inline troubleshoot-checks">
+	<?php foreach($sections as $section) { ?>
+	<li><a href="#section_<?php out($section['id'])?>" class="troubleshoot-jump"><?php show_finding_icon($section['status']) ?> <?php out($section['title']) ?></a></li>
+	<?php } ?>
+</ul>
+<?php if($result['server']->key_management == 'keys') { ?>
+<form method="post" action="<?php outurl($form_url)?>" class="troubleshoot-refresh">
+	<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
+	<input type="hidden" name="who" value="<?php out($input['who'])?>">
+	<input type="hidden" name="server" value="<?php out($input['server'])?>">
+	<input type="hidden" name="account" value="<?php out($input['account'])?>">
+	<button type="submit" name="refresh" value="1" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-refresh"></span> Sync this server now and re-check</button>
+	<span class="text-muted">
+		<?php if(is_null($result['facts'])) { ?>
+		SKA has no information from this server yet.
+		<?php } else { ?>
+		What is shown about the server was collected on <?php out($result['facts']['collected']) ?> UTC.
+		<?php } ?>
+	</span>
+</form>
+<?php } ?>
+<details id="troubleshoot_details" class="troubleshoot-details">
+<summary>Detailed report</summary>
+<?php foreach($sections as $section) { ?>
 <div class="panel <?php out($panel_classes[$section['status']])?>" id="section_<?php out($section['id'])?>">
 	<div class="panel-heading">
 		<h2 class="panel-title"><?php out($section['title']) ?></h2>
@@ -234,16 +288,8 @@ foreach($result['sections'] as $section) {
 			<?php } ?>
 		</details>
 		<?php } ?>
-		<?php if($section['id'] == 'delivery' && $result['server']->key_management == 'keys') { ?>
-		<form method="post" action="<?php outurl($form_url)?>" class="troubleshoot-refresh">
-			<?php out($this->get('active_user')->get_csrf_field(), ESC_NONE) ?>
-			<input type="hidden" name="who" value="<?php out($input['who'])?>">
-			<input type="hidden" name="server" value="<?php out($input['server'])?>">
-			<input type="hidden" name="account" value="<?php out($input['account'])?>">
-			<button type="submit" name="refresh" value="1" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-refresh"></span> Sync this server now and re-check</button>
-		</form>
-		<?php } ?>
 	</div>
 </div>
 <?php } ?>
+</details>
 <?php } ?>
