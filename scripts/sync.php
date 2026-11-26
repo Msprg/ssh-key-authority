@@ -383,15 +383,15 @@ function sync_server($id, $only_username = null, $preview = false) {
 	}
 	foreach($keyfiles as $username => $keyfile) {
 		if(is_null($only_username) || $username == $only_username) {
+			$exists_on_server = isset($sha1sums[$username]);
 			if(isset($sha1sums[$username])) {
 				unset($sha1sums[$username]);
 			}
 			try {
 				$remote_filename = "$keydir/$username";
 				$create = true;
-				if($keyfile['check']) {
-					$output = $connection->exec('id '.escapeshellarg($username));
-					if(empty($output)) $create = false;
+				if($keyfile['check'] && !linux_account_exists($connection, $username)) {
+					$create = false;
 				}
 				if($create) {
 					if(isset($sha1sums[$username]) && $sha1sums[$username] == sha1($keyfile['keyfile'])) {
@@ -401,8 +401,9 @@ function sync_server($id, $only_username = null, $preview = false) {
 						$connection->exec('chown keys-sync: '.escapeshellarg($remote_filename));
 						echo date('c')." {$hostname}: Updated {$username}\n";
 					}
-				} else {
+				} elseif($exists_on_server) {
 					$connection->unlink($remote_filename);
+					echo date('c')." {$hostname}: Removed {$username}, there is no such account on the server\n";
 				}
 				if(isset($keyfile['account'])) {
 					if($sync_warning && $username != 'root') {
@@ -468,6 +469,34 @@ function sync_server($id, $only_username = null, $preview = false) {
 		ServerHostFacts::request_refresh($server);
 	}
 	echo date('c')." {$hostname}: Sync finished\n";
+}
+
+/**
+ * Ask a target server whether it has a Linux account of the given name.
+ *
+ * The answer decides whether a key file is removed, so anything but a clear answer is an error: a lookup
+ * that does not finish (a directory service that is slow or down) must not look like "no such account".
+ *
+ * @param SSH $connection Open connection to the server
+ * @param string $username Account name to look up
+ * @return bool true if the account exists
+ * @throws SSHException if the server does not give a clear answer
+ */
+function linux_account_exists(SSH $connection, $username) {
+	// The exit status tells "no such user" (1) apart from a lookup that could not be done. Error messages are
+	// discarded: the SSH library returns them mixed into the output.
+	$output = $connection->exec_complete('id -un -- '.escapeshellarg($username).' 2>/dev/null; echo "status=$?"');
+	if(!preg_match('/^(.*?)\s*status=(\d+)\s*$/s', $output, $matches)) {
+		throw new SSHException("Could not find out whether the account $username exists on the server");
+	}
+	if($matches[2] === '0') {
+		// "id" takes an all-digit name for a user id if there is no account of that name; sshd does not
+		return !ctype_digit((string)$username) || trim($matches[1]) === (string)$username;
+	}
+	if($matches[2] === '1') {
+		return false;
+	}
+	throw new SSHException("Could not find out whether the account $username exists on the server (id exited with status {$matches[2]})");
 }
 
 function report_all_accounts_failed($keyfiles) {
