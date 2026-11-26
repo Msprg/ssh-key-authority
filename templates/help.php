@@ -164,10 +164,19 @@ $security_config = $this->get('security_config');
 					<dt>Multiple hosts with same IP address</dt>
 					<dd>At least one other host managed by SSH Key Authority resolves to the same IP address as your server.  SSH Key Authority will refuse to sync to either server until this is resolved.</dd>
 					<?php if(isset($security_config['hostname_verification']) && $security_config['hostname_verification'] >= 3) { ?>
-					<dt>Hostnames file missing</dt>
-					<dd>The <code>/var/local/keys-sync/.hostnames</code> file does not exist on the server. SSH Key Authority uses the contents of this file to verify that it is allowed to sync to your server.</dd>
+					<dt>Could not read /var/local/keys-sync/.hostnames</dt>
+					<dd>The <code>/var/local/keys-sync/.hostnames</code> file does not exist on the server or cannot be read. SSH Key Authority uses the contents of this file to verify that it is allowed to sync to your server.</dd>
+					<?php } ?>
+					<?php if(isset($security_config['hostname_verification']) && $security_config['hostname_verification'] >= 1) { ?>
 					<dt>Hostname check failed</dt>
-					<dd>The server name was not found in <code>/var/local/keys-sync/.hostnames</code> when SSH Key Authority tried to sync to your server.</dd>
+					<dd>
+						The server does not agree that it is known by the name that it has in SSH Key Authority, so nothing was synced to it. The message lists the names that the server accepts.
+						<?php if($security_config['hostname_verification'] >= 2) { ?>
+						They are taken from <code>/var/local/keys-sync/.hostnames</code> on the server<?php if($security_config['hostname_verification'] == 2) { ?>, or from <code>hostname -f</code> if that file does not exist<?php } ?>.
+						<?php } else { ?>
+						They are taken from <code>hostname -f</code> on the server.
+						<?php } ?>
+					</dd>
 					<?php } ?>
 				</dl>
 			</div>
