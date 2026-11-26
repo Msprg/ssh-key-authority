@@ -1,0 +1,73 @@
+site_name: SSH Key Authority
+site_description: Central management of SSH access to your servers, with LDAP / Active Directory integration.
+site_url: https://msprg.github.io/ssh-key-authority/
+repo_url: https://github.com/Msprg/ssh-key-authority
+repo_name: Msprg/ssh-key-authority
+edit_uri: edit/master/docs/
+copyright: Copyright 2013-2017 Opera Software, modifications 2021 Leitwerk AG, maintained by Msprg. Apache License 2.0.
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue grey
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue grey
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - navigation.indexes
+    - search.highlight
+    - content.code.copy
+    - content.action.edit
+    - toc.follow
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+
+nav:
+  - Home: index.md
+  - Getting started:
+      - Install with Docker: getting-started/docker.md
+      - Install without Docker: getting-started/bare-metal.md
+      - Prepare target servers: getting-started/target-servers.md
+  - Concepts:
+      - Users, groups and access rules: concepts/access-model.md
+      - How keys reach servers: concepts/key-distribution.md
+  - Guides:
+      - For users: guide/users.md
+      - For server leaders: guide/server-leaders.md
+      - For administrators: guide/administrators.md
+      - Troubleshoot access: guide/troubleshoot-access.md
+      - Unmanaged keys: guide/external-keys.md
+  - Operations:
+      - LDAP and Active Directory: operations/ldap.md
+      - Security: operations/security.md
+      - Monitoring and logs: operations/monitoring.md
+  - Reference:
+      - Configuration: reference/configuration.md
+      - CLI scripts and JSON endpoints: reference/cli-and-api.md

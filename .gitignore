@@ -9,3 +9,4 @@ docker/
 var/phpstan/*
 /VERSION
 testenvs.env
+/site/

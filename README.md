@@ -9,6 +9,9 @@ This is a maintained fork of [Opera's SSH Key Authority](https://github.com/oper
 built on top of the work of [Leitwerk AG](https://github.com/leitwerk-de/leitwerk-key-authority). It runs on
 PHP 8.2+ and is meant to be deployed with Docker.
 
+**Documentation: <https://msprg.github.io/ssh-key-authority/>** (source in [`docs/`](docs/); preview locally
+with `docker run --rm -p 8000:8000 -v "$PWD":/docs squidfunk/mkdocs-material:9.6.14`).
+
 *See [Security advisories](#security-advisories) for the issues fixed upstream.*
 
 
