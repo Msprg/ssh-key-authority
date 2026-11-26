@@ -381,6 +381,8 @@ function sync_server($id, $only_username = null, $preview = false) {
 			$sha1sums[$matches[2]] = $matches[1];
 		}
 	}
+	$account_lookup_failure = null;
+	$removed_without_account = 0;
 	foreach($keyfiles as $username => $keyfile) {
 		if(is_null($only_username) || $username == $only_username) {
 			$exists_on_server = isset($sha1sums[$username]);
@@ -390,8 +392,16 @@ function sync_server($id, $only_username = null, $preview = false) {
 			try {
 				$remote_filename = "$keydir/$username";
 				$create = true;
-				if($keyfile['check'] && !linux_account_exists($connection, $username)) {
-					$create = false;
+				if($keyfile['check']) {
+					// If the server could not answer for one account, it will not for the next either, and
+					// every further attempt would wait for the same timeout
+					if(!is_null($account_lookup_failure)) throw $account_lookup_failure;
+					try {
+						$create = linux_account_exists($connection, $username);
+					} catch(SSHException $e) {
+						$account_lookup_failure = $e;
+						throw $e;
+					}
 				}
 				if($create) {
 					if(isset($sha1sums[$username]) && $sha1sums[$username] == sha1($keyfile['keyfile'])) {
@@ -401,9 +411,16 @@ function sync_server($id, $only_username = null, $preview = false) {
 						$connection->exec('chown keys-sync: '.escapeshellarg($remote_filename));
 						echo date('c')." {$hostname}: Updated {$username}\n";
 					}
-				} elseif($exists_on_server) {
-					$connection->unlink($remote_filename);
-					echo date('c')." {$hostname}: Removed {$username}, there is no such account on the server\n";
+				} else {
+					// Not by way of the file listing above, which may lack files that are there
+					$output = $connection->exec_complete('rm -f -- '.escapeshellarg($remote_filename).' 2>&1');
+					if(trim($output) !== '') {
+						throw new SSHException("Could not remove $remote_filename: ".trim($output));
+					}
+					if($exists_on_server) {
+						echo date('c')." {$hostname}: Removed {$username}, there is no such account on the server\n";
+						$removed_without_account++;
+					}
 				}
 				if(isset($keyfile['account'])) {
 					if($sync_warning && $username != 'root') {
@@ -457,6 +474,11 @@ function sync_server($id, $only_username = null, $preview = false) {
 	}
 	if ($failure_occurred) {
 		$server->reschedule_sync_request();
+	} elseif ($removed_without_account > 0) {
+		// A server whose directory service is down says "no such user" for every directory account, and that
+		// cannot be told apart from accounts that are really gone. Look again later, so that key files removed
+		// during such an outage come back by themselves.
+		$server->reschedule_sync_request();
 	}
 	$server->update_status_file($connection);
 	// Snapshot of sshd configuration and key directory for the "Troubleshoot access" tool. It never fails the
@@ -474,13 +496,15 @@ function sync_server($id, $only_username = null, $preview = false) {
 /**
  * Ask a target server whether it has a Linux account of the given name.
  *
- * The answer decides whether a key file is removed, so anything but a clear answer is an error: a lookup
- * that does not finish (a directory service that is slow or down) must not look like "no such account".
+ * The answer decides whether a key file is removed. A lookup that cannot be run or does not finish in time is
+ * therefore an error rather than a "no". What cannot be recognised is a name service that answers "not found"
+ * because its backend is unavailable (for instance a stopped sssd): "id" reports that like an account that
+ * does not exist. The caller schedules another sync after removing key files for that reason.
  *
  * @param SSH $connection Open connection to the server
  * @param string $username Account name to look up
  * @return bool true if the account exists
- * @throws SSHException if the server does not give a clear answer
+ * @throws SSHException if the lookup cannot be run or does not finish
  */
 function linux_account_exists(SSH $connection, $username) {
 	// The exit status tells "no such user" (1) apart from a lookup that could not be done. Error messages are

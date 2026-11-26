@@ -376,6 +376,7 @@
 							<input type="radio" name="authorization" value="manual LDAP"<?php if($this->get('server')->authorization == 'manual LDAP') out(' checked') ?>>
 							Accounts will be based on LDAP usernames but created manually on the server
 						</label>
+						<p class="help-block">A user's key file is only written if the account exists on the server at the time of the sync, and it is removed again if the account is gone. After creating an account on the server, sync the server.</p>
 					</div>
 				</div>
 			</div>
