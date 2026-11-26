@@ -36,6 +36,10 @@ class User extends Entity {
 	 * Group guid's, this user is member of (will be set by get_details_from_ldap())
 	 */
 	private $ldap_group_guids;
+	/**
+	 * DN of the LDAP entry this user's details were loaded from (will be set by get_details_from_ldap())
+	 */
+	private $ldap_dn;
 
 	public function __construct($id = null, $preload_data = array()) {
 		parent::__construct($id, $preload_data);
@@ -303,9 +307,21 @@ class User extends Entity {
 
 	/**
 	* Retrieve the user's details from LDAP.
+	*
+	* A user must have a name and an email address in LDAP to be created or to log in. For a user we already
+	* know, a caller can pass $keep_stored_contact_details so that a name/email that has since been removed
+	* from the directory does not stop everything else from being refreshed: account status, admin flag and
+	* group memberships are still taken from LDAP and the stored name/email is left as it is. This is what
+	* the periodic LDAP sync needs - otherwise a disabled account whose email was also removed would stay
+	* active here.
+	*
+	* @param bool $keep_stored_contact_details tolerate a missing name/email attribute if we have a stored value
+	* @return string[] names of the LDAP attributes that were missing and for which the stored value was kept
+	*                  (always empty unless $keep_stored_contact_details is set)
 	* @throws UserNotFoundException if the user is not found in LDAP
+	* @throws UserLDAPAttributeMissingException if the LDAP entry lacks an attribute we need (e.g. no email address)
 	*/
-	public function get_details_from_ldap() {
+	public function get_details_from_ldap($keep_stored_contact_details = false) {
 		global $config;
 		$attributes = array();
 		$attributes[] = 'dn';
@@ -316,35 +332,63 @@ class User extends Entity {
 		if(isset($config['ldap']['user_active'])) {
 			$attributes[] = $config['ldap']['user_active'];
 		}
-		$ldapusers = $this->ldap->search($config['ldap']['dn_user'], LDAP::escape($config['ldap']['user_id']).'='.LDAP::escape($this->uid), array_keys(array_flip($attributes)));
+		$ldapusers = $this->ldap->find_users_by_id($this->uid, array_keys(array_flip($attributes)));
 		if($ldapuser = reset($ldapusers)) {
-			// Preserve the force_disable flag before updating from LDAP
-			$force_disable = $this->force_disable;
-			
-			$this->auth_realm = 'LDAP';
-			$this->uid = $ldapuser[strtolower($config['ldap']['user_id'])];
-			$this->name = $ldapuser[strtolower($config['ldap']['user_name'])];
-			$this->email = $ldapuser[strtolower($config['ldap']['user_email'])];
-			if(isset($config['ldap']['user_active'])) {
-				$this->active = 0;
-				if(isset($config['ldap']['user_active_true'])) {
-					$this->active = intval($ldapuser[strtolower($config['ldap']['user_active'])] == $config['ldap']['user_active_true']);
-				} elseif(isset($config['ldap']['user_active_false'])) {
-					$this->active = intval($ldapuser[strtolower($config['ldap']['user_active'])] != $config['ldap']['user_active_false']);
-				} elseif (isset($config['ldap']['user_active_bitmask'])) {
-					// Microsoft Active Directory uses bitflags to store if a user is active
-					// https://docs.microsoft.com/troubleshoot/windows-server/identity/useraccountcontrol-manipulate-account-properties
-					if (preg_match('/^(!?)([0-9]+)$/', $config['ldap']['user_active_bitmask'], $groups)) {
-						$negated = $groups[1] == "!";
-						$mask = (int)$groups[2];
-						$bit_set = ((int)$ldapuser[strtolower($config['ldap']['user_active'])] & $mask) != 0;
-						$this->active = (int)($bit_set ^ $negated);
-					}
-				}
-			} else {
-				$this->active = 1;
+			// Check that every attribute we are about to read is present before touching this object, so
+			// that an incomplete directory entry is reported as such and never leaves a half-updated user.
+			$is_missing = function($attribute) use ($ldapuser) {
+				$value = $ldapuser[strtolower($attribute)] ?? null;
+				return $value === null || $value === '' || $value === array();
+			};
+			$required = array($config['ldap']['user_id'], $config['ldap']['group_member_value']);
+			// The account status attribute may legitimately be absent when it is compared against a value
+			// (user_active_true / user_active_false, see below). Only a bitmask cannot be evaluated without it.
+			$status_is_bitmask = isset($config['ldap']['user_active']) && !isset($config['ldap']['user_active_true'])
+				&& !isset($config['ldap']['user_active_false']) && isset($config['ldap']['user_active_bitmask']);
+			if($status_is_bitmask) {
+				$required[] = $config['ldap']['user_active'];
 			}
-			$this->admin = 0;
+			foreach($required as $attribute) {
+				if($is_missing($attribute)) {
+					throw new UserLDAPAttributeMissingException($attribute, "LDAP entry of user {$this->uid} has no value for attribute '$attribute'.");
+				}
+			}
+			// Name and email are required too, but a stored value may stand in for them (see above)
+			$kept_attributes = array();
+			$kept_fields = array();
+			foreach(array('name' => $config['ldap']['user_name'], 'email' => $config['ldap']['user_email']) as $field => $attribute) {
+				if(!$is_missing($attribute)) continue;
+				if(!$keep_stored_contact_details || (string)$this->$field === '') {
+					throw new UserLDAPAttributeMissingException($attribute, "LDAP entry of user {$this->uid} has no value for attribute '$attribute'.");
+				}
+				$kept_fields[$field] = true;
+				$kept_attributes[] = $attribute;
+			}
+			$kept_attributes = array_values(array_unique($kept_attributes));
+
+			// Work out everything that needs the directory before changing this object: the group lookup
+			// below can fail, and a caller that carries on after such a failure (see views/user.php) must
+			// find the user as it was, not with status or admin flag already overwritten.
+			$status = isset($config['ldap']['user_active']) ? ($ldapuser[strtolower($config['ldap']['user_active'])] ?? null) : null;
+			if(!isset($config['ldap']['user_active'])) {
+				$active = 1;
+			} elseif(isset($config['ldap']['user_active_true'])) {
+				// An entry without the status attribute does not equal any value: that means "not active"
+				// here and "active" for user_active_false.
+				$active = intval($status !== null && $status == $config['ldap']['user_active_true']);
+			} elseif(isset($config['ldap']['user_active_false'])) {
+				$active = intval($status === null || $status != $config['ldap']['user_active_false']);
+			} elseif(isset($config['ldap']['user_active_bitmask']) && preg_match('/^(!?)([0-9]+)$/', $config['ldap']['user_active_bitmask'], $groups)) {
+				// Microsoft Active Directory uses bitflags to store if a user is active
+				// https://docs.microsoft.com/troubleshoot/windows-server/identity/useraccountcontrol-manipulate-account-properties
+				$negated = $groups[1] == "!";
+				$mask = (int)$groups[2];
+				$bit_set = ((int)$status & $mask) != 0;
+				$active = (int)($bit_set ^ $negated);
+			} else {
+				$active = 0;
+			}
+			$admin = 0;
 			$group_member = $ldapuser[strtolower($config['ldap']['group_member_value'])];
 			$indirect_option = "";
 			if ($config['ldap']['indirect_group_memberships']) {
@@ -354,15 +398,30 @@ class User extends Entity {
 			$ldap_group_guids = [];
 			foreach($ldapgroups as $ldapgroup) {
 				$ldap_group_guids[] = $ldapgroup[strtolower($config['ldap']['group_num'])];
-				if($ldapgroup['cn'] == $config['ldap']['admin_group_cn']) $this->admin = 1;
+				if($ldapgroup['cn'] == $config['ldap']['admin_group_cn']) $admin = 1;
 			}
+
+			// Nothing below can fail. The local force_disable flag is not touched.
+			$this->auth_realm = 'LDAP';
+			$this->uid = $ldapuser[strtolower($config['ldap']['user_id'])];
+			if(!isset($kept_fields['name'])) $this->name = $ldapuser[strtolower($config['ldap']['user_name'])];
+			if(!isset($kept_fields['email'])) $this->email = $ldapuser[strtolower($config['ldap']['user_email'])];
+			$this->active = $active;
+			$this->admin = $admin;
 			$this->ldap_group_guids = $ldap_group_guids;
-			
-			// Restore the force_disable flag after updating from LDAP
-			$this->force_disable = $force_disable;
+			$this->ldap_dn = $ldapuser['dn'];
+			return $kept_attributes;
 		} else {
 			throw new UserNotFoundException('User does not exist.');
 		}
+	}
+
+	/**
+	 * @return string|null DN of the LDAP entry that get_details_from_ldap() loaded this object from, or
+	 *                     null if that has not been run on this object (i.e. its details are from the database)
+	 */
+	public function get_ldap_dn() {
+		return $this->ldap_dn;
 	}
 
 	/**
@@ -407,7 +466,7 @@ class User extends Entity {
 		if(!isset($config['ldap']['user_superior'])) {
 			throw new BadMethodCallException("Cannot retrieve user's superior if user_superior is not configured");
 		}
-		$ldapusers = $this->ldap->search($config['ldap']['dn_user'], LDAP::escape($config['ldap']['user_id']).'='.LDAP::escape($this->uid), array($config['ldap']['user_superior']));
+		$ldapusers = $this->ldap->find_users_by_id($this->uid, array($config['ldap']['user_superior']));
 		if($ldapuser = reset($ldapusers)) {
 			$superior = null;
 			if(isset($ldapuser[strtolower($config['ldap']['user_superior'])]) && $ldapuser[strtolower($config['ldap']['user_superior'])] != $this->uid) {

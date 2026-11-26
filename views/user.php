@@ -65,7 +65,13 @@ if(isset($_POST['reassign_servers']) && is_array($_POST['servers']) && $active_u
 	redirect('#details');
 } elseif(isset($_POST['edit_user']) && $active_user && $active_user->admin) {
 	$user->force_disable = $_POST['force_disable'];
-	$user->get_details_from_ldap();
+	// Refresh the account status from LDAP where possible, but never let a directory problem (user
+	// deleted or incomplete in LDAP, server unreachable) stop an admin from disabling the user here.
+	try {
+		$user->get_details_from_ldap(true);
+	} catch(UserNotFoundException | LDAPConnectionFailureException | LDAPSearchFailedException $e) {
+		error_log("Could not refresh user {$user->uid} from LDAP while saving settings: ".$e->getMessage());
+	}
 	$user->update();
 	redirect('#settings');
 } else {

@@ -83,6 +83,21 @@ setup_database();
 
 $relative_frontend_base_url = (string)parse_url($config['web']['baseurl'], PHP_URL_PATH);
 
+/**
+ * Write an exception (message and stack trace) to the error log, every line prefixed with a reference
+ * number that can be shown to the user so an administrator can find the entry again.
+ *
+ * @param Throwable $e exception to log
+ * @param string|null $context optional description of what was being done
+ * @return int the reference number
+ */
+function log_exception($e, $context = null) {
+	$reference = time();
+	$text = ($context === null ? '' : "$context: ").$e;
+	error_log("$reference: ".str_replace("\n", "\n$reference: ", $text));
+	return $reference;
+}
+
 // Convert all non-fatal errors into exceptions
 function exception_error_handler($errno, $errstr, $errfile, $errline) {
 	throw new ErrorException($errstr, $errno, 0, $errfile, $errline);

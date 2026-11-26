@@ -63,6 +63,7 @@ echo "===========================================\n";
 echo "=== Processing Individual Users ==========\n";
 echo "===========================================\n";
 $user_counter = 0;
+$unsynced_users = array();
 foreach($users as $user) {
         $user_counter++;
         // DEBUG: Show details of the user being processed in this iteration
@@ -77,7 +78,12 @@ foreach($users as $user) {
                 echo "  User Realm is LDAP. Attempting sync...\n";
                 $active = $user->active;
                 try {
-                        $user->get_details_from_ldap();
+                        // A name/email that has been removed from the directory must not stop the sync:
+                        // keep the stored value and still apply status and group changes.
+                        $missing_attributes = $user->get_details_from_ldap(true);
+                        foreach($missing_attributes as $attribute) {
+                                echo "  WARNING: LDAP entry has no '$attribute' attribute. Keeping the stored value. The user cannot log in until it is set in the directory.\n";
+                        }
                         $user->update();
                         echo "  LDAP details retrieved and user updated locally.\n";
                         if(isset($config['ldap']['user_superior'])) {
@@ -87,6 +93,13 @@ foreach($users as $user) {
                         // DEBUG: Show active status after sync
                         echo "  Is user account enabled? (After Sync): " . ($user->active) . "\n";
 
+                } catch(UserLDAPAttributeMissingException $e) {
+                        // An attribute we cannot work without (or have no stored value for) is missing.
+                        // Leave this user as it is and carry on with the others.
+                        // (Must come before UserNotFoundException, which it extends.)
+                        echo "  ERROR: " . $e->getMessage() . " Cannot sync this user, leaving it unchanged.\n";
+                        $unsynced_users[] = $user->uid;
+                        continue;
                 } catch(UserNotFoundException $e) {
                         echo "  User NOT found in LDAP. Setting inactive.\n";
                         $user->active = 0;
@@ -201,5 +214,14 @@ foreach ($groups as $group) {
 echo "===========================================\n";
 echo "=== LDAP Update Script Finished ==========\n";
 echo "===========================================\n";
+
+// A user that could not be synced keeps whatever status and access it had. That must not pass as a
+// successful run: report it on stderr and through the exit code so cron / monitoring notices.
+if (!empty($unsynced_users)) {
+        $summary = count($unsynced_users) . " user(s) could NOT be synced and were left unchanged (see ERROR lines above): " . implode(', ', $unsynced_users);
+        echo $summary . "\n";
+        fwrite(STDERR, "ldap_update.php: $summary\n");
+        exit(1);
+}
 
 ?>

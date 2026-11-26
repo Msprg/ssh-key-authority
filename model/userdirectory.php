@@ -162,3 +162,23 @@ class UserDirectory extends DBDirectory {
 }
 
 class UserNotFoundException extends Exception {}
+
+/**
+ * The user exists in LDAP, but the entry has no value for an attribute that SKA requires
+ * (for example an Active Directory account without an email address).
+ *
+ * This extends UserNotFoundException because for most callers the consequence is the same: there is no
+ * usable user of that name, so they show their "user not found" response instead of failing. Callers
+ * that need to tell the two apart (login, LDAP sync) must catch this class first.
+ */
+class UserLDAPAttributeMissingException extends UserNotFoundException {
+	/**
+	 * Name of the missing LDAP attribute, as configured in the [ldap] section
+	 */
+	public $attribute;
+
+	public function __construct($attribute, $message) {
+		parent::__construct($message);
+		$this->attribute = $attribute;
+	}
+}

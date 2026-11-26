@@ -28,6 +28,13 @@ This document gives AI agents enough context to work safely in this repo.
 
 ## Core workflows (high level)
 - Login: LDAP auth via `services/auth.php` and `ldap.php`, session in `requesthandler.php`.
+  - A refused login is a `LoginFailedException` thrown by `AuthService::authenticate()`; its message is shown to
+    the user as is. Failures before the password is verified must stay generic ("Invalid username or
+    password") so the form cannot be used to probe for accounts; only failures after a successful user bind
+    (missing email, disabled in SKA, ...) may be specific. Only `counts_as_attempt` failures feed the rate limit.
+  - The password is checked by binding with the DN of the entry found for `user_id` under `dn_user`, so the
+    account that is verified is the account that gets the session. Do not bind with a name built from the
+    typed username (UPN, `CN=<username>,...`) to decide who is logged in.
 - Key upload: stored in `model/publickey.php` and related directories.
 - Access rules: `model/access.php` and related access option classes.
 - Key distribution: `scripts/sync.php` over SSH to write files under `/var/local/keys-sync/`.

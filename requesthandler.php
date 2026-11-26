@@ -109,8 +109,7 @@ if(isset($router->view)) {
 // Handler for uncaught exceptions
 function exception_handler($e) {
 	global $active_user, $config;
-	$error_number = time();
-	error_log("$error_number: ".str_replace("\n", "\n$error_number: ", $e));
+	$error_number = log_exception($e);
 	while(ob_get_length()) {
 		ob_end_clean();
 	}

@@ -8,3 +8,4 @@ docker/
 /vendor/
 var/phpstan/*
 /VERSION
+testenvs.env

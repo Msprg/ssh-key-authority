@@ -59,24 +59,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $auth_service = new AuthService($ldap, $user_dir, $config);
                     $user = $auth_service->authenticate($username, $password);
                     
-                    if ($user) {
-                        // Clear login attempts on successful authentication
-                        unset($_SESSION['login_attempts'][$username]);
-                        
-                        // Redirect to the page they were trying to access, or home
-                        $redirect_url = $_SESSION['redirect_after_login'] ?? '/';
-                        unset($_SESSION['redirect_after_login']);
-                        redirect($redirect_url);
-                    } else {
-                        // Increment failed login attempts
+                    // Clear login attempts on successful authentication
+                    unset($_SESSION['login_attempts'][$username]);
+                    
+                    // Redirect to the page they were trying to access, or home
+                    $redirect_url = $_SESSION['redirect_after_login'] ?? '/';
+                    unset($_SESSION['redirect_after_login']);
+                    redirect($redirect_url);
+                } catch (LoginFailedException $e) {
+                    // Only wrong credentials count towards the attempt limit. Somebody whose account
+                    // is incomplete, or who hits a directory outage, must not get locked out for retrying.
+                    if ($e->counts_as_attempt) {
                         if (!isset($user_attempts)) {
                             $user_attempts = ['count' => 0, 'time' => $current_time];
                         }
                         $user_attempts['count']++;
                         $user_attempts['time'] = $current_time;
-                        
-                        $error_message = 'Invalid username or password.';
                     }
+                    
+                    // The message is written for the user, see AuthService::authenticate()
+                    $error_message = $e->getMessage();
                 } catch (Exception $e) {
                     $error_message = 'Authentication error. Please try again.';
                 }
